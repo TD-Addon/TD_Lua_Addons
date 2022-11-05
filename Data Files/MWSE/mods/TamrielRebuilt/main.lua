@@ -14,6 +14,16 @@ if (mwse.buildDate == nil) or (mwse.buildDate < 2021501) then
     return
 end
 
+-- Util functions
+function table.contains(table, element)
+	for _, value in pairs(table) do
+	  if value == element then
+		return true
+	  end
+	end
+	return false
+end  
+
 local config = require("tamrielRebuilt.config")
 mwse.log("[Tamriel Rebuilt MWSE-Lua] Initialized Version 1.0")
 
@@ -21,6 +31,26 @@ mwse.log("[Tamriel Rebuilt MWSE-Lua] Initialized Version 1.0")
 event.register("modConfigReady", function()
     require("tamrielRebuilt.mcm")
 end)
+
+-- Check for registered BSAs
+if config.skipBSAChecks == false then
+	event.register(tes3.event.loaded, function()
+		local loadedArchives = tes3.getArchiveList()
+		local requiredArchives = {"Data Files\\Sky_Data.bsa", "Data Files\\PC_Data.bsa", "Data Files\\TR_Data.bsa"}
+		for k,v in pairs(requiredArchives) do
+			local archiveFound = (table.contains(loadedArchives, v))
+			print(archiveFound)
+			if archiveFound == false then
+				event.register(tes3.event.simulate, function()
+					tes3.messageBox("Please check the installation directions.")
+					tes3.messageBox("Your game will have missing models until this is fixed.")
+					tes3.messageBox("Your BSAs are not loaded correctly!")
+				end)
+				break
+			end
+		end
+	end)
+end
 
 if config.summoningSpells == true then
 tes3.claimSpellEffectId("T_summon_Devourer", 2090)
