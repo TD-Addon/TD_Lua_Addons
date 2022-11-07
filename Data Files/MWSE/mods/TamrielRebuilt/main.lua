@@ -32,24 +32,34 @@ event.register("modConfigReady", function()
     require("tamrielRebuilt.mcm")
 end)
 
+
 -- Check for registered BSAs
 if config.skipBSAChecks == false then
-	event.register(tes3.event.loaded, function()
-		local loadedArchives = tes3.getArchiveList()
-		local requiredArchives = {"Data Files\\Sky_Data.bsa", "Data Files\\PC_Data.bsa", "Data Files\\TR_Data.bsa"}
-		for k,v in pairs(requiredArchives) do
-			local archiveFound = (table.contains(loadedArchives, v))
-			print(archiveFound)
-			if archiveFound == false then
-				event.register(tes3.event.simulate, function()
-					tes3.messageBox("Please check the installation directions.")
-					tes3.messageBox("Your game will have missing models until this is fixed.")
-					tes3.messageBox("Your BSAs are not loaded correctly!")
-				end)
-				break
+	local PC_Data = false
+	local TR_Data = false
+	local Sky_Data = false
+
+	if tes3.getFileExists("textures\\t_cyr_flora_alkanet01.dds") then
+		PC_Data = true
+	end
+	if tes3.getFileExists("icons\\tr\\m\\tr_misc_toyguar_vr.dds") then
+		TR_Data = true
+	end
+	if tes3.getFileExists("textures\tx\\skyrim_rock_01.dds") then
+		Sky_Data = true
+	end
+
+
+	if (PT_Data == false) or (TR_Data == false) or (Sky_Data == false ) then
+		tes3.messageBox({
+			message = "Tamriel Data BSAs gave not been registered.",
+			buttons = {"Open BSA registration tutorial."},
+			callback = function()
+				os.execute("start https://www.tamriel-rebuilt.org/content/how-install-tamriel-rebuilt#bsas")
+				os.exit()
 			end
-		end
-	end)
+		})
+	end
 end
 
 if config.summoningSpells == true then
