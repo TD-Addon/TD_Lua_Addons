@@ -45,7 +45,7 @@ if config.skipBSAChecks == false then
 	if tes3.getFileExists("icons\\tr\\m\\tr_misc_toyguar_vr.dds") then
 		TR_Data = true
 	end
-	if tes3.getFileExists("textures\tx\\skyrim_rock_01.dds") then
+	if tes3.getFileExists("textures\\tx_skyrim_rock_01.dds") then
 		Sky_Data = true
 	end
 
