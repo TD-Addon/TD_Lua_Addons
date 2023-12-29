@@ -69,10 +69,10 @@ toggles:createOnOffButton{
 }
 
 toggles:createOnOffButton{
-    label = "Disable BSA Checks",
-    description = "Skip checking of BSAs. Does not fix BSA errors, simply disables the warning message.\n\nDefault: Off\n\n",
+    label = "Disable Tamriel_Data Checks",
+    description = "Skip checking whether Tamriel_Data is installed. Does not fix errors, simply disables the warning message.\n\nDefault: Off\n\n",
     variable = EasyMCM:createTableVariable{
-        id = "skipBSAChecks",
+        id = "skipTDChecks",
         table = config,
     },
 }

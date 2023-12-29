@@ -33,19 +33,19 @@ event.register(tes3.event.modConfigReady, function()
 end)
 
 
--- Check for registered BSAs
-if config.skipBSAChecks == false then
+-- Check for Tamriel_Data files
+if config.skipTDChecks == false then
 	local PC_Data = false
 	local TR_Data = false
 	local Sky_Data = false
 
-	if tes3.getFileExists("textures\\t_cyr_flora_alkanet01.dds") then
+	if tes3.getFileExists("meshes\\pc\\cr\\pc_butterfly_01.nif") then
 		PC_Data = true
 	end
-	if tes3.getFileExists("icons\\tr\\m\\tr_misc_toyguar_vr.dds") then
+	if tes3.getFileExists("meshes\\tr\\cr\\tr_moth_01.nif") then
 		TR_Data = true
 	end
-	if tes3.getFileExists("textures\\tx_skyrim_rock_01.dds") then
+	if tes3.getFileExists("meshes\\sky\\r\\sky_butterfly_01.nif") then
 		Sky_Data = true
 	end
 
@@ -53,10 +53,10 @@ if config.skipBSAChecks == false then
 	if (PT_Data == false) or (TR_Data == false) or (Sky_Data == false ) then
 		event.register(tes3.event.loaded, function()
 			tes3.messageBox({
-				message = "Tamriel Data BSAs have not been registered.",
-				buttons = {"Open BSA registration tutorial."},
+				message = "The latest version of Tamriel Data has not been installed",
+				buttons = {"Open Tamriel Data resource page"},
 				callback = function()
-					os.execute("start https://www.tamriel-rebuilt.org/content/how-install-tamriel-rebuilt#bsas")
+					os.execute("start https://www.tamriel-rebuilt.org/downloads/resources")
 					os.exit()
 				end
 			})
