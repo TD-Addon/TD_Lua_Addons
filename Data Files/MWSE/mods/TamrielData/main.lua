@@ -32,38 +32,6 @@ event.register(tes3.event.modConfigReady, function()
     require("tamrielData.mcm")
 end)
 
-
--- Check for Tamriel_Data files
-if config.skipTDChecks == false then
-	local PC_Data = false
-	local TR_Data = false
-	local Sky_Data = false
-
-	if tes3.getFileExists("meshes\\pc\\cr\\pc_butterfly_01.nif") then
-		PC_Data = true
-	end
-	if tes3.getFileExists("meshes\\tr\\cr\\tr_moth_01.nif") then
-		TR_Data = true
-	end
-	if tes3.getFileExists("meshes\\sky\\r\\sky_butterfly_01.nif") then
-		Sky_Data = true
-	end
-
-
-	if (PT_Data == false) or (TR_Data == false) or (Sky_Data == false ) then
-		event.register(tes3.event.loaded, function()
-			tes3.messageBox({
-				message = "The latest version of Tamriel Data has not been installed",
-				buttons = {"Open Tamriel Data resource page"},
-				callback = function()
-					os.execute("start https://www.tamriel-rebuilt.org/downloads/resources")
-					os.exit()
-				end
-			})
-		end)
-	end
-end
-
 if config.summoningSpells == true then
 	tes3.claimSpellEffectId("T_summon_Devourer", 2090)
 	tes3.claimSpellEffectId("T_summon_DremArch", 2091)
