@@ -28,5 +28,8 @@ event.register("initialized", function()
 		gh_config.whitelist["t_mw_fauna_ventworm_02"] = true
 		gh_config.whitelist["t_mw_fauna_ventworm_03"] = true
 		gh_config.whitelist["t_mw_fauna_ventworm_04"] = true
+		gh_config.whitelist["t_pi_fauna_fishslvspd1"] = true
+		gh_config.whitelist["t_pi_fauna_fishslvspd2"] = true
+		gh_config.whitelist["t_pi_fauna_fishslvspd3"] = true
     end
 end)
