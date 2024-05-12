@@ -1,5 +1,5 @@
 --[[
-	Tamriel Data MWSE-Lua Addon v1.1
+	Tamriel Data MWSE-Lua Addon v1.2
 	By mort and Kynesifnar
 ]]
 
