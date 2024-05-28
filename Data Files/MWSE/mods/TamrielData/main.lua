@@ -25,7 +25,7 @@ function table.contains(table, element)
 end  
 
 local config = require("tamrielData.config")
-mwse.log("[Tamriel Data MWSE-Lua] Initialized Version 1.1")
+mwse.log("[Tamriel Data MWSE-Lua] Initialized Version 1.2")
 
 -- Register the mod config menu (using EasyMCM library).
 event.register(tes3.event.modConfigReady, function()
@@ -142,9 +142,10 @@ if config.summoningSpells == true then
 
 																		 
 end
+
 if config.fixPlayerRaceAnimations == true then
 	if tes3.player.object.race.id == "T_Els_Ohmes-raht" or tes3.player.object.race.id == "T_Els_Suthay" then
-		if tes3.player.object.female == 0 then
+		if tes3.player.object.female == false then
 			tes3.loadAnimation({reference=tes3.player, file="epos_kha_upr_anim_m.nif"})
 		else
 			tes3.loadAnimation({reference=tes3.player, file="epos_kha_upr_anim_f.nif"})
@@ -152,3 +153,41 @@ if config.fixPlayerRaceAnimations == true then
 	end
 end
 end)
+
+
+local function restrictEquip(e)
+	if config.restrictEquipment == true then
+		if e.reference.mobile.object.race.id == "T_Val_Imga" then
+			if e.item.objectType == tes3.objectType.armor then
+				if e.item.slot == tes3.armorSlot.boots then
+					if e.reference.mobile == tes3.mobilePlayer then
+						tes3ui.showNotifyMenu("Imga can't wear boots.")
+					end
+					
+					return false
+				end
+				
+				if e.item.slot == tes3.armorSlot.helmet then
+					if e.reference.mobile.object.female == false then
+						if e.reference.mobile == tes3.mobilePlayer then
+							tes3ui.showNotifyMenu("Male Imga can't wear helmets.")
+						end
+						
+						return false
+					end
+				end
+			end
+			
+			if e.item.objectType == tes3.objectType.clothing then
+				if e.item.slot == tes3.clothingSlot.shoes then
+					if e.reference.mobile == tes3.mobilePlayer then
+						tes3ui.showNotifyMenu("Imga can't wear boots.")
+					end
+					
+					return false
+				end
+			end
+		end
+	end
+end
+event.register(tes3.event.equip, restrictEquip)

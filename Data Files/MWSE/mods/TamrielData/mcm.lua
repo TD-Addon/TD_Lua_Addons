@@ -28,7 +28,7 @@ template:register()
 
 -- Preferences Page
 local preferences = template:createSideBarPage{label="Preferences"}
-preferences.sidebar:createInfo{text="Tamriel Data MWSE-Lua v1.1"}
+preferences.sidebar:createInfo{text="Tamriel Data MWSE-Lua v1.2"}
 
 -- Sidebar Credits
 local credits = preferences.sidebar:createCategory{label="Credits:"}
@@ -69,10 +69,20 @@ toggles:createOnOffButton{
 }
 
 toggles:createOnOffButton{
-    label = "Fix Player Animations for Tamriel_Data Races",
+    label = "Fix Player Animations for Tamriel Data Races",
     description = "Fixes animations when playing as Ohmes-raht or Suthay Khajiit via 3rd party mods.\nRequires reload. Tail may vanish until reload when animations from other MWSE addons are applied to the player character.\nIf using an animation replacer that adds tail bones to base_anim.nif, then this feature is likely not necessary.\n\nDefault: On\n\n",
     variable = EasyMCM:createTableVariable{
         id = "fixPlayerRaceAnimations",
         table = config,
     },
+}
+toggles:createOnOffButton{
+    label = "Restrict Equipment for Tamriel Data Races",
+    description = "Prevents races added by Tamriel Data from wearing certain kinds of equipment when doing so would be physically implausible or technically problematic.\n\nAffected races and equipment:" ..
+	"\n- Stops male Imga from equipping helmets and all Imga from equipping footwear." ..
+	"\n\nDefault: On\n\n",
+    variable = EasyMCM:createTableVariable{
+        id = "restrictEquipment",
+        table = config,
+    }
 }
