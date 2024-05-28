@@ -161,7 +161,7 @@ local function restrictEquip(e)
 			if e.item.objectType == tes3.objectType.armor then
 				if e.item.slot == tes3.armorSlot.boots then
 					if e.reference.mobile == tes3.mobilePlayer then
-						tes3ui.showNotifyMenu("Imga can't wear boots.")
+						tes3ui.showNotifyMenu("Imga cannot wear boots.")
 					end
 					
 					return false
@@ -170,7 +170,7 @@ local function restrictEquip(e)
 				if e.item.slot == tes3.armorSlot.helmet then
 					if e.reference.mobile.object.female == false then
 						if e.reference.mobile == tes3.mobilePlayer then
-							tes3ui.showNotifyMenu("Male Imga can't wear helmets.")
+							tes3ui.showNotifyMenu("Male Imga cannot wear helmets.")
 						end
 						
 						return false
@@ -181,7 +181,7 @@ local function restrictEquip(e)
 			if e.item.objectType == tes3.objectType.clothing then
 				if e.item.slot == tes3.clothingSlot.shoes then
 					if e.reference.mobile == tes3.mobilePlayer then
-						tes3ui.showNotifyMenu("Imga can't wear boots.")
+						tes3ui.showNotifyMenu("Imga cannot wear shoes.")
 					end
 					
 					return false
