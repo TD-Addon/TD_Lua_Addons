@@ -61,7 +61,7 @@ credits:createHyperlink{
 local toggles = preferences:createCategory{label="Feature Toggles"}
 toggles:createOnOffButton{
     label = "Add New Summoning Spells",
-    description = "Add new summoning spells using creatures from Tamriel Rebuilt, Project Cyrodiil, and Skyrim: Home of the Nords.\nRequires reload.\n\nDefault: On\n\n",
+    description = "Adds new summoning spells using creatures from Tamriel Rebuilt, Project Cyrodiil, and Skyrim: Home of the Nords.\nRequires reload.\n\nDefault: On\n\n",
     variable = EasyMCM:createTableVariable{
         id = "summoningSpells",
         table = config,
@@ -78,11 +78,19 @@ toggles:createOnOffButton{
 }
 toggles:createOnOffButton{
     label = "Restrict Equipment for Tamriel Data Races",
-    description = "Prevents races added by Tamriel Data from wearing certain kinds of equipment when doing so would be physically implausible or technically problematic.\n\nAffected races and equipment:" ..
+    description = "Prevents races added by Tamriel Data from wearing certain kinds of equipment when doing so would be physically implausible or technically problematic.\nRequires reload.\n\nAffected races and equipment:" ..
 	"\n- Stops male Imga from equipping helmets and all Imga from equipping footwear." ..
 	"\n\nDefault: On\n\n",
     variable = EasyMCM:createTableVariable{
         id = "restrictEquipment",
+        table = config,
+    }
+}
+toggles:createOnOffButton{
+    label = "Fix Vampire Heads",
+    description = "Stops Namira's shroud from hiding the player's head when equipped and allows vampire NPCs to use unique heads made specifically for them.\nRequires reload.\n\nDefault: On\n\n",
+    variable = EasyMCM:createTableVariable{
+        id = "fixVampireHeads",
         table = config,
     }
 }

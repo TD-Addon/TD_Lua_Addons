@@ -124,70 +124,94 @@ event.register(tes3.event.magicEffectsResolved, function()
 
 end)
 
-event.register(tes3.event.loaded, function()
-if config.summoningSpells == true then
-
-	for k,v in pairs(tr_summons) do
-		local effectID, spellID, spellName, creatureID, effectCost, spellCost, iconPath, duration = unpack(v)
-
-		local overridden_spell = tes3.getObject(spellID)
-		overridden_spell.name = spellName
-		overridden_spell.magickaCost = spellCost
-
-		local effect = overridden_spell.effects[1]
-		effect.id = effectID
-		effect.duration = duration
-		
-	end
-
-																		 
-end
-
-if config.fixPlayerRaceAnimations == true then
-	if tes3.player.object.race.id == "T_Els_Ohmes-raht" or tes3.player.object.race.id == "T_Els_Suthay" then
-		if tes3.player.object.female == false then
-			tes3.loadAnimation({reference=tes3.player, file="epos_kha_upr_anim_m.nif"})
-		else
-			tes3.loadAnimation({reference=tes3.player, file="epos_kha_upr_anim_f.nif"})
+local function fixVampireHeads(e)
+	if e.index == tes3.activeBodyPart.head then
+		if not e.object or e.object.objectType ~= tes3.objectType.armor then
+			if e.reference.mobile then
+				if e.reference.mobile.object then
+					if e.reference.mobile.object.baseObject.head.id == "T_B_De_UNI_HeadOrlukhTR" then	-- Handles the unique head for Varos of the Orlukh bloodline
+							e.bodyPart = e.reference.mobile.object.baseObject.head
+					end
+					
+					-- Handles the player's head when wearing Namira's Shroud
+					if e.reference.mobile == tes3.mobilePlayer then										
+						if tes3.player.object:hasItemEquipped("T_Dae_UNI_RobeShroud") then		
+							e.bodyPart = e.reference.mobile.object.baseObject.head
+						end
+					end
+				end
+			end
 		end
 	end
 end
-end)
-
 
 local function restrictEquip(e)
-	if config.restrictEquipment == true then
-		if e.reference.mobile.object.race.id == "T_Val_Imga" then
-			if e.item.objectType == tes3.objectType.armor then
-				if e.item.slot == tes3.armorSlot.boots then
-					if e.reference.mobile == tes3.mobilePlayer then
-						tes3ui.showNotifyMenu("Imga cannot wear boots.")
-					end
-					
-					return false
+	if e.reference.mobile.object.race.id == "T_Val_Imga" then
+		if e.item.objectType == tes3.objectType.armor then
+			if e.item.slot == tes3.armorSlot.boots then
+				if e.reference.mobile == tes3.mobilePlayer then
+					tes3ui.showNotifyMenu("Imga cannot wear boots.")
 				end
 				
-				if e.item.slot == tes3.armorSlot.helmet then
-					if e.reference.mobile.object.female == false then
-						if e.reference.mobile == tes3.mobilePlayer then
-							tes3ui.showNotifyMenu("Male Imga cannot wear helmets.")
-						end
-						
-						return false
-					end
-				end
+				return false
 			end
 			
-			if e.item.objectType == tes3.objectType.clothing then
-				if e.item.slot == tes3.clothingSlot.shoes then
+			if e.item.slot == tes3.armorSlot.helmet then
+				if e.reference.mobile.object.female == false then
 					if e.reference.mobile == tes3.mobilePlayer then
-						tes3ui.showNotifyMenu("Imga cannot wear shoes.")
+						tes3ui.showNotifyMenu("Male Imga cannot wear helmets.")
 					end
 					
 					return false
 				end
 			end
 		end
+		
+		if e.item.objectType == tes3.objectType.clothing then
+			if e.item.slot == tes3.clothingSlot.shoes then
+				if e.reference.mobile == tes3.mobilePlayer then
+					tes3ui.showNotifyMenu("Imga cannot wear shoes.")
+				end
+				
+				return false
+			end
+		end
 	end
 end
-event.register(tes3.event.equip, restrictEquip)
+
+
+event.register(tes3.event.loaded, function()
+	if config.summoningSpells == true then
+		for k,v in pairs(tr_summons) do
+			local effectID, spellID, spellName, creatureID, effectCost, spellCost, iconPath, duration = unpack(v)
+
+			local overridden_spell = tes3.getObject(spellID)
+			overridden_spell.name = spellName
+			overridden_spell.magickaCost = spellCost
+
+			local effect = overridden_spell.effects[1]
+			effect.id = effectID
+			effect.duration = duration
+		end
+	end
+	
+	if config.restrictEquipment == true then
+		event.unregister(tes3.event.equip, restrictEquip)
+		event.register(tes3.event.equip, restrictEquip)
+	end
+	
+	if config.fixVampireHeads == true then
+		event.unregister(tes3.event.bodyPartAssigned, fixVampireHeads)
+		event.register(tes3.event.bodyPartAssigned, fixVampireHeads)
+	end
+	
+	if config.fixPlayerRaceAnimations == true then
+		if tes3.player.object.race.id == "T_Els_Ohmes-raht" or tes3.player.object.race.id == "T_Els_Suthay" then
+			if tes3.player.object.female == false then
+				tes3.loadAnimation({reference=tes3.player, file="epos_kha_upr_anim_m.nif"})
+			else
+				tes3.loadAnimation({reference=tes3.player, file="epos_kha_upr_anim_f.nif"})
+			end
+		end
+	end
+end)
