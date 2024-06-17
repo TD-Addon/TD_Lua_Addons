@@ -4,7 +4,7 @@
 ]]
 
 -- Make sure we have an up-to-date version of MWSE.
-if (mwse.buildDate == nil) or (mwse.buildDate < 20231023) then
+if (mwse.buildDate == nil) or (mwse.buildDate < 20240617) then
     event.register(tes3.event.initialized, function()
         tes3.messageBox(
             "[Tamriel Data] Your MWSE is out of date!"
@@ -192,37 +192,20 @@ local function restrictEquip(e)
 	end
 end
 
-local function improveItemInventorySounds(e)
+local function improveItemSounds(e)
 	for k,v in pairs(item_sounds) do
 		local itemID, upSound, downSound, useSound = unpack(v)
 		
 		if e.item.id == itemID then
-			if e.state == tes3.itemSoundState.down then
-				tes3.playSound{ sound = downSound }
-			else
+			if e.state == tes3.itemSoundState.up then
 				tes3.playSound{ sound = upSound }
+			elseif e.state == tes3.itemSoundState.down then
+				tes3.playSound{ sound = downSound }
+			elseif e.state == tes3.itemSoundState.consume then
+				tes3.playSound{ sound = useSound }
 			end
 			
 			return false	-- Block the vanilla behavior and stop iterating through item_sounds 
-		end
-	end
-end
-
-local function improveItemConsumeSounds(e)
-	for k,v in pairs(item_sounds) do
-		local itemID, upSound, downSound, useSound = unpack(v)
-		
-		if e.item.id == itemID then
-			local function replaceNextDrinkSound(e)
-				if e.sound and e.sound.id == "Drink" then
-					e.block = true
-					event.unregister("addSound", replaceNextDrinkSound)
-				end
-			end
-			event.register("addSound", replaceNextDrinkSound, { priority = 1500 })
-			
-			tes3.playSound{ sound = useSound }
-			break 	-- Stop iterating through item_sounds 
 		end
 	end
 end
@@ -253,10 +236,8 @@ event.register(tes3.event.loaded, function()
 	end
 	
 	if config.improveItemSounds == true then
-		event.unregister(tes3.event.playItemSound, improveItemInventorySounds)
-		event.unregister(tes3.event.equip, improveItemConsumeSounds)
-		event.register(tes3.event.playItemSound, improveItemInventorySounds)
-		event.register(tes3.event.equip, improveItemConsumeSounds)		
+		event.unregister(tes3.event.playItemSound, improveItemSounds)
+		event.register(tes3.event.playItemSound, improveItemSounds)
 	end
 	
 	if config.fixPlayerRaceAnimations == true then
