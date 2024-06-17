@@ -71,6 +71,20 @@ local tr_summons = {
 	{ 2105, "T_Com_Cnj_SummonAuroran", "Summon Auroran", "T_Dae_Cre_Auroran_01", 50, 130, "s\\Tx_S_Smmn_AnctlGht.tga", 60}
 }
 
+-- item id, pickup sound id, putdown sound id, equip sound id
+local item_sounds = {	
+	{ "T_Imp_Subst_Blackdrake_01", "Item Misc Up", "Item Misc Down", "bearsniff"},
+	{ "T_Nor_Subst_WasabiPaste_01", "Item Misc Up", "Item Misc Down", "Swallow"},
+	{ "T_Imp_Subst_Aegrotat_01", "Item Misc Up", "Item Misc Down", "Swallow"},
+	{ "T_De_Drink_PunavitResin_01", "Item Misc Up", "Item Misc Down", "Swallow"},
+	{ "T_Com_Subst_Perfume_01", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"},
+	{ "T_Com_Subst_Perfume_02", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"},
+	{ "T_Com_Subst_Perfume_03", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"},
+	{ "T_Com_Subst_Perfume_04", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"},
+	{ "T_Com_Subst_Perfume_05", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"},
+	{ "T_Com_Subst_Perfume_06", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"}
+}
+
 event.register(tes3.event.magicEffectsResolved, function()
 	if config.summoningSpells == true then
 		local summonHungerEffect = tes3.getMagicEffect(tes3.effect.summonHunger)
@@ -133,8 +147,7 @@ local function fixVampireHeads(e)
 							e.bodyPart = e.reference.mobile.object.baseObject.head
 					end
 					
-					-- Handles the player's head when wearing Namira's Shroud
-					if e.reference.mobile == tes3.mobilePlayer then										
+					if e.reference.mobile == tes3.mobilePlayer then										-- Handles the player's head when wearing Namira's Shroud						
 						if tes3.player.object:hasItemEquipped("T_Dae_UNI_RobeShroud") then		
 							e.bodyPart = e.reference.mobile.object.baseObject.head
 						end
@@ -150,7 +163,7 @@ local function restrictEquip(e)
 		if e.item.objectType == tes3.objectType.armor then
 			if e.item.slot == tes3.armorSlot.boots then
 				if e.reference.mobile == tes3.mobilePlayer then
-					tes3ui.showNotifyMenu("Imga cannot wear boots.")
+					tes3ui.showNotifyMenu("Imga cannot wear shoes.")
 				end
 				
 				return false
@@ -179,6 +192,40 @@ local function restrictEquip(e)
 	end
 end
 
+local function improveItemInventorySounds(e)
+	for k,v in pairs(item_sounds) do
+		local itemID, upSound, downSound, useSound = unpack(v)
+		
+		if e.item.id == itemID then
+			if e.state == tes3.itemSoundState.down then
+				tes3.playSound{ sound = downSound }
+			else
+				tes3.playSound{ sound = upSound }
+			end
+			
+			return false	-- Block the vanilla behavior and stop iterating through item_sounds 
+		end
+	end
+end
+
+local function improveItemConsumeSounds(e)
+	for k,v in pairs(item_sounds) do
+		local itemID, upSound, downSound, useSound = unpack(v)
+		
+		if e.item.id == itemID then
+			local function replaceNextDrinkSound(e)
+				if e.sound and e.sound.id == "Drink" then
+					e.block = true
+					event.unregister("addSound", replaceNextDrinkSound)
+				end
+			end
+			event.register("addSound", replaceNextDrinkSound, { priority = 1500 })
+			
+			tes3.playSound{ sound = useSound }
+			break 	-- Stop iterating through item_sounds 
+		end
+	end
+end
 
 event.register(tes3.event.loaded, function()
 	if config.summoningSpells == true then
@@ -205,12 +252,19 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.bodyPartAssigned, fixVampireHeads)
 	end
 	
+	if config.improveItemSounds == true then
+		event.unregister(tes3.event.playItemSound, improveItemInventorySounds)
+		event.unregister(tes3.event.equip, improveItemConsumeSounds)
+		event.register(tes3.event.playItemSound, improveItemInventorySounds)
+		event.register(tes3.event.equip, improveItemConsumeSounds)		
+	end
+	
 	if config.fixPlayerRaceAnimations == true then
 		if tes3.player.object.race.id == "T_Els_Ohmes-raht" or tes3.player.object.race.id == "T_Els_Suthay" then
 			if tes3.player.object.female == false then
-				tes3.loadAnimation({reference=tes3.player, file="epos_kha_upr_anim_m.nif"})
+				tes3.loadAnimation({ reference = tes3.player, file = "epos_kha_upr_anim_m.nif" })
 			else
-				tes3.loadAnimation({reference=tes3.player, file="epos_kha_upr_anim_f.nif"})
+				tes3.loadAnimation({ reference = tes3.player, file = "epos_kha_upr_anim_f.nif" })
 			end
 		end
 	end

@@ -94,3 +94,11 @@ toggles:createOnOffButton{
         table = config,
     }
 }
+toggles:createOnOffButton{
+    label = "Improve Item Sounds",
+    description = "Gives some items from Tamriel Data, such as perfume, more reasonable sounds when they are used or added to/removed from one's inventory.\nRequires reload.\n\nDefault: On\n\n",
+    variable = EasyMCM:createTableVariable{
+        id = "improveItemSounds",
+        table = config,
+    }
+}
