@@ -5,5 +5,6 @@ return mwse.loadConfig("tamrielData") or {
 	fixPlayerRaceAnimations = true,
 	restrictEquipment = true,
 	fixVampireHeads = true,
-	improveItemSounds = true
+	improveItemSounds = true,
+	limitIntervention = false
 }

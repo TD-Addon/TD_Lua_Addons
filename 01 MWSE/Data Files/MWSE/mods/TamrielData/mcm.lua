@@ -84,7 +84,7 @@ toggles:createOnOffButton{
     variable = EasyMCM:createTableVariable{
         id = "restrictEquipment",
         table = config,
-    }
+    },
 }
 toggles:createOnOffButton{
     label = "Fix Vampire Heads",
@@ -92,7 +92,7 @@ toggles:createOnOffButton{
     variable = EasyMCM:createTableVariable{
         id = "fixVampireHeads",
         table = config,
-    }
+    },
 }
 toggles:createOnOffButton{
     label = "Improve Item Sounds",
@@ -100,5 +100,13 @@ toggles:createOnOffButton{
     variable = EasyMCM:createTableVariable{
         id = "improveItemSounds",
         table = config,
-    }
+    },
+}
+toggles:createOnOffButton{
+    label = "Limit Intervention Spell Range",
+    description = "Restricts the range at which some intervention spells work, preventing them from being used to teleport across the entirety of Tamriel.\nMay conflict with MWSE addons that affect intervention spells or mods that add additional regions to Morrowind.\nRequires reload.\n\nDefault: Off\n\n",
+    variable = EasyMCM:createTableVariable{
+        id = "limitIntervention",
+        table = config,
+    },
 }

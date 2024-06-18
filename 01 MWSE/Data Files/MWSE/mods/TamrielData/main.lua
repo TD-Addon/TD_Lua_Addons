@@ -16,13 +16,45 @@ end
 
 -- Util functions
 function table.contains(table, element)
-	for _, value in pairs(table) do
-	  if value == element then
+	for _,v in pairs(table) do
+	  if v == element then
 		return true
 	  end
 	end
 	return false
-end  
+end
+
+local function getExteriorCell(cell, cellVisitTable)
+	if cell.isOrBehavesAsExterior then
+		return cell
+	end
+	
+	for ref in tes3.iterate(cell.activators) do
+		if ref.destination and not table.contains(cellVisitTable, ref.destination.cell) then
+			table.insert(cellVisitTable, ref.destination.cell)
+			return getExteriorCell(ref.destination.cell, cellVisitTable)
+		end
+	end
+end
+
+local function isInterventionCell(cell, regionList)
+	for k,v in pairs(regionList) do
+		local regionID, xLeft, xRight, yBottom, yTop = unpack(v)
+			if (cell.region and cell.region.id == regionID) or cell.region == regionID then
+				if not xLeft then
+					return true
+				else
+					if (cell.gridX >= xLeft) and (cell.gridX <= xRight) and (cell.gridY >= yBottom) and (cell.gridY <= yTop) then
+						return true
+					else
+						return false
+					end
+				end
+			end
+	end
+	
+	return false
+end
 
 local config = require("tamrielData.config")
 mwse.log("[Tamriel Data MWSE-Lua] Initialized Version 1.2")
@@ -83,6 +115,56 @@ local item_sounds = {
 	{ "T_Com_Subst_Perfume_04", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"},
 	{ "T_Com_Subst_Perfume_05", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"},
 	{ "T_Com_Subst_Perfume_06", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"}
+}
+
+-- region id, xcell left bound, xcell right bound, ycell top bound, ycell bottom bound
+local almsivi_intervention_regions = {
+	{ "Aanthirin Region", nil, nil, nil, nil },
+	{ "Alt Orethan Region", nil, nil, nil, nil },
+	{ "Armun Ashlands Region", nil, nil, nil, nil },
+	{ "Arnesian Jungle Region", nil, nil, nil, nil },
+	{ "Ascadian Isles Region", nil, nil, nil, nil },
+	{ "Ashlands Region", nil, nil, nil, nil },
+	{ "Azura's Coast Region", nil, nil, nil, nil },
+	{ "Bitter Coast Region", nil, nil, nil, nil },
+	{ "Boethiah's Spine Region", nil, nil, nil, nil },
+	{ "Clambering Moor Region", nil, nil, nil, nil },
+	{ "Dagon Urul Region", nil, nil, nil, nil },
+	{ "Deshaan Plains Region", nil, nil, nil, nil },
+	{ "Grazelands Region", nil, nil, nil, nil },
+	{ "Grey Meadows Region", nil, nil, nil, nil },
+	{ "Julan-Shar Region", nil, nil, nil, nil },
+	{ "Lan Orethan Region", nil, nil, nil, nil },
+	{ "Mephalan Vales Region", nil, nil, nil, nil },
+	{ "Molag Mar Region", nil, nil, nil, nil },
+	{ "Molag Ruhn Region", nil, nil, nil, nil },
+	{ "Molagreahd Region", nil, nil, nil, nil },
+	{ "Mournhold Region", nil, nil, nil, nil },
+	{ "Mudflats Region", nil, nil, nil, nil },
+	{ "Nedothril Region", nil, nil, nil, nil },
+	{ "Old Ebonheart Region", nil, nil, nil, nil },
+	{ "Othreleth Woods Region", nil, nil, nil, nil },
+	{ "Red Mountain Region", nil, nil, nil, nil },
+	{ "Roth Roryn Region", nil, nil, nil, nil },
+	{ "Sacred Lands Region", nil, nil, nil, nil },
+	{ "Salt Marsh Region", nil, nil, nil, nil },
+	{ "Sheogorad", nil, nil, nil, nil },
+	{ "Shipal-Shin Region", nil, nil, nil, nil },
+	{ "Sundered Scar Region", nil, nil, nil, nil },
+	{ "Telvanni Isles Region", nil, nil, nil, nil },
+	{ "Thirr Valley Region", nil, nil, nil, nil },
+	{ "Uld Vraech Region", nil, nil, nil, nil },
+	{ "Velothi Mountains Region", nil, nil, nil, nil },
+	{ "West Gash Region", nil, nil, nil, nil },
+	{ "Sea of Ghosts Region", -40, 58, 17, 33 },
+	{ "Padomaic Ocean Region", 30, 58, -61, 30 },
+	{ nil, -40, 58 , -61, 33 },
+	{ "Brodir Grove Region", nil, nil, nil, nil },
+	{ "Felsaad Coast Region", nil, nil, nil, nil },
+	{ "Hirstaang Forest Region", nil, nil, nil, nil },
+	{ "Moesring Mountains Region", nil, nil, nil, nil },
+	{ "Isinfier Plains Region", nil, nil, nil, nil },
+	{ "Thirsk Region", nil, nil, nil, nil },
 }
 
 event.register(tes3.event.magicEffectsResolved, function()
@@ -210,6 +292,32 @@ local function improveItemSounds(e)
 	end
 end
 
+local function limitInterventionMessage(e)
+	for k,v in pairs(e.source.effects) do
+		if v.id == tes3.effect.almsiviIntervention then
+			local cellVisitTable = { e.caster.cell }
+			local extCell = getExteriorCell(e.caster.cell, cellVisitTable)
+
+			if not extCell or not isInterventionCell(extCell, almsivi_intervention_regions) then
+				tes3ui.showNotifyMenu("The power of Almsivi does not extend to these lands.")
+			end
+		end
+	end
+end
+
+local function limitIntervention(e)
+	for k,v in pairs(e.source.effects) do
+		if v.id == tes3.effect.almsiviIntervention then
+			local cellVisitTable = { e.caster.cell }
+			local extCell = getExteriorCell(e.caster.cell, cellVisitTable)
+			
+			if not extCell or not isInterventionCell(extCell, almsivi_intervention_regions) then
+				return false
+			end
+		end
+	end
+end
+
 event.register(tes3.event.loaded, function()
 	if config.summoningSpells == true then
 		for k,v in pairs(tr_summons) do
@@ -225,19 +333,28 @@ event.register(tes3.event.loaded, function()
 		end
 	end
 	
+	event.unregister(tes3.event.equip, restrictEquip)
+	event.unregister(tes3.event.bodyPartAssigned, fixVampireHeads)
+	event.unregister(tes3.event.playItemSound, improveItemSounds)
+	event.unregister(tes3.event.spellTick, limitIntervention)
+	event.unregister(tes3.event.magicCasted, limitInterventionMessage)
+	event.unregister(tes3.event.spellTick, limitIntervention)
+	
 	if config.restrictEquipment == true then
-		event.unregister(tes3.event.equip, restrictEquip)
 		event.register(tes3.event.equip, restrictEquip)
 	end
 	
 	if config.fixVampireHeads == true then
-		event.unregister(tes3.event.bodyPartAssigned, fixVampireHeads)
 		event.register(tes3.event.bodyPartAssigned, fixVampireHeads)
 	end
 	
 	if config.improveItemSounds == true then
-		event.unregister(tes3.event.playItemSound, improveItemSounds)
 		event.register(tes3.event.playItemSound, improveItemSounds)
+	end
+	
+	if config.limitIntervention == true then
+		event.register(tes3.event.magicCasted, limitInterventionMessage)
+		event.register(tes3.event.spellTick, limitIntervention)
 	end
 	
 	if config.fixPlayerRaceAnimations == true then
