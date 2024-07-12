@@ -37,20 +37,20 @@ local function getExteriorCell(cell, cellVisitTable)
 	end
 end
 
-local function isInterventionCell(cell, regionList)
-	for k,v in pairs(regionList) do
-		local regionID, xLeft, xRight, yBottom, yTop = unpack(v)
-			if (cell.region and cell.region.id == regionID) or cell.region == regionID then
-				if not xLeft then
+local function isInterventionCell(cell, regionTable)
+	for k,v in pairs(regionTable) do
+		local regionID, xLeft, xRight, yBottom, yTop = unpack(v, 1, 5 )
+		if (cell.region and cell.region.id == regionID) or cell.region == regionID then
+			if not xLeft then -- Checks whether cell boundaries are being used; if xLeft is nil, then all of the others should be too
+				return true
+			else
+				if (cell.gridX >= xLeft) and (cell.gridX <= xRight) and (cell.gridY >= yBottom) and (cell.gridY <= yTop) then
 					return true
 				else
-					if (cell.gridX >= xLeft) and (cell.gridX <= xRight) and (cell.gridY >= yBottom) and (cell.gridY <= yTop) then
-						return true
-					else
-						return false
-					end
+					return false
 				end
 			end
+		end
 	end
 	
 	return false
@@ -105,7 +105,7 @@ local tr_summons = {
 
 -- item id, pickup sound id, putdown sound id, equip sound id
 local item_sounds = {	
-	{ "T_Imp_Subst_Blackdrake_01", "Item Misc Up", "Item Misc Down", "bearsniff"},
+	{ "T_Imp_Subst_Blackdrake_01", "Item Misc Up", "Item Misc Down", "bearsniff"},				-- Change to something like Vo\d\f\dl_DM002.mp3 in the future
 	{ "T_Nor_Subst_WasabiPaste_01", "Item Misc Up", "Item Misc Down", "Swallow"},
 	{ "T_Imp_Subst_Aegrotat_01", "Item Misc Up", "Item Misc Down", "Swallow"},
 	{ "T_De_Drink_PunavitResin_01", "Item Misc Up", "Item Misc Down", "Swallow"},
@@ -164,7 +164,12 @@ local almsivi_intervention_regions = {
 	{ "Hirstaang Forest Region", nil, nil, nil, nil },
 	{ "Moesring Mountains Region", nil, nil, nil, nil },
 	{ "Isinfier Plains Region", nil, nil, nil, nil },
-	{ "Thirsk Region", nil, nil, nil, nil },
+	{ "Thirsk Region", nil, nil, nil, nil }
+}
+
+-- actor id, destination cell id, manual price, factor to multiply price by
+local travel_actor_prices = {
+	{ "TR_m1_DaedrothGindaman", nil, nil, 5}
 }
 
 event.register(tes3.event.magicEffectsResolved, function()
@@ -287,7 +292,30 @@ local function improveItemSounds(e)
 				tes3.playSound{ sound = useSound }
 			end
 			
-			return false	-- Block the vanilla behavior and stop iterating through item_sounds 
+			return false	-- Blocks the vanilla behavior and stops iterating through item_sounds 
+		end
+	end
+end
+
+local function adjustTravelPrices(e)
+	for k,v in pairs(travel_actor_prices) do
+		local actorID, destinationID, manualPrice, priceFactor = unpack(v, 1, 4 )
+		if e.reference.baseObject.id == actorID then
+			if not destinationID or e.destination.cell.id == destinationID then
+				if manualPrice then
+					e.price = manualPrice
+				else
+					e.price = e.price * priceFactor
+				end
+				return true
+			end
+		end
+	end
+	
+	if e.reference.mobile.objectType == tes3.objectType.mobileNPC then
+		local providerInstance = e.reference.mobile.object
+		if providerInstance.faction and string.find(providerInstance.faction.name, "Mages Guild") and providerInstance.factionRank > 3 then
+			e.price = e.price * 5; -- Increases the price of teleporting between MG networks
 		end
 	end
 end
@@ -336,7 +364,7 @@ event.register(tes3.event.loaded, function()
 	event.unregister(tes3.event.equip, restrictEquip)
 	event.unregister(tes3.event.bodyPartAssigned, fixVampireHeads)
 	event.unregister(tes3.event.playItemSound, improveItemSounds)
-	event.unregister(tes3.event.spellTick, limitIntervention)
+	event.unregister(tes3.event.calcTravelPrice, adjustTravelPrices)
 	event.unregister(tes3.event.magicCasted, limitInterventionMessage)
 	event.unregister(tes3.event.spellTick, limitIntervention)
 	
@@ -350,6 +378,10 @@ event.register(tes3.event.loaded, function()
 	
 	if config.improveItemSounds == true then
 		event.register(tes3.event.playItemSound, improveItemSounds)
+	end
+
+	if config.adjustTravelPrices == true then
+		event.register(tes3.event.calcTravelPrice, adjustTravelPrices)
 	end
 	
 	if config.limitIntervention == true then

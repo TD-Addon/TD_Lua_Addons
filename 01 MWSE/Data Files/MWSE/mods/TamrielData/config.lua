@@ -6,5 +6,6 @@ return mwse.loadConfig("tamrielData") or {
 	restrictEquipment = true,
 	fixVampireHeads = true,
 	improveItemSounds = true,
+	adjustTravelPrices = true,
 	limitIntervention = false
 }

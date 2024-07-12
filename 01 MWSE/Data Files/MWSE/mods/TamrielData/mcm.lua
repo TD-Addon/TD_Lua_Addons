@@ -103,8 +103,16 @@ toggles:createOnOffButton{
     },
 }
 toggles:createOnOffButton{
+    label = "Adjust Travel Prices",
+    description = "Changes the cost of travelling to destinations added by Tamriel Rebuilt and Project Tamriel when Morrowind's calculated prices are unreasonable, such as between Mages Guild networks.\nRequires reload.\n\nDefault: On\n\n",
+    variable = EasyMCM:createTableVariable{
+        id = "adjustTravelPrices",
+        table = config,
+    },
+}
+toggles:createOnOffButton{
     label = "Limit Intervention Spell Range",
-    description = "Restricts the range at which some intervention spells work, preventing them from being used to teleport across the entirety of Tamriel.\nMay conflict with MWSE addons that affect intervention spells or mods that add additional regions to Morrowind.\nRequires reload.\n\nDefault: Off\n\n",
+    description = "Restricts the range at which some intervention spells work, preventing them from being used to teleport across the entirety of Tamriel.\nMay conflict with MWSE addons that affect intervention spells or mods that add additional regions besides Tamriel Rebuilt and Project Tamriel.\nRequires reload.\n\nDefault: Off\n\n",
     variable = EasyMCM:createTableVariable{
         id = "limitIntervention",
         table = config,
