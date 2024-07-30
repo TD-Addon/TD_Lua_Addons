@@ -37,20 +37,20 @@ local function getExteriorCell(cell, cellVisitTable)
 	end
 end
 
-local function isInterventionCell(cell, regionTable)
-	for k,v in pairs(regionTable) do
+local function isInterventionCell(cell, regionList)
+	for k,v in pairs(regionList) do
 		local regionID, xLeft, xRight, yBottom, yTop = unpack(v, 1, 5 )
-		if (cell.region and cell.region.id == regionID) or cell.region == regionID then
-			if not xLeft then -- Checks whether cell boundaries are being used; if xLeft is nil, then all of the others should be too
-				return true
-			else
-				if (cell.gridX >= xLeft) and (cell.gridX <= xRight) and (cell.gridY >= yBottom) and (cell.gridY <= yTop) then
+			if (cell.region and cell.region.id == regionID) or cell.region == regionID then
+				if not xLeft then -- Checks whether cell boundaries are being used; if xLeft is nil, then all of the others should be too
 					return true
 				else
-					return false
+					if (cell.gridX >= xLeft) and (cell.gridX <= xRight) and (cell.gridY >= yBottom) and (cell.gridY <= yTop) then
+						return true
+					else
+						return false
+					end
 				end
 			end
-		end
 	end
 	
 	return false
@@ -167,7 +167,7 @@ local almsivi_intervention_regions = {
 	{ "Thirsk Region", nil, nil, nil, nil }
 }
 
--- actor id, destination cell id, manual price, factor to multiply price by
+-- actor id, destination cell id, manual price, factor to multiply baseprice by
 local travel_actor_prices = {
 	{ "TR_m1_DaedrothGindaman", nil, nil, 5}
 }
@@ -225,13 +225,21 @@ event.register(tes3.event.magicEffectsResolved, function()
 
 end)
 
-local function fixVampireHeads(e)
+local function fixVampireHeadAssignment(e)
 	if e.index == tes3.activeBodyPart.head then
 		if not e.object or e.object.objectType ~= tes3.objectType.armor then
 			if e.reference.mobile then
 				if e.reference.mobile.object then
 					if e.reference.mobile.object.baseObject.head.id == "T_B_De_UNI_HeadOrlukhTR" then	-- Handles the unique head for Varos of the Orlukh bloodline
 							e.bodyPart = e.reference.mobile.object.baseObject.head
+					end
+
+					if e.reference.mobile.object.baseObject.head.id == "T_B_Imp_UNI_HeadHerriusPC" then	-- Handles the unique head for Herrius Thimistrel
+						if e.reference.mobile.inCombat or e.reference.mobile.isDead then
+							e.bodyPart = tes3.getObject("T_B_Imp_UNI_HeadHerrius2PC")
+						else
+							e.bodyPart = tes3.getObject("T_B_Imp_UNI_HeadHerriusPC")
+						end
 					end
 					
 					if e.reference.mobile == tes3.mobilePlayer then										-- Handles the player's head when wearing Namira's Shroud						
@@ -242,6 +250,28 @@ local function fixVampireHeads(e)
 				end
 			end
 		end
+	end
+
+	if e.index == tes3.activeBodyPart.hair then
+		if not e.object or e.object.objectType ~= tes3.objectType.armor then
+			if e.reference.mobile then
+				if e.reference.mobile.object then
+					if e.reference.mobile.object.baseObject.hair.id == "T_B_Imp_UNI_HairHerriusPC" then	-- Handles the unique hair for Herrius Thimistrel
+						if e.reference.mobile.inCombat or e.reference.mobile.isDead then
+							e.bodyPart = tes3.getObject("T_B_Imp_UNI_HairHerrius2PC")
+						else
+							e.bodyPart = tes3.getObject("T_B_Imp_UNI_HairHerriusPC")
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+local function vampireHeadCombatStarted(e)
+	if e.actor.reference.bodyPartManager:getActiveBodyPart(0, 0).bodyPart.id == "T_B_Imp_UNI_HeadHerriusPC" then
+		e.actor.reference:updateEquipment()		-- Will trigger fixVampireHeadAssignment via the bodyPartAssigned event
 	end
 end
 
@@ -292,30 +322,7 @@ local function improveItemSounds(e)
 				tes3.playSound{ sound = useSound }
 			end
 			
-			return false	-- Blocks the vanilla behavior and stops iterating through item_sounds 
-		end
-	end
-end
-
-local function adjustTravelPrices(e)
-	for k,v in pairs(travel_actor_prices) do
-		local actorID, destinationID, manualPrice, priceFactor = unpack(v, 1, 4 )
-		if e.reference.baseObject.id == actorID then
-			if not destinationID or e.destination.cell.id == destinationID then
-				if manualPrice then
-					e.price = manualPrice
-				else
-					e.price = e.price * priceFactor
-				end
-				return true
-			end
-		end
-	end
-	
-	if e.reference.mobile.objectType == tes3.objectType.mobileNPC then
-		local providerInstance = e.reference.mobile.object
-		if providerInstance.faction and string.find(providerInstance.faction.name, "Mages Guild") and providerInstance.factionRank > 3 then
-			e.price = e.price * 5; -- Increases the price of teleporting between MG networks
+			return false	-- Block the vanilla behavior and stop iterating through item_sounds 
 		end
 	end
 end
@@ -346,6 +353,30 @@ local function limitIntervention(e)
 	end
 end
 
+local function adjustTravelPrices(e)
+	for k,v in pairs(travel_actor_prices) do
+		local actorID, destinationID, manualPrice, priceFactor = unpack(v, 1, 4 )
+		if e.reference.baseObject.id == actorID then
+			if not destinationID or e.destination.cell.id == destinationID then
+				if manualPrice then
+					e.price = manualPrice
+				else
+					e.price = e.price * priceFactor
+				end
+
+				return true
+			end
+		end
+	end
+	
+	if e.reference.mobile.objectType == tes3.objectType.mobileNPC then
+		local providerInstance = e.reference.mobile.object
+		if string.find(providerInstance.faction.name, "Mages Guild") and providerInstance.factionRank > 3 then	-- Increase price of teleporting between MG networks
+			e.price = e.price * 5;
+		end
+	end
+end
+
 event.register(tes3.event.loaded, function()
 	if config.summoningSpells == true then
 		for k,v in pairs(tr_summons) do
@@ -362,7 +393,8 @@ event.register(tes3.event.loaded, function()
 	end
 	
 	event.unregister(tes3.event.equip, restrictEquip)
-	event.unregister(tes3.event.bodyPartAssigned, fixVampireHeads)
+	event.unregister(tes3.event.bodyPartAssigned, fixVampireHeadAssignment)
+	event.unregister(tes3.event.combatStarted, vampireHeadCombatStarted)
 	event.unregister(tes3.event.playItemSound, improveItemSounds)
 	event.unregister(tes3.event.calcTravelPrice, adjustTravelPrices)
 	event.unregister(tes3.event.magicCasted, limitInterventionMessage)
@@ -373,7 +405,8 @@ event.register(tes3.event.loaded, function()
 	end
 	
 	if config.fixVampireHeads == true then
-		event.register(tes3.event.bodyPartAssigned, fixVampireHeads)
+		event.register(tes3.event.bodyPartAssigned, fixVampireHeadAssignment)
+		event.register(tes3.event.combatStarted, vampireHeadCombatStarted)
 	end
 	
 	if config.improveItemSounds == true then
