@@ -105,7 +105,8 @@ local tr_summons = {
 
 -- item id, pickup sound id, putdown sound id, equip sound id
 local item_sounds = {	
-	{ "T_Imp_Subst_Blackdrake_01", "Item Misc Up", "Item Misc Down", "bearsniff"},				-- Change to something like Vo\d\f\dl_DM002.mp3 in the future
+	{ "T_Imp_Subst_Blackdrake_01", "Item Misc Up", "Item Misc Down", "T_SndObj_DrugSniff"},				-- Change to something like Vo\d\m\Idl_DM002.mp3 in the future
+	{ "T_De_Subst_Greydust_01", "Item Misc Up", "Item Misc Down", "T_SndObj_DrugSniff"}
 	{ "T_Nor_Subst_WasabiPaste_01", "Item Misc Up", "Item Misc Down", "Swallow"},
 	{ "T_Imp_Subst_Aegrotat_01", "Item Misc Up", "Item Misc Down", "Swallow"},
 	{ "T_De_Drink_PunavitResin_01", "Item Misc Up", "Item Misc Down", "Swallow"},
