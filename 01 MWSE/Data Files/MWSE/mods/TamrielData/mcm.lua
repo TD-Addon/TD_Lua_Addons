@@ -69,6 +69,15 @@ toggles:createOnOffButton{
 }
 
 toggles:createOnOffButton{
+    label = "Add New Miscellaneous Spells",
+    description = "\nRequires reload.\n\nDefault: On\n\n",
+    variable = EasyMCM:createTableVariable{
+        id = "miscSpells",
+        table = config,
+    },
+}
+
+toggles:createOnOffButton{
     label = "Fix Player Animations for Tamriel Data Races",
     description = "Fixes animations when playing as Ohmes-raht or Suthay Khajiit via 3rd party mods.\nRequires reload. Tail may vanish until reload when animations from other MWSE addons are applied to the player character.\nIf using an animation replacer that adds tail bones to base_anim.nif, then this feature is likely not necessary.\n\nDefault: On\n\n",
     variable = EasyMCM:createTableVariable{

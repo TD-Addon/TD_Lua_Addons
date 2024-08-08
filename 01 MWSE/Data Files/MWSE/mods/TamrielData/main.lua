@@ -4,7 +4,7 @@
 ]]
 
 -- Make sure we have an up-to-date version of MWSE.
-if (mwse.buildDate == nil) or (mwse.buildDate < 20240617) then
+if (mwse.buildDate == nil) or (mwse.buildDate < 20240806) then
     event.register(tes3.event.initialized, function()
         tes3.messageBox(
             "[Tamriel Data] Your MWSE is out of date!"
@@ -24,6 +24,7 @@ function table.contains(table, element)
 	return false
 end
 
+---@param cell tes3cell
 local function getExteriorCell(cell, cellVisitTable)
 	if cell.isOrBehavesAsExterior then
 		return cell
@@ -37,6 +38,7 @@ local function getExteriorCell(cell, cellVisitTable)
 	end
 end
 
+---@param cell tes3cell
 local function isInterventionCell(cell, regionList)
 	for k,v in pairs(regionList) do
 		local regionID, xLeft, xRight, yBottom, yTop = unpack(v, 1, 5 )
@@ -83,30 +85,39 @@ if config.summoningSpells == true then
 	tes3.claimSpellEffectId("T_summon_SummonAuroran", 2105)
 end
 
--- unique id, spell id to override, spell name, creature id, effect mana cost, spell mana cost, icon, spell duration
+if config.miscSpells == true then
+	tes3.claimSpellEffectId("T_alteration_Passwall", 2106)
+end
+
+-- unique id, spell id to override, spell name, creature id, effect mana cost, spell mana cost, icon, spell duration, effect description
 local tr_summons = {	
-	{ 2090, "T_Com_Cnj_SummonDevourer", "Summon Devourer", "T_Dae_Cre_Devourer_01", 52, 155, "td\\s\\tr_s_summ_dev.dds", 60},
-	{ 2091, "T_Com_Cnj_SummonDremoraArcher", "Summon Dremora Archer", "T_Dae_Cre_Drem_Arch_01", 33, 98, "s\\Tx_S_Smmn_Drmora.tga", 60},
-	{ 2092, "T_Com_Cnj_SummonDremoraCaster", "Summon Dremora Spellcaster", "T_Dae_Cre_Drem_Cast_01", 31, 93, "s\\Tx_S_Smmn_Drmora.tga", 60},
-	{ 2093, "T_Com_Cnj_SummonGuardian", "Summon Guardian", "T_Dae_Cre_Guardian_01", 69, 207, "td\\s\\tr_s_sum_guard.dds", 60},
-	{ 2094, "T_Com_Cnj_SummonLesserClannfear", "Summon Rock Chisel Clannfear", "T_Dae_Cre_LesserClfr_01", 22, 66, "s\\Tx_S_Smmn_Clnfear.tga", 60},
-	{ 2095, "T_Com_Cnj_SummonOgrim", "Summon Ogrim", "ogrim", 33, 99, "td\\s\\tr_s_summ_ogrim.dds", 60},
-	{ 2096, "T_Com_Cnj_SummonSeducer", "Summon Seducer", "T_Dae_Cre_Seduc_01", 52, 156, "td\\s\\tr_s_summ_sed.dds", 60},
-	{ 2097, "T_Com_Cnj_SummonSeducerDark", "Summon Dark Seducer", "T_Dae_Cre_SeducDark_02", 75, 225, "td\\s\\tr_s_summ_d_sed.dds", 60},
-	{ 2098, "T_Com_Cnj_SummonVermai", "Summon Vermai", "T_Dae_Cre_Verm_01", 29, 88, "td\\s\\tr_s_summ_vermai.dds", 60},
-	{ 2099, "T_Com_Cnj_SummonStormMonarch", "Summon Storm Monarch", "T_Dae_Cre_MonarchSt_01", 60, 179, "s\\Tx_S_Smmn_StmAtnh.tga", 60},
-	{ 2100, "T_Nor_Cnj_SummonIceWraith", "Summon Ice Wraith", "T_Sky_Cre_IceWr_01", 35, 104, "s\\Tx_S_Smmn_FrstAtrnh.tga", 60},
-	{ 2101, "T_Dwe_Cnj_Uni_SummonDweSpectre", "Summon Dwemer Spectre", "dwarven ghost", 17, 52, "s\\Tx_S_Smmn_AnctlGht.tga", 60},
-	{ 2102, "T_Dwe_Cnj_Uni_SummonSteamCent", "Summon Dwemer Steam Centurion", "centurion_steam", 29, 88, "s\\Tx_S_Smmn_Fabrict.dds", 60},
-	{ 2103, "T_Dwe_Cnj_Uni_SummonSpiderCent", "Summon Dwemer Spider Centurion", "centurion_spider", 15, 46, "s\\Tx_S_Smmn_Fabrict.dds", 60},
-	{ 2104, "T_Ayl_Cnj_SummonWelkyndSpirit", "Summon Welkynd Spirit", "T_Ayl_Cre_WelkSpr_01", 29, 78, "s\\Tx_S_Smmn_AnctlGht.tga", 60},
-	{ 2105, "T_Com_Cnj_SummonAuroran", "Summon Auroran", "T_Dae_Cre_Auroran_01", 50, 130, "s\\Tx_S_Smmn_AnctlGht.tga", 60}
+	{ 2090, "T_Com_Cnj_SummonDevourer", "Summon Devourer", "T_Dae_Cre_Devourer_01", 52, 155, "td\\s\\tr_s_summ_dev.dds", 60, "This effect summons a devourer from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
+	{ 2091, "T_Com_Cnj_SummonDremoraArcher", "Summon Dremora Archer", "T_Dae_Cre_Drem_Arch_01", 33, 98, "s\\Tx_S_Smmn_Drmora.tga", 60, "This effect summons a dremora archer from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
+	{ 2092, "T_Com_Cnj_SummonDremoraCaster", "Summon Dremora Spellcaster", "T_Dae_Cre_Drem_Cast_01", 31, 93, "s\\Tx_S_Smmn_Drmora.tga", 60, "This effect summons a dremora spellcaster from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
+	{ 2093, "T_Com_Cnj_SummonGuardian", "Summon Guardian", "T_Dae_Cre_Guardian_01", 69, 207, "td\\s\\tr_s_sum_guard.dds", 60, "This effect summons a guardian from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
+	{ 2094, "T_Com_Cnj_SummonLesserClannfear", "Summon Rock Chisel Clannfear", "T_Dae_Cre_LesserClfr_01", 22, 66, "s\\Tx_S_Smmn_Clnfear.tga", 60, "This effect summons a rock chisel clannfear from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
+	{ 2095, "T_Com_Cnj_SummonOgrim", "Summon Ogrim", "ogrim", 33, 99, "td\\s\\tr_s_summ_ogrim.dds", 60, "This effect summons an ogrim from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
+	{ 2096, "T_Com_Cnj_SummonSeducer", "Summon Seducer", "T_Dae_Cre_Seduc_01", 52, 156, "td\\s\\tr_s_summ_sed.dds", 60, "This effect summons a seducer from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
+	{ 2097, "T_Com_Cnj_SummonSeducerDark", "Summon Dark Seducer", "T_Dae_Cre_SeducDark_02", 75, 225, "td\\s\\tr_s_summ_d_sed.dds", 60, "This effect summons a dark seducer from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
+	{ 2098, "T_Com_Cnj_SummonVermai", "Summon Vermai", "T_Dae_Cre_Verm_01", 29, 88, "td\\s\\tr_s_summ_vermai.dds", 60, "This effect summons a vermai from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
+	{ 2099, "T_Com_Cnj_SummonStormMonarch", "Summon Storm Monarch", "T_Dae_Cre_MonarchSt_01", 60, 179, "s\\Tx_S_Smmn_StmAtnh.tga", 60, "This effect summons a storm monarch from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
+	{ 2100, "T_Nor_Cnj_SummonIceWraith", "Summon Ice Wraith", "T_Sky_Cre_IceWr_01", 35, 104, "s\\Tx_S_Smmn_FrstAtrnh.tga", 60, "This effect summons an ice wraith from the Outer Realms. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Outer Realms.  If summoned in town, the guards will attack you and the summoning on sight."},
+	{ 2101, "T_Dwe_Cnj_Uni_SummonDweSpectre", "Summon Dwemer Spectre", "dwarven ghost", 17, 52, "s\\Tx_S_Smmn_AnctlGht.tga", 60, "This effect summons a dwemer spectre from the Outer Realms. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Outer Realms.  If summoned in town, the guards will attack you and the summoning on sight."},
+	{ 2102, "T_Dwe_Cnj_Uni_SummonSteamCent", "Summon Dwemer Steam Centurion", "centurion_steam", 29, 88, "s\\Tx_S_Smmn_Fabrict.dds", 60, "This effect summons an steam centurion from the Outer Realms. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Outer Realms.  If summoned in town, the guards will attack you and the summoning on sight."},
+	{ 2103, "T_Dwe_Cnj_Uni_SummonSpiderCent", "Summon Dwemer Spider Centurion", "centurion_spider", 15, 46, "s\\Tx_S_Smmn_Fabrict.dds", "This effect summons a centurion spider from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
+	{ 2104, "T_Ayl_Cnj_SummonWelkyndSpirit", "Summon Welkynd Spirit", "T_Ayl_Cre_WelkSpr_01", 29, 78, "s\\Tx_S_Smmn_AnctlGht.tga", 60, "This effect summons a welkynd spirit from the Outer Realms. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Outer Realms.  If summoned in town, the guards will attack you and the summoning on sight."},
+	{ 2105, "T_Com_Cnj_SummonAuroran", "Summon Auroran", "T_Dae_Cre_Auroran_01", 50, 130, "s\\Tx_S_Smmn_AnctlGht.tga", 60, "This effect summons an auroran from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."}
+}
+
+-- unique id, spell id to override, spell name, effect mana cost, spell mana cost, icon, spell duration, effect description
+local tr_miscs = {	
+	{ 2106, "T_Com_Mys_UNI_Passwall", "Passwall", 750, 95, "td\\s\\tr_s_alt_passwall.tga", 0}
 }
 
 -- item id, pickup sound id, putdown sound id, equip sound id
 local item_sounds = {	
-	{ "T_Imp_Subst_Blackdrake_01", "Item Misc Up", "Item Misc Down", "T_SndObj_DrugSniff"},				-- Change to something like Vo\d\m\Idl_DM002.mp3 in the future
-	{ "T_De_Subst_Greydust_01", "Item Misc Up", "Item Misc Down", "T_SndObj_DrugSniff"}
+	{ "T_Imp_Subst_Blackdrake_01", "Item Misc Up", "Item Misc Down", "T_SndObj_DrugSniff"},
+	{ "T_De_Subst_Greydust_01", "Item Misc Up", "Item Misc Down", "T_SndObj_DrugSniff"},
 	{ "T_Nor_Subst_WasabiPaste_01", "Item Misc Up", "Item Misc Down", "Swallow"},
 	{ "T_Imp_Subst_Aegrotat_01", "Item Misc Up", "Item Misc Down", "Swallow"},
 	{ "T_De_Drink_PunavitResin_01", "Item Misc Up", "Item Misc Down", "Swallow"},
@@ -178,11 +189,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 		local summonHungerEffect = tes3.getMagicEffect(tes3.effect.summonHunger)
 
 		for k, v in pairs(tr_summons) do
-			local effectID, spellID, spellName, creatureID, effectCost, spellCost, iconPath, duration = unpack(v)
+			local effectID, spellID, spellName, creatureID, effectCost, spellCost, iconPath, duration, effectDescription = unpack(v)
 			tes3.addMagicEffect{
 				id = effectID,
 				name = spellName,
-				description = "",
+				description = effectDescription,
 				school = tes3.magicSchool.conjuration,
 				baseCost = effectCost,
 				speed = summonHungerEffect.speed,
@@ -223,8 +234,149 @@ event.register(tes3.event.magicEffectsResolved, function()
 			}
 		end
 	end
+	
+	if config.miscSpells == true then
+		local levitateEffect = tes3.getMagicEffect(tes3.effect.levitate)
+		local breathEffect = tes3.getMagicEffect(tes3.effect.waterBreathing)
 
+		for k, v in pairs(tr_miscs) do												-- This loop is just copied over from the summoningSpells condition; it will have to be replaced given how differently misc. spells will work compared to summons
+			local effectID, spellID, spellName, effectCost, spellCost, iconPath, duration = unpack(v)
+			tes3.addMagicEffect{
+				id = effectID,
+				name = spellName,
+				description = "",
+				school = tes3.magicSchool["alteration"],
+				baseCost = effectCost,
+				speed = levitateEffect.speed,
+				allowEnchanting = true,
+				allowSpellmaking = true,
+				appliesOnce = true,
+				canCastSelf = false,
+				canCastTarget = false,
+				canCastTouch = true,
+				casterLinked = levitateEffect.casterLinked,
+				hasContinuousVFX = false,
+				hasNoDuration = true,
+				hasNoMagnitude = true,
+				illegalDaedra = false,
+				isHarmful = false,
+				nonRecastable = true,
+				targetsAttributes = false,
+				targetsSkills = false,
+				unreflectable = true,
+				usesNegativeLighting = levitateEffect.usesNegativeLighting,
+				icon = iconPath,
+				particleTexture = levitateEffect.particleTexture,
+				castSound = levitateEffect.castSoundEffect.id,
+				castVFX = levitateEffect.castVisualEffect.id,
+				boltSound = levitateEffect.boltSoundEffect.id,
+				boltVFX = levitateEffect.boltVisualEffect.id,
+				hitSound = levitateEffect.hitSoundEffect.id,
+				hitVFX = breathEffect.hitVisualEffect.id,
+				areaSound = levitateEffect.areaSoundEffect.id,
+				areaVFX = levitateEffect.areaVisualEffect.id,
+				lighting = {x = levitateEffect.lightingRed, y = levitateEffect.lightingGreen, z = levitateEffect.lightingBlue},
+				size = levitateEffect.size,
+				sizeCap = levitateEffect.sizeCap,
+				onTick = nil,
+				onCollision = nil
+			}
+		end
+	end
 end)
+
+local function passwallEffect(e)
+	for k,v in pairs(e.source.effects) do
+		if v.id == 2106 then
+			if tes3.mobilePlayer.cell.isInterior then
+				if tes3.mobilePlayer.cell.pathGrid then
+					local castPosition = tes3.mobilePlayer.position + tes3vector3.new(0, 0, 0.7 * tes3.mobilePlayer.height)	-- Position of where spells are casted
+					local forward = tes3.worldController.armCamera.cameraData.camera.worldDirection:normalized()
+					local right = tes3.worldController.armCamera.cameraData.camera.worldRight:normalized()
+					local up = tes3.worldController.armCamera.cameraData.camera.worldUp:normalized()
+
+					local target = tes3.rayTest{
+						position = castPosition,
+						direction = forward,
+						maxDistance = 128,
+						ignore = {tes3.player},
+					}
+
+					local hitReference, wallPosition = target and target.reference, target.intersection
+					
+					if hitReference and (hitReference.baseObject.objectType == tes3.objectType.activator or hitReference.baseObject.objectType == tes3.objectType.static) then
+						if hitReference.baseObject.boundingBox.max:heightDifference(hitReference.baseObject.boundingBox.min) >= 192 then				-- Check how tall the targeted object is; this is Passwall, not Passtable
+							local nodeArr = tes3.mobilePlayer.cell.pathGrid.nodes
+
+							local point1 = wallPosition - (right * 160) - (up * 160)
+							local point2 = wallPosition + (forward * 512) + (right * 160) + (up * 160)
+
+							local bestDistance = v.radius * 22.1
+							local bestNode = nil
+							for _,node in pairs(nodeArr) do
+								local distance = wallPosition:distance(node.position)
+								if distance <= bestDistance then
+									if (point1.x <= node.position.x and node.position.x <= point2.x) or (point1.x >= node.position.x and node.position.x >= point2.x) then
+										if (point1.y <= node.position.y and node.position.y <= point2.y) or (point1.y >= node.position.y and node.position.y >= point2.y) then
+											if (point1.z <= node.position.z and node.position.z <= point2.z) or (point1.z >= node.position.z and node.position.z >= point2.z) then
+												bestDistance = distance
+												bestNode = node
+											end
+										end
+									end
+								end
+							end
+
+							if bestNode then
+								tes3.playSound{ sound = "alteration hit"}		-- Since there isn't a target in the normal sense, the sound won't play without this
+								local vfx = tes3.createVisualEffect({ object = v.object.hitVisualEffect, lifespan = 2, avObject = tes3.player.sceneNode })
+								tes3.mobilePlayer.position = bestNode.position
+							end
+						end
+					end
+				end
+			else
+				tes3ui.showNotifyMenu("You must be in a confined space.")
+			end
+
+			return
+		end
+	end
+end
+
+local function restrictEquip(e)
+	if e.reference.mobile.object.race.id == "T_Val_Imga" then
+		if e.item.objectType == tes3.objectType.armor then
+			if e.item.slot == tes3.armorSlot.boots then
+				if e.reference.mobile == tes3.mobilePlayer then
+					tes3ui.showNotifyMenu("Imga cannot wear shoes.")
+				end
+				
+				return false
+			end
+			
+			if e.item.slot == tes3.armorSlot.helmet then
+				if e.reference.mobile.object.female == false then
+					if e.reference.mobile == tes3.mobilePlayer then
+						tes3ui.showNotifyMenu("Male Imga cannot wear helmets.")
+					end
+					
+					return false
+				end
+			end
+		end
+		
+		if e.item.objectType == tes3.objectType.clothing then
+			if e.item.slot == tes3.clothingSlot.shoes then
+				if e.reference.mobile == tes3.mobilePlayer then
+					tes3ui.showNotifyMenu("Imga cannot wear shoes.")
+				end
+				
+				return false
+			end
+		end
+	end
+end
 
 local function fixVampireHeadAssignment(e)
 	if e.index == tes3.activeBodyPart.head then
@@ -276,40 +428,6 @@ local function vampireHeadCombatStarted(e)
 	end
 end
 
-local function restrictEquip(e)
-	if e.reference.mobile.object.race.id == "T_Val_Imga" then
-		if e.item.objectType == tes3.objectType.armor then
-			if e.item.slot == tes3.armorSlot.boots then
-				if e.reference.mobile == tes3.mobilePlayer then
-					tes3ui.showNotifyMenu("Imga cannot wear shoes.")
-				end
-				
-				return false
-			end
-			
-			if e.item.slot == tes3.armorSlot.helmet then
-				if e.reference.mobile.object.female == false then
-					if e.reference.mobile == tes3.mobilePlayer then
-						tes3ui.showNotifyMenu("Male Imga cannot wear helmets.")
-					end
-					
-					return false
-				end
-			end
-		end
-		
-		if e.item.objectType == tes3.objectType.clothing then
-			if e.item.slot == tes3.clothingSlot.shoes then
-				if e.reference.mobile == tes3.mobilePlayer then
-					tes3ui.showNotifyMenu("Imga cannot wear shoes.")
-				end
-				
-				return false
-			end
-		end
-	end
-end
-
 local function improveItemSounds(e)
 	for k,v in pairs(item_sounds) do
 		local itemID, upSound, downSound, useSound = unpack(v)
@@ -324,6 +442,30 @@ local function improveItemSounds(e)
 			end
 			
 			return false	-- Block the vanilla behavior and stop iterating through item_sounds 
+		end
+	end
+end
+
+local function adjustTravelPrices(e)
+	for k,v in pairs(travel_actor_prices) do
+		local actorID, destinationID, manualPrice, priceFactor = unpack(v, 1, 4 )
+		if e.reference.baseObject.id == actorID then
+			if not destinationID or e.destination.cell.id == destinationID then
+				if manualPrice then
+					e.price = manualPrice
+				else
+					e.price = e.price * priceFactor
+				end
+
+				return true
+			end
+		end
+	end
+	
+	if e.reference.mobile.objectType == tes3.objectType.mobileNPC then
+		local providerInstance = e.reference.mobile.object
+		if string.find(providerInstance.faction.name, "Mages Guild") and providerInstance.factionRank > 3 then	-- Increase price of teleporting between MG networks
+			e.price = e.price * 5;
 		end
 	end
 end
@@ -354,34 +496,24 @@ local function limitIntervention(e)
 	end
 end
 
-local function adjustTravelPrices(e)
-	for k,v in pairs(travel_actor_prices) do
-		local actorID, destinationID, manualPrice, priceFactor = unpack(v, 1, 4 )
-		if e.reference.baseObject.id == actorID then
-			if not destinationID or e.destination.cell.id == destinationID then
-				if manualPrice then
-					e.price = manualPrice
-				else
-					e.price = e.price * priceFactor
-				end
-
-				return true
-			end
-		end
-	end
-	
-	if e.reference.mobile.objectType == tes3.objectType.mobileNPC then
-		local providerInstance = e.reference.mobile.object
-		if string.find(providerInstance.faction.name, "Mages Guild") and providerInstance.factionRank > 3 then	-- Increase price of teleporting between MG networks
-			e.price = e.price * 5;
-		end
-	end
-end
-
 event.register(tes3.event.loaded, function()
 	if config.summoningSpells == true then
 		for k,v in pairs(tr_summons) do
-			local effectID, spellID, spellName, creatureID, effectCost, spellCost, iconPath, duration = unpack(v)
+			local effectID, spellID, spellName, creatureID, effectCost, spellCost, iconPath, duration, effectDescription = unpack(v)
+
+			local overridden_spell = tes3.getObject(spellID)
+			overridden_spell.name = spellName
+			overridden_spell.magickaCost = spellCost
+
+			local effect = overridden_spell.effects[1]
+			effect.id = effectID
+			effect.duration = duration
+		end
+	end
+
+	if config.miscSpells == true then
+		for k,v in pairs(tr_miscs) do
+			local effectID, spellID, spellName, effectCost, spellCost, iconPath, duration = unpack(v)
 
 			local overridden_spell = tes3.getObject(spellID)
 			overridden_spell.name = spellName
@@ -393,6 +525,7 @@ event.register(tes3.event.loaded, function()
 		end
 	end
 	
+	event.unregister(tes3.event.magicCasted, passwallEffect)
 	event.unregister(tes3.event.equip, restrictEquip)
 	event.unregister(tes3.event.bodyPartAssigned, fixVampireHeadAssignment)
 	event.unregister(tes3.event.combatStarted, vampireHeadCombatStarted)
@@ -401,6 +534,10 @@ event.register(tes3.event.loaded, function()
 	event.unregister(tes3.event.magicCasted, limitInterventionMessage)
 	event.unregister(tes3.event.spellTick, limitIntervention)
 	
+	if config.miscSpells == true then
+		event.register(tes3.event.magicCasted, passwallEffect)
+	end
+
 	if config.restrictEquipment == true then
 		event.register(tes3.event.equip, restrictEquip)
 	end
