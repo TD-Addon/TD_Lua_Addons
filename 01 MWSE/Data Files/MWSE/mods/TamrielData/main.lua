@@ -90,12 +90,12 @@ if config.miscSpells == true then
 end
 
 -- unique id, spell id to override, spell name, creature id, effect mana cost, spell mana cost, icon, spell duration, effect description
-local tr_summons = {	
+local td_summons = {	
 	{ 2090, "T_Com_Cnj_SummonDevourer", "Summon Devourer", "T_Dae_Cre_Devourer_01", 52, 155, "td\\s\\tr_s_summ_dev.dds", 60, "This effect summons a devourer from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
 	{ 2091, "T_Com_Cnj_SummonDremoraArcher", "Summon Dremora Archer", "T_Dae_Cre_Drem_Arch_01", 33, 98, "s\\Tx_S_Smmn_Drmora.tga", 60, "This effect summons a dremora archer from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
 	{ 2092, "T_Com_Cnj_SummonDremoraCaster", "Summon Dremora Spellcaster", "T_Dae_Cre_Drem_Cast_01", 31, 93, "s\\Tx_S_Smmn_Drmora.tga", 60, "This effect summons a dremora spellcaster from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
 	{ 2093, "T_Com_Cnj_SummonGuardian", "Summon Guardian", "T_Dae_Cre_Guardian_01", 69, 207, "td\\s\\tr_s_sum_guard.dds", 60, "This effect summons a guardian from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2094, "T_Com_Cnj_SummonLesserClannfear", "Summon Rock Chisel Clannfear", "T_Dae_Cre_LesserClfr_01", 22, 66, "s\\Tx_S_Smmn_Clnfear.tga", 60, "This effect summons a rock chisel clannfear from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
+	{ 2094, "T_Com_Cnj_SummonLesserClannfear", "Summon Rock Biter Clannfear", "T_Dae_Cre_LesserClfr_01", 22, 66, "s\\Tx_S_Smmn_Clnfear.tga", 60, "This effect summons a rock biter clannfear from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
 	{ 2095, "T_Com_Cnj_SummonOgrim", "Summon Ogrim", "ogrim", 33, 99, "td\\s\\tr_s_summ_ogrim.dds", 60, "This effect summons an ogrim from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
 	{ 2096, "T_Com_Cnj_SummonSeducer", "Summon Seducer", "T_Dae_Cre_Seduc_01", 52, 156, "td\\s\\tr_s_summ_sed.dds", 60, "This effect summons a seducer from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
 	{ 2097, "T_Com_Cnj_SummonSeducerDark", "Summon Dark Seducer", "T_Dae_Cre_SeducDark_02", 75, 225, "td\\s\\tr_s_summ_d_sed.dds", 60, "This effect summons a dark seducer from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
@@ -110,7 +110,7 @@ local tr_summons = {
 }
 
 -- unique id, spell id to override, spell name, effect mana cost, spell mana cost, icon, spell duration, effect description
-local tr_miscs = {	
+local td_miscs = {	
 	{ 2106, "T_Com_Mys_UNI_Passwall", "Passwall", 750, 95, "td\\s\\tr_s_tele_passwall.tga", 0, "In an indoor space, this effect permits the caster to pass through a solid barrier to a vacant space behind it. The effect will fail if the destination beyond the traversed barrier is filled with water, or if it lies above or below the caster."}
 }
 
@@ -188,7 +188,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 	if config.summoningSpells == true then
 		local summonHungerEffect = tes3.getMagicEffect(tes3.effect.summonHunger)
 
-		for k, v in pairs(tr_summons) do
+		for k, v in pairs(td_summons) do
 			local effectID, spellID, spellName, creatureID, effectCost, spellCost, iconPath, duration, effectDescription = unpack(v)
 			tes3.addMagicEffect{
 				id = effectID,
@@ -238,49 +238,47 @@ event.register(tes3.event.magicEffectsResolved, function()
 	if config.miscSpells == true then
 		local levitateEffect = tes3.getMagicEffect(tes3.effect.levitate)
 
-		for k, v in pairs(tr_miscs) do												-- This loop is just copied over from the summoningSpells condition; it will have to be replaced given how differently misc. spells will work compared to summons
-			local effectID, spellID, spellName, effectCost, spellCost, iconPath, duration = unpack(v)
-			tes3.addMagicEffect{
-				id = effectID,
-				name = spellName,
-				description = "",
-				school = tes3.magicSchool.alteration,
-				baseCost = effectCost,
-				speed = levitateEffect.speed,
-				allowEnchanting = true,
-				allowSpellmaking = true,
-				appliesOnce = true,
-				canCastSelf = false,
-				canCastTarget = false,
-				canCastTouch = true,
-				casterLinked = levitateEffect.casterLinked,
-				hasContinuousVFX = false,
-				hasNoDuration = true,
-				hasNoMagnitude = true,
-				illegalDaedra = false,
-				isHarmful = false,
-				nonRecastable = true,
-				targetsAttributes = false,
-				targetsSkills = false,
-				unreflectable = true,
-				usesNegativeLighting = levitateEffect.usesNegativeLighting,
-				icon = iconPath,
-				particleTexture = levitateEffect.particleTexture,
-				castSound = levitateEffect.castSoundEffect.id,
-				castVFX = levitateEffect.castVisualEffect.id,
-				boltSound = "T_SndObj_Silence",
-				boltVFX = "",
-				hitSound = "T_SndObj_Silence",
-				hitVFX = "",
-				areaSound = "T_SndObj_Silence",
-				areaVFX = "",
-				lighting = {x = levitateEffect.lightingRed, y = levitateEffect.lightingGreen, z = levitateEffect.lightingBlue},
-				size = levitateEffect.size,
-				sizeCap = levitateEffect.sizeCap,
-				onTick = nil,
-				onCollision = nil
-			}
-		end
+		local effectID, spellID, spellName, effectCost, spellCost, iconPath, duration = unpack(td_miscs[1])
+		tes3.addMagicEffect{
+			id = effectID,
+			name = spellName,
+			description = "",
+			school = tes3.magicSchool.alteration,
+			baseCost = effectCost,
+			speed = levitateEffect.speed,
+			allowEnchanting = true,
+			allowSpellmaking = true,
+			appliesOnce = true,
+			canCastSelf = false,
+			canCastTarget = false,
+			canCastTouch = true,
+			casterLinked = levitateEffect.casterLinked,
+			hasContinuousVFX = false,
+			hasNoDuration = true,
+			hasNoMagnitude = true,
+			illegalDaedra = false,
+			isHarmful = false,
+			nonRecastable = true,
+			targetsAttributes = false,
+			targetsSkills = false,
+			unreflectable = true,
+			usesNegativeLighting = levitateEffect.usesNegativeLighting,
+			icon = iconPath,
+			particleTexture = levitateEffect.particleTexture,
+			castSound = levitateEffect.castSoundEffect.id,
+			castVFX = levitateEffect.castVisualEffect.id,
+			boltSound = "T_SndObj_Silence",
+			boltVFX = "",
+			hitSound = "T_SndObj_Silence",
+			hitVFX = "",
+			areaSound = "T_SndObj_Silence",
+			areaVFX = "",
+			lighting = {x = levitateEffect.lightingRed, y = levitateEffect.lightingGreen, z = levitateEffect.lightingBlue},
+			size = levitateEffect.size,
+			sizeCap = levitateEffect.sizeCap,
+			onTick = nil,
+			onCollision = nil
+		}
 	end
 end)
 
@@ -291,22 +289,26 @@ end)
 ---@param effect tes3effect
 local function passwallCalculate(wallPosition, forward, right, up, effect)
 	local nodeArr = tes3.mobilePlayer.cell.pathGrid.nodes
+	local playerPosition = tes3.mobilePlayer.position
 	local unitRadius = effect.radius * 22.1
+	local minDistance = 128
 	local forwardOffset = 64
 	local rightCoord = (right * 160)
 	local upCoord = (up * 160)
 
 	local point1 = wallPosition + (forward * forwardOffset) - rightCoord - upCoord
-	local point2 = wallPosition + (forward * ((unitRadius) + forwardOffset)) + rightCoord + upCoord
+	local point2 = wallPosition + (forward * (unitRadius + forwardOffset)) + rightCoord + upCoord
 
 	local bestDistance = unitRadius
 	local bestPosition = nil
+
 	for _,node in pairs(nodeArr) do
 		if (point1.x <= node.position.x and node.position.x <= point2.x) or (point1.x >= node.position.x and node.position.x >= point2.x) then
 			if (point1.y <= node.position.y and node.position.y <= point2.y) or (point1.y >= node.position.y and node.position.y >= point2.y) then
 				if (point1.z <= node.position.z and node.position.z <= point2.z) or (point1.z >= node.position.z and node.position.z >= point2.z) then
 					local distance = wallPosition:distance(node.position)
-					if distance <= bestDistance then
+					mwse.log(playerPosition:distance(wallPosition))
+					if distance <= bestDistance and playerPosition:distance(node.position) >= minDistance then
 						bestDistance = distance
 						bestPosition = node.position
 					end
@@ -330,7 +332,8 @@ local function passwallCalculate(wallPosition, forward, right, up, effect)
 							break		-- If incrementPosition is moving away from wallPosition then the loop will be broken out of for the sake of performance
 						end
 
-						if distance <= bestDistance then
+						mwse.log(playerPosition:distance(incrementPosition))
+						if distance <= bestDistance and playerPosition:distance(incrementPosition) >= minDistance then
 							if (point1.x <= incrementPosition.x and incrementPosition.x <= point2.x) or (point1.x >= incrementPosition.x and incrementPosition.x >= point2.x) then
 								if (point1.y <= incrementPosition.y and incrementPosition.y <= point2.y) or (point1.y >= incrementPosition.y and incrementPosition.y >= point2.y) then
 									if (point1.z <= incrementPosition.z and incrementPosition.z <= point2.z) or (point1.z >= incrementPosition.z and incrementPosition.z >= point2.z) then
@@ -351,6 +354,21 @@ local function passwallCalculate(wallPosition, forward, right, up, effect)
 	end
 
 	return bestPosition
+end
+
+---@param node niNode
+local function hasAlphaBlend(node)
+	for _,child in pairs(node.children) do
+		if child.alphaProperty then
+			if (child.alphaProperty.propertyFlags % 2) ~= 0 then
+				return true
+			end
+		end
+
+		if child.children then
+			return hasAlphaBlend(child)
+		end
+	end
 end
 
 ---@param e magicCastedEventData
@@ -375,33 +393,52 @@ local function passwallEffect(e)
 
 				local hitReference, wallPosition = target and target.reference, target and target.intersection
 				
-				if hitReference and (hitReference.baseObject.objectType == tes3.objectType.activator or hitReference.baseObject.objectType == tes3.objectType.static ) then
-					if hitReference.baseObject.boundingBox.max:heightDifference(hitReference.baseObject.boundingBox.min) >= 192 then				-- Check how tall the targeted object is; this is Passwall, not Passtable
-						local bestPosition = passwallCalculate(wallPosition, forward, right, up, v)
+				if hitReference then
+					if hitReference.baseObject.objectType == tes3.objectType.static then
+						if hitReference.baseObject.boundingBox.max:heightDifference(hitReference.baseObject.boundingBox.min) >= 192 then				-- Check how tall the targeted object is; this is Passwall, not Passtable
+							local bestPosition = passwallCalculate(wallPosition, forward, right, up, v)
 
-						if bestPosition then
+							if bestPosition then
+								tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
+								local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
+								tes3.mobilePlayer.position = bestPosition
+							end
+						end
+					elseif hitReference.baseObject.objectType == tes3.objectType.activator then
+						if hitReference.baseObject.boundingBox.max:heightDifference(hitReference.baseObject.boundingBox.min) >= 192 then
+							local root = target.object
+							while root.parent do	-- Gets root node of the targetted mesh
+								root = root.parent
+							end
+							
+							if not hasAlphaBlend(root) then		-- Prevents passing through activators with transparency, such as forcefields
+								local bestPosition = passwallCalculate(wallPosition, forward, right, up, v)
+
+								if bestPosition then
+									tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
+									local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
+									tes3.mobilePlayer.position = bestPosition
+								end
+							end
+						end
+					elseif hitReference.baseObject.objectType == tes3.objectType.door and ((string.find(string.lower(hitReference.baseObject.name), "door") or string.find(string.lower(hitReference.baseObject.name), "wooden gate") or string.find(string.lower(hitReference.baseObject.name), "palace gates") or
+							string.find(string.lower(hitReference.baseObject.name), "stone gate") or string.find(string.lower(hitReference.baseObject.name), "old iron gate")) and
+							not (string.find(string.lower(hitReference.baseObject.name), "trap") or string.find(string.lower(hitReference.baseObject.name), "cell") or string.find(string.lower(hitReference.baseObject.name), "tent"))) then
+						if not hitReference.destination then
+							local bestPosition = passwallCalculate(wallPosition, forward, right, up, v)
+
+							if bestPosition then
+								tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
+								local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
+								tes3.mobilePlayer.position = bestPosition
+							end
+						elseif hitReference.destination and hitReference.destination.cell.isInterior then
 							tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
 							local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
-							tes3.mobilePlayer.position = bestPosition
+							tes3.positionCell({ cell = hitReference.destination.cell, position = hitReference.destination.marker.position, orientation = hitReference.destination.marker.orientation, teleportCompanions = false })
+						else
+							tes3ui.showNotifyMenu("You must remain in a confined space.")
 						end
-					end
-				elseif hitReference and hitReference.baseObject.objectType == tes3.objectType.door and ((string.find(string.lower(hitReference.baseObject.name), "door") or string.find(string.lower(hitReference.baseObject.name), "wooden gate") or string.find(string.lower(hitReference.baseObject.name), "palace gates") or
-						string.find(string.lower(hitReference.baseObject.name), "stone gate") or string.find(string.lower(hitReference.baseObject.name), "old iron gate")) and
-						not (string.find(string.lower(hitReference.baseObject.name), "trap") or string.find(string.lower(hitReference.baseObject.name), "cell") or string.find(string.lower(hitReference.baseObject.name), "tent"))) then
-					if not hitReference.destination then
-						local bestPosition = passwallCalculate(wallPosition, forward, right, up, v)
-
-						if bestPosition then
-							tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
-							local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
-							tes3.mobilePlayer.position = bestPosition
-						end
-					elseif hitReference.destination and hitReference.destination.cell.isInterior then
-						tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
-						local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
-						tes3.positionCell({ cell = hitReference.destination.cell, position = hitReference.destination.marker.position, orientation = hitReference.destination.marker.orientation, teleportCompanions = false })
-					else
-						tes3ui.showNotifyMenu("You must remain in a confined space.")
 					end
 				end
 			else
@@ -574,9 +611,12 @@ local function limitIntervention(e)
 	end
 end
 
+-- Setup MCM
+dofile("TamrielData.mcm")
+
 event.register(tes3.event.loaded, function()
 	if config.summoningSpells == true then
-		for k,v in pairs(tr_summons) do
+		for k,v in pairs(td_summons) do
 			local effectID, spellID, spellName, creatureID, effectCost, spellCost, iconPath, duration, effectDescription = unpack(v)
 
 			local overridden_spell = tes3.getObject(spellID)
@@ -590,7 +630,7 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.miscSpells == true then
-		for k,v in pairs(tr_miscs) do
+		for k,v in pairs(td_miscs) do
 			local effectID, spellID, spellName, effectCost, spellCost, iconPath, duration = unpack(v)
 
 			local overridden_spell = tes3.getObject(spellID)
