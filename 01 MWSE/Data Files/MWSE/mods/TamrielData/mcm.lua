@@ -70,7 +70,7 @@ toggles:createOnOffButton{
 
 toggles:createOnOffButton{
     label = "Add New Miscellaneous Spells",
-    description = "\nRequires reload.\n\nDefault: On\n\n",
+    description = "Adds new spells that do not fit into the category above.\nRequires reload.\n\nDefault: On\n\n",
     variable = EasyMCM:createTableVariable{
         id = "miscSpells",
         table = config,

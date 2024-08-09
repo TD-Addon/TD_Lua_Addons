@@ -111,7 +111,7 @@ local tr_summons = {
 
 -- unique id, spell id to override, spell name, effect mana cost, spell mana cost, icon, spell duration, effect description
 local tr_miscs = {	
-	{ 2106, "T_Com_Mys_UNI_Passwall", "Passwall", 750, 95, "td\\s\\tr_s_alt_passwall.tga", 0}
+	{ 2106, "T_Com_Mys_UNI_Passwall", "Passwall", 750, 95, "td\\s\\tr_s_tele_passwall.tga", 0, "In an indoor space, this effect permits the caster to pass through a solid barrier to a vacant space behind it. The effect will fail if the destination beyond the traversed barrier is filled with water, or if it lies above or below the caster."}
 }
 
 -- item id, pickup sound id, putdown sound id, equip sound id
@@ -237,7 +237,6 @@ event.register(tes3.event.magicEffectsResolved, function()
 	
 	if config.miscSpells == true then
 		local levitateEffect = tes3.getMagicEffect(tes3.effect.levitate)
-		local breathEffect = tes3.getMagicEffect(tes3.effect.waterBreathing)
 
 		for k, v in pairs(tr_miscs) do												-- This loop is just copied over from the summoningSpells condition; it will have to be replaced given how differently misc. spells will work compared to summons
 			local effectID, spellID, spellName, effectCost, spellCost, iconPath, duration = unpack(v)
@@ -245,7 +244,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 				id = effectID,
 				name = spellName,
 				description = "",
-				school = tes3.magicSchool["alteration"],
+				school = tes3.magicSchool.alteration,
 				baseCost = effectCost,
 				speed = levitateEffect.speed,
 				allowEnchanting = true,
@@ -269,12 +268,12 @@ event.register(tes3.event.magicEffectsResolved, function()
 				particleTexture = levitateEffect.particleTexture,
 				castSound = levitateEffect.castSoundEffect.id,
 				castVFX = levitateEffect.castVisualEffect.id,
-				boltSound = levitateEffect.boltSoundEffect.id,
-				boltVFX = levitateEffect.boltVisualEffect.id,
-				hitSound = levitateEffect.hitSoundEffect.id,
-				hitVFX = breathEffect.hitVisualEffect.id,
-				areaSound = levitateEffect.areaSoundEffect.id,
-				areaVFX = levitateEffect.areaVisualEffect.id,
+				boltSound = "T_SndObj_Silence",
+				boltVFX = "",
+				hitSound = "T_SndObj_Silence",
+				hitVFX = "",
+				areaSound = "T_SndObj_Silence",
+				areaVFX = "",
 				lighting = {x = levitateEffect.lightingRed, y = levitateEffect.lightingGreen, z = levitateEffect.lightingBlue},
 				size = levitateEffect.size,
 				sizeCap = levitateEffect.sizeCap,
@@ -285,54 +284,124 @@ event.register(tes3.event.magicEffectsResolved, function()
 	end
 end)
 
-local function passwallEffect(e)
-	for k,v in pairs(e.source.effects) do
-		if v.id == 2106 then
-			if tes3.mobilePlayer.cell.isInterior then
-				if tes3.mobilePlayer.cell.pathGrid then
-					local castPosition = tes3.mobilePlayer.position + tes3vector3.new(0, 0, 0.7 * tes3.mobilePlayer.height)	-- Position of where spells are casted
-					local forward = tes3.worldController.armCamera.cameraData.camera.worldDirection:normalized()
-					local right = tes3.worldController.armCamera.cameraData.camera.worldRight:normalized()
-					local up = tes3.worldController.armCamera.cameraData.camera.worldUp:normalized()
+---@param wallPosition tes3vector3
+---@param forward tes3vector3
+---@param right tes3vector3
+---@param up tes3vector3
+---@param effect tes3effect
+local function passwallCalculate(wallPosition, forward, right, up, effect)
+	local nodeArr = tes3.mobilePlayer.cell.pathGrid.nodes
+	local unitRadius = effect.radius * 22.1
+	local forwardOffset = 64
+	local rightCoord = (right * 160)
+	local upCoord = (up * 160)
 
-					local target = tes3.rayTest{
-						position = castPosition,
-						direction = forward,
-						maxDistance = 128,
-						ignore = {tes3.player},
-					}
+	local point1 = wallPosition + (forward * forwardOffset) - rightCoord - upCoord
+	local point2 = wallPosition + (forward * ((unitRadius) + forwardOffset)) + rightCoord + upCoord
 
-					local hitReference, wallPosition = target and target.reference, target.intersection
-					
-					if hitReference and (hitReference.baseObject.objectType == tes3.objectType.activator or hitReference.baseObject.objectType == tes3.objectType.static) then
-						if hitReference.baseObject.boundingBox.max:heightDifference(hitReference.baseObject.boundingBox.min) >= 192 then				-- Check how tall the targeted object is; this is Passwall, not Passtable
-							local nodeArr = tes3.mobilePlayer.cell.pathGrid.nodes
+	local bestDistance = unitRadius
+	local bestPosition = nil
+	for _,node in pairs(nodeArr) do
+		if (point1.x <= node.position.x and node.position.x <= point2.x) or (point1.x >= node.position.x and node.position.x >= point2.x) then
+			if (point1.y <= node.position.y and node.position.y <= point2.y) or (point1.y >= node.position.y and node.position.y >= point2.y) then
+				if (point1.z <= node.position.z and node.position.z <= point2.z) or (point1.z >= node.position.z and node.position.z >= point2.z) then
+					local distance = wallPosition:distance(node.position)
+					if distance <= bestDistance then
+						bestDistance = distance
+						bestPosition = node.position
+					end
+				end
+			end
+		end
+	end
 
-							local point1 = wallPosition - (right * 160) - (up * 160)
-							local point2 = wallPosition + (forward * 512) + (right * 160) + (up * 160)
+	local checkedNodeTable = { }
+	for _,node in pairs(nodeArr) do
+		for _,connectedNode in pairs(node.connectedNodes) do
+			if not table.contains(checkedNodeTable, node) and not table.contains(checkedNodeTable, connectedNode) then			-- Only check each connection once
+				if wallPosition:distance(node.position) <= 1536 and wallPosition:distance(connectedNode.position) <= 1536 then	-- Reasonable limit on how far nodes can be
+					local increment =  (connectedNode.position - node.position) / 15
+					local prevDistance = nil
+					for i=1,14,1 do
+						local incrementPosition = node.position + (increment * i)
+						local distance = wallPosition:distance(incrementPosition)
 
-							local bestDistance = v.radius * 22.1
-							local bestNode = nil
-							for _,node in pairs(nodeArr) do
-								local distance = wallPosition:distance(node.position)
-								if distance <= bestDistance then
-									if (point1.x <= node.position.x and node.position.x <= point2.x) or (point1.x >= node.position.x and node.position.x >= point2.x) then
-										if (point1.y <= node.position.y and node.position.y <= point2.y) or (point1.y >= node.position.y and node.position.y >= point2.y) then
-											if (point1.z <= node.position.z and node.position.z <= point2.z) or (point1.z >= node.position.z and node.position.z >= point2.z) then
-												bestDistance = distance
-												bestNode = node
-											end
-										end
+						if prevDistance and distance > prevDistance then
+							break		-- If incrementPosition is moving away from wallPosition then the loop will be broken out of for the sake of performance
+						end
+
+						if distance <= bestDistance then
+							if (point1.x <= incrementPosition.x and incrementPosition.x <= point2.x) or (point1.x >= incrementPosition.x and incrementPosition.x >= point2.x) then
+								if (point1.y <= incrementPosition.y and incrementPosition.y <= point2.y) or (point1.y >= incrementPosition.y and incrementPosition.y >= point2.y) then
+									if (point1.z <= incrementPosition.z and incrementPosition.z <= point2.z) or (point1.z >= incrementPosition.z and incrementPosition.z >= point2.z) then
+										bestDistance = distance
+										bestPosition = incrementPosition
 									end
 								end
 							end
-
-							if bestNode then
-								tes3.playSound{ sound = "alteration hit"}		-- Since there isn't a target in the normal sense, the sound won't play without this
-								local vfx = tes3.createVisualEffect({ object = v.object.hitVisualEffect, lifespan = 2, avObject = tes3.player.sceneNode })
-								tes3.mobilePlayer.position = bestNode.position
-							end
 						end
+
+						prevDistance = distance
+					end
+				end
+			end
+		end
+
+		table.insert(checkedNodeTable, node)
+	end
+
+	return bestPosition
+end
+
+---@param e magicCastedEventData
+local function passwallEffect(e)
+	for k,v in pairs(e.source.effects) do
+		if v.id == 2106 then
+			if tes3.mobilePlayer.cell.isInterior and tes3.mobilePlayer.cell.pathGrid and not tes3.mobilePlayer.underwater and not tes3.worldController.flagTeleportingDisabled then
+				local castPosition = tes3.mobilePlayer.position + tes3vector3.new(0, 0, 0.7 * tes3.mobilePlayer.height)	-- Position of where spells are casted
+				local forward = tes3.worldController.armCamera.cameraData.camera.worldDirection:normalized()
+				local right = tes3.worldController.armCamera.cameraData.camera.worldRight:normalized()
+				local up = tes3.worldController.armCamera.cameraData.camera.worldUp:normalized()
+
+				local hitSound = "alteration hit"
+				local hitVFX = "VFX_AlterationHit"
+
+				local target = tes3.rayTest{
+					position = castPosition,
+					direction = forward,
+					maxDistance = 128,
+					ignore = {tes3.player},
+				}
+
+				local hitReference, wallPosition = target and target.reference, target and target.intersection
+				
+				if hitReference and (hitReference.baseObject.objectType == tes3.objectType.activator or hitReference.baseObject.objectType == tes3.objectType.static ) then
+					if hitReference.baseObject.boundingBox.max:heightDifference(hitReference.baseObject.boundingBox.min) >= 192 then				-- Check how tall the targeted object is; this is Passwall, not Passtable
+						local bestPosition = passwallCalculate(wallPosition, forward, right, up, v)
+
+						if bestPosition then
+							tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
+							local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
+							tes3.mobilePlayer.position = bestPosition
+						end
+					end
+				elseif hitReference and hitReference.baseObject.objectType == tes3.objectType.door and ((string.find(string.lower(hitReference.baseObject.name), "door") or string.find(string.lower(hitReference.baseObject.name), "wooden gate") or string.find(string.lower(hitReference.baseObject.name), "palace gates") or
+						string.find(string.lower(hitReference.baseObject.name), "stone gate") or string.find(string.lower(hitReference.baseObject.name), "old iron gate")) and
+						not (string.find(string.lower(hitReference.baseObject.name), "trap") or string.find(string.lower(hitReference.baseObject.name), "cell") or string.find(string.lower(hitReference.baseObject.name), "tent"))) then
+					if not hitReference.destination then
+						local bestPosition = passwallCalculate(wallPosition, forward, right, up, v)
+
+						if bestPosition then
+							tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
+							local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
+							tes3.mobilePlayer.position = bestPosition
+						end
+					elseif hitReference.destination and hitReference.destination.cell.isInterior then
+						tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
+						local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
+						tes3.positionCell({ cell = hitReference.destination.cell, position = hitReference.destination.marker.position, orientation = hitReference.destination.marker.orientation, teleportCompanions = false })
+					else
+						tes3ui.showNotifyMenu("You must remain in a confined space.")
 					end
 				end
 			else
@@ -344,6 +413,7 @@ local function passwallEffect(e)
 	end
 end
 
+---@param e equipEventData
 local function restrictEquip(e)
 	if e.reference.mobile.object.race.id == "T_Val_Imga" then
 		if e.item.objectType == tes3.objectType.armor then
@@ -378,6 +448,7 @@ local function restrictEquip(e)
 	end
 end
 
+---@param e bodyPartAssignedEventData
 local function fixVampireHeadAssignment(e)
 	if e.index == tes3.activeBodyPart.head then
 		if not e.object or e.object.objectType ~= tes3.objectType.armor then
@@ -422,12 +493,16 @@ local function fixVampireHeadAssignment(e)
 	end
 end
 
+---@param e combatStartedEventData
 local function vampireHeadCombatStarted(e)
-	if e.actor.reference.bodyPartManager:getActiveBodyPart(0, 0).bodyPart.id == "T_B_Imp_UNI_HeadHerriusPC" then
-		e.actor.reference:updateEquipment()		-- Will trigger fixVampireHeadAssignment via the bodyPartAssigned event
+	if e.actor.reference.bodyPartManager then
+		if e.actor.reference.bodyPartManager:getActiveBodyPart(0, 0).bodyPart.id == "T_B_Imp_UNI_HeadHerriusPC" then
+			e.actor.reference:updateEquipment()		-- Will trigger fixVampireHeadAssignment via the bodyPartAssigned event
+		end
 	end
 end
 
+---@param e playItemSoundEventData
 local function improveItemSounds(e)
 	for k,v in pairs(item_sounds) do
 		local itemID, upSound, downSound, useSound = unpack(v)
@@ -446,6 +521,7 @@ local function improveItemSounds(e)
 	end
 end
 
+---@param e calcTravelPriceEventData
 local function adjustTravelPrices(e)
 	for k,v in pairs(travel_actor_prices) do
 		local actorID, destinationID, manualPrice, priceFactor = unpack(v, 1, 4 )
@@ -470,6 +546,7 @@ local function adjustTravelPrices(e)
 	end
 end
 
+---@param e magicCastedEventData
 local function limitInterventionMessage(e)
 	for k,v in pairs(e.source.effects) do
 		if v.id == tes3.effect.almsiviIntervention then
@@ -483,6 +560,7 @@ local function limitInterventionMessage(e)
 	end
 end
 
+---@param e spellTickEventData
 local function limitIntervention(e)
 	for k,v in pairs(e.source.effects) do
 		if v.id == tes3.effect.almsiviIntervention then
