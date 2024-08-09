@@ -111,7 +111,7 @@ local td_summons = {
 
 -- unique id, spell id to override, spell name, effect mana cost, spell mana cost, icon, spell duration, effect description
 local td_miscs = {	
-	{ 2106, "T_Com_Mys_UNI_Passwall", "Passwall", 750, 95, "td\\s\\tr_s_tele_passwall.tga", 0, "In an indoor space, this effect permits the caster to pass through a solid barrier to a vacant space behind it. The effect will fail if the destination beyond the traversed barrier is filled with water, or if it lies above or below the caster."}
+	{ 2106, "T_Com_Mys_UNI_Passwall", "Passwall", 750, 95, "td\\s\\tr_s_tele_passwall.tga", 0, "In an indoor area, this effect permits the caster to pass through a solid barrier to a vacant space behind it.  The effect will fail if the destination beyond the traversed barrier is filled with water, or if it lies above or below the caster."}
 }
 
 -- item id, pickup sound id, putdown sound id, equip sound id
@@ -238,11 +238,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 	if config.miscSpells == true then
 		local levitateEffect = tes3.getMagicEffect(tes3.effect.levitate)
 
-		local effectID, spellID, spellName, effectCost, spellCost, iconPath, duration = unpack(td_miscs[1])
+		local effectID, spellID, spellName, effectCost, spellCost, iconPath, duration, effectDescription = unpack(td_miscs[1])
 		tes3.addMagicEffect{
 			id = effectID,
 			name = spellName,
-			description = "",
+			description = effectDescription,
 			school = tes3.magicSchool.alteration,
 			baseCost = effectCost,
 			speed = levitateEffect.speed,
@@ -270,13 +270,13 @@ event.register(tes3.event.magicEffectsResolved, function()
 			boltSound = "T_SndObj_Silence",
 			boltVFX = "",
 			hitSound = "T_SndObj_Silence",
-			hitVFX = "",
+			hitVFX = levitateEffect.hitVisualEffect.id,		-- Currently uses the VFX from levitate because otherwise Morrowind crashes when casting the effect on some actors despite this parameter being "optional"
 			areaSound = "T_SndObj_Silence",
 			areaVFX = "",
 			lighting = {x = levitateEffect.lightingRed, y = levitateEffect.lightingGreen, z = levitateEffect.lightingBlue},
 			size = levitateEffect.size,
 			sizeCap = levitateEffect.sizeCap,
-			onTick = nil,
+			onTick = function(eventData) eventData:trigger() end,
 			onCollision = nil
 		}
 	end
@@ -290,14 +290,19 @@ end)
 local function passwallCalculate(wallPosition, forward, right, up, effect)
 	local nodeArr = tes3.mobilePlayer.cell.pathGrid.nodes
 	local playerPosition = tes3.mobilePlayer.position
+
 	local unitRadius = effect.radius * 22.1
-	local minDistance = 128
-	local forwardOffset = 64
+	local minDistance = 108
+	local forwardOffset = 0
+
 	local rightCoord = (right * 160)
 	local upCoord = (up * 160)
 
-	local point1 = wallPosition + (forward * forwardOffset) - rightCoord - upCoord
-	local point2 = wallPosition + (forward * (unitRadius + forwardOffset)) + rightCoord + upCoord
+	local startPosition = wallPosition + (forward * forwardOffset)
+	local endPosition = wallPosition + (forward * (unitRadius + forwardOffset))
+
+	local point1 = startPosition - rightCoord - upCoord
+	local point2 = endPosition + rightCoord + upCoord
 
 	local bestDistance = unitRadius
 	local bestPosition = nil
@@ -306,11 +311,27 @@ local function passwallCalculate(wallPosition, forward, right, up, effect)
 		if (point1.x <= node.position.x and node.position.x <= point2.x) or (point1.x >= node.position.x and node.position.x >= point2.x) then
 			if (point1.y <= node.position.y and node.position.y <= point2.y) or (point1.y >= node.position.y and node.position.y >= point2.y) then
 				if (point1.z <= node.position.z and node.position.z <= point2.z) or (point1.z >= node.position.z and node.position.z >= point2.z) then
-					local distance = wallPosition:distance(node.position)
-					mwse.log(playerPosition:distance(wallPosition))
+					local distance = startPosition:distance(node.position)
 					if distance <= bestDistance and playerPosition:distance(node.position) >= minDistance then
-						bestDistance = distance
-						bestPosition = node.position
+						local targetY = tes3.rayTest{
+							position = node.position - (forward * 18) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
+							direction = forward * tes3vector3.new(1, 1, 0),
+							maxDistance = 36,
+							root = {tes3.game.sceneGraphCollideString},	-- Only checks collisions? Maybe? There isn't any documentation, but it is capable of hitting stuff
+							useBackTriangles = true,
+						}
+						local targetX = tes3.rayTest{
+							position = node.position - (right * 18) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
+							direction = right * tes3vector3.new(1, 1, 0),
+							maxDistance = 36,
+							root = {tes3.game.sceneGraphCollideString},
+							useBackTriangles = true,
+						}
+						
+						if not targetY and not targetX then
+							bestDistance = distance
+							bestPosition = node.position
+						end
 					end
 				end
 			end
@@ -321,30 +342,59 @@ local function passwallCalculate(wallPosition, forward, right, up, effect)
 	for _,node in pairs(nodeArr) do
 		for _,connectedNode in pairs(node.connectedNodes) do
 			if not table.contains(checkedNodeTable, node) and not table.contains(checkedNodeTable, connectedNode) then			-- Only check each connection once
-				if wallPosition:distance(node.position) <= 1536 and wallPosition:distance(connectedNode.position) <= 1536 then	-- Reasonable limit on how far nodes can be
-					local increment =  (connectedNode.position - node.position) / 15
-					local prevDistance = nil
+				if (startPosition:distance(node.position) <= 1024 and startPosition:distance(connectedNode.position) <= 1024) or (endPosition:distance(node.position) <= 1024 and endPosition:distance(connectedNode.position) <= 1024) then	-- Reasonable limit on how far nodes can be
+					local increment = (connectedNode.position - node.position) / 15
+					local connectionLength = connectedNode.position:distance(node.position)
+					local incrementLength = connectionLength / 15
+
+					local prevStartDistance = nil
+					local prevEndDistance = nil
+
+					local prevInVolume = false		-- Given that raytests are used to check for collision near the tested positions, the closest acceptable position might actually be further away, so positions should keep being checked until they are outside of the volume entirely
+					
 					for i=1,14,1 do
 						local incrementPosition = node.position + (increment * i)
-						local distance = wallPosition:distance(incrementPosition)
+						local startDistance = incrementPosition:distance(startPosition)
+						local endDistance = incrementPosition:distance(endPosition)
 
-						if prevDistance and distance > prevDistance then
-							break		-- If incrementPosition is moving away from wallPosition then the loop will be broken out of for the sake of performance
+						if prevStartDistance and prevEndDistance and not prevInVolume and (startDistance > prevStartDistance and endDistance > prevEndDistance) or ((connectionLength - (incrementLength * i)) < startDistance and (connectionLength - (incrementLength * i)) < endDistance) then
+							break		-- If incrementPosition is moving away or too far from the volume that the player can teleport within and was not inside of it then the loop will be broken out of for the sake of performance
 						end
 
-						mwse.log(playerPosition:distance(incrementPosition))
-						if distance <= bestDistance and playerPosition:distance(incrementPosition) >= minDistance then
+						prevInVolume = false
+
+						if startDistance <= bestDistance and playerPosition:distance(incrementPosition) >= minDistance then
 							if (point1.x <= incrementPosition.x and incrementPosition.x <= point2.x) or (point1.x >= incrementPosition.x and incrementPosition.x >= point2.x) then
 								if (point1.y <= incrementPosition.y and incrementPosition.y <= point2.y) or (point1.y >= incrementPosition.y and incrementPosition.y >= point2.y) then
 									if (point1.z <= incrementPosition.z and incrementPosition.z <= point2.z) or (point1.z >= incrementPosition.z and incrementPosition.z >= point2.z) then
-										bestDistance = distance
-										bestPosition = incrementPosition
+										prevInVolume = true
+										
+										local targetY = tes3.rayTest{
+											position = incrementPosition - (forward * 18) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
+											direction = forward * tes3vector3.new(1, 1, 0),
+											maxDistance = 36,
+											root = {tes3.game.sceneGraphCollideString},
+											useBackTriangles = true,
+										}
+										local targetX = tes3.rayTest{
+											position = node.position - (right * 18) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
+											direction = right * tes3vector3.new(1, 1, 0),
+											maxDistance = 36,
+											root = {tes3.game.sceneGraphCollideString},
+											useBackTriangles = true,
+										}
+										
+										if not targetY and not targetX then
+											bestDistance = startDistance
+											bestPosition = incrementPosition
+										end
 									end
 								end
 							end
 						end
-
-						prevDistance = distance
+						
+						prevStartDistance = startDistance
+						prevEndDistance = endDistance
 					end
 				end
 			end
