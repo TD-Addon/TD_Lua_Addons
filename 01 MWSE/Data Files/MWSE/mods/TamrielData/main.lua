@@ -287,24 +287,23 @@ end)
 ---@param right tes3vector3
 ---@param up tes3vector3
 ---@param effect tes3effect
-local function passwallCalculate(wallPosition, forward, right, up, effect)
+local function passwallCalculate(wallPosition, forward, right, up, unitRange)
 	local nodeArr = tes3.mobilePlayer.cell.pathGrid.nodes
 	local playerPosition = tes3.mobilePlayer.position
 
-	local unitRadius = effect.radius * 22.1
 	local minDistance = 108
 	local forwardOffset = 0
 
 	local rightCoord = (right * 160)
-	local upCoord = (up * 160)
+	local upCoord = (up * 100)
 
 	local startPosition = wallPosition + (forward * forwardOffset)
-	local endPosition = wallPosition + (forward * (unitRadius + forwardOffset))
+	local endPosition = wallPosition + (forward * (unitRange + forwardOffset))
 
 	local point1 = startPosition - rightCoord - upCoord
 	local point2 = endPosition + rightCoord + upCoord
 
-	local bestDistance = unitRadius
+	local bestDistance = unitRange
 	local bestPosition = nil
 
 	for _,node in pairs(nodeArr) do
@@ -314,16 +313,16 @@ local function passwallCalculate(wallPosition, forward, right, up, effect)
 					local distance = startPosition:distance(node.position)
 					if distance <= bestDistance and playerPosition:distance(node.position) >= minDistance then
 						local targetY = tes3.rayTest{
-							position = node.position - (forward * 18) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
-							direction = forward * tes3vector3.new(1, 1, 0),
-							maxDistance = 36,
+							position = node.position - (forward * 20) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
+							direction = forward,
+							maxDistance = 40,
 							root = {tes3.game.sceneGraphCollideString},	-- Only checks collisions? Maybe? There isn't any documentation, but it is capable of hitting stuff
 							useBackTriangles = true,
 						}
 						local targetX = tes3.rayTest{
-							position = node.position - (right * 18) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
-							direction = right * tes3vector3.new(1, 1, 0),
-							maxDistance = 36,
+							position = node.position - (right * 20) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
+							direction = right,
+							maxDistance = 40,
 							root = {tes3.game.sceneGraphCollideString},
 							useBackTriangles = true,
 						}
@@ -370,16 +369,16 @@ local function passwallCalculate(wallPosition, forward, right, up, effect)
 										prevInVolume = true
 										
 										local targetY = tes3.rayTest{
-											position = incrementPosition - (forward * 18) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
-											direction = forward * tes3vector3.new(1, 1, 0),
-											maxDistance = 36,
+											position = incrementPosition - (forward * 20) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
+											direction = forward,
+											maxDistance = 40,
 											root = {tes3.game.sceneGraphCollideString},
 											useBackTriangles = true,
 										}
 										local targetX = tes3.rayTest{
-											position = node.position - (right * 18) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
-											direction = right * tes3vector3.new(1, 1, 0),
-											maxDistance = 36,
+											position = node.position - (right * 20) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
+											direction = right,
+											maxDistance = 40,
 											root = {tes3.game.sceneGraphCollideString},
 											useBackTriangles = true,
 										}
@@ -427,12 +426,34 @@ local function passwallEffect(e)
 		if v.id == 2106 then
 			if tes3.mobilePlayer.cell.isInterior and tes3.mobilePlayer.cell.pathGrid and not tes3.mobilePlayer.underwater and not tes3.worldController.flagTeleportingDisabled then
 				local castPosition = tes3.mobilePlayer.position + tes3vector3.new(0, 0, 0.7 * tes3.mobilePlayer.height)	-- Position of where spells are casted
-				local forward = tes3.worldController.armCamera.cameraData.camera.worldDirection:normalized()
+				local forward = (tes3.worldController.armCamera.cameraData.camera.worldDirection * tes3vector3.new(1, 1, 0)):normalized()
 				local right = tes3.worldController.armCamera.cameraData.camera.worldRight:normalized()
-				local up = tes3.worldController.armCamera.cameraData.camera.worldUp:normalized()
+				local up = tes3vector3.new(0, 0, 1)
+
+				local unitRange = v.radius * 22.1
 
 				local hitSound = "alteration hit"
 				local hitVFX = "VFX_AlterationHit"
+				
+				local checkWard = tes3.rayTest{
+					position = castPosition,
+					direction = forward,
+					findAll = true,
+					maxDistance = 128 + unitRange,
+					root = niTriShape,
+					ignore = {tes3.player, tes3.game.worldPickRoot},
+					useModelBounds = true,
+					observeAppCullFlag  = false,
+				}
+
+				if checkWard then
+					for _,detection in pairs(checkWard) do
+						mwse.log(detection.reference.baseObject.id)
+						if string.find(detection.reference.baseObject.id, "T_PasswallWard") then	-- Prevents teleporting through T_PasswallWard statics
+							return
+						end
+					end
+				end
 
 				local target = tes3.rayTest{
 					position = castPosition,
@@ -445,8 +466,8 @@ local function passwallEffect(e)
 				
 				if hitReference then
 					if hitReference.baseObject.objectType == tes3.objectType.static then
-						if hitReference.baseObject.boundingBox.max:heightDifference(hitReference.baseObject.boundingBox.min) >= 192 then				-- Check how tall the targeted object is; this is Passwall, not Passtable
-							local bestPosition = passwallCalculate(wallPosition, forward, right, up, v)
+						if hitReference.baseObject.boundingBox.max:heightDifference(hitReference.baseObject.boundingBox.min) >= 192 then		-- Check how tall the targeted object is; this is Passwall, not Passtable
+							local bestPosition = passwallCalculate(wallPosition, forward, right, up, unitRange)
 
 							if bestPosition then
 								tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
@@ -462,7 +483,7 @@ local function passwallEffect(e)
 							end
 							
 							if not hasAlphaBlend(root) then		-- Prevents passing through activators with transparency, such as forcefields
-								local bestPosition = passwallCalculate(wallPosition, forward, right, up, v)
+								local bestPosition = passwallCalculate(wallPosition, forward, right, up, unitRange)
 
 								if bestPosition then
 									tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
@@ -475,7 +496,7 @@ local function passwallEffect(e)
 							string.find(string.lower(hitReference.baseObject.name), "stone gate") or string.find(string.lower(hitReference.baseObject.name), "old iron gate")) and
 							not (string.find(string.lower(hitReference.baseObject.name), "trap") or string.find(string.lower(hitReference.baseObject.name), "cell") or string.find(string.lower(hitReference.baseObject.name), "tent"))) then
 						if not hitReference.destination then
-							local bestPosition = passwallCalculate(wallPosition, forward, right, up, v)
+							local bestPosition = passwallCalculate(wallPosition, forward, right, up, unitRange)
 
 							if bestPosition then
 								tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
