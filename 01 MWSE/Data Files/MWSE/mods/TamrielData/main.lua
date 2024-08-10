@@ -111,7 +111,7 @@ local td_summons = {
 
 -- unique id, spell id to override, spell name, effect mana cost, spell mana cost, icon, spell duration, effect description
 local td_miscs = {	
-	{ 2106, "T_Com_Mys_UNI_Passwall", "Passwall", 750, 95, "td\\s\\tr_s_tele_passwall.tga", 0, "In an indoor area, this effect permits the caster to pass through a solid barrier to a vacant space behind it.  The effect will fail if the destination beyond the traversed barrier is filled with water, or if it lies above or below the caster."}
+	{ 2106, "T_Com_Mys_UNI_Passwall", "Passwall", 750, 95, "td\\s\\tr_s_tele_passwall.tga", 0, "In an indoor area, this effect permits the caster to pass through a solid barrier to a vacant space behind it.  The effect will fail if the destination beyond the traversed barrier is filled with water, is blocked by a forcefield or sigil gate, or lies above or below the caster."}
 }
 
 -- item id, pickup sound id, putdown sound id, equip sound id
@@ -448,8 +448,8 @@ local function passwallEffect(e)
 
 				if checkWard then
 					for _,detection in pairs(checkWard) do
-						mwse.log(detection.reference.baseObject.id)
-						if string.find(detection.reference.baseObject.id, "T_PasswallWard") then	-- Prevents teleporting through T_PasswallWard statics
+						if detection.reference and string.find(detection.reference.baseObject.id, "T_PasswallWard") then	-- Prevents teleporting through T_PasswallWard statics
+							tes3ui.showNotifyMenu("You cannot travel there.")
 							return
 						end
 					end
@@ -490,6 +490,8 @@ local function passwallEffect(e)
 									local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
 									tes3.mobilePlayer.position = bestPosition
 								end
+							else
+								tes3ui.showNotifyMenu("You cannot pass through that.")
 							end
 						end
 					elseif hitReference.baseObject.objectType == tes3.objectType.door and ((string.find(string.lower(hitReference.baseObject.name), "door") or string.find(string.lower(hitReference.baseObject.name), "wooden gate") or string.find(string.lower(hitReference.baseObject.name), "palace gates") or
