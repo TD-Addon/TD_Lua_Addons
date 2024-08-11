@@ -40,13 +40,20 @@ local function registerModConfig()
     local toggles = preferences:createCategory{label="Feature Toggles"}
     toggles:createOnOffButton{
         label = "Add New Summoning Spells",
-        description = "Adds new summoning spells using creatures from Tamriel Rebuilt, Project Cyrodiil, and Skyrim: Home of the Nords.\nRequires reload.\n\nDefault: On\n\n",
+        description = "Adds new summoning spells using creatures added by Tamriel Data, such as Devourers, Herne, Dark Seducers, and Aurorans.\nRequires reload.\n\nDefault: On\n\n",
         variable = mwse.mcm.createTableVariable{
             id = "summoningSpells",
             table = config,
         },
     }
-
+    toggles:createOnOffButton{
+        label = "Add New Bound Spells",
+        description = "Adds new bound spells for weapons and armor.\nRequires reload.\n\nDefault: On\n\n",
+        variable = mwse.mcm.createTableVariable{
+            id = "boundSpells",
+            table = config,
+        },
+    }
     toggles:createOnOffButton{
         label = "Add New Miscellaneous Spells",
         description = "Adds new spells that do not fit into the category above.\nRequires reload.\n\nDefault: On\n\n",
@@ -55,7 +62,6 @@ local function registerModConfig()
             table = config,
         },
     }
-
     toggles:createOnOffButton{
         label = "Fix Player Animations for Tamriel Data Races",
         description = "Fixes animations when playing as Ohmes-raht or Suthay Khajiit via 3rd party mods.\nRequires reload. Tail may vanish until reload when animations from other MWSE addons are applied to the player character.\nIf using an animation replacer that adds tail bones to base_anim.nif, then this feature is likely not necessary.\n\nDefault: On\n\n",
@@ -84,7 +90,7 @@ local function registerModConfig()
     }
     toggles:createOnOffButton{
         label = "Improve Item Sounds",
-        description = "Gives some items from Tamriel Data, such as perfume, more reasonable sounds when they are used or added to/removed from one's inventory.\nRequires reload.\n\nDefault: On\n\n",
+        description = "Gives some items from Tamriel Data, such as perfume and wasabi paste, more reasonable sounds when they are used or added to/removed from one's inventory.\nRequires reload.\n\nDefault: On\n\n",
         variable = mwse.mcm.createTableVariable{
             id = "improveItemSounds",
             table = config,
