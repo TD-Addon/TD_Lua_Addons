@@ -1,6 +1,7 @@
 local defaultConfig = {
 	summoningSpells = true,
 	boundSpells = true,
+	interventionSpells = true,
 	miscSpells = true,
 	fixPlayerRaceAnimations = true,
 	restrictEquipment = true,

@@ -55,6 +55,14 @@ local function registerModConfig()
         },
     }
     toggles:createOnOffButton{
+        label = "Add New Intervention Spells",
+        description = "Adds new intervention spells for different pantheons and gods of Tamriel.\nRequires reload.\n\nDefault: On\n\n",
+        variable = mwse.mcm.createTableVariable{
+            id = "interventionSpells",
+            table = config,
+        },
+    }
+    toggles:createOnOffButton{
         label = "Add New Miscellaneous Spells",
         description = "Adds new spells that do not fit into the category above.\nRequires reload.\n\nDefault: On\n\n",
         variable = mwse.mcm.createTableVariable{

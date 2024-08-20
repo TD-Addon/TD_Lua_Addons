@@ -84,6 +84,53 @@ local almsivi_intervention_regions = {
 	{ "Thirsk Region", nil, nil, nil, nil }
 }
 
+-- region id, xcell left bound, xcell right bound, ycell top bound, ycell bottom bound
+local kyne_intervention_regions = {
+	{ "Colovian Barrowlands Region", nil, nil, nil, nil },
+	{ "Drajkmyr Marsh Region", nil, nil, nil, nil },
+	{ "Druadach Highlands Region", nil, nil, nil, nil },
+	{ "Falkheim Region", nil, nil, nil, nil },
+	{ "Gorvigh Mountains Region", nil, nil, nil, nil },
+	{ "Hrimbald Plateau Region", nil, nil, nil, nil },
+	{ "Hirsing Forest Region", nil, nil, nil, nil },
+	{ "Jerall Mountains Region", nil, nil, nil, nil },
+	{ "Kilkreath Mountains Region", nil, nil, nil, nil },
+	{ "Kreathi Vale Region", nil, nil, nil, nil },
+	{ "Lorchwuir Heath Region", nil, nil, nil, nil },
+	{ "Mhorkren Hills Region", nil, nil, nil, nil },
+	{ "Midkarth Region", nil, nil, nil, nil },
+	{ "Northshore Region", nil, nil, nil, nil },
+	{ "Reaver's Shore Region", nil, nil, nil, nil },
+	{ "Rift Valley Region", nil, nil, nil, nil },
+	{ "Skaldring Mountains Region", nil, nil, nil, nil },
+	{ "Solitude Forest Region", nil, nil, nil, nil },
+	{ "Solitude Forest Region S", nil, nil, nil, nil },
+	{ "Sundered Hills Region", nil, nil, nil, nil },	
+	{ "Throat of the World Region", nil, nil, nil, nil },
+	{ "Troll's Teeth Mountains Region", nil, nil, nil, nil },
+	{ "Uld Vraech Region", nil, nil, nil, nil },
+	{ "Valstaag Highlands Region", nil, nil, nil, nil },
+	{ "Velothi Mountains Region", -41, -29, -8, 20 },
+	{ "Vorndgad Forest Region", nil, nil, nil, nil },
+	{ "White Plains Region", nil, nil, nil, nil },
+	{ "Wuurthal Dale Region", nil, nil, nil, nil },
+	{ "Ysheim Region", nil, nil, nil, nil },
+	{ "Sea of Ghosts Region", -116, -20, 21, 40 },
+	{ "Sea of Ghosts Region N", -116, -10, 21, 40 },
+	{ nil, -116, -20, 21, 40 },
+	{ "Brodir Grove Region", nil, nil, nil, nil },
+	{ "Felsaad Coast Region", nil, nil, nil, nil },
+	{ "Hirstaang Forest Region", nil, nil, nil, nil },
+	{ "Moesring Mountains Region", nil, nil, nil, nil },
+	{ "Isinfier Plains Region", nil, nil, nil, nil },
+	{ "Thirsk Region", nil, nil, nil, nil }
+}
+
+-- xcell coordinate, ycell coordinate
+local kyne_intervention_cells = {
+	--{-112, 11} -- Taurus Hall, as an example
+}
+
 -- actor id, destination cell id, manual price, factor to multiply baseprice by
 local travel_actor_prices = {
 	{ "TR_m1_DaedrothGindaman", nil, nil, 5}
@@ -222,6 +269,40 @@ local function adjustTravelPrices(e)
 	end
 end
 
+---@param cell tes3cell
+local function getExteriorCell(cell, cellVisitTable)
+	if cell.isOrBehavesAsExterior then
+		return cell
+	end
+	
+	for ref in cell:iterateReferences(tes3.objectType.door) do
+		if ref.destination and not table.contains(cellVisitTable, ref.destination.cell) then
+			table.insert(cellVisitTable, ref.destination.cell)
+			return getExteriorCell(ref.destination.cell, cellVisitTable)
+		end
+	end
+end
+
+---@param cell tes3cell
+local function isInterventionCell(cell, regionTable)
+	for k,v in pairs(regionTable) do
+		local regionID, xLeft, xRight, yBottom, yTop = unpack(v, 1, 5 )
+			if (cell.region and cell.region.id == regionID) or cell.region == regionID then
+				if not xLeft then -- Checks whether cell boundaries are being used; if xLeft is nil, then all of the others should be too
+					return true
+				else
+					if (cell.gridX >= xLeft) and (cell.gridX <= xRight) and (cell.gridY >= yBottom) and (cell.gridY <= yTop) then
+						return true
+					else
+						return false
+					end
+				end
+			end
+	end
+	
+	return false
+end
+
 ---@param e magicCastedEventData
 local function limitInterventionMessage(e)
 	for k,v in pairs(e.source.effects) do
@@ -231,6 +312,13 @@ local function limitInterventionMessage(e)
 
 			if not extCell or not isInterventionCell(extCell, almsivi_intervention_regions) then
 				tes3ui.showNotifyMenu("The power of Almsivi does not extend to these lands.")
+			end
+		elseif v.id == 2122 then	-- Kyne's Intervention
+			local cellVisitTable = { e.caster.cell }
+			local extCell = getExteriorCell(e.caster.cell, cellVisitTable)
+
+			if not extCell or not isInterventionCell(extCell, kyne_intervention_regions) then
+				tes3ui.showNotifyMenu("The power of Kyne does not extend to these lands.")
 			end
 		end
 	end
@@ -244,6 +332,13 @@ local function limitIntervention(e)
 			local extCell = getExteriorCell(e.caster.cell, cellVisitTable)
 			
 			if not extCell or not isInterventionCell(extCell, almsivi_intervention_regions) then
+				return false
+			end
+		elseif v.id == 2122 then	-- Kyne's Intervention
+			local cellVisitTable = { e.caster.cell }
+			local extCell = getExteriorCell(e.caster.cell, cellVisitTable)
+			
+			if not extCell or not isInterventionCell(extCell, kyne_intervention_regions) then
 				return false
 			end
 		end
@@ -265,7 +360,9 @@ end
 dofile("TamrielData.mcm")
 
 event.register(tes3.event.loaded, function()
-	
+
+	event.unregister(tes3.event.damage, magic.reflectDamageEffect)
+	event.unregister(tes3.event.damageHandToHand, magic.reflectDamageHHEffect)
 	event.unregister(tes3.event.magicCasted, magic.passwallEffect)
 	event.unregister(tes3.event.equip, restrictEquip)
 	event.unregister(tes3.event.bodyPartAssigned, fixVampireHeadAssignment)
@@ -275,7 +372,13 @@ event.register(tes3.event.loaded, function()
 	event.unregister(tes3.event.magicCasted, limitInterventionMessage)
 	event.unregister(tes3.event.spellTick, limitIntervention)
 
+	if config.interventionSpells == true then
+		magic.replaceInterventionMarkers(kyne_intervention_cells, "T_Aid_KyneInterventionMarker")
+	end
+
 	if config.miscSpells == true then
+		event.register(tes3.event.damage, magic.reflectDamageEffect)
+		event.register(tes3.event.damageHandToHand, magic.reflectDamageHHEffect)
 		event.register(tes3.event.magicCasted, magic.passwallEffect)
 	end
 
