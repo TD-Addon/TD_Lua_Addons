@@ -50,50 +50,50 @@ end
 
 -- unique id, spell id to override, spell name, creature id, effect mana cost, spell mana cost, icon, spell duration, effect description
 local td_summons = {
-	{ 2090, "T_Com_Cnj_SummonDevourer", "Summon Devourer", "T_Dae_Cre_Devourer_01", 52, 155, "td\\s\\td_s_summ_dev.dds", 60, "This effect summons a devourer from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2091, "T_Com_Cnj_SummonDremoraArcher", "Summon Dremora Archer", "T_Dae_Cre_Drem_Arch_01", 33, 98, "td\\s\\td_s_sum_drm_arch.dds", 60, "This effect summons a dremora archer from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2092, "T_Com_Cnj_SummonDremoraCaster", "Summon Dremora Spellcaster", "T_Dae_Cre_Drem_Cast_01", 31, 93, "td\\s\\td_s_sum_drm_mage.dds", 60, "This effect summons a dremora spellcaster from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2093, "T_Com_Cnj_SummonGuardian", "Summon Guardian", "T_Dae_Cre_Guardian_01", 69, 207, "td\\s\\td_s_sum_guard.dds", 60, "This effect summons a guardian from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2094, "T_Com_Cnj_SummonLesserClannfear", "Summon Rock Biter Clannfear", "T_Dae_Cre_LesserClfr_01", 22, 66, "td\\s\\td_s_sum_lsr_clan.dds", 60, "This effect summons a rock biter clannfear from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2095, "T_Com_Cnj_SummonOgrim", "Summon Ogrim", "ogrim", 33, 99, "td\\s\\td_s_summ_ogrim.dds", 60, "This effect summons an ogrim from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2096, "T_Com_Cnj_SummonSeducer", "Summon Seducer", "T_Dae_Cre_Seduc_01", 52, 156, "td\\s\\td_s_summ_sed.dds", 60, "This effect summons a seducer from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2097, "T_Com_Cnj_SummonSeducerDark", "Summon Dark Seducer", "T_Dae_Cre_SeducDark_02", 75, 225, "td\\s\\td_s_summ_d_sed.dds", 60, "This effect summons a dark seducer from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2098, "T_Com_Cnj_SummonVermai", "Summon Vermai", "T_Dae_Cre_Verm_01", 29, 88, "td\\s\\td_s_summ_vermai.dds", 60, "This effect summons a vermai from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2099, "T_Com_Cnj_SummonStormMonarch", "Summon Storm Monarch", "T_Dae_Cre_MonarchSt_01", 60, 179, "td\\s\\td_s_sum_stm_monch.dds", 60, "This effect summons a storm monarch from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2100, "T_Nor_Cnj_SummonIceWraith", "Summon Ice Wraith", "T_Sky_Cre_IceWr_01", 35, 104, "td\\s\\td_s_sum_ice_wrth.dds", 60, "This effect summons an ice wraith from the Outer Realms. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Outer Realms.  If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2101, "T_Dwe_Cnj_Uni_SummonDweSpectre", "Summon Dwemer Spectre", "dwarven ghost", 17, 52, "td\\s\\td_s_sum_dwe_spctre.dds", 60, "This effect summons a dwemer spectre from the Outer Realms. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Outer Realms.  If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2102, "T_Dwe_Cnj_Uni_SummonSteamCent", "Summon Dwemer Steam Centurion", "centurion_steam", 29, 88, "td\\s\\td_s_sum_dwe_cent.dds", 60, "This effect summons an steam centurion from the Outer Realms. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Outer Realms.  If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2103, "T_Dwe_Cnj_Uni_SummonSpiderCent", "Summon Dwemer Spider Centurion", "centurion_spider", 15, 46, "td\\s\\td_s_sum_dwe_spdr.dds", "This effect summons a centurion spider from the Outer Realms. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Outer Realms. If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2104, "T_Ayl_Cnj_SummonWelkyndSpirit", "Summon Welkynd Spirit", "T_Ayl_Cre_WelkSpr_01", 29, 78, "td\\s\\td_s_sum_welk_srt.dds", 60, "This effect summons a welkynd spirit from the Outer Realms. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Outer Realms.  If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2105, "T_Com_Cnj_SummonAuroran", "Summon Auroran", "T_Dae_Cre_Auroran_01", 50, 130, "td\\s\\td_s_sum_auro.dds", 60, "This effect summons an auroran from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2107, "T_Com_Cnj_SummonHerne", "Summon Herne", "T_Dae_Cre_Herne_01", 52, 155, "td\\s\\td_s_sum_herne.dds", 60, "This effect summons a herne from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2108, "T_Com_Cnj_SummonMorphoid", "Summon Morphoid", "T_Dae_Cre_Morphoid_01", 52, 155, "td\\s\\td_s_sum_morph.dds", 60, "This effect summons a morphoid from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2109, "T_Nor_Cnj_SummonDraugr", "Summon Draugr", "T_Sky_Und_Drgr_01", 29, 78, "td\\s\\td_s_sum_draugr.dds", 60, "This effect summons a draugr from the Underworld. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Outer Realms.  If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2110, "T_Nor_Cnj_SummonSpriggan", "Summon Spriggan", "T_Sky_Cre_Spriggan_01", 29, 78, "td\\s\\td_s_sum_sprig.dds", 60, "This effect summons a spriggan from the Outer Realms. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Outer Realms.  If summoned in town, the guards will attack you and the summoning on sight."},
-	{ 2117, "T_De_Cnj_SummonGreaterBonelord", "Summon Greater Bonelord", "T_Mw_Und_BoneldGr_01", 54, 162, "td\\s\\td_s_sum_gtr_bnlrd.dds", 60, "This effect summons a greater bonelord from the Outer Realms. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Outer Realms.  If summoned in town, the guards will attack you and the summoning on sight."},
+	{ 2090, "T_Com_Cnj_SummonDevourer", common.i18n("magic.summonDevourer"), "T_Dae_Cre_Devourer_01", 52, 155, "td\\s\\td_s_summ_dev.dds", 60, common.i18n("magic.summonDevourerDesc")},
+	{ 2091, "T_Com_Cnj_SummonDremoraArcher", common.i18n("magic.summonDremoraArcher"), "T_Dae_Cre_Drem_Arch_01", 33, 98, "td\\s\\td_s_sum_drm_arch.dds", 60, common.i18n("magic.summonDremoraArcherDesc")},
+	{ 2092, "T_Com_Cnj_SummonDremoraCaster", common.i18n("magic.summonDremoraCaster"), "T_Dae_Cre_Drem_Cast_01", 31, 93, "td\\s\\td_s_sum_drm_mage.dds", 60, common.i18n("magic.summonDremoraCasterDesc")},
+	{ 2093, "T_Com_Cnj_SummonGuardian", common.i18n("magic.summonGuardian"), "T_Dae_Cre_Guardian_01", 69, 207, "td\\s\\td_s_sum_guard.dds", 60, common.i18n("magic.summonGuardianDesc")},
+	{ 2094, "T_Com_Cnj_SummonLesserClannfear", common.i18n("magic.summonLesserClannfear"), "T_Dae_Cre_LesserClfr_01", 22, 66, "td\\s\\td_s_sum_lsr_clan.dds", 60, common.i18n("magic.summonLesserClannfearDesc")},
+	{ 2095, "T_Com_Cnj_SummonOgrim", common.i18n("magic.summonOgrim"), "ogrim", 33, 99, "td\\s\\td_s_summ_ogrim.dds", 60, common.i18n("magic.summonOgrimDesc")},
+	{ 2096, "T_Com_Cnj_SummonSeducer", common.i18n("magic.summonSeducer"), "T_Dae_Cre_Seduc_01", 52, 156, "td\\s\\td_s_summ_sed.dds", 60, common.i18n("magic.summonSeducerDesc")},
+	{ 2097, "T_Com_Cnj_SummonSeducerDark", common.i18n("magic.summonSeducerDark"), "T_Dae_Cre_SeducDark_02", 75, 225, "td\\s\\td_s_summ_d_sed.dds", 60, common.i18n("magic.summonSeducerDarkDesc")},
+	{ 2098, "T_Com_Cnj_SummonVermai", common.i18n("magic.summonVermai"), "T_Dae_Cre_Verm_01", 29, 88, "td\\s\\td_s_summ_vermai.dds", 60, common.i18n("magic.summonVermaiDesc")},
+	{ 2099, "T_Com_Cnj_SummonStormMonarch", common.i18n("magic.summonStormMonarch"), "T_Dae_Cre_MonarchSt_01", 60, 179, "td\\s\\td_s_sum_stm_monch.dds", 60, common.i18n("magic.summonStormMonarchDesc")},
+	{ 2100, "T_Nor_Cnj_SummonIceWraith", common.i18n("magic.summonIceWraith"), "T_Sky_Cre_IceWr_01", 35, 104, "td\\s\\td_s_sum_ice_wrth.dds", 60, common.i18n("magic.summonIceWraithDesc")},
+	{ 2101, "T_Dwe_Cnj_Uni_SummonDweSpectre", common.i18n("magic.summonDweSpectre"), "dwarven ghost", 17, 52, "td\\s\\td_s_sum_dwe_spctre.dds", 60, common.i18n("magic.summonDweSpectreDesc")},
+	{ 2102, "T_Dwe_Cnj_Uni_SummonSteamCent", common.i18n("magic.summonSteamCent"), "centurion_steam", 29, 88, "td\\s\\td_s_sum_dwe_cent.dds", 60, common.i18n("magic.summonSteamCentDesc")},
+	{ 2103, "T_Dwe_Cnj_Uni_SummonSpiderCent", common.i18n("magic.summonSpiderCent"), "centurion_spider", 15, 46, "td\\s\\td_s_sum_dwe_spdr.dds", common.i18n("magic.summonSpiderCentDesc")},
+	{ 2104, "T_Ayl_Cnj_SummonWelkyndSpirit", common.i18n("magic.summonWelkyndSpirit"), "T_Ayl_Cre_WelkSpr_01", 29, 78, "td\\s\\td_s_sum_welk_srt.dds", 60, common.i18n("magic.summonWelkyndSpiritDesc")},
+	{ 2105, "T_Com_Cnj_SummonAuroran", common.i18n("magic.summonAuroran"), "T_Dae_Cre_Auroran_01", 50, 130, "td\\s\\td_s_sum_auro.dds", 60, common.i18n("magic.summonAuroranDesc")},
+	{ 2107, "T_Com_Cnj_SummonHerne", common.i18n("magic.summonHerne"), "T_Dae_Cre_Herne_01", 52, 155, "td\\s\\td_s_sum_herne.dds", 60, common.i18n("magic.summonHerneDesc")},
+	{ 2108, "T_Com_Cnj_SummonMorphoid", common.i18n("magic.summonMorphoid"), "T_Dae_Cre_Morphoid_01", 52, 155, "td\\s\\td_s_sum_morph.dds", 60, common.i18n("magic.summonMorphoidDesc")},
+	{ 2109, "T_Nor_Cnj_SummonDraugr", common.i18n("magic.summonDraugr"), "T_Sky_Und_Drgr_01", 29, 78, "td\\s\\td_s_sum_draugr.dds", 60, common.i18n("magic.summonDraugrDesc")},
+	{ 2110, "T_Nor_Cnj_SummonSpriggan", common.i18n("magic.summonSpriggan"), "T_Sky_Cre_Spriggan_01", 29, 78, "td\\s\\td_s_sum_sprig.dds", 60, common.i18n("magic.summonSprigganDesc")},
+	{ 2117, "T_De_Cnj_SummonGreaterBonelord", common.i18n("magic.summonGreaterBonelord"), "T_Mw_Und_BoneldGr_01", 54, 162, "td\\s\\td_s_sum_gtr_bnlrd.dds", 60, common.i18n("magic.summonGreaterBonelordDesc")},
 }
 
 -- unique id, spell id to override, spell name, item id, 2nd item ID, effect mana cost, spell mana cost, icon, spell duration, effect description
 local td_bounds = {
-	{ 2111, "T_Com_Cnj_BoundGreaves", "Bound Greaves", "T_Com_Bound_Greaves_01", "", 2, 6, "td\\s\\td_s_bnd_grves.dds", 60, "The spell effect conjures a lesser Daedra bound in the form of magical, wondrously light Daedric greaves. The greaves appear automatically equipped on the caster, displacing any currently equipped leg armor to inventory.  When the effect ends, the greaves disappear, and any previously equipped leg armor is automatically re-equipped."},
-	{ 2112, "T_Com_Cnj_BoundWarAxe", "Bound War Axe", "T_Com_Bound_WarAxe_01", "", 2, 6, "td\\s\\td_s_bnd_waxe.dds", 60, "The spell effect conjures a lesser Daedra bound in the form of a magical, wondrously light Daedric war axe. The war axe appears automatically equipped on the caster, displacing any currently equipped weapon to inventory.  When the effect ends, the war axe disappears, and any previously equipped weapon is automatically re-equipped."},
-	{ 2113, "T_Com_Cnj_BoundWarhammer", "Bound Warhammer", "T_Com_Bound_Warhammer_01", "", 2, 6, "td\\s\\td_s_bnd_wham.dds", 60, "The spell effect conjures a lesser Daedra bound in the form of a magical, wondrously light Daedric warhammer. The warhammer appears automatically equipped on the caster, displacing any currently equipped weapon to inventory.  When the effect ends, the warhammer disappears, and any previously equipped weapon is automatically re-equipped."},
-	{ 2114, "T_De_Cnj_Uni_BoundHammerResdayn", "Bound Hammer of Resdayn", "", "T_Com_Bound_Warhammer_01", 2, 6, "td\\s\\td_s_bnd_res_ham.dds", 60, ""},
-	{ 2115, "T_De_Cnj_Uni_BoundRazorOResdayn", "Bound Razor of Resdayn", "", "bound_dagger", 2, 6, "td\\s\\td_s_bnd_red_razor.dds", 60, ""},
+	{ 2111, "T_Com_Cnj_BoundGreaves", common.i18n("magic.boundGreaves"), "T_Com_Bound_Greaves_01", "", 2, 6, "td\\s\\td_s_bnd_grves.dds", 60, common.i18n("magic.boundGreavesDesc")},
+	{ 2112, "T_Com_Cnj_BoundWarAxe", common.i18n("magic.boundWarAxe"), "T_Com_Bound_WarAxe_01", "", 2, 6, "td\\s\\td_s_bnd_waxe.dds", 60, common.i18n("magic.boundWarAxeDesc")},
+	{ 2113, "T_Com_Cnj_BoundWarhammer", common.i18n("magic.boundWarhammer"), "T_Com_Bound_Warhammer_01", "", 2, 6, "td\\s\\td_s_bnd_wham.dds", 60, common.i18n("magic.boundWarhammerDesc")},
+	{ 2114, "T_De_Cnj_Uni_BoundHammerResdayn", "", "T_Com_Bound_Warhammer_01", "", 2, 6, "td\\s\\td_s_bnd_res_ham.dds", 60, ""},
+	{ 2115, "T_De_Cnj_Uni_BoundRazorOResdayn", "", "bound_dagger", "", 2, 6, "td\\s\\td_s_bnd_red_razor.dds", 60, ""},
 	--{ 2116, "T_Com_Cnj_BoundPauldron", "Bound Pauldrons", "T_Com_Bound_PauldronL_01", "T_Com_Bound_PauldronR_01", 2, 6, "td\\s\\td_s_bnd_pldrn.dds", 60, "The spell effect conjures a lesser Daedra bound in the form of magical, wondrously light Daedric pauldrons. The pauldrons appear automatically equipped on the caster, displacing any currently equipped shoulder armor to inventory.  When the effect ends, the pauldrons disappear, and any previously equipped shoulder armor is automatically re-equipped."},
 	--{ 2118, "T_Com_Cnj_BoundThrowingKnives", "Bound Throwing Knives", "T_Com_Bound_ThrowingKnife_01", "", 2, 6, "td\\s\\td_s_bnd_knives.dds", 60, "The spell effect conjures a lesser Daedra bound in the form of magical, wondrously light Daedric throwing knives. The throwing knives appear automatically equipped on the caster, displacing any currently equipped weapon to inventory.  When the effect ends, the throwing knives disappear, and any previously equipped weapon is automatically re-equipped."},
 }
 
 -- unique id, spell id to override, spell name, effect mana cost, spell mana cost, icon, spell duration, spell radius, spell range type, minimum magnitude, maximum magnitude, effect description
 local td_interventions = {
-	{ 2122, "T_Nor_Mys_KynesIntervention", "Kyne's Intervention", 150, 8, "td\\s\\td_s_int_kyne.tga", "The subject of this effect is transported instantaneously to the nearest temple or sacred place of the Nordic goddess Kyne."},
+	{ 2122, "T_Nor_Mys_KynesIntervention", common.i18n("magic.interventionKyne"), 150, 8, "td\\s\\td_s_int_kyne.tga", common.i18n("magic.interventionKyneDesc")},
 }
 
 -- unique id, spell id to override, spell name, effect mana cost, spell mana cost, icon, spell duration, spell radius, spell range type, minimum magnitude, maximum magnitude, effect description
 local td_miscs = {
-	{ 2106, "T_Com_Mys_UNI_Passwall", "Passwall", 750, 96, "td\\s\\td_s_passwall.tga", 0, 25, 1, 0, 0, "In an indoor area, this effect permits the caster to pass through a solid barrier to a vacant space behind it.  The effect will fail if the destination beyond the traversed barrier is filled with water, is blocked by a forcefield or sigil gate, or lies above or below the caster."},
-	{ 2119, "T_Com_Mys_BanishDaedra", "Banish Daedra", 32, 40, "td\\s\\td_s_ban_daedra.tga", 0, 0, 1, 25, 25, "Banishes any daedra that the spell is cast upon, if the target is of sufficiently low level compared to the spell's magnitude.  If the daedra is wounded, then it will be easier to banish.  Banishing a daedra will transfer any of their important belongings to the caster."},
-	{ 2120, "T_Com_Mys_ReflectDamage", "Reflect Damage", 15, 56, "td\\s\\td_s_ref_dam.tga", 5, 0, 0, 10, 20, "This effect allows the subject to reflect physical damage back at an attacker.  The effect's magnitude is the percent damage that will be reflected for each attack.  Any unreflected damage is dealt to the defender normally"}
+	{ 2106, "T_Com_Mys_UNI_Passwall", common.i18n("magic.miscPasswall"), 750, 96, "td\\s\\td_s_passwall.tga", 0, 25, 1, 0, 0, common.i18n("magic.miscPasswallDesc")},
+	{ 2119, "T_Com_Mys_BanishDaedra", common.i18n("magic.miscBanish"), 32, 40, "td\\s\\td_s_ban_daedra.tga", 0, 0, 1, 25, 25, common.i18n("magic.miscBanishDesc")},
+	{ 2120, "T_Com_Mys_ReflectDamage", common.i18n("magic.miscReflectDamage"), 15, 56, "td\\s\\td_s_ref_dam.tga", 5, 0, 0, 10, 20, common.i18n("magic.miscReflectDamageDesc")}
 }
 
 function this.replaceInterventionMarkers(cellTable, markerID)
@@ -237,7 +237,7 @@ local function banishDaedraEffect(e)
 		end)
 	else
 		target.mobile:startCombat(caster.mobile)
-		tes3.messageBox("This spell is too weak to banish %s!", target.object.name)
+		tes3ui.showNotifyMenu(common.i18n("magic.banishFailure", { target.object.name }))
 	end
 
 	e.effectInstance.state = tes3.spellState.retired
@@ -294,7 +294,7 @@ local function passwallCalculate(wallPosition, forward, right, up, unitRange)
 							position = node.position - (forward * rayTestOffset) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
 							direction = forward,
 							maxDistance = rayTestOffset * 2,
-							root = {tes3.game.sceneGraphCollideString},	-- Only checks collisions? Maybe? There isn't any documentation, but it is capable of hitting stuff
+							root = {tes3.game.sceneGraphCollideString},	-- Only checks collisions? There isn't any documentation, but it is capable of hitting stuff
 							useBackTriangles = true,
 						}
 						local targetX = tes3.rayTest{
@@ -414,7 +414,7 @@ function this.passwallEffect(e)
 						if checkWard then
 							for _,detection in pairs(checkWard) do
 								if detection.reference and string.find(detection.reference.baseObject.id, "T_PasswallWard_") then	-- Prevents teleporting through T_PasswallWard statics
-									tes3ui.showNotifyMenu("You cannot pass through to there.")
+									tes3ui.showNotifyMenu(common.i18n("magic.passWallWard"))
 									return
 								end
 							end
@@ -456,7 +456,7 @@ function this.passwallEffect(e)
 											tes3.mobilePlayer.position = bestPosition
 										end
 									else
-										tes3ui.showNotifyMenu("You cannot pass through that.")
+										tes3ui.showNotifyMenu(common.i18n("magic.passwallAlpha"))
 									end
 								end
 							elseif hitReference.baseObject.objectType == tes3.objectType.door and ((string.find(string.lower(hitReference.baseObject.name), "door") or string.find(string.lower(hitReference.baseObject.name), "wooden gate") or string.find(string.lower(hitReference.baseObject.name), "palace gates") or
@@ -476,7 +476,7 @@ function this.passwallEffect(e)
 									local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
 									tes3.positionCell({ cell = hitReference.destination.cell, position = hitReference.destination.marker.position, orientation = hitReference.destination.marker.orientation, teleportCompanions = false })
 								else
-									tes3ui.showNotifyMenu("You must remain in a confined space.")
+									tes3ui.showNotifyMenu(common.i18n("magic.passWallExterior"))
 								end
 							end
 						end
@@ -484,10 +484,10 @@ function this.passwallEffect(e)
 						tes3ui.showNotifyMenu(tes3.findGMST(tes3.gmst.sTeleportDisabled).value)
 					end
 				else
-					tes3ui.showNotifyMenu("You cannot be underwater.")
+					tes3ui.showNotifyMenu(common.i18n("magic.passWallUnderwater"))
 				end
 			else
-				tes3ui.showNotifyMenu("You must be in a confined space.")
+				tes3ui.showNotifyMenu(common.i18n("magic.passWallExterior"))
 			end
 
 			return

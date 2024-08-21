@@ -1,3 +1,4 @@
+local common = require("tamrielData.common")
 local config = require("tamrielData.config")
 
 ----------------------
@@ -6,15 +7,15 @@ local config = require("tamrielData.config")
 
 local function registerModConfig()
 
-    local template = mwse.mcm.createTemplate{name="Tamriel Data"}
+    local template = mwse.mcm.createTemplate{name=common.i18n("mcm.name")}
     template:saveOnClose("tamrielData", config)
 
     -- Preferences Page
-    local preferences = template:createSideBarPage{label="Preferences"}
-    preferences.sidebar:createInfo{text="Tamriel Data MWSE-Lua v1.2"}
+    local preferences = template:createSideBarPage{label=common.i18n("mcm.preferences")}
+    preferences.sidebar:createInfo{text=common.i18n("mcm.preferencesInfo")}
 
     -- Sidebar Credits
-    local credits = preferences.sidebar:createCategory{label="Credits:"}
+    local credits = preferences.sidebar:createCategory{label=common.i18n("mcm.credits")}
     credits:createHyperlink{
         text = "mort - Scripting",
         exec = "start https://www.nexusmods.com/morrowind/users/4138441/?tab=user+files",
@@ -24,7 +25,7 @@ local function registerModConfig()
         exec = "start https://www.nexusmods.com/users/56893332?tab=user+files",
     }
     credits:createHyperlink{			
-        text = "chef - TD_addon Management",
+        text = "chef - TD_Addon Management",
         exec = "start https://github.com/cheflul/Chefmod",
     }
     credits:createHyperlink{
@@ -39,82 +40,80 @@ local function registerModConfig()
     -- Feature Toggles
     local toggles = preferences:createCategory{label="Feature Toggles"}
     toggles:createOnOffButton{
-        label = "Add New Summoning Spells",
-        description = "Adds new summoning spells using creatures added by Tamriel Data, such as Devourers, Herne, Dark Seducers, and Aurorans.\nRequires reload.\n\nDefault: On\n\n",
+        label = common.i18n("mcm.summonSpellsLabel"),
+        description = common.i18n("mcm.summonSpellsDescription"),
         variable = mwse.mcm.createTableVariable{
             id = "summoningSpells",
             table = config,
         },
     }
     toggles:createOnOffButton{
-        label = "Add New Bound Spells",
-        description = "Adds new bound spells for weapons and armor.\nRequires reload.\n\nDefault: On\n\n",
+        label = common.i18n("mcm.boundSpellsLabel"),
+        description = common.i18n("mcm.boundSpellsDescription"),
         variable = mwse.mcm.createTableVariable{
             id = "boundSpells",
             table = config,
         },
     }
     toggles:createOnOffButton{
-        label = "Add New Intervention Spells",
-        description = "Adds new intervention spells for different pantheons and gods of Tamriel.\nRequires reload.\n\nDefault: On\n\n",
+        label = common.i18n("mcm.interventionSpellsLabel"),
+        description = common.i18n("mcm.interventionSpellsDescription"),
         variable = mwse.mcm.createTableVariable{
             id = "interventionSpells",
             table = config,
         },
     }
     toggles:createOnOffButton{
-        label = "Add New Miscellaneous Spells",
-        description = "Adds new spells that do not fit into the category above.\nRequires reload.\n\nDefault: On\n\n",
+        label = common.i18n("mcm.miscSpellsLabel"),
+        description = common.i18n("mcm.miscSpellsDescription"),
         variable = mwse.mcm.createTableVariable{
             id = "miscSpells",
             table = config,
         },
     }
     toggles:createOnOffButton{
-        label = "Fix Player Animations for Tamriel Data Races",
-        description = "Fixes animations when playing as Ohmes-raht or Suthay Khajiit via 3rd party mods.\nRequires reload. Tail may vanish until reload when animations from other MWSE addons are applied to the player character.\nIf using an animation replacer that adds tail bones to base_anim.nif, then this feature is likely not necessary.\n\nDefault: On\n\n",
+        label = common.i18n("mcm.animationFixLabel"),
+        description = common.i18n("mcm.animationFixDescription"),
         variable = mwse.mcm.createTableVariable{
             id = "fixPlayerRaceAnimations",
             table = config,
         },
     }
     toggles:createOnOffButton{
-        label = "Restrict Equipment for Tamriel Data Races",
-        description = "Prevents races added by Tamriel Data from wearing certain kinds of equipment when doing so would be physically implausible or technically problematic.\nRequires reload.\n\nAffected races and equipment:" ..
-        "\n- Stops male Imga from equipping helmets and all Imga from equipping footwear." ..
-        "\n\nDefault: On\n\n",
+        label = common.i18n("mcm.restrictEquipmentLabel"),
+        description = common.i18n("mcm.restrictEquipmentDescription"),
         variable = mwse.mcm.createTableVariable{
             id = "restrictEquipment",
             table = config,
         },
     }
     toggles:createOnOffButton{
-        label = "Fix Vampire Heads",
-        description = "Stops Namira's shroud from hiding the player's head when equipped and allows vampire NPCs to use unique heads made specifically for them.\nRequires reload.\n\nDefault: On\n\n",
+        label = common.i18n("mcm.fixVampireLabel"),
+        description = common.i18n("mcm.fixVampireDescription"),
         variable = mwse.mcm.createTableVariable{
             id = "fixVampireHeads",
             table = config,
         },
     }
     toggles:createOnOffButton{
-        label = "Improve Item Sounds",
-        description = "Gives some items from Tamriel Data, such as perfume and wasabi paste, more reasonable sounds when they are used or added to/removed from one's inventory.\nRequires reload.\n\nDefault: On\n\n",
+        label = common.i18n("mcm.itemSoundsLabel"),
+        description = common.i18n("mcm.itemSoundsDescription"),
         variable = mwse.mcm.createTableVariable{
             id = "improveItemSounds",
             table = config,
         },
     }
     toggles:createOnOffButton{
-        label = "Adjust Travel Prices",
-        description = "Changes the cost of travelling to destinations added by Tamriel Rebuilt and Project Tamriel when Morrowind's calculated prices are unreasonable, such as between Mages Guild networks.\nRequires reload.\n\nDefault: On\n\n",
+        label = common.i18n("mcm.travelPricesLabel"),
+        description = common.i18n("mcm.travelPricesDescription"),
         variable = mwse.mcm.createTableVariable{
             id = "adjustTravelPrices",
             table = config,
         },
     }
     toggles:createOnOffButton{
-        label = "Limit Intervention Spell Range",
-        description = "Restricts the range at which some intervention spells work, preventing them from being used to teleport across the entirety of Tamriel.\nMay conflict with MWSE addons that affect intervention spells or mods that add additional regions besides Tamriel Rebuilt and Project Tamriel.\nRequires reload.\n\nDefault: Off\n\n",
+        label = common.i18n("mcm.interventionRangeLabel"),
+        description = common.i18n("mcm.interventionRangeDescription"),
         variable = mwse.mcm.createTableVariable{
             id = "limitIntervention",
             table = config,

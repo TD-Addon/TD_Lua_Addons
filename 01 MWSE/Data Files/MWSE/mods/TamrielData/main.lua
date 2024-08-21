@@ -3,20 +3,18 @@
 	By mort and Kynesifnar
 ]]
 
+local common = require("tamrielData.common")
+local config = require("tamrielData.config")
+local magic = require("tamrielData.magic")
+
 -- Make sure we have an up-to-date version of MWSE.
 if (mwse.buildDate == nil) or (mwse.buildDate < 20240806) then
     event.register(tes3.event.initialized, function()
-        tes3.messageBox(
-            "[Tamriel Data] Your MWSE is out of date!"
-            .. " You will need to update to a more recent version to use this mod."
-        )
+        tes3ui.showNotifyMenu(common.i18n("main.mwseDate"))
     end)
     return
 end
 
-local common = require("tamrielData.common")
-local config = require("tamrielData.config")
-local magic = require("tamrielData.magic")
 mwse.log("[Tamriel Data MWSE-Lua] Initialized Version 1.2")
 
 -- item id, pickup sound id, putdown sound id, equip sound id
@@ -142,7 +140,7 @@ local function restrictEquip(e)
 		if e.item.objectType == tes3.objectType.armor then
 			if e.item.slot == tes3.armorSlot.boots then
 				if e.reference.mobile == tes3.mobilePlayer then
-					tes3ui.showNotifyMenu("Imga cannot wear shoes.")
+					tes3ui.showNotifyMenu(common.i18n("main.imgaShoes"))
 				end
 				
 				return false
@@ -151,7 +149,7 @@ local function restrictEquip(e)
 			if e.item.slot == tes3.armorSlot.helmet then
 				if e.reference.mobile.object.female == false then
 					if e.reference.mobile == tes3.mobilePlayer then
-						tes3ui.showNotifyMenu("Male Imga cannot wear helmets.")
+						tes3ui.showNotifyMenu(common.i18n("main.imgaHelm"))
 					end
 					
 					return false
@@ -162,7 +160,7 @@ local function restrictEquip(e)
 		if e.item.objectType == tes3.objectType.clothing then
 			if e.item.slot == tes3.clothingSlot.shoes then
 				if e.reference.mobile == tes3.mobilePlayer then
-					tes3ui.showNotifyMenu("Imga cannot wear shoes.")
+					tes3ui.showNotifyMenu(common.i18n("main.imgaShoes"))
 				end
 				
 				return false
@@ -311,14 +309,14 @@ local function limitInterventionMessage(e)
 			local extCell = getExteriorCell(e.caster.cell, cellVisitTable)
 
 			if not extCell or not isInterventionCell(extCell, almsivi_intervention_regions) then
-				tes3ui.showNotifyMenu("The power of Almsivi does not extend to these lands.")
+				tes3ui.showNotifyMenu(common.i18n("main.rangeAlmsivi"))
 			end
 		elseif v.id == 2122 then	-- Kyne's Intervention
 			local cellVisitTable = { e.caster.cell }
 			local extCell = getExteriorCell(e.caster.cell, cellVisitTable)
 
 			if not extCell or not isInterventionCell(extCell, kyne_intervention_regions) then
-				tes3ui.showNotifyMenu("The power of Kyne does not extend to these lands.")
+				tes3ui.showNotifyMenu(common.i18n("main.rangeKyne"))
 			end
 		end
 	end
