@@ -1,6 +1,6 @@
 return {
 	-- Main Text
-	["main.mwseDate"] = "[Tamriel Data] Your MWSE is out of date! You will need to update to a more recent version to use this mod.",
+	["main.mwseDate"] = "[Tamriel Data] MWSE is out of date! You will need to update to a more recent version to use this mod.",
 
 	["main.imgaShoes"] = "Imga cannot wear shoes.",
 	["main.imgaHelm"] = "Male Imga cannot wear helmets.",
@@ -58,6 +58,8 @@ return {
 	["magic.boundWarAxeDesc"] = "The spell effect conjures a lesser Daedra bound in the form of a magical, wondrously light Daedric war axe. The war axe appears automatically equipped on the caster, displacing any currently equipped weapon to inventory.  When the effect ends, the war axe disappears, and any previously equipped weapon is automatically re-equipped.",
 	["magic.boundWarhammer"] = "Bound Warhammer",
 	["magic.boundWarhammerDesc"] = "The spell effect conjures a lesser Daedra bound in the form of a magical, wondrously light Daedric warhammer. The warhammer appears automatically equipped on the caster, displacing any currently equipped weapon to inventory.  When the effect ends, the warhammer disappears, and any previously equipped weapon is automatically re-equipped.",
+	["magic.boundPauldrons"] = "Bound Pauldrons",
+	["magic.boundPauldronsDesc"] = "The spell effect conjures a lesser Daedra bound in the form of magical, wondrously light Daedric pauldrons. The pauldrons appear automatically equipped on the caster, displacing any currently equipped shoulder armor to inventory.  When the effect ends, the pauldrons disappear, and any previously equipped shoulder armor is automatically re-equipped.",
 
 	["magic.interventionKyne"] = "Kyne's Intervention",
 	["magic.interventionKyneDesc"] = "The subject of this effect is transported instantaneously to the nearest temple or sacred place of the Nordic goddess Kyne.",

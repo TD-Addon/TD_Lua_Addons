@@ -8,7 +8,7 @@ local config = require("tamrielData.config")
 local magic = require("tamrielData.magic")
 
 -- Make sure we have an up-to-date version of MWSE.
-if (mwse.buildDate == nil) or (mwse.buildDate < 20240806) then
+if (mwse.buildDate == nil) or (mwse.buildDate < 20240831) then
     event.register(tes3.event.initialized, function()
         tes3ui.showNotifyMenu(common.i18n("main.mwseDate"))
     end)
