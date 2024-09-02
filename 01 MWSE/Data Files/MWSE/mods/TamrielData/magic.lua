@@ -413,7 +413,7 @@ function this.passwallEffect(e)
 
 						if checkWard then
 							for _,detection in pairs(checkWard) do
-								if detection.reference and string.find(detection.reference.baseObject.id, "T_PasswallWard_") then	-- Prevents teleporting through T_PasswallWard statics
+								if detection.reference and string.find(detection.reference.baseObject.id, "T_Aid_PasswallWard_") then	-- Prevents teleporting through T_Aid_PasswallWard statics
 									tes3ui.showNotifyMenu(common.i18n("magic.passWallWard"))
 									return
 								end
