@@ -95,6 +95,9 @@ return {
 	["mcm.miscSpellsLabel"] = "Add New Miscellaneous Spells",
 	["mcm.miscSpellsDescription"] = "Adds new spells that do not fit into the category above.\nRequires reload.\n\nDefault: On\n\n",
 	
+	["mcm.weatherChangesLabel"] = "Change Weathers",
+	["mcm.weatherChangesDescription"] = "Makes adjustments to the weather in certain regions so that it fits better, such as making ashstorms in Morrowind's mainland not originate from Red Mountain.\nRequires reload.\n\nDefault: On\n\n",
+	
 	["mcm.animationFixLabel"] = "Fix Player Animations for Tamriel Data Races",
 	["mcm.animationFixDescription"] = "Fixes animations when playing as Ohmes-raht or Suthay Khajiit via 3rd party mods.\nRequires reload. Tail may vanish until reload when animations from other MWSE addons are applied to the player character." ..
 										"\nIf using an animation replacer that adds tail bones to base_anim.nif, then this feature is likely not necessary.\n\nDefault: On\n\n",

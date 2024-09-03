@@ -6,6 +6,7 @@
 local common = require("tamrielData.common")
 local config = require("tamrielData.config")
 local magic = require("tamrielData.magic")
+local weather = require("tamrielData.weather")
 
 -- Make sure we have an up-to-date version of MWSE.
 if (mwse.buildDate == nil) or (mwse.buildDate < 20240831) then
@@ -273,7 +274,7 @@ local function getExteriorCell(cell, cellVisitTable)
 		return cell
 	end
 	
-	for ref in cell:iterateReferences(tes3.objectType.door) do
+	for ref in cell:iterateReferences(tes3.objectType.door) do	-- Just use tes3.getRegion({ useDoors = true })?
 		if ref.destination and not table.contains(cellVisitTable, ref.destination.cell) then
 			table.insert(cellVisitTable, ref.destination.cell)
 			return getExteriorCell(ref.destination.cell, cellVisitTable)
@@ -362,6 +363,10 @@ event.register(tes3.event.loaded, function()
 	event.unregister(tes3.event.damage, magic.reflectDamageEffect)
 	event.unregister(tes3.event.damageHandToHand, magic.reflectDamageHHEffect)
 	event.unregister(tes3.event.magicCasted, magic.passwallEffect)
+	event.unregister(tes3.event.weatherChangedImmediate, weather.stormOriginWeatherChanged)
+	event.unregister(tes3.event.weatherTransitionStarted, weather.stormOriginWeatherChanged)
+	event.unregister(tes3.event.loaded, weather.stormOriginCellLoad)
+	event.unregister(tes3.event.cellChanged, weather.stormOriginCellLoad)
 	event.unregister(tes3.event.equip, restrictEquip)
 	event.unregister(tes3.event.bodyPartAssigned, fixVampireHeadAssignment)
 	event.unregister(tes3.event.combatStarted, vampireHeadCombatStarted)
@@ -378,6 +383,17 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.damage, magic.reflectDamageEffect)
 		event.register(tes3.event.damageHandToHand, magic.reflectDamageHHEffect)
 		event.register(tes3.event.magicCasted, magic.passwallEffect)
+	end
+
+	if config.weatherChanges == true then
+		event.register(tes3.event.weatherChangedImmediate, weather.stormOriginWeatherChanged)
+		event.register(tes3.event.weatherTransitionStarted, weather.stormOriginWeatherChanged)
+		event.register(tes3.event.loaded, weather.stormOriginCellLoad)
+		event.register(tes3.event.cellChanged, weather.stormOriginCellLoad)
+	end
+
+	if config.fixPlayerRaceAnimations == true then
+		fixPlayerAnimations()
 	end
 
 	if config.restrictEquipment == true then
@@ -400,9 +416,5 @@ event.register(tes3.event.loaded, function()
 	if config.limitIntervention == true then
 		event.register(tes3.event.magicCasted, limitInterventionMessage)
 		event.register(tes3.event.spellTick, limitIntervention)
-	end
-	
-	if config.fixPlayerRaceAnimations == true then
-		fixPlayerAnimations()
 	end
 end)

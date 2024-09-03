@@ -72,6 +72,14 @@ local function registerModConfig()
         },
     }
     toggles:createOnOffButton{
+        label = common.i18n("mcm.weatherChangesLabel"),
+        description = common.i18n("mcm.weatherChangesDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "weatherChanges",
+            table = config,
+        },
+    }
+    toggles:createOnOffButton{
         label = common.i18n("mcm.animationFixLabel"),
         description = common.i18n("mcm.animationFixDescription"),
         variable = mwse.mcm.createTableVariable{

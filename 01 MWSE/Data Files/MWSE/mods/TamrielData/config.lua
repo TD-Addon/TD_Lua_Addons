@@ -3,6 +3,7 @@ local defaultConfig = {
 	boundSpells = true,
 	interventionSpells = true,
 	miscSpells = true,
+	weatherChanges = true,
 	fixPlayerRaceAnimations = true,
 	restrictEquipment = true,
 	fixVampireHeads = true,
