@@ -33,7 +33,7 @@ if config.boundSpells == true then
 	tes3.claimSpellEffectId("T_bound_Warhammer", 2113)
 	tes3.claimSpellEffectId("T_bound_HammerResdayn", 2114)
 	tes3.claimSpellEffectId("T_bound_RazorResdayn", 2115)
-	--tes3.claimSpellEffectId("T_bound_Pauldron", 2116)
+	tes3.claimSpellEffectId("T_bound_Pauldron", 2116)
 	--tes3.claimSpellEffectId("T_bound_ThrowingKnives", 2118)
 end
 
