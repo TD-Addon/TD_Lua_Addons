@@ -24,7 +24,7 @@ local function registerModConfig()
         text = "Kynesifnar - Scripting",
         exec = "start https://www.nexusmods.com/users/56893332?tab=user+files",
     }
-    credits:createHyperlink{			
+    credits:createHyperlink{
         text = "chef - TD_Addon Management",
         exec = "start https://github.com/cheflul/Chefmod",
     }
