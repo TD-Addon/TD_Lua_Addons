@@ -1,5 +1,5 @@
 -- Interop file for Ashfall made as per https://github.com/jhaakma/ashfall/wiki/Interoperability
-event.register("initialized", function()
+event.register(tes3.event.initialized, function()
 	local ashfall = include("mer.ashfall.interop")
 	if ashfall then
 		
@@ -45,7 +45,7 @@ event.register("initialized", function()
 			tropical = 'tropical',
 			dry = 'dry',
 			volcanic = 'volcanic',
-			scorching = { min = -40, max = 20 },	-- Just using the dry setting like the Colovian Highlands wouldn't do justice for the regions that make up the Alik'r desert 
+			scorching = { min = -40, max = 25 },	-- Just using the dry setting like the Colovian Highlands wouldn't do justice for the regions that make up the Alik'r desert 
 		}
 
 		ashfall.registerActivators{
@@ -2730,7 +2730,7 @@ event.register("initialized", function()
 			["padomaic ocean region"] = types.mild,
 			["sea of ghosts region"] = types.cold,
 			["sea of ghosts region n"] = types.polar,
-			["Abecean Sea Region"] = types.temperate,
+			["abecean sea region"] = types.temperate,
 
 			-- Morrowind
 			["aranyon pass region"] = types.cold,
@@ -2795,16 +2795,16 @@ event.register("initialized", function()
 			-- Cyrodiil
 			["jerall mountains region"] = types.cold,
 			["colovian barrowlands region"] = types.cold,
-			["Colovian Highlands Region"] = types.dry,
-			["Stirk Isle Region"] = types.tropical,
-			["West Weald Region"] = types.temperate,
-			["Gold Coast Region"] = types.temperate,
-			["Kvetchi Pass Region"] = types.temperate,
-			["Gilded Hills Region"] = types.dry,
-			["Dasek Marsh Region"] = types.tropical,
+			["colovian highlands region"] = types.dry,
+			["stirk isle region"] = types.tropical,
+			["west weald region"] = types.temperate,
+			["gold coast region"] = types.temperate,
+			["kvetchi pass region"] = types.temperate,
+			["gilded hills region"] = types.dry,
+			["dasek marsh region"] = types.tropical,
 
 			-- High Rock
-			["Dragonfields Region"] = types.cold,
+			["dragonfields region"] = types.cold,
 		}
 
 		ashfall.registerTreeBranches{

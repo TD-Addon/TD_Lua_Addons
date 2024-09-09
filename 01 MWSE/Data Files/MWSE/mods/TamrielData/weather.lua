@@ -3,7 +3,7 @@ local this = {}
 local common = require("tamrielData.common")
 local config = require("tamrielData.config")
 
---[[ OW spore weather colors made with Weather Adjuster with Foggy weather, put here for safekeeping
+--[[ OW spore weather colors made with Weather Adjuster for Foggy weather, put here for safekeeping
 	"sunDayColor":[0.43529415130615,0.5137255191803,0.59215688705444],
 	"skySunsetColor":[0.69924533367157,0.60070633888245,0.46759128570557],
 	"fogSunsetColor":[0.60532134771347,0.50507992506027,0.34875121712685],

@@ -1,5 +1,5 @@
 -- Script for allowing Graphic Herbalism to affect containers that it otherwise wouldn't
-event.register("initialized", function()
+event.register(tes3.event.initialized, function()
     local gh_config = include("graphicHerbalism.config")
     if gh_config then
 		gh_config.whitelist["t_glb_fauna_seabiscuit1"] = true

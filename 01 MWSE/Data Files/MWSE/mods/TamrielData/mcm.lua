@@ -72,6 +72,22 @@ local function registerModConfig()
         },
     }
     toggles:createOnOffButton{
+        label = common.i18n("mcm.vanillaEnchantmentsLabel"),
+        description = common.i18n("mcm.vanillaEnchantmentsDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "changeVanillaEnchantments",
+            table = config,
+        },
+    }
+    toggles:createOnOffButton{
+        label = common.i18n("mcm.magickaExpandedLabel"),
+        description = common.i18n("mcm.magickaExpandedDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "overwriteMagickaExpanded",
+            table = config,
+        },
+    }
+    toggles:createOnOffButton{
         label = common.i18n("mcm.weatherChangesLabel"),
         description = common.i18n("mcm.weatherChangesDescription"),
         variable = mwse.mcm.createTableVariable{

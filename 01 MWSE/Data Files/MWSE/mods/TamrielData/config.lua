@@ -3,6 +3,8 @@ local defaultConfig = {
 	boundSpells = true,
 	interventionSpells = true,
 	miscSpells = true,
+	changeVanillaEnchantments = true,
+	overwriteMagickaExpanded = true,
 	weatherChanges = true,
 	fixPlayerRaceAnimations = true,
 	restrictEquipment = true,
@@ -12,13 +14,4 @@ local defaultConfig = {
 	limitIntervention = false
 }
 
-local config = mwse.loadConfig("tamrielData", defaultConfig)
-
--- Set config values to the default if they do not already exist in the config file (because of a recent TD update)
-for k, v in pairs(defaultConfig) do
-	if config[k] == nil then
-		config[k] = v
-	end
-end
-
-return config
+return mwse.loadConfig("tamrielData", defaultConfig)

@@ -74,8 +74,24 @@ return {
 	["magic.banishFailure"] = "This spell is too weak to banish %s!",
 	["magic.passWallWard"] = "You cannot pass through to there.",
 	["magic.passWallAlpha"] = "You cannot pass through that.",
-	["magic.passWallExterior"] = "You must remain in a confined space.",
+	["magic.passWallExterior"] = "You must be in a confined space.",
+	["magic.passWallDoorExterior"] = "You must remain in a confined space.",
 	["magic.passWallUnderwater"] = "You cannot be underwater.",
+
+	["magic.itemScSummonAuroran"] = "Scroll of Summon Auroran",
+	["magic.itemScSummonBonelordGr"] = "Scroll of Ancestors",
+	["magic.itemScSummonDremoraArcher"] = "Scroll of Summon Dremora Archer",
+	["magic.itemScSummonDremoraCaster"] = "Scroll of Dagon's Seal",
+	["magic.itemScSummonGuardian"] = "Scroll of Summon Guardian",
+	["magic.itemScSummonHerne"] = "Scroll of Summon Herne",
+	["magic.itemScSummonLesserClannfear"] = "Scroll of Bite-Rock",
+	["magic.itemScSummonMorphoid"] = "Scroll of Summon Morphoid",
+	["magic.itemScSummonOgrim"] = "Scroll of Summon Ogrim",
+	["magic.itemScSummonSeducer"] = "Scroll of Summon Seducer",
+	["magic.itemScSummonSeducerDark"] = "Scroll of Summon Dark Seducer",
+	["magic.itemScSummonStormMonarch"] = "Scroll of Summon Storm Monarch",
+	["magic.itemScSummonVermai"] = "Scroll of Summon Vermai",
+	["magic.itemScKynesIntervention"] = "Scroll of Kyne's Intervention",
 
 	-- MCM Text
 	["mcm.name"] = "Tamriel Data",
@@ -95,8 +111,16 @@ return {
 	["mcm.miscSpellsLabel"] = "Add New Miscellaneous Spells",
 	["mcm.miscSpellsDescription"] = "Adds new spells that do not fit into the category above.\nRequires reload.\n\nDefault: On\n\n",
 	
+	["mcm.vanillaEnchantmentsLabel"] = "Change Vanilla Enchantments",
+	["mcm.vanillaEnchantmentsDescription"] = "Allows vanilla enchantments to apply Tamriel Data's new magic effects when doing so makes sense, such as Scrolls of Lord Mhas' Vengeance summoning bound greaves and pauldrons in addition to the vanilla bound items" ..
+												"\nRequires all of the settings for new spells above to be enabled.\nRequires reload.\n\nDefault: On\n\n",
+
+	["mcm.magickaExpandedLabel"] = "Overwrite Magicka Expanded Effects",
+	["mcm.magickaExpandedDescription"] = "Replaces some magic effects from Magicka Expanded with ones that are also implemented by Tamriel Data for the sake of consistency, such as Banish Daedra and Summon Vermai." ..
+											"\nOnly has an effect if applicable packs of Magicka Expanded are installed and if the new spells settings above that are enabled.\nRequires reload.\n\nDefault: On\n\n",
+
 	["mcm.weatherChangesLabel"] = "Change Weathers",
-	["mcm.weatherChangesDescription"] = "Makes adjustments to the weather in certain regions so that it fits better, such as making ashstorms in Morrowind's mainland not originate from Red Mountain.\nRequires reload.\n\nDefault: On\n\n",
+	["mcm.weatherChangesDescription"] = "Makes adjustments to the weather in some regions so that it fits better, such as ashstorms the Armun Ashlands not originating from Red Mountain.\nRequires reload.\n\nDefault: On\n\n",
 	
 	["mcm.animationFixLabel"] = "Fix Player Animations for Tamriel Data Races",
 	["mcm.animationFixDescription"] = "Fixes animations when playing as Ohmes-raht or Suthay Khajiit via 3rd party mods.\nRequires reload. Tail may vanish until reload when animations from other MWSE addons are applied to the player character." ..

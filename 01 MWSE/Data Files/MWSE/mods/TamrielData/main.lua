@@ -1,5 +1,5 @@
 --[[
-	Tamriel Data MWSE-Lua Addon v1.2
+	Tamriel Data MWSE-Lua Addon v2.0
 	By mort and Kynesifnar
 ]]
 
@@ -16,7 +16,7 @@ if (mwse.buildDate == nil) or (mwse.buildDate < 20240831) then
     return
 end
 
-mwse.log("[Tamriel Data MWSE-Lua] Initialized Version 1.2")
+mwse.log("[Tamriel Data MWSE-Lua] Initialized Version 2.0")
 
 -- item id, pickup sound id, putdown sound id, equip sound id
 local item_sounds = {	
@@ -246,7 +246,7 @@ end
 ---@param e calcTravelPriceEventData
 local function adjustTravelPrices(e)
 	for k,v in pairs(travel_actor_prices) do
-		local actorID, destinationID, manualPrice, priceFactor = unpack(v, 1, 4 )
+		local actorID, destinationID, manualPrice, priceFactor = unpack(v, 1, 4)
 		if e.reference.baseObject.id == actorID then
 			if not destinationID or e.destination.cell.id == destinationID then
 				if manualPrice then
@@ -274,7 +274,7 @@ local function getExteriorCell(cell, cellVisitTable)
 		return cell
 	end
 	
-	for ref in cell:iterateReferences(tes3.objectType.door) do	-- Just use tes3.getRegion({ useDoors = true })?
+	for ref in cell:iterateReferences(tes3.objectType.door) do
 		if ref.destination and not table.contains(cellVisitTable, ref.destination.cell) then
 			table.insert(cellVisitTable, ref.destination.cell)
 			return getExteriorCell(ref.destination.cell, cellVisitTable)
@@ -285,7 +285,7 @@ end
 ---@param cell tes3cell
 local function isInterventionCell(cell, regionTable)
 	for k,v in pairs(regionTable) do
-		local regionID, xLeft, xRight, yBottom, yTop = unpack(v, 1, 5 )
+		local regionID, xLeft, xRight, yBottom, yTop = unpack(v, 1, 5)
 			if (cell.region and cell.region.id == regionID) or cell.region == regionID then
 				if not xLeft then -- Checks whether cell boundaries are being used; if xLeft is nil, then all of the others should be too
 					return true
@@ -312,7 +312,7 @@ local function limitInterventionMessage(e)
 			if not extCell or not isInterventionCell(extCell, almsivi_intervention_regions) then
 				tes3ui.showNotifyMenu(common.i18n("main.rangeAlmsivi"))
 			end
-		elseif v.id == 2122 then	-- Kyne's Intervention
+		elseif v.id == tes3.effect.T_intervention_Kyne then
 			local cellVisitTable = { e.caster.cell }
 			local extCell = getExteriorCell(e.caster.cell, cellVisitTable)
 
@@ -333,7 +333,7 @@ local function limitIntervention(e)
 			if not extCell or not isInterventionCell(extCell, almsivi_intervention_regions) then
 				return false
 			end
-		elseif v.id == 2122 then	-- Kyne's Intervention
+		elseif v.id == tes3.effect.T_intervention_Kyne then
 			local cellVisitTable = { e.caster.cell }
 			local extCell = getExteriorCell(e.caster.cell, cellVisitTable)
 			
