@@ -69,7 +69,9 @@ return {
 	["magic.miscBanish"] = "Banish Daedra",
 	["magic.miscBanishDesc"] = "Banishes any daedra that the spell is cast upon, if the target is of sufficiently low level compared to the spell's magnitude.  If the daedra is wounded, then it will be easier to banish.  Banishing a daedra will transfer any of their important belongings to the caster.",
 	["magic.miscReflectDamage"] = "Reflect Damage",
-	["magic.miscReflectDamageDesc"] = "This effect allows the subject to reflect physical damage back at an attacker.  The effect's magnitude is the percent damage that will be reflected for each attack.  Any unreflected damage is dealt to the defender normally",
+	["magic.miscReflectDamageDesc"] = "This effect allows the subject to reflect physical damage back at an attacker.  The effect's magnitude is the percent damage that will be reflected for each attack.  Any unreflected damage is dealt to the defender normally.",
+	["magic.miscRadiantShield"] = "Radiant Shield",
+	["magic.miscRadiantShieldDesc"] = "This effect creates a shield of brilliant light around the subject's entire body. The spell adds its magnitude to the subject's Armor Rating, resists harmful magic, and briefly blinds attackers in melee.",
 
 	["magic.banishFailure"] = "This spell is too weak to banish %s!",
 	["magic.passWallWard"] = "You cannot pass through to there.",

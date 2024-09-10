@@ -360,6 +360,8 @@ dofile("TamrielData.mcm")
 
 event.register(tes3.event.loaded, function()
 
+	event.unregister(tes3.event.spellResist, magic.radiantShieldSpellResistEffect)
+	event.unregister(tes3.event.damaged, magic.radiantShieldDamagedEffect)
 	event.unregister(tes3.event.damage, magic.reflectDamageEffect)
 	event.unregister(tes3.event.damageHandToHand, magic.reflectDamageHHEffect)
 	event.unregister(tes3.event.magicCasted, magic.passwallEffect)
@@ -380,6 +382,8 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.miscSpells == true then
+		event.register(tes3.event.spellResist, magic.radiantShieldSpellResistEffect)
+		event.register(tes3.event.damaged, magic.radiantShieldDamagedEffect)
 		event.register(tes3.event.damage, magic.reflectDamageEffect)
 		event.register(tes3.event.damageHandToHand, magic.reflectDamageHHEffect)
 		event.register(tes3.event.magicCasted, magic.passwallEffect)

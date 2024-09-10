@@ -46,6 +46,7 @@ if config.miscSpells == true then
 	tes3.claimSpellEffectId("T_mysticism_BanishDae", 2119)
 	tes3.claimSpellEffectId("T_mysticism_ReflectDmg", 2120)
 	--tes3.claimSpellEffectId("T_mysticism_DetHuman", 2121)
+	tes3.claimSpellEffectId("T_alteration_RadShield", 2123)
 end
 
 -- The effect costs for most summons were initially calculated by mort using a formula (dependent on a creature's health and soul) that is now lost and then adjusted as seemed reasonable.
@@ -95,13 +96,15 @@ local td_interventions = {
 local td_miscs = {
 	{ tes3.effect.T_alteration_Passwall, "T_Com_Mys_UNI_Passwall", common.i18n("magic.miscPasswall"), 750, 96, "td\\s\\td_s_passwall.tga", 0, 25, tes3.effectRange.touch, 0, 0, common.i18n("magic.miscPasswallDesc")},
 	{ tes3.effect.T_mysticism_BanishDae, "T_Com_Mys_BanishDaedra", common.i18n("magic.miscBanish"), 32, 40, "td\\s\\td_s_ban_daedra.tga", 0, 0, tes3.effectRange.touch, 25, 25, common.i18n("magic.miscBanishDesc")},
-	{ tes3.effect.T_mysticism_ReflectDmg, "T_Com_Mys_ReflectDamage", common.i18n("magic.miscReflectDamage"), 20, 76, "td\\s\\td_s_ref_dam.tga", 5, 0, tes3.effectRange.self, 10, 20, common.i18n("magic.miscReflectDamageDesc")}
+	{ tes3.effect.T_mysticism_ReflectDmg, "T_Com_Mys_ReflectDamage", common.i18n("magic.miscReflectDamage"), 20, 76, "td\\s\\td_s_ref_dam.tga", 5, 0, tes3.effectRange.self, 10, 20, common.i18n("magic.miscReflectDamageDesc")},
+	{ tes3.effect.T_alteration_RadShield, "T_Ayl_Alt_RadiantShield", common.i18n("magic.miscRadiantShield"), 5, 75, "s\\tx_s_light_shield.tga", 30, 0, tes3.effectRange.self, 10, 10, common.i18n("magic.miscRadiantShieldDesc")}
 }
 
--- spell id, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, 2nd effect id, ...
+-- spell id, cast type, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, 2nd effect id, ...
 local td_spells = {
-	{ "T_Cr_Cnj_AylSorcKSummon1", tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 40, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Cr_Cnj_AylSorcKSummon3", tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 40, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
+	{ "T_Cr_Cnj_AylSorcKSummon1", tes3.spellType.spell, tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 40, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
+	{ "T_Cr_Cnj_AylSorcKSummon3", tes3.spellType.spell, tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 40, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
+	{ "T_Cr_Alt_AuroranShield", tes3.spellType.ability, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 20, 20, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil }
 }
 
 -- enchantment id, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, 2nd effect id, ...
@@ -122,6 +125,7 @@ local td_enchantments = {
 	{ "T_Once_SummonBonelordGr60", tes3.effect.T_summon_BoneldGr, tes3.effectRange.self, 0, 60, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
 	{ "T_Once_AylDaedricHerald1", tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 30, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
 	{ "T_Once_AylDaedricHerald2", tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 30, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
+	{ "T_Once_AylLoreArmor1", tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 20, 20, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
 	{ "T_Once_KynesIntervention", tes3.effect.T_intervention_Kyne, tes3.effectRange.self, 0, 1, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil }
 }
 
@@ -148,6 +152,37 @@ local td_enchanted_items = {
 	{ "T_EnSc_Com_SummonVermai", common.i18n("magic.itemScSummonVermai"), 275 },
 	{ "T_EnSc_Nor_KynesIntervention", common.i18n("magic.itemScKynesIntervention"), 63 }
 }
+
+---@param e spellResistEventData
+function this.radiantShieldSpellResistEffect(e)
+	local radiantShieldEffects = e.target.mobile:getActiveMagicEffects({ effect = tes3.effect.T_alteration_RadShield })
+		
+	-- Only resist hostile effects; 'not e.effect' is checked because the documentation says that e.effect "may not always be available" and I'd rather resist the odd positive effects than not resist harmful ones
+	if radiantShieldEffects and (not e.effect or e.effect.object.isHarmful) then
+		for _,v in pairs(radiantShieldEffects) do
+			e.resistedPercent = e.resistedPercent + v.magnitude
+		end
+		
+		if e.resistedPercent > 100 then
+			e.resistedPercent = 100		-- Prevents anomalous behavior from occuring when above 100%
+		end
+	end
+end
+
+---@param e damagedEventData
+function this.radiantShieldDamagedEffect(e)
+	if e.attacker and e.source == tes3.damageSource.attack and not e.projectile then
+		local radiantShieldEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.T_alteration_RadShield })
+		if radiantShieldEffects then
+			local totalMagnitude = 0
+			for _,v in pairs(radiantShieldEffects) do
+				totalMagnitude = totalMagnitude + v.magnitude
+			end
+			
+			tes3.applyMagicSource({ reference = e.attacker, name = "Radiant Shield", effects = {{ id = tes3.effect.blind, duration = 1.5, min = totalMagnitude, max = totalMagnitude }} })
+		end
+	end
+end
 
 function this.replaceInterventionMarkers(cellTable, markerID)
 	for _,v in pairs(cellTable) do
@@ -192,46 +227,44 @@ local function kynesInterventionEffect(e)
 	e.effectInstance.state = tes3.spellState.retired
 end
 
+---@param reflectDamageEffects tes3activeMagicEffect[]
+---@param damage number
+local function reflectDamageCalculate(reflectDamageEffects, damage)
+	local percentMagnitude
+	local reflectedDamage = 0
+	for _,v in pairs(reflectDamageEffects) do -- This effect is multiplicative like Morrowind's reflect rather than additive like Oblivion's reflect damage
+		percentMagnitude = v.magnitude / 100
+		reflectedDamage = reflectedDamage + (damage * percentMagnitude)
+		damage = damage * (1 - percentMagnitude)
+	end
+
+	if damage < 0 then
+		damage = 0		-- Make sure that the effect can't heal the defender
+	end
+
+	return { damage, reflectedDamage }
+end
+
 ---@param e damageEventData
 function this.reflectDamageEffect(e)
 	if e.source == tes3.damageSource.attack and e.attacker then
 		local reflectDamageEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_ReflectDmg })
 		if reflectDamageEffects then
-			local percentMagnitude
-			local reflectedDamage = 0
-			for _,v in pairs(reflectDamageEffects) do -- This effect is multiplicative like Morrowind's reflect rather than additive like Oblivion's reflect damage
-				percentMagnitude = v.magnitude / 100
-				reflectedDamage = reflectedDamage + (e.damage * percentMagnitude)
-				e.damage = e.damage * (1 - percentMagnitude)
-			end
-
+			local damage, reflectedDamage = unpack(reflectDamageCalculate(reflectDamageEffects, e.damage))
 			e.attacker:applyDamage({ damage = reflectedDamage, playerAttack = true })
-
-			if e.damage < 0 then
-				e.damage = 0		-- Make sure that the effect can't heal the defender
-			end
+			e.damage = damage
 		end
 	end
 end
 
 ---@param e damageHandToHandEventData
 function this.reflectDamageHHEffect(e)
-	if e.attacker then
+	if e.source == tes3.damageSource.attack and e.attacker then
 		local reflectDamageEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_ReflectDmg })
 		if reflectDamageEffects then
-			local percentMagnitude
-			local reflectedDamage = 0
-			for _,v in pairs(reflectDamageEffects) do -- This effect is multiplicative like Morrowind's reflect rather than additive like Oblivion's reflect damage
-				percentMagnitude = v.magnitude / 100
-				reflectedDamage = reflectedDamage + (e.fatigueDamage * percentMagnitude)
-				e.fatigueDamage = e.fatigueDamage * (1 - percentMagnitude)
-			end
-
+			local damage, reflectedDamage = unpack(reflectDamageCalculate(reflectDamageEffects, e.damage))
 			e.attacker:applyFatigueDamage(reflectedDamage, 0, false)
-
-			if e.fatigueDamage < 0 then
-				e.fatigueDamage = 0		-- Make sure that the effect can't heal the defender
-			end
+			e.fatigueDamage = damage
 		end
 	end
 end
@@ -708,6 +741,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 		local levitateEffect = tes3.getMagicEffect(tes3.effect.levitate)
 		local soultrapEffect = tes3.getMagicEffect(tes3.effect.soultrap)
 		local reflectEffect = tes3.getMagicEffect(tes3.effect.reflect)
+		local shieldEffect = tes3.getMagicEffect(tes3.effect.shield)
 
 		local effectID, spellID, spellName, effectCost, spellCost, iconPath, duration, radius, type, minMag, maxMag, effectDescription = unpack(td_miscs[1])	-- Passwall
 		tes3.addMagicEffect{
@@ -834,6 +868,48 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onTick = nil,
 			onCollision = nil
 		}
+
+		effectID, spellID, spellName, effectCost, spellCost, iconPath, duration, radius, type, minMag, maxMag, effectDescription = unpack(td_miscs[4])		-- Radiant Shield
+		tes3.addMagicEffect{
+			id = effectID,
+			name = spellName,
+			description = effectDescription,
+			school = tes3.magicSchool.alteration,
+			baseCost = effectCost,
+			speed = shieldEffect.speed,
+			allowEnchanting = shieldEffect.allowEnchanting,
+			allowSpellmaking = shieldEffect.allowSpellmaking,
+			appliesOnce = shieldEffect.appliesOnce,
+			canCastSelf = shieldEffect.canCastSelf,
+			canCastTarget = shieldEffect.canCastTarget,
+			canCastTouch = shieldEffect.canCastTouch,
+			casterLinked = shieldEffect.casterLinked,
+			hasContinuousVFX = shieldEffect.hasContinuousVFX,
+			hasNoDuration = shieldEffect.hasNoDuration,
+			hasNoMagnitude = shieldEffect.hasNoMagnitude,
+			illegalDaedra = shieldEffect.illegalDaedra,
+			isHarmful = shieldEffect.isHarmful,
+			nonRecastable = shieldEffect.nonRecastable,
+			targetsAttributes = shieldEffect.targetsAttributes,
+			targetsSkills = shieldEffect.targetsSkills,
+			unreflectable = shieldEffect.unreflectable,
+			usesNegativeLighting = shieldEffect.usesNegativeLighting,
+			icon = iconPath,
+			particleTexture = shieldEffect.particleTexture,
+			castSound = shieldEffect.castSoundEffect.id,
+			castVFX = shieldEffect.castVisualEffect.id,
+			boltSound = shieldEffect.boltSoundEffect.id,
+			boltVFX = shieldEffect.boltVisualEffect.id,
+			hitSound = shieldEffect.hitSoundEffect.id,
+			hitVFX = "T_VFX_RadiantShieldHit",
+			areaSound = shieldEffect.areaSoundEffect.id,
+			areaVFX = shieldEffect.areaVisualEffect.id,
+			lighting = {x = 128, y = 128, z = 128},
+			size = shieldEffect.size,
+			sizeCap = shieldEffect.sizeCap,
+			onTick = nil,
+			onCollision = nil
+		}
 	end
 end)
 
@@ -910,14 +986,15 @@ event.register(tes3.event.load, function()
 		for k,v in pairs(td_spells) do
 			local overridden_spell = tes3.getObject(v[1])
 			if overridden_spell then
+				overridden_spell.castType = v[2]
 				for i = 1, 8, 1 do
 					local effect = overridden_spell.effects[i]
-					effect.id = v[2 + (i - 1) * 6]
-					effect.rangeType = v[3 + (i - 1) * 6]
-					effect.radius = v[4 + (i - 1) * 6]
-					effect.duration = v[5 + (i - 1) * 6]
-					effect.min = v[6 + (i - 1) * 6]
-					effect.max = v[7 + (i - 1) * 6]
+					effect.id = v[3 + (i - 1) * 6]
+					effect.rangeType = v[4 + (i - 1) * 6]
+					effect.radius = v[5 + (i - 1) * 6]
+					effect.duration = v[6 + (i - 1) * 6]
+					effect.min = v[7 + (i - 1) * 6]
+					effect.max = v[8 + (i - 1) * 6]
 				end
 			end
 		end
