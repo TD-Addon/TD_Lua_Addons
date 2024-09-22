@@ -289,7 +289,7 @@ local function banishDaedraEffect(e)
 	
 	if magnitude >= 4 * ((targetLevel / 2) + ((targetLevel / 2) * target.mobile.health.normalized)) then
 		for _,v in pairs(target.baseObject.inventory.items) do
-			if v.object.objectType ~= tes3.objectType.leveledItem then
+			if v.object.objectType ~= tes3.objectType.leveledItem then	-- Also manually check some of the leveled lists to remove non-unique items that were put on the creature without being a leveled item?
 				table.insert(uniqueItems, v.object)
 			end
 		end

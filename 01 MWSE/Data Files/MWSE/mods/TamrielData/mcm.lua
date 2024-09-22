@@ -17,28 +17,32 @@ local function registerModConfig()
     -- Sidebar Credits
     local credits = preferences.sidebar:createCategory{label=common.i18n("mcm.credits")}
     credits:createHyperlink{
-        text = "mort - Scripting",
+        text = common.i18n("mcm.mort"),
         exec = "start https://www.nexusmods.com/morrowind/users/4138441/?tab=user+files",
     }
     credits:createHyperlink{
-        text = "Kynesifnar - Scripting",
+        text = common.i18n("mcm.Kynesifnar"),
         exec = "start https://www.nexusmods.com/users/56893332?tab=user+files",
     }
     credits:createHyperlink{
-        text = "chef - TD_Addon Management",
+        text = common.i18n("mcm.chef"),
         exec = "start https://github.com/cheflul/Chefmod",
     }
     credits:createHyperlink{
-        text = "Cicero - Icons",
+        text = common.i18n("mcm.Cicero"),
         exec = "start https://www.nexusmods.com/morrowind/users/64610026?tab=user+files",
     }
     credits:createHyperlink{
-        text = "NullCascade - MWSE Support",
+        text = common.i18n("mcm.NullCascade"),
         exec = "start https://www.nexusmods.com/morrowind/users/26153919?tab=user+files",
+    }
+    credits:createHyperlink{
+        text = common.i18n("mcm.Hrnchamd"),
+        exec = "start https://www.nexusmods.com/morrowind/users/843673?tab=user+files",
     }
 
     -- Feature Toggles
-    local toggles = preferences:createCategory{label="Feature Toggles"}
+    local toggles = preferences:createCategory{label = common.i18n("mcm.settings")}
     toggles:createOnOffButton{
         label = common.i18n("mcm.summonSpellsLabel"),
         description = common.i18n("mcm.summonSpellsDescription"),

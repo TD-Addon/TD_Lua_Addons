@@ -9,7 +9,7 @@ local magic = require("tamrielData.magic")
 local weather = require("tamrielData.weather")
 
 -- Make sure we have an up-to-date version of MWSE.
-if (mwse.buildDate == nil) or (mwse.buildDate < 20240831) then
+if (mwse.buildDate == nil) or (mwse.buildDate < 20240916) then
     event.register(tes3.event.initialized, function()
         tes3ui.showNotifyMenu(common.i18n("main.mwseDate"))
     end)
@@ -365,10 +365,14 @@ event.register(tes3.event.loaded, function()
 	event.unregister(tes3.event.damage, magic.reflectDamageEffect)
 	event.unregister(tes3.event.damageHandToHand, magic.reflectDamageHHEffect)
 	event.unregister(tes3.event.magicCasted, magic.passwallEffect)
-	event.unregister(tes3.event.weatherChangedImmediate, weather.stormOriginWeatherChanged)
-	event.unregister(tes3.event.weatherTransitionStarted, weather.stormOriginWeatherChanged)
-	event.unregister(tes3.event.loaded, weather.stormOriginCellLoad)
-	event.unregister(tes3.event.cellChanged, weather.stormOriginCellLoad)
+	
+	event.unregister(tes3.event.cellChanged, weather.manageWeathers)
+	event.unregister(tes3.event.weatherChangedImmediate, weather.manageWeathers)
+	event.unregister(tes3.event.weatherTransitionStarted, weather.manageWeathers)
+	event.unregister(tes3.event.weatherChangedImmediate, weather.changeStormOrigin)
+	event.unregister(tes3.event.weatherTransitionStarted, weather.changeStormOrigin)
+	event.unregister(tes3.event.cellChanged, weather.changeStormOrigin)
+	
 	event.unregister(tes3.event.equip, restrictEquip)
 	event.unregister(tes3.event.bodyPartAssigned, fixVampireHeadAssignment)
 	event.unregister(tes3.event.combatStarted, vampireHeadCombatStarted)
@@ -390,10 +394,15 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.weatherChanges == true then
-		event.register(tes3.event.weatherChangedImmediate, weather.stormOriginWeatherChanged)
-		event.register(tes3.event.weatherTransitionStarted, weather.stormOriginWeatherChanged)
-		event.register(tes3.event.loaded, weather.stormOriginCellLoad)
-		event.register(tes3.event.cellChanged, weather.stormOriginCellLoad)
+		weather.changeRegionWeatherChances()
+		
+		event.register(tes3.event.cellChanged, weather.manageWeathers)
+		event.register(tes3.event.weatherChangedImmediate, weather.manageWeathers)
+		event.register(tes3.event.weatherTransitionStarted, weather.manageWeathers)
+
+		event.register(tes3.event.weatherChangedImmediate, weather.changeStormOrigin)
+		event.register(tes3.event.weatherTransitionStarted, weather.changeStormOrigin)
+		event.register(tes3.event.cellChanged, weather.changeStormOrigin)
 	end
 
 	if config.fixPlayerRaceAnimations == true then
