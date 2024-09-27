@@ -9,7 +9,7 @@ local magic = require("tamrielData.magic")
 local weather = require("tamrielData.weather")
 
 -- Make sure we have an up-to-date version of MWSE.
-if (mwse.buildDate == nil) or (mwse.buildDate < 20240916) then
+if (mwse.buildDate == nil) or (mwse.buildDate < 20240926) then
     event.register(tes3.event.initialized, function()
         tes3ui.showNotifyMenu(common.i18n("main.mwseDate"))
     end)
@@ -362,6 +362,8 @@ event.register(tes3.event.loaded, function()
 
 	event.unregister(tes3.event.spellResist, magic.radiantShieldSpellResistEffect)
 	event.unregister(tes3.event.damaged, magic.radiantShieldDamagedEffect)
+	event.unregister(tes3.event.damaged, magic.reflectDamageStun)
+	event.unregister(tes3.event.damagedHandToHand, magic.reflectDamageStun)
 	event.unregister(tes3.event.damage, magic.reflectDamageEffect)
 	event.unregister(tes3.event.damageHandToHand, magic.reflectDamageHHEffect)
 	event.unregister(tes3.event.magicCasted, magic.passwallEffect)
@@ -388,8 +390,12 @@ event.register(tes3.event.loaded, function()
 	if config.miscSpells == true then
 		event.register(tes3.event.spellResist, magic.radiantShieldSpellResistEffect)
 		event.register(tes3.event.damaged, magic.radiantShieldDamagedEffect)
+
+		event.register(tes3.event.damaged, magic.reflectDamageStun)
+		event.register(tes3.event.damagedHandToHand, magic.reflectDamageStun)
 		event.register(tes3.event.damage, magic.reflectDamageEffect)
 		event.register(tes3.event.damageHandToHand, magic.reflectDamageHHEffect)
+		
 		event.register(tes3.event.magicCasted, magic.passwallEffect)
 	end
 

@@ -33,7 +33,7 @@ if config.boundSpells == true then
 	tes3.claimSpellEffectId("T_bound_Warhammer", 2113)
 	tes3.claimSpellEffectId("T_bound_HammerResdayn", 2114)
 	tes3.claimSpellEffectId("T_bound_RazorResdayn", 2115)
-	tes3.claimSpellEffectId("T_bound_Pauldron", 2116)
+	tes3.claimSpellEffectId("T_bound_Pauldrons", 2116)
 	--tes3.claimSpellEffectId("T_bound_ThrowingKnives", 2118)
 end
 
@@ -49,89 +49,133 @@ if config.miscSpells == true then
 	tes3.claimSpellEffectId("T_alteration_RadShield", 2123)
 end
 
--- The effect costs for most summons were initially calculated by mort using a formula (dependent on a creature's health and soul) that is now lost and then adjusted as seemed reasonable.
--- Calculations have provided a new formula: Effect Cost = (.16 * Health) + (.035 * Soul); most of the old values are in close agreement with the new formula and have thus been left unchanged
--- effect id, spell id to override, spell name, creature id, effect mana cost, spell mana cost, icon, spell duration, effect description
-local td_summons = {
-	{ tes3.effect.T_summon_Devourer, "T_Com_Cnj_SummonDevourer", common.i18n("magic.summonDevourer"), "T_Dae_Cre_Devourer_01", 52, 156, "td\\s\\td_s_summ_dev.dds", 60, common.i18n("magic.summonDevourerDesc")},
-	{ tes3.effect.T_summon_DremArch, "T_Com_Cnj_SummonDremoraArcher", common.i18n("magic.summonDremoraArcher"), "T_Dae_Cre_Drem_Arch_01", 33, 98, "td\\s\\td_s_sum_drm_arch.dds", 60, common.i18n("magic.summonDremoraArcherDesc")},
-	{ tes3.effect.T_summon_DremCast, "T_Com_Cnj_SummonDremoraCaster", common.i18n("magic.summonDremoraCaster"), "T_Dae_Cre_Drem_Cast_01", 31, 93, "td\\s\\td_s_sum_drm_mage.dds", 60, common.i18n("magic.summonDremoraCasterDesc")},
-	{ tes3.effect.T_summon_Guardian, "T_Com_Cnj_SummonGuardian", common.i18n("magic.summonGuardian"), "T_Dae_Cre_Guardian_01", 69, 207, "td\\s\\td_s_sum_guard.dds", 60, common.i18n("magic.summonGuardianDesc")},
-	{ tes3.effect.T_summon_LesserClfr, "T_Com_Cnj_SummonLesserClannfear", common.i18n("magic.summonLesserClannfear"), "T_Dae_Cre_LesserClfr_01", 19, 57, "td\\s\\td_s_sum_lsr_clan.dds", 60, common.i18n("magic.summonLesserClannfearDesc")},
-	{ tes3.effect.T_summon_Ogrim, "T_Com_Cnj_SummonOgrim", common.i18n("magic.summonOgrim"), "ogrim", 33, 99, "td\\s\\td_s_summ_ogrim.dds", 60, common.i18n("magic.summonOgrimDesc")},
-	{ tes3.effect.T_summon_Seducer, "T_Com_Cnj_SummonSeducer", common.i18n("magic.summonSeducer"), "T_Dae_Cre_Seduc_01", 52, 156, "td\\s\\td_s_summ_sed.dds", 60, common.i18n("magic.summonSeducerDesc")},
-	{ tes3.effect.T_summon_SeducerDark, "T_Com_Cnj_SummonSeducerDark", common.i18n("magic.summonSeducerDark"), "T_Dae_Cre_SeducDark_02", 75, 225, "td\\s\\td_s_summ_d_sed.dds", 60, common.i18n("magic.summonSeducerDarkDesc")},
-	{ tes3.effect.T_summon_Vermai, "T_Com_Cnj_SummonVermai", common.i18n("magic.summonVermai"), "T_Dae_Cre_Verm_01", 29, 88, "td\\s\\td_s_summ_vermai.dds", 60, common.i18n("magic.summonVermaiDesc")},
-	{ tes3.effect.T_summon_AtroStormMon, "T_Com_Cnj_SummonStormMonarch", common.i18n("magic.summonStormMonarch"), "T_Dae_Cre_MonarchSt_01", 60, 179, "td\\s\\td_s_sum_stm_monch.dds", 60, common.i18n("magic.summonStormMonarchDesc")},
-	{ tes3.effect.T_summon_IceWraith, "T_Nor_Cnj_SummonIceWraith", common.i18n("magic.summonIceWraith"), "T_Sky_Cre_IceWr_01", 35, 104, "td\\s\\td_s_sum_ice_wrth.dds", 60, common.i18n("magic.summonIceWraithDesc")},
-	{ tes3.effect.T_summon_DweSpectre, "T_Dwe_Cnj_Uni_SummonDweSpectre", common.i18n("magic.summonDweSpectre"), "dwarven ghost", 17, 52, "td\\s\\td_s_sum_dwe_spctre.dds", 60, common.i18n("magic.summonDweSpectreDesc")},
-	{ tes3.effect.T_summon_SteamCent, "T_Dwe_Cnj_Uni_SummonSteamCent", common.i18n("magic.summonSteamCent"), "centurion_steam", 29, 88, "td\\s\\td_s_sum_dwe_cent.dds", 60, common.i18n("magic.summonSteamCentDesc")},
-	{ tes3.effect.T_summon_SpiderCent, "T_Dwe_Cnj_Uni_SummonSpiderCent", common.i18n("magic.summonSpiderCent"), "centurion_spider", 15, 45, "td\\s\\td_s_sum_dwe_spdr.dds", common.i18n("magic.summonSpiderCentDesc")},
-	{ tes3.effect.T_summon_WelkyndSpirit, "T_Ayl_Cnj_SummonWelkyndSpirit", common.i18n("magic.summonWelkyndSpirit"), "T_Ayl_Cre_WelkSpr_01", 29, 78, "td\\s\\td_s_sum_welk_srt.dds", 60, common.i18n("magic.summonWelkyndSpiritDesc")},
-	{ tes3.effect.T_summon_Auroran, "T_Com_Cnj_SummonAuroran", common.i18n("magic.summonAuroran"), "T_Dae_Cre_Auroran_01", 44, 132, "td\\s\\td_s_sum_auro.dds", 60, common.i18n("magic.summonAuroranDesc")},
-	{ tes3.effect.T_summon_Herne, "T_Com_Cnj_SummonHerne", common.i18n("magic.summonHerne"), "T_Dae_Cre_Herne_01", 18, 54, "td\\s\\td_s_sum_herne.dds", 60, common.i18n("magic.summonHerneDesc")},
-	{ tes3.effect.T_summon_Morphoid, "T_Com_Cnj_SummonMorphoid", common.i18n("magic.summonMorphoid"), "T_Dae_Cre_Morphoid_01", 21, 63, "td\\s\\td_s_sum_morph.dds", 60, common.i18n("magic.summonMorphoidDesc")},
-	{ tes3.effect.T_summon_Draugr, "T_Nor_Cnj_SummonDraugr", common.i18n("magic.summonDraugr"), "T_Sky_Und_Drgr_01", 29, 78, "td\\s\\td_s_sum_draugr.dds", 60, common.i18n("magic.summonDraugrDesc")},
-	{ tes3.effect.T_summon_Spriggan, "T_Nor_Cnj_SummonSpriggan", common.i18n("magic.summonSpriggan"), "T_Sky_Cre_Spriggan_01", 48, 144, "td\\s\\td_s_sum_sprig.dds", 60, common.i18n("magic.summonSprigganDesc")},
-	{ tes3.effect.T_summon_BoneldGr, "T_De_Cnj_SummonGreaterBonelord", common.i18n("magic.summonGreaterBonelord"), "T_Mw_Und_BoneldGr_01", 71, 213, "td\\s\\td_s_sum_gtr_bnlrd.dds", 60, common.i18n("magic.summonGreaterBonelordDesc")},
+-- The effect costs for most summons were initially calculated by mort using a formula (dependent on a creature's health and soul) that is now lost and were then adjusted as seemed reasonable.
+-- Calculations have provided a new formula: Effect Cost = (.16 * Health) + (.035 * Soul); most of the old values are in close agreement with the new formula and have thus been left unchanged.
+-- effect id, effect name, creature id, effect mana cost, icon, effect description
+local td_summon_effects = {
+	{ tes3.effect.T_summon_Devourer, common.i18n("magic.summonDevourer"), "T_Dae_Cre_Devourer_01", 52, "td\\s\\td_s_summ_dev.dds", common.i18n("magic.summonDevourerDesc")},
+	{ tes3.effect.T_summon_DremArch, common.i18n("magic.summonDremoraArcher"), "T_Dae_Cre_Drem_Arch_01", 33, "td\\s\\td_s_sum_drm_arch.dds", common.i18n("magic.summonDremoraArcherDesc")},
+	{ tes3.effect.T_summon_DremCast, common.i18n("magic.summonDremoraCaster"), "T_Dae_Cre_Drem_Cast_01", 31, "td\\s\\td_s_sum_drm_mage.dds", common.i18n("magic.summonDremoraCasterDesc")},
+	{ tes3.effect.T_summon_Guardian, common.i18n("magic.summonGuardian"), "T_Dae_Cre_Guardian_01", 69, "td\\s\\td_s_sum_guard.dds", common.i18n("magic.summonGuardianDesc")},
+	{ tes3.effect.T_summon_LesserClfr, common.i18n("magic.summonLesserClannfear"), "T_Dae_Cre_LesserClfr_01", 19, "td\\s\\td_s_sum_lsr_clan.dds", common.i18n("magic.summonLesserClannfearDesc")},
+	{ tes3.effect.T_summon_Ogrim, common.i18n("magic.summonOgrim"), "ogrim", 33, "td\\s\\td_s_summ_ogrim.dds", common.i18n("magic.summonOgrimDesc")},
+	{ tes3.effect.T_summon_Seducer, common.i18n("magic.summonSeducerDesc"), "T_Dae_Cre_Seduc_01", 52, "td\\s\\td_s_summ_sed.dds", common.i18n("magic.summonSeducerDesc")},
+	{ tes3.effect.T_summon_SeducerDark, common.i18n("magic.summonSeducerDark"), "T_Dae_Cre_SeducDark_02", 75, "td\\s\\td_s_summ_d_sed.dds", common.i18n("magic.summonSeducerDarkDesc")},
+	{ tes3.effect.T_summon_Vermai, common.i18n("magic.summonVermai"), "T_Dae_Cre_Verm_01", 29, "td\\s\\td_s_summ_vermai.dds", common.i18n("magic.summonVermaiDesc")},
+	{ tes3.effect.T_summon_AtroStormMon, common.i18n("magic.summonStormMonarch"), "T_Dae_Cre_MonarchSt_01", 60, "td\\s\\td_s_sum_stm_monch.dds", common.i18n("magic.summonStormMonarchDesc")},
+	{ tes3.effect.T_summon_IceWraith, common.i18n("magic.summonIceWraith"), "T_Sky_Cre_IceWr_01", 35, "td\\s\\td_s_sum_ice_wrth.dds", common.i18n("magic.summonIceWraithDesc")},
+	{ tes3.effect.T_summon_DweSpectre, common.i18n("magic.summonDweSpectre"), "dwarven ghost", 17, "td\\s\\td_s_sum_dwe_spctre.dds", common.i18n("magic.summonDweSpectreDesc")},
+	{ tes3.effect.T_summon_SteamCent, common.i18n("magic.summonSteamCent"), "centurion_steam", 29, "td\\s\\td_s_sum_dwe_cent.dds", common.i18n("magic.summonSteamCentDesc")},
+	{ tes3.effect.T_summon_SpiderCent, common.i18n("magic.summonSpiderCent"), "centurion_spider", 15, "td\\s\\td_s_sum_dwe_spdr.dds", common.i18n("magic.summonSpiderCentDesc")},
+	{ tes3.effect.T_summon_WelkyndSpirit, common.i18n("magic.summonWelkyndSpirit"), "T_Ayl_Cre_WelkSpr_01", 29, "td\\s\\td_s_sum_welk_srt.dds", common.i18n("magic.summonWelkyndSpiritDesc")},
+	{ tes3.effect.T_summon_Auroran, common.i18n("magic.summonAuroran"), "T_Dae_Cre_Auroran_01", 44, "td\\s\\td_s_sum_auro.dds", common.i18n("magic.summonAuroranDesc")},
+	{ tes3.effect.T_summon_Herne, common.i18n("magic.summonHerne"), "T_Dae_Cre_Herne_01", 18, "td\\s\\td_s_sum_herne.dds", common.i18n("magic.summonHerneDesc")},
+	{ tes3.effect.T_summon_Morphoid, common.i18n("magic.summonMorphoid"), "T_Dae_Cre_Morphoid_01", 21, "td\\s\\td_s_sum_morph.dds", common.i18n("magic.summonMorphoidDesc")},
+	{ tes3.effect.T_summon_Draugr, common.i18n("magic.summonDraugr"), "T_Sky_Und_Drgr_01", 29, "td\\s\\td_s_sum_draugr.dds", common.i18n("magic.summonDraugrDesc")},
+	{ tes3.effect.T_summon_Spriggan, common.i18n("magic.summonSpriggan"), "T_Sky_Cre_Spriggan_01", 48, "td\\s\\td_s_sum_sprig.dds", common.i18n("magic.summonSprigganDesc")},
+	{ tes3.effect.T_summon_BoneldGr, common.i18n("magic.summonGreaterBonelord"), "T_Mw_Und_BoneldGr_01", 71, "td\\s\\td_s_sum_gtr_bnlrd.dds", common.i18n("magic.summonGreaterBonelordDesc")},
 }
 
--- effect id, spell id to override, spell name, item id, 2nd item ID, effect mana cost, spell mana cost, icon, spell duration, effect description
-local td_bounds = {
-	{ tes3.effect.T_bound_Greaves, "T_Com_Cnj_BoundGreaves", common.i18n("magic.boundGreaves"), "T_Com_Bound_Greaves_01", "", 2, 6, "td\\s\\td_s_bnd_grves.dds", 60, common.i18n("magic.boundGreavesDesc")},
-	{ tes3.effect.T_bound_Waraxe, "T_Com_Cnj_BoundWarAxe", common.i18n("magic.boundWarAxe"), "T_Com_Bound_WarAxe_01", "", 2, 6, "td\\s\\td_s_bnd_waxe.dds", 60, common.i18n("magic.boundWarAxeDesc")},
-	{ tes3.effect.T_bound_Warhammer, "T_Com_Cnj_BoundWarhammer", common.i18n("magic.boundWarhammer"), "T_Com_Bound_Warhammer_01", "", 2, 6, "td\\s\\td_s_bnd_wham.dds", 60, common.i18n("magic.boundWarhammerDesc")},
-	{ tes3.effect.T_bound_HammerResdayn, "T_De_Cnj_Uni_BoundHammerResdayn", "", "T_Com_Bound_Warhammer_01", "", 2, 6, "td\\s\\td_s_bnd_res_ham.dds", 60, ""},
-	{ tes3.effect.T_bound_RazorResdayn, "T_De_Cnj_Uni_BoundRazorOResdayn", "", "bound_dagger", "", 2, 6, "td\\s\\td_s_bnd_red_razor.dds", 60, ""},
-	{ tes3.effect.T_bound_Pauldron, "T_Com_Cnj_BoundPauldron", common.i18n("magic.boundPauldrons"), "T_Com_Bound_PauldronL_01", "T_Com_Bound_PauldronR_01", 2, 6, "td\\s\\td_s_bnd_pldrn.dds", 60, common.i18n("magic.boundPauldronsDesc")},
-	--{ 2118, "T_Com_Cnj_BoundThrowingKnives", "Bound Throwing Knives", "T_Com_Bound_ThrowingKnife_01", "", 2, 6, "td\\s\\td_s_bnd_knives.dds", 60, "The spell effect conjures a lesser Daedra bound in the form of magical, wondrously light Daedric throwing knives. The throwing knives appear automatically equipped on the caster, displacing any currently equipped weapon to inventory.  When the effect ends, the throwing knives disappear, and any previously equipped weapon is automatically re-equipped."},
+-- effect id, effect name, item id, 2nd item ID, effect mana cost, icon, effect description
+local td_bound_effects = {
+	{ tes3.effect.T_bound_Greaves, common.i18n("magic.boundGreaves"), "T_Com_Bound_Greaves_01", "", 2, "td\\s\\td_s_bnd_grves.dds", common.i18n("magic.boundGreavesDesc")},
+	{ tes3.effect.T_bound_Waraxe, common.i18n("magic.boundWarAxe"), "T_Com_Bound_WarAxe_01", "", 2, "td\\s\\td_s_bnd_waxe.dds", common.i18n("magic.boundWarAxeDesc")},
+	{ tes3.effect.T_bound_Warhammer, common.i18n("magic.boundWarhammer"), "T_Com_Bound_Warhammer_01", "", 2, "td\\s\\td_s_bnd_wham.dds", common.i18n("magic.boundWarhammerDesc")},
+	{ tes3.effect.T_bound_HammerResdayn, "", "T_Com_Bound_Warhammer_01", "", 2, "td\\s\\td_s_bnd_res_ham.dds", ""},
+	{ tes3.effect.T_bound_RazorResdayn, "", "bound_dagger", "", 2, "td\\s\\td_s_bnd_red_razor.dds", ""},
+	{ tes3.effect.T_bound_Pauldrons, common.i18n("magic.boundPauldrons"), "T_Com_Bound_PauldronL_01", "T_Com_Bound_PauldronR_01", 2, "td\\s\\td_s_bnd_pldrn.dds", common.i18n("magic.boundPauldronsDesc")},
+	--{ 2118, "T_Com_Cnj_BoundThrowingKnives", "Bound Throwing Knives", "T_Com_Bound_ThrowingKnife_01", "", 2, "td\\s\\td_s_bnd_knives.dds", "The spell effect conjures a lesser Daedra bound in the form of magical, wondrously light Daedric throwing knives. The throwing knives appear automatically equipped on the caster, displacing any currently equipped weapon to inventory.  When the effect ends, the throwing knives disappear, and any previously equipped weapon is automatically re-equipped."},
 }
 
--- effect id, spell id to override, spell name, effect mana cost, spell mana cost, icon, effect description
-local td_interventions = {
-	{ tes3.effect.T_intervention_Kyne, "T_Nor_Mys_KynesIntervention", common.i18n("magic.interventionKyne"), 150, 8, "td\\s\\td_s_int_kyne.tga", common.i18n("magic.interventionKyneDesc")},
+-- effect id, effect name, effect mana cost, icon, effect description
+local td_intervention_effects = {
+	{ tes3.effect.T_intervention_Kyne, common.i18n("magic.interventionKyne"), 150, "td\\s\\td_s_int_kyne.tga", common.i18n("magic.interventionKyneDesc")},
 }
 
--- effect id, spell id to override, spell name, effect mana cost, spell mana cost, icon, spell duration, spell radius, spell range type, minimum magnitude, maximum magnitude, effect description
-local td_miscs = {
-	{ tes3.effect.T_alteration_Passwall, "T_Com_Mys_UNI_Passwall", common.i18n("magic.miscPasswall"), 750, 96, "td\\s\\td_s_passwall.tga", 0, 25, tes3.effectRange.touch, 0, 0, common.i18n("magic.miscPasswallDesc")},
-	{ tes3.effect.T_mysticism_BanishDae, "T_Com_Mys_BanishDaedra", common.i18n("magic.miscBanish"), 32, 40, "td\\s\\td_s_ban_daedra.tga", 0, 0, tes3.effectRange.touch, 25, 25, common.i18n("magic.miscBanishDesc")},
-	{ tes3.effect.T_mysticism_ReflectDmg, "T_Com_Mys_ReflectDamage", common.i18n("magic.miscReflectDamage"), 20, 76, "td\\s\\td_s_ref_dam.tga", 5, 0, tes3.effectRange.self, 10, 20, common.i18n("magic.miscReflectDamageDesc")},
-	{ tes3.effect.T_alteration_RadShield, "T_Ayl_Alt_RadiantShield", common.i18n("magic.miscRadiantShield"), 5, 75, "s\\tx_s_light_shield.tga", 30, 0, tes3.effectRange.self, 10, 10, common.i18n("magic.miscRadiantShieldDesc")}
+-- effect id, effect name, effect mana cost, icon, effect description
+local td_misc_effects = {
+	{ tes3.effect.T_alteration_Passwall, common.i18n("magic.miscPasswall"), 750, "td\\s\\td_s_passwall.tga", common.i18n("magic.miscPasswallDesc")},
+	{ tes3.effect.T_mysticism_BanishDae, common.i18n("magic.miscBanish"), 32, "td\\s\\td_s_ban_daedra.tga", common.i18n("magic.miscBanishDesc")},
+	{ tes3.effect.T_mysticism_ReflectDmg, common.i18n("magic.miscReflectDamage"), 20, "td\\s\\td_s_ref_dam.tga", common.i18n("magic.miscReflectDamageDesc")},
+	{ tes3.effect.T_alteration_RadShield, common.i18n("magic.miscRadiantShield"), 5, "s\\tx_s_light_shield.tga", common.i18n("magic.miscRadiantShieldDesc")}
 }
 
--- spell id, cast type, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, 2nd effect id, ...
-local td_spells = {
-	{ "T_Cr_Cnj_AylSorcKSummon1", tes3.spellType.spell, tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 40, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Cr_Cnj_AylSorcKSummon3", tes3.spellType.spell, tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 40, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Cr_Alt_AuroranShield", tes3.spellType.ability, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 20, 20, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil }
+-- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
+local td_summon_spells = {
+	{ "T_Com_Cnj_SummonDevourer", tes3.spellType.spell, common.i18n("magic.summonDevourer"), 156, tes3.effect.T_summon_Devourer, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonDremoraArcher", tes3.spellType.spell, common.i18n("magic.summonDremoraArcher"), 98, tes3.effect.T_summon_DremArch, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonDremoraCaster", tes3.spellType.spell, common.i18n("magic.summonDremoraCaster"), 93, tes3.effect.T_summon_DremCast, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonGuardian", tes3.spellType.spell, common.i18n("magic.summonGuardian"), 207, tes3.effect.T_summon_Guardian, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonLesserClannfear", tes3.spellType.spell, common.i18n("magic.summonLesserClannfear"), 57, tes3.effect.T_summon_LesserClfr, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonOgrim", tes3.spellType.spell, common.i18n("magic.summonOgrim"), 99, tes3.effect.T_summon_Ogrim, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonSeducer", tes3.spellType.spell, common.i18n("magic.summonSeducer"), 156, tes3.effect.T_summon_Seducer, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonSeducerDark", tes3.spellType.spell, common.i18n("magic.summonSeducerDark"), 225, tes3.effect.T_summon_SeducerDark, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonVermai", tes3.spellType.spell, common.i18n("magic.summonVermai"), 88, tes3.effect.T_summon_Vermai, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonStormMonarch", tes3.spellType.spell, common.i18n("magic.summonStormMonarch"), 180, tes3.effect.T_summon_AtroStormMon, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Nor_Cnj_SummonIceWraith", tes3.spellType.spell, common.i18n("magic.summonIceWraith"), 105, tes3.effect.T_summon_IceWraith, 60, 1, 1 },
+	{ "T_Dwe_Cnj_Uni_SummonDweSpectre", tes3.spellType.spell, common.i18n("magic.summonDweSpectre"), 52, tes3.effect.T_summon_DweSpectre, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Dwe_Cnj_Uni_SummonSteamCent", tes3.spellType.spell, common.i18n("magic.summonSteamCent"), 88, tes3.effect.T_summon_SteamCent, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Dwe_Cnj_Uni_SummonSpiderCent", tes3.spellType.spell, common.i18n("magic.summonSpiderCent"), 45, tes3.effect.T_summon_SpiderCent, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Ayl_Cnj_SummonWelkyndSpirit", tes3.spellType.spell, common.i18n("magic.summonWelkyndSpirit"), 78, tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonAuroran", tes3.spellType.spell, common.i18n("magic.summonAuroran"), 132, tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonHerne", tes3.spellType.spell, common.i18n("magic.summonHerne"), 54, tes3.effect.T_summon_Herne, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonMorphoid", tes3.spellType.spell, common.i18n("magic.summonMorphoid"), 63, tes3.effect.T_summon_Morphoid, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Nor_Cnj_SummonDraugr", tes3.spellType.spell, common.i18n("magic.summonDraugr"), 78, tes3.effect.T_summon_Draugr, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Nor_Cnj_SummonSpriggan", tes3.spellType.spell, common.i18n("magic.summonSpriggan"), 144, tes3.effect.T_summon_Spriggan, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_De_Cnj_SummonGreaterBonelord", tes3.spellType.spell, common.i18n("magic.summonGreaterBonelord"), 213, tes3.effect.T_summon_BoneldGr, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Cr_Cnj_AylSorcKSummon1", tes3.spellType.spell, nil, nil, tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 40, 1, 1 },
+	{ "T_Cr_Cnj_AylSorcKSummon3", tes3.spellType.spell, nil, nil, tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 40, 1, 1 },
 }
 
--- enchantment id, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, 2nd effect id, ...
+-- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
+local td_bound_spells = {
+	{ "T_Com_Cnj_BoundGreaves", tes3.spellType.spell, common.i18n("magic.boundGreaves"), 6, tes3.effect.T_bound_Greaves, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_BoundWarAxe", tes3.spellType.spell, common.i18n("magic.boundWarAxe"), 6, tes3.effect.T_bound_Waraxe, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_BoundWarhammer", tes3.spellType.spell, common.i18n("magic.boundWarhammer"), 6, tes3.effect.T_bound_Warhammer, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_De_Cnj_Uni_BoundHammerResdayn", tes3.spellType.spell, nil, 6, tes3.effect.T_bound_HammerResdayn, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_De_Cnj_Uni_BoundRazorOResdayn", tes3.spellType.spell, nil, 6, tes3.effect.T_bound_RazorResdayn, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_BoundPauldron", tes3.spellType.spell, common.i18n("magic.boundPauldrons"), 6, tes3.effect.T_bound_Pauldrons, tes3.effectRange.self, 0, 60, 1, 1 },
+}
+
+-- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
+local td_intervention_spells = {
+	{ "T_Nor_Mys_KynesIntervention", tes3.spellType.spell, common.i18n("magic.interventionKyne"), 8, tes3.effect.T_intervention_Kyne, tes3.effectRange.self, 0, 0, 1, 1 },
+}
+
+-- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
+local td_misc_spells = {
+	{ "T_Com_Mys_UNI_Passwall", tes3.spellType.spell, common.i18n("magic.miscPasswall"), 96, tes3.effect.T_alteration_Passwall, tes3.effectRange.touch, 25, 0, 0, 0 },
+	{ "T_Com_Mys_BanishDaedra", tes3.spellType.spell, common.i18n("magic.miscBanish"), 40, tes3.effect.T_mysticism_BanishDae, tes3.effectRange.touch, 0, 0, 25, 25 },
+	{ "T_Com_Mys_ReflectDamage", tes3.spellType.spell, common.i18n("magic.miscReflectDamage"), 76, tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 5, 10, 20 },
+	{ "T_Ayl_Alt_RadiantShield", tes3.spellType.spell, common.i18n("magic.miscRadiantShield"), 75, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 10, 10 },
+	{ "T_Cr_Alt_AuroranShield", tes3.spellType.ability, nil, nil, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 20, 20 },
+}
+
+-- enchantment id, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
 local td_enchantments = {
-	{ "T_Once_SummonDremoraArcher60", tes3.effect.T_summon_DremArch, tes3.effectRange.self, 0, 60, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Once_SummonDremoraCaster60", tes3.effect.T_summon_DremCast, tes3.effectRange.self, 0, 60, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Once_SummonGuardian60", tes3.effect.T_summon_Guardian, tes3.effectRange.self, 0, 60, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Once_SummonLesserClannfear60", tes3.effect.T_summon_LesserClfr, tes3.effectRange.self, 0, 60, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Once_SummonOgrim60", tes3.effect.T_summon_Ogrim, tes3.effectRange.self, 0, 60, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Once_SummonSeducer60", tes3.effect.T_summon_Seducer, tes3.effectRange.self, 0, 60, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Once_SummonSeducerDark60", tes3.effect.T_summon_SeducerDark, tes3.effectRange.self, 0, 60, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Once_SummonVermai60", tes3.effect.T_summon_Vermai, tes3.effectRange.self, 0, 60, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Once_SummonStormMonarch60", tes3.effect.T_summon_AtroStormMon, tes3.effectRange.self, 0, 60, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Once_SummonWelkyndSpirit60", tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 60, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Once_SummonAuroran60", tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 60, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Once_SummonHerne60", tes3.effect.T_summon_Herne, tes3.effectRange.self, 0, 60, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Once_SummonMorphoid60", tes3.effect.T_summon_Morphoid, tes3.effectRange.self, 0, 60, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Once_SummonBonelordGr60", tes3.effect.T_summon_BoneldGr, tes3.effectRange.self, 0, 60, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Once_AylDaedricHerald1", tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 30, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Once_AylDaedricHerald2", tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 30, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Once_AylLoreArmor1", tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 20, 20, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil },
-	{ "T_Once_KynesIntervention", tes3.effect.T_intervention_Kyne, tes3.effectRange.self, 0, 1, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil }
+	{ "T_Once_SummonDremoraArcher60", tes3.effect.T_summon_DremArch, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonDremoraCaster60", tes3.effect.T_summon_DremCast, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonGuardian60", tes3.effect.T_summon_Guardian, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonLesserClannfear60", tes3.effect.T_summon_LesserClfr, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonOgrim60", tes3.effect.T_summon_Ogrim, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonSeducer60", tes3.effect.T_summon_Seducer, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonSeducerDark60", tes3.effect.T_summon_SeducerDark, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonVermai60", tes3.effect.T_summon_Vermai, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonStormMonarch60", tes3.effect.T_summon_AtroStormMon, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonWelkyndSpirit60", tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonAuroran60", tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonHerne60", tes3.effect.T_summon_Herne, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonMorphoid60", tes3.effect.T_summon_Morphoid, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonBonelordGr60", tes3.effect.T_summon_BoneldGr, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_AylDaedricHerald1", tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 30, 1, 1 },
+	{ "T_Once_AylDaedricHerald2", tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 30, 1, 1 },
+	{ "T_Once_AylLoreArmor1", tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 20, 20 },
+	{ "T_Once_KynesIntervention", tes3.effect.T_intervention_Kyne, tes3.effectRange.self, 0, 1, 1, 1 }
 }
 
--- enchantment id, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, 2nd effect id, ...
+-- enchantment id, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
 local vanilla_enchantments = {
-	{ "sc_lordmhasvengeance_en", tes3.effect.boundBoots, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.T_bound_Greaves, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.boundCuirass, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.T_bound_Pauldron, tes3.effectRange.self, 0, 60, 1, 1,
+	{ "sc_lordmhasvengeance_en", tes3.effect.boundBoots, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.T_bound_Greaves, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.boundCuirass, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.T_bound_Pauldrons, tes3.effectRange.self, 0, 60, 1, 1,
 								tes3.effect.boundGloves, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.boundHelm, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.boundShield, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.boundBattleAxe, tes3.effectRange.self, 0, 60, 1, 1 }
 }
 
@@ -152,6 +196,49 @@ local td_enchanted_items = {
 	{ "T_EnSc_Com_SummonVermai", common.i18n("magic.itemScSummonVermai"), 275 },
 	{ "T_EnSc_Nor_KynesIntervention", common.i18n("magic.itemScKynesIntervention"), 63 }
 }
+
+local function replaceSpells(e)
+	for k,v in pairs(e) do
+		local overridden_spell = tes3.getObject(v[1])
+		if overridden_spell then
+			overridden_spell.castType = v[2]
+			if v[3] then overridden_spell.name = v[3] end
+			if v[4] then overridden_spell.magickaCost = v[4] end
+			for i = 1, 8, 1 do
+				if not v[5 + (i - 1) * 6] then
+					break	-- This kind of break condition exists so that the tables don't have to have dozens of fields
+				end
+				local effect = overridden_spell.effects[i]
+				effect.id = v[5 + (i - 1) * 6]
+				effect.rangeType = v[6 + (i - 1) * 6]
+				effect.radius = v[7 + (i - 1) * 6]
+				effect.duration = v[8 + (i - 1) * 6]
+				effect.min = v[9 + (i - 1) * 6]
+				effect.max = v[10 + (i - 1) * 6]
+			end
+		end
+	end
+end
+
+local function replaceEnchantments(e)
+	for k,v in pairs(e) do
+		local overridden_enchantment = tes3.getObject(v[1])
+		if overridden_enchantment then
+			for i = 1, 8, 1 do
+				if not v[2 + (i - 1) * 6] then
+					break
+				end
+				local effect = overridden_enchantment.effects[i]
+				effect.id = v[2 + (i - 1) * 6]
+				effect.rangeType = v[3 + (i - 1) * 6]
+				effect.radius = v[4 + (i - 1) * 6]
+				effect.duration = v[5 + (i - 1) * 6]
+				effect.min = v[6 + (i - 1) * 6]
+				effect.max = v[7 + (i - 1) * 6]
+			end
+		end
+	end
+end
 
 ---@param e spellResistEventData
 function this.radiantShieldSpellResistEffect(e)
@@ -227,6 +314,28 @@ local function kynesInterventionEffect(e)
 	e.effectInstance.state = tes3.spellState.retired
 end
 
+---@param e damagedEventData
+function this.reflectDamageStun(e)
+	if e.source == tes3.damageSource.attack and e.attacker then
+		local reflectDamageEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_ReflectDmg })
+		if reflectDamageEffects then
+			local magnitude = 1
+			for _,v in pairs(reflectDamageEffects) do
+				magnitude = magnitude * (1 - (v.magnitude / 100))
+			end
+			magnitude = 1 - magnitude
+			local defenderStunned = e.mobile.isHitStunned or e.mobile.isKnockedDown
+
+			if math.random() < magnitude then		-- Chance of preventing a hit stun or knockdown increases with the strength of the reflect damage effect(s)
+				e.mobile:hitStun{ cancel = true }
+				if defenderStunned then
+					e.attacker:hitStun()
+				end
+			end
+		end
+	end
+end
+
 ---@param reflectDamageEffects tes3activeMagicEffect[]
 ---@param damage number
 local function reflectDamageCalculate(reflectDamageEffects, damage)
@@ -247,7 +356,7 @@ end
 
 ---@param e damageEventData
 function this.reflectDamageEffect(e)
-	if e.source == tes3.damageSource.attack and e.attacker then
+	if e.attacker and e.source == tes3.damageSource.attack and e.damage > 0 then
 		local reflectDamageEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_ReflectDmg })
 		if reflectDamageEffects then
 			local damage, reflectedDamage = unpack(reflectDamageCalculate(reflectDamageEffects, e.damage))
@@ -259,10 +368,10 @@ end
 
 ---@param e damageHandToHandEventData
 function this.reflectDamageHHEffect(e)
-	if e.source == tes3.damageSource.attack and e.attacker then
+	if e.attacker and e.source == tes3.damageSource.attack and e.fatigueDamage > 0 then
 		local reflectDamageEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_ReflectDmg })
 		if reflectDamageEffects then
-			local damage, reflectedDamage = unpack(reflectDamageCalculate(reflectDamageEffects, e.damage))
+			local damage, reflectedDamage = unpack(reflectDamageCalculate(reflectDamageEffects, e.fatigueDamage))
 			e.attacker:applyFatigueDamage(reflectedDamage, 0, false)
 			e.fatigueDamage = damage
 		end
@@ -586,11 +695,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 	if config.summoningSpells == true then
 		local summonHungerEffect = tes3.getMagicEffect(tes3.effect.summonHunger)
 
-		for k, v in pairs(td_summons) do
-			local effectID, spellID, spellName, creatureID, effectCost, spellCost, iconPath, duration, effectDescription = unpack(v)
+		for k, v in pairs(td_summon_effects) do
+			local effectID, effectName, creatureID, effectCost, iconPath, effectDescription = unpack(v)
 			tes3.addMagicEffect{
 				id = effectID,
-				name = spellName,
+				name = effectName,
 				description = effectDescription,
 				school = tes3.magicSchool.conjuration,
 				baseCost = effectCost,
@@ -636,11 +745,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 	if config.boundSpells == true then
 		local boundCuirassEffect = tes3.getMagicEffect(tes3.effect.boundCuirass)
 
-		for k, v in pairs(td_bounds) do
-			local effectID, spellID, spellName, itemID, itemID_02, effectCost, spellCost, iconPath, duration, effectDescription = unpack(v)
+		for k, v in pairs(td_bound_effects) do
+			local effectID, effectName, itemID, itemID_02, effectCost, iconPath, effectDescription = unpack(v)
 			tes3.addMagicEffect{
 				id = effectID,
-				name = spellName,
+				name = effectName,
 				description = effectDescription,
 				school = tes3.magicSchool.conjuration,
 				baseCost = effectCost,
@@ -694,10 +803,10 @@ event.register(tes3.event.magicEffectsResolved, function()
 	if config.interventionSpells == true then
 		local divineInterventionEffect = tes3.getMagicEffect(tes3.effect.divineIntervention)
 
-		local effectID, spellID, spellName, effectCost, spellCost, iconPath, effectDescription = unpack(td_interventions[1])
+		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_intervention_effects[1])
 		tes3.addMagicEffect{
 			id = effectID,
-			name = spellName,
+			name = effectName,
 			description = effectDescription,
 			school = tes3.magicSchool.mysticism,
 			baseCost = effectCost,
@@ -743,10 +852,10 @@ event.register(tes3.event.magicEffectsResolved, function()
 		local reflectEffect = tes3.getMagicEffect(tes3.effect.reflect)
 		local shieldEffect = tes3.getMagicEffect(tes3.effect.shield)
 
-		local effectID, spellID, spellName, effectCost, spellCost, iconPath, duration, radius, type, minMag, maxMag, effectDescription = unpack(td_miscs[1])	-- Passwall
+		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[1])	-- Passwall
 		tes3.addMagicEffect{
 			id = effectID,
-			name = spellName,
+			name = effectName,
 			description = effectDescription,
 			school = tes3.magicSchool.alteration,
 			baseCost = effectCost,
@@ -785,10 +894,10 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, spellID, spellName, effectCost, spellCost, iconPath, duration, radius, type, minMag, maxMag, effectDescription = unpack(td_miscs[2])		-- Banish Daedra
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[2])		-- Banish Daedra
 		tes3.addMagicEffect{
 			id = effectID,
-			name = spellName,
+			name = effectName,
 			description = effectDescription,
 			school = tes3.magicSchool.mysticism,
 			baseCost = effectCost,
@@ -827,10 +936,10 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, spellID, spellName, effectCost, spellCost, iconPath, duration, radius, type, minMag, maxMag, effectDescription = unpack(td_miscs[3])		-- Reflect Damage
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[3])		-- Reflect Damage
 		tes3.addMagicEffect{
 			id = effectID,
-			name = spellName,
+			name = effectName,
 			description = effectDescription,
 			school = tes3.magicSchool.mysticism,
 			baseCost = effectCost,
@@ -869,10 +978,10 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, spellID, spellName, effectCost, spellCost, iconPath, duration, radius, type, minMag, maxMag, effectDescription = unpack(td_miscs[4])		-- Radiant Shield
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[4])		-- Radiant Shield
 		tes3.addMagicEffect{
 			id = effectID,
-			name = spellName,
+			name = effectName,
 			description = effectDescription,
 			school = tes3.magicSchool.alteration,
 			baseCost = effectCost,
@@ -913,106 +1022,26 @@ event.register(tes3.event.magicEffectsResolved, function()
 	end
 end)
 
--- Replaces spell names, effects, etc. based tables above; registered to load rather than loaded because otherwise there is a risk of the names not being replaced
-event.register(tes3.event.load, function()
+-- Replaces spell names, effects, etc. using the spell tables above
+event.register(tes3.event.loaded, function()
 	if config.summoningSpells == true then
-		for k,v in pairs(td_summons) do
-			local effectID, spellID, spellName, creatureID, effectCost, spellCost, iconPath, duration, effectDescription = unpack(v)
-
-			local overridden_spell = tes3.getObject(spellID)
-			if overridden_spell then
-				overridden_spell.name = spellName
-				overridden_spell.magickaCost = spellCost
-
-				local effect = overridden_spell.effects[1]
-				effect.id = effectID
-				effect.duration = duration
-			end
-		end
+		replaceSpells(td_summon_spells)
 	end
 
 	if config.boundSpells == true then
-		for k,v in pairs(td_bounds) do
-			local effectID, spellID, spellName, itemID, itemID_02, effectCost, spellCost, iconPath, duration, effectDescription = unpack(v)
-
-			local overridden_spell = tes3.getObject(spellID)
-			if overridden_spell then
-				overridden_spell.name = spellName
-				overridden_spell.magickaCost = spellCost
-
-				local effect = overridden_spell.effects[1]
-				effect.id = effectID
-				effect.duration = duration
-			end
-		end
+		replaceSpells(td_bound_spells)
 	end
 	
 	if config.interventionSpells == true then
-		for k,v in pairs(td_interventions) do
-			local effectID, spellID, spellName, effectCost, spellCost, iconPath, effectDescription = unpack(v)
-
-			local overridden_spell = tes3.getObject(spellID)
-			if overridden_spell then
-				overridden_spell.name = spellName
-				overridden_spell.magickaCost = spellCost
-
-				local effect = overridden_spell.effects[1]
-				effect.id = effectID
-			end
-		end
+		replaceSpells(td_intervention_spells)
 	end
 
 	if config.miscSpells == true then
-		for k,v in pairs(td_miscs) do
-			local effectID, spellID, spellName, effectCost, spellCost, iconPath, duration, radius, type, minMag, maxMag, effectDescription = unpack(v)
-
-			local overridden_spell = tes3.getObject(spellID)
-			if overridden_spell then
-				overridden_spell.name = spellName
-				overridden_spell.magickaCost = spellCost
-				
-				local effect = overridden_spell.effects[1]
-				effect.id = effectID
-				effect.duration = duration
-				effect.rangeType = type
-				effect.radius = radius
-				effect.min = minMag
-				effect.max = maxMag
-			end
-		end
+		replaceSpells(td_misc_spells)
 	end
 
 	if config.summoningSpells == true and config.boundSpells == true and config.interventionSpells == true and config.miscSpells == true then
-		for k,v in pairs(td_spells) do
-			local overridden_spell = tes3.getObject(v[1])
-			if overridden_spell then
-				overridden_spell.castType = v[2]
-				for i = 1, 8, 1 do
-					local effect = overridden_spell.effects[i]
-					effect.id = v[3 + (i - 1) * 6]
-					effect.rangeType = v[4 + (i - 1) * 6]
-					effect.radius = v[5 + (i - 1) * 6]
-					effect.duration = v[6 + (i - 1) * 6]
-					effect.min = v[7 + (i - 1) * 6]
-					effect.max = v[8 + (i - 1) * 6]
-				end
-			end
-		end
-		
-		for k,v in pairs(td_enchantments) do
-			local overridden_enchantment = tes3.getObject(v[1])
-			if overridden_enchantment then
-				for i = 1, 8, 1 do
-					local effect = overridden_enchantment.effects[i]
-					effect.id = v[2 + (i - 1) * 6]
-					effect.rangeType = v[3 + (i - 1) * 6]
-					effect.radius = v[4 + (i - 1) * 6]
-					effect.duration = v[5 + (i - 1) * 6]
-					effect.min = v[6 + (i - 1) * 6]
-					effect.max = v[7 + (i - 1) * 6]
-				end
-			end
-		end
+		replaceEnchantments(td_enchantments)
 
 		for k,v in pairs(td_enchanted_items) do
 			local itemID, itemName, value = unpack(v)
@@ -1025,22 +1054,11 @@ event.register(tes3.event.load, function()
 		end
 		
 		if config.changeVanillaEnchantments == true then
-			for k,v in pairs(vanilla_enchantments) do
-				local overridden_enchantment = tes3.getObject(v[1])
-				if overridden_enchantment then
-					for i = 1, 8, 1 do
-						local effect = overridden_enchantment.effects[i]
-						effect.id = v[2 + (i - 1) * 6]
-						effect.rangeType = v[3 + (i - 1) * 6]
-						effect.radius = v[4 + (i - 1) * 6]
-						effect.duration = v[5 + (i - 1) * 6]
-						effect.min = v[6 + (i - 1) * 6]
-						effect.max = v[7 + (i - 1) * 6]
-					end
-				end
-			end
+			replaceEnchantments(vanilla_enchantments)
 		end
 	end
+	
+	tes3.updateMagicGUI( { reference = tes3.player } )
 end)
 
 return this

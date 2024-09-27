@@ -86,11 +86,22 @@ local region_weather_chances = {
 
 -- region id, origin x-coordinate, origin y-coordinate
 local region_storm_origins = {
+	-- Armun ashstorms
 	{ "Armun Ashlands Region", -132386.328, -200454.234 },	-- Should eventually be set to the large volcano west of Armun once it is made
 	{ "Othreleth Woods Region", -132386.328, -200454.234 },	-- These extra regions are necessary for the same reason as the weather transition condition; leaving AA during an ashstorm without them would immediately set the origin to be Red Mountain
 	{ "Velothi Mountains Region", -132386.328, -200454.234 },
 	{ "Aanthirin Region", -132386.328, -200454.234 },
 	{ "Roth Roryn Region", -132386.328, -200454.234 },
+	
+	-- Abecean tropical storms
+	{ "Abecean Sea Region", -2863000.000, -405600.000 },
+	{ "Colovian Highlands Region", -2863000.000, -405600.000 },
+	{ "Dasek Marsh Region", -2863000.000, -405600.000 },
+	{ "Gilded Hills Region", -2863000.000, -405600.000 },
+	{ "Gold Coast Region", -2863000.000, -405600.000 },
+	{ "Kvetchi Pass Region", -2863000.000, -405600.000 },
+	{ "Southern Gold Coast Region", -2863000.000, -405600.000 },
+	{ "Stirk Isle Region", -2863000.000, -405600.000 },
 }
 
 ---@param weather tes3weather
