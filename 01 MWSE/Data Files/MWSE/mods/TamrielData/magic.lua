@@ -271,6 +271,24 @@ function this.radiantShieldDamagedEffect(e)
 	end
 end
 
+---@param e magicEffectRemovedEventData
+function this.radiantShieldRemovedEffect(e)
+	if e.effect.id == tes3.effect.T_alteration_RadShield then
+		e.mobile.shield = e.mobile.shield - e.effectInstance.magnitude
+		e.effectInstance.cumulativeMagnitude = 0	-- The event *might* trigger when it shouldn't, so this ensures that the effect can be reapplied if that actually happens
+	end
+end
+
+---@param e spellTickEventData
+function this.radiantShieldAppliedEffect(e)
+	if e.effectInstance.cumulativeMagnitude ~= -1 and e.effectInstance.magnitude > 0 then	-- Just checking whether no time has passed since the effect began doesn't work, since the magnitude isn't actually calculated until after the first tick
+		if e.effectId == tes3.effect.T_alteration_RadShield then
+			e.target.mobile.shield = e.target.mobile.shield + e.effectInstance.magnitude
+			e.effectInstance.cumulativeMagnitude = -1	-- cumulativeMagnitude doesn't (shouldn't) do anything for custom effects, so it is used to track whether the effect has been applied to the target's shield value
+		end
+	end
+end
+
 function this.replaceInterventionMarkers(cellTable, markerID)
 	for _,v in pairs(cellTable) do
 		local xCoord, yCoord = unpack(v)
@@ -1020,6 +1038,45 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 	end
+end)
+
+-- Replaces spell names, effects, etc. using the spell tables above
+event.register(tes3.event.loaded, function()
+	if config.summoningSpells == true then
+		replaceSpells(td_summon_spells)
+	end
+
+	if config.boundSpells == true then
+		replaceSpells(td_bound_spells)
+	end
+	
+	if config.interventionSpells == true then
+		replaceSpells(td_intervention_spells)
+	end
+
+	if config.miscSpells == true then
+		replaceSpells(td_misc_spells)
+	end
+
+	if config.summoningSpells == true and config.boundSpells == true and config.interventionSpells == true and config.miscSpells == true then
+		replaceEnchantments(td_enchantments)
+
+		for k,v in pairs(td_enchanted_items) do
+			local itemID, itemName, value = unpack(v)
+			
+			local overridden_item = tes3.getObject(itemID)
+			if overridden_item then
+				overridden_item.name = itemName
+				overridden_item.value = value
+			end
+		end
+		
+		if config.changeVanillaEnchantments == true then
+			replaceEnchantments(vanilla_enchantments)
+		end
+	end
+	
+	tes3.updateMagicGUI( { reference = tes3.player } )
 end)
 
 -- Replaces spell names, effects, etc. using the spell tables above

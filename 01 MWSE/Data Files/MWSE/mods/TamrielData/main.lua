@@ -362,6 +362,8 @@ event.register(tes3.event.loaded, function()
 
 	event.unregister(tes3.event.spellResist, magic.radiantShieldSpellResistEffect)
 	event.unregister(tes3.event.damaged, magic.radiantShieldDamagedEffect)
+	event.unregister(tes3.event.magicEffectRemoved, magic.radiantShieldRemovedEffect)
+	event.unregister(tes3.event.spellTick, magic.radiantShieldAppliedEffect)
 	event.unregister(tes3.event.damaged, magic.reflectDamageStun)
 	event.unregister(tes3.event.damagedHandToHand, magic.reflectDamageStun)
 	event.unregister(tes3.event.damage, magic.reflectDamageEffect)
@@ -390,6 +392,8 @@ event.register(tes3.event.loaded, function()
 	if config.miscSpells == true then
 		event.register(tes3.event.spellResist, magic.radiantShieldSpellResistEffect)
 		event.register(tes3.event.damaged, magic.radiantShieldDamagedEffect)
+		event.register(tes3.event.magicEffectRemoved, magic.radiantShieldRemovedEffect)
+		event.register(tes3.event.spellTick, magic.radiantShieldAppliedEffect)
 
 		event.register(tes3.event.damaged, magic.reflectDamageStun)
 		event.register(tes3.event.damagedHandToHand, magic.reflectDamageStun)
