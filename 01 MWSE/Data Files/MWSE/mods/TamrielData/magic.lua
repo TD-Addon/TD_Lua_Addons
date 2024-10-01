@@ -1079,43 +1079,4 @@ event.register(tes3.event.loaded, function()
 	tes3.updateMagicGUI( { reference = tes3.player } )
 end)
 
--- Replaces spell names, effects, etc. using the spell tables above
-event.register(tes3.event.loaded, function()
-	if config.summoningSpells == true then
-		replaceSpells(td_summon_spells)
-	end
-
-	if config.boundSpells == true then
-		replaceSpells(td_bound_spells)
-	end
-	
-	if config.interventionSpells == true then
-		replaceSpells(td_intervention_spells)
-	end
-
-	if config.miscSpells == true then
-		replaceSpells(td_misc_spells)
-	end
-
-	if config.summoningSpells == true and config.boundSpells == true and config.interventionSpells == true and config.miscSpells == true then
-		replaceEnchantments(td_enchantments)
-
-		for k,v in pairs(td_enchanted_items) do
-			local itemID, itemName, value = unpack(v)
-			
-			local overridden_item = tes3.getObject(itemID)
-			if overridden_item then
-				overridden_item.name = itemName
-				overridden_item.value = value
-			end
-		end
-		
-		if config.changeVanillaEnchantments == true then
-			replaceEnchantments(vanilla_enchantments)
-		end
-	end
-	
-	tes3.updateMagicGUI( { reference = tes3.player } )
-end)
-
 return this
