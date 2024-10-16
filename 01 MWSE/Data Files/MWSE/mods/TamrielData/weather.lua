@@ -81,7 +81,7 @@ local snowParticles = { "Snowflake", "BM_Snow_01", "tr_weather_ow_spore" }
 -- Custom Region Weather Chances
 -- region id, ash chance, blight chance, blizzard chance, clear chance, cloudy chance, foggy chance, overcast chance, rain chance, snow chance, thunder chance
 local region_weather_chances = {
-	{ "Othreleth Woods Region", 5, 0, 0, 25, 25, 5, 10, 15, 10, 5 }
+	{ "Othreleth Woods Region", 0, 0, 0, 25, 25, 6, 10, 15, 14, 5 }	-- Ash chance is set to 0 to prevent ashstorms in OW interfering with sandstorms in SH
 }
 
 -- region id, origin x-coordinate, origin y-coordinate
@@ -92,7 +92,7 @@ local region_storm_origins = {
 	{ "Velothi Mountains Region", -132386.328, -200454.234 },
 	{ "Aanthirin Region", -132386.328, -200454.234 },
 	{ "Roth Roryn Region", -132386.328, -200454.234 },
-	
+
 	-- Abecean tropical storms
 	{ "Abecean Sea Region", -2863000.000, -405600.000 },
 	{ "Colovian Highlands Region", -2863000.000, -405600.000 },

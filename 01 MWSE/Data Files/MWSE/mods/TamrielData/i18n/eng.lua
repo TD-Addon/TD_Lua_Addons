@@ -72,7 +72,10 @@ return {
 	["magic.miscReflectDamageDesc"] = "This effect allows the subject to reflect physical damage back at an attacker.  The effect's magnitude is the percent damage that will be reflected for each attack.  Any unreflected damage is dealt to the defender normally.",
 	["magic.miscRadiantShield"] = "Radiant Shield",
 	["magic.miscRadiantShieldDesc"] = "This effect creates a shield of brilliant light around the subject's entire body. The spell adds its magnitude to the subject's Armor Rating, resists harmful magic, and briefly blinds attackers in melee.",
+	["magic.miscWabbajack"] = "Wabbajack",
+	["magic.miscWabbajackDesc"] = "Wabbajack!",
 
+	["magic.wabbajackFailure"] = "%s is too strong to be Wabbajacked!",
 	["magic.banishFailure"] = "This spell is too weak to banish %s!",
 	["magic.passWallWard"] = "You cannot pass through to there.",
 	["magic.passWallAlpha"] = "You cannot pass through that.",

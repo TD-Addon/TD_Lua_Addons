@@ -360,6 +360,8 @@ dofile("TamrielData.mcm")
 
 event.register(tes3.event.loaded, function()
 
+	--event.unregister(tes3.event.magicEffectRemoved, magic.wabbajackRemovedEffect)
+	--event.unregister(tes3.event.spellTick, magic.wabbajackAppliedEffect)
 	event.unregister(tes3.event.spellResist, magic.radiantShieldSpellResistEffect)
 	event.unregister(tes3.event.damaged, magic.radiantShieldDamagedEffect)
 	event.unregister(tes3.event.magicEffectRemoved, magic.radiantShieldRemovedEffect)
@@ -390,6 +392,9 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.miscSpells == true then
+		--event.register(tes3.event.magicEffectRemoved, magic.wabbajackRemovedEffect)
+		--event.register(tes3.event.spellTick, magic.wabbajackAppliedEffect)
+
 		event.register(tes3.event.spellResist, magic.radiantShieldSpellResistEffect)
 		event.register(tes3.event.damaged, magic.radiantShieldDamagedEffect)
 		event.register(tes3.event.magicEffectRemoved, magic.radiantShieldRemovedEffect)

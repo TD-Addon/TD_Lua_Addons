@@ -47,6 +47,7 @@ if config.miscSpells == true then
 	tes3.claimSpellEffectId("T_mysticism_ReflectDmg", 2120)
 	--tes3.claimSpellEffectId("T_mysticism_DetHuman", 2121)
 	tes3.claimSpellEffectId("T_alteration_RadShield", 2123)
+	tes3.claimSpellEffectId("T_alteration_Wabbajack", 2124)
 end
 
 -- The effect costs for most summons were initially calculated by mort using a formula (dependent on a creature's health and soul) that is now lost and were then adjusted as seemed reasonable.
@@ -97,7 +98,8 @@ local td_misc_effects = {
 	{ tes3.effect.T_alteration_Passwall, common.i18n("magic.miscPasswall"), 750, "td\\s\\td_s_passwall.tga", common.i18n("magic.miscPasswallDesc")},
 	{ tes3.effect.T_mysticism_BanishDae, common.i18n("magic.miscBanish"), 32, "td\\s\\td_s_ban_daedra.tga", common.i18n("magic.miscBanishDesc")},
 	{ tes3.effect.T_mysticism_ReflectDmg, common.i18n("magic.miscReflectDamage"), 20, "td\\s\\td_s_ref_dam.tga", common.i18n("magic.miscReflectDamageDesc")},
-	{ tes3.effect.T_alteration_RadShield, common.i18n("magic.miscRadiantShield"), 5, "s\\tx_s_light_shield.tga", common.i18n("magic.miscRadiantShieldDesc")}
+	{ tes3.effect.T_alteration_RadShield, common.i18n("magic.miscRadiantShield"), 5, "td\\s\\td_s_radiant_shield.tga", common.i18n("magic.miscRadiantShieldDesc")},
+	{ tes3.effect.T_alteration_Wabbajack, common.i18n("magic.miscWabbajack"), 22, "td\\s\\td_s_wabbajack.tga", common.i18n("magic.miscWabbajackDesc")}
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -170,7 +172,8 @@ local td_enchantments = {
 	{ "T_Once_AylDaedricHerald1", tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 30, 1, 1 },
 	{ "T_Once_AylDaedricHerald2", tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 30, 1, 1 },
 	{ "T_Once_AylLoreArmor1", tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 20, 20 },
-	{ "T_Once_KynesIntervention", tes3.effect.T_intervention_Kyne, tes3.effectRange.self, 0, 1, 1, 1 }
+	{ "T_Once_KynesIntervention", tes3.effect.T_intervention_Kyne, tes3.effectRange.self, 0, 1, 1, 1 },
+	{ "T_Use_WabbajackUni", tes3.effect.T_alteration_Wabbajack, tes3.effectRange.target, 0, 1, 1, 1 }
 }
 
 -- enchantment id, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -197,8 +200,8 @@ local td_enchanted_items = {
 	{ "T_EnSc_Nor_KynesIntervention", common.i18n("magic.itemScKynesIntervention"), 63 }
 }
 
-local function replaceSpells(e)
-	for k,v in pairs(e) do
+local function replaceSpells(table)
+	for k,v in pairs(table) do
 		local overridden_spell = tes3.getObject(v[1])
 		if overridden_spell then
 			overridden_spell.castType = v[2]
@@ -220,8 +223,8 @@ local function replaceSpells(e)
 	end
 end
 
-local function replaceEnchantments(e)
-	for k,v in pairs(e) do
+local function replaceEnchantments(table)
+	for k,v in pairs(table) do
 		local overridden_enchantment = tes3.getObject(v[1])
 		if overridden_enchantment then
 			for i = 1, 8, 1 do
@@ -236,6 +239,78 @@ local function replaceEnchantments(e)
 				effect.min = v[6 + (i - 1) * 6]
 				effect.max = v[7 + (i - 1) * 6]
 			end
+		end
+	end
+end
+
+local function wabbajackChangeStats(target, transform)
+	local normalizationFactor = target.mobile.health.normalized
+	tes3.modStatistic({ reference = target, name = "health", base = transform.health, current = normalizationFactor * transform.health })
+	--target.mobile.health.base = transform.health
+	--target.mobile.health.current = normalizationFactor * transform.health
+
+	normalizationFactor = target.mobile.magicka.normalized
+	tes3.modStatistic({ reference = target, name = "magicka", base = transform.magicka, current = normalizationFactor * transform.magicka })
+
+	normalizationFactor = target.mobile.fatigue.normalized
+	tes3.modStatistic({ reference = target, name = "fatigue", base = transform.fatigue, current = normalizationFactor * transform.fatigue })
+end
+
+---@param e magicEffectRemovedEventData
+function this.wabbajackRemovedEffect(e)
+	
+	if e.effect.id == tes3.effect.T_alteration_Wabbajack then
+		if e.target and e.target.mesh ~= e.target.baseObject.mesh then
+			e.target.mesh = e.target.baseObject.mesh
+		end
+		e.effectInstance.cumulativeMagnitude = 0	-- The event *might* trigger when it shouldn't, so this ensures that the effect can be reapplied if that actually happens
+	end
+end
+
+---@param e spellTickEventData
+function this.wabbajackAppliedEffect(e)
+	if e.effectId == tes3.effect.T_alteration_Wabbajack then
+		mwse.log(e.effectInstance.cumulativeMagnitude)
+		if e.effectInstance.cumulativeMagnitude ~= -1 then	-- Just checking whether no time has passed since the effect began doesn't work annoyingly; even worse, for some reason this condition is being met twice, yet only the first instance actually affects the creature despite both printing everything to the log file
+			e.effectInstance.cumulativeMagnitude = -1
+			mwse.log("Start")
+			mwse.log(e.target.mesh)
+			mwse.log("Check")
+			mwse.log(e.target.baseObject.mesh)
+			if e.target.mesh == e.target.baseObject.mesh or e.target.mesh == "" then	-- e.target.mesh will normally just be ""
+				mwse.log("Target")
+			
+				if e.target.baseObject.objectType == tes3.objectType.creature and not e.target.isDead then
+					mwse.log("Condition")
+					if e.target.object.level < 30 then
+						mwse.log("Level")
+						local maxDuration = 15
+						local effectiveLevel = 0
+						if e.target.object.level > 5 then
+							effectiveLevel = e.target.object.level - 5
+						end
+						mwse.log("Effective Level")
+			
+						e.effect.duration = maxDuration - ((maxDuration - 3) * (effectiveLevel / 24))	-- Effect will last between 3 and maxDuration seconds depending on the target's level
+						mwse.log("Duration")
+						local transformCreatures = { "golden saint", "BM_ice_troll", "scamp", "T_Glb_Cre_LandDreu_01", "T_Glb_Cre_TrollCave_03", "mudcrab", "T_Ham_Fau_Goat_01", "Rat" }
+						local transformCreature = tes3.getObject(transformCreatures[math.random(#transformCreatures)])
+						mwse.log(transformCreature.id)
+			
+						e.target:disable()
+						e.target.object.walks = transformCreature.walks		-- These very important fields are only available on the reference's object, which will screw up other creatures of the same object; changes to MWSE itself are likely required
+						e.target.object.biped = transformCreature.biped
+						e.target.mesh = transformCreature.mesh				-- Right now MWSE keeps mesh change to the reference even when loading another save before the effect was even applied; I do not currently see a good way to solve this
+						wabbajackChangeStats(e.target, transformCreature)
+						mwse.log(e.target.mesh)
+						e.target:enable()
+						mwse.log("Transform")
+					else
+						tes3ui.showNotifyMenu(common.i18n("magic.wabbajackFailure", { e.target.object.name }))
+					end
+				end
+			end
+
 		end
 	end
 end
@@ -281,10 +356,10 @@ end
 
 ---@param e spellTickEventData
 function this.radiantShieldAppliedEffect(e)
-	if e.effectInstance.cumulativeMagnitude ~= -1 and e.effectInstance.magnitude > 0 then	-- Just checking whether no time has passed since the effect began doesn't work, since the magnitude isn't actually calculated until after the first tick
-		if e.effectId == tes3.effect.T_alteration_RadShield then
+	if e.effectId == tes3.effect.T_alteration_RadShield then
+		if e.effectInstance.cumulativeMagnitude ~= -1 and e.effectInstance.magnitude > 0 then	-- Just checking whether no time has passed since the effect began doesn't work, since the magnitude isn't actually calculated until after the first tick
 			e.target.mobile.shield = e.target.mobile.shield + e.effectInstance.magnitude
-			e.effectInstance.cumulativeMagnitude = -1	-- cumulativeMagnitude doesn't (shouldn't) do anything for custom effects, so it is used to track whether the effect has been applied to the target's shield value
+			e.effectInstance.cumulativeMagnitude = -1	-- cumulativeMagnitude doesn't (shouldn't) do anything for custom effects, so here it is used to track whether the effect has been applied to the target's shield value
 		end
 	end
 end
@@ -869,6 +944,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 		local soultrapEffect = tes3.getMagicEffect(tes3.effect.soultrap)
 		local reflectEffect = tes3.getMagicEffect(tes3.effect.reflect)
 		local shieldEffect = tes3.getMagicEffect(tes3.effect.shield)
+		local burdenEffect = tes3.getMagicEffect(tes3.effect.burden)
 
 		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[1])	-- Passwall
 		tes3.addMagicEffect{
@@ -1037,11 +1113,53 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onTick = nil,
 			onCollision = nil
 		}
+
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[5])		-- Wabbajack
+		tes3.addMagicEffect{
+			id = effectID,
+			name = effectName,
+			description = effectDescription,
+			school = tes3.magicSchool.alteration,
+			baseCost = effectCost,
+			speed = burdenEffect.speed,
+			allowEnchanting = false,
+			allowSpellmaking = false,
+			appliesOnce = false,
+			canCastSelf = false,
+			canCastTarget = true,
+			canCastTouch = false,
+			casterLinked = burdenEffect.casterLinked,
+			hasContinuousVFX = burdenEffect.hasContinuousVFX,
+			hasNoDuration = true,
+			hasNoMagnitude = true,
+			illegalDaedra = burdenEffect.illegalDaedra,
+			isHarmful = true,
+			nonRecastable = true,
+			targetsAttributes = false,
+			targetsSkills = false,
+			unreflectable = true,
+			usesNegativeLighting = burdenEffect.usesNegativeLighting,
+			icon = iconPath,
+			particleTexture = burdenEffect.particleTexture,
+			castSound = burdenEffect.castSoundEffect.id,
+			castVFX = burdenEffect.castVisualEffect.id,
+			boltSound = burdenEffect.boltSoundEffect.id,
+			boltVFX = burdenEffect.boltVisualEffect.id,
+			hitSound = burdenEffect.hitSoundEffect.id,
+			hitVFX = burdenEffect.hitVisualEffect.id,
+			areaSound = burdenEffect.areaSoundEffect.id,
+			areaVFX = burdenEffect.areaVisualEffect.id,
+			lighting = {x = burdenEffect.lightingRed, y = burdenEffect.lightingGreen, z = burdenEffect.lightingBlue},
+			size = burdenEffect.size,
+			sizeCap = burdenEffect.sizeCap,
+			onTick = nil,
+			onCollision = nil
+		}
 	end
 end)
 
 -- Replaces spell names, effects, etc. using the spell tables above
-event.register(tes3.event.loaded, function()
+event.register(tes3.event.load, function()
 	if config.summoningSpells == true then
 		replaceSpells(td_summon_spells)
 	end
@@ -1055,6 +1173,7 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.miscSpells == true then
+		--tes3.getObject("T_Dae_UNI_Wabbajack").enchantment = tes3.getObject("T_Use_WabbajackUni")	-- Crashes game when registered to the loaded event with the wabbajack enchantment equipped
 		replaceSpells(td_misc_spells)
 	end
 
@@ -1076,7 +1195,7 @@ event.register(tes3.event.loaded, function()
 		end
 	end
 	
-	tes3.updateMagicGUI( { reference = tes3.player } )
+	--tes3.updateMagicGUI( { reference = tes3.player } ) -- Not needed unless this function is registered to the loaded event
 end)
 
 return this
