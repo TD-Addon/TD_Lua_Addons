@@ -74,8 +74,8 @@ return {
 	["magic.miscRadiantShieldDesc"] = "Tworzy świetlistą osłonę dookoła celu. Stopień efektu dodawany jest do klasy pancerza. Odporność celu na szkodliwe efekty magiczne wzrasta. Dodatkowo, krótkotrwale oślepia przeciwników w zwarciu.",
 	["magic.miscWabbajack"] = "Łabadżak", -- Aly: yes, it's just directly transcribed to polish alphabet (that's what polish TESIV and TESV did), it's said exactly the same as english
 	["magic.miscWabbajackDesc"] = "Łabadżak!",
-	["magic.miscInsight"] = "Insight",
-	["magic.miscInsightDesc"] = "This effect lightly twists fate, increasing the chance of discovering valuable items.",
+	["magic.miscInsight"] = "Intuicja",
+	["magic.miscInsightDesc"] = "Nieznacznie wypacza los, zwiększając szansę na znalezienie wartościowych przedmiotów.",
 
 	["magic.wabbajackFailure"] = "Cel: %s jest zbyt potężny, nie może być poddany efektowi Łabadżaka!", -- Aly: ok this was harder to figure out due to adjectives inheriting gender of subject so: "Alex is strong" -> "Alex jest silny" but "Anna is strong" -> "Anna jest silna"; in this case "cel (target)" not %s is the subject so no matter what gender %s is, string will remain the same
 	["magic.banishFailure"] = "Cel: %s nie może zostać wypędzony, zaklęcie jest zbyt słabe!",
