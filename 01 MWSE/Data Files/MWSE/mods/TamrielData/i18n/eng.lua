@@ -74,6 +74,8 @@ return {
 	["magic.miscRadiantShieldDesc"] = "This effect creates a shield of brilliant light around the subject's entire body. The spell adds its magnitude to the subject's Armor Rating, resists harmful magic, and briefly blinds attackers in melee.",
 	["magic.miscWabbajack"] = "Wabbajack",
 	["magic.miscWabbajackDesc"] = "Wabbajack!",
+	["magic.miscInsight"] = "Insight",
+	["magic.miscInsightDesc"] = "This effect lightly twists fate, increasing the chance of discovering valuable items.",
 
 	["magic.wabbajackFailure"] = "%s is too strong to be Wabbajacked!",
 	["magic.banishFailure"] = "This spell is too weak to banish %s!",
@@ -149,7 +151,7 @@ return {
 	["mcm.itemSoundsDescription"] = "Gives some items from Tamriel Data, such as perfume and wasabi paste, more reasonable sounds when they are used or added to/removed from one's inventory.\nRequires reload.\n\nDefault: On\n\n",
 	
 	["mcm.travelPricesLabel"] = "Adjust Travel Prices",
-	["mcm.travelPricesDescription"] = "Changes the cost of travelling to destinations added by Tamriel Rebuilt and Project Tamriel when Morrowind's calculated prices are unreasonable, such as between Mages Guild networks.\nRequires reload.\n\nDefault: On\n\n",
+	["mcm.travelPricesDescription"] = "Changes the cost of traveling to destinations added by Tamriel Rebuilt and Project Tamriel when Morrowind's calculated prices are unreasonable, such as between Mages Guild networks.\nRequires reload.\n\nDefault: On\n\n",
 	
 	["mcm.interventionRangeLabel"] = "Limit Intervention Spell Range",
 	["mcm.interventionRangeDescription"] = "Restricts the range at which some intervention spells work, preventing them from being used to teleport across the entirety of Tamriel." ..

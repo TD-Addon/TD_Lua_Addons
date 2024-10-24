@@ -262,7 +262,7 @@ local function adjustTravelPrices(e)
 	
 	if e.reference.mobile.objectType == tes3.objectType.mobileNPC then
 		local providerInstance = e.reference.mobile.object
-		if string.find(providerInstance.faction.name, "Mages Guild") and providerInstance.factionRank > 3 then	-- Increase price of teleporting between MG networks
+		if string.find(providerInstance.faction.id, "Mages") and providerInstance.factionRank > 3 then	-- Increase price of teleporting between MG networks
 			e.price = e.price * 5;
 		end
 	end
@@ -360,6 +360,7 @@ dofile("TamrielData.mcm")
 
 event.register(tes3.event.loaded, function()
 
+	event.unregister(tes3.event.leveledItemPicked, magic.insightEffect)
 	--event.unregister(tes3.event.magicEffectRemoved, magic.wabbajackRemovedEffect)
 	--event.unregister(tes3.event.spellTick, magic.wabbajackAppliedEffect)
 	event.unregister(tes3.event.spellResist, magic.radiantShieldSpellResistEffect)
@@ -392,6 +393,8 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.miscSpells == true then
+		event.register(tes3.event.leveledItemPicked, magic.insightEffect)
+		
 		--event.register(tes3.event.magicEffectRemoved, magic.wabbajackRemovedEffect)
 		--event.register(tes3.event.spellTick, magic.wabbajackAppliedEffect)
 
