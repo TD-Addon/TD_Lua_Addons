@@ -74,8 +74,8 @@ return {
 	["magic.miscRadiantShieldDesc"] = "Cet effet crée un bouclier de lumière brillante autour du sujet. La puissance de l'effet s'ajoute à la valeur d'armure du sujet, réduit considérablement les effets des attaques magiques, et aveugle brièvement les agresseurs au corps-à-corps.",
 	["magic.miscWabbajack"] = "Wabbajack",
 	["magic.miscWabbajackDesc"] = "Wabbajack !",
-	["magic.miscInsight"] = "Insight",
-	["magic.miscInsightDesc"] = "This effect lightly twists fate, increasing the chance of discovering valuable items.",
+	["magic.miscInsight"] = "Perspicacité",
+	["magic.miscInsightDesc"] = "Cet effet influe légèrement sur le destin en augmentant les chances de découvrir des objets de valeur.",
 
 	["magic.wabbajackFailure"] = "%s est trop puissant pour que Wabbajack l'affecte !",
 	["magic.banishFailure"] = "Ce sort est trop faible pour bannir : %s !",

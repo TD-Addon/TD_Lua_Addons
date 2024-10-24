@@ -187,6 +187,38 @@ local vanilla_enchantments = {
 								tes3.effect.boundGloves, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.boundHelm, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.boundShield, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.boundBattleAxe, tes3.effectRange.self, 0, 60, 1, 1 }
 }
 
+-- ingredient id, 1st effect id, 1st effect attribute id, 1st effect skill id, 2nd effect id, ...
+local td_ingredients = {
+	{ "T_IngFlor_PBloomBulb_01", tes3.effect.poison, -1, -1,
+								 tes3.effect.drainAttribute, tes3.attribute.speed, 0,
+								 tes3.effect.damageFatigue, -1, -1,
+								 tes3.effect.T_mysticism_ReflectDmg, -1, -1 },
+	{ "T_IngCrea_Eyestar_01", tes3.effect.nightEye, -1, -1,
+							  tes3.effect.T_mysticism_Insight, -1, -1,
+							  tes3.effect.weaknesstoMagicka, -1, -1,
+							  tes3.effect.waterBreathing, -1, -1 },
+	{ "T_IngCrea_EyestarDae_01", tes3.effect.nightEye, -1, -1,
+								 tes3.effect.T_mysticism_Insight, -1, -1,
+								 tes3.effect.weaknesstoMagicka, -1, -1,
+								 tes3.effect.waterBreathing, -1, -1 },
+	{ "T_IngCrea_BeetleShell_01", tes3.effect.fortifyAttribute, tes3.attribute.endurance, 0,
+								  tes3.effect.T_mysticism_Insight, -1, -1 },
+	{ "T_IngCrea_BeetleShell_04", tes3.effect.fortifyAttribute, tes3.attribute.endurance, 0,
+								  tes3.effect.T_mysticism_ReflectDmg, -1, -1 },
+	{ "T_IngMine_PearlBlue_01", tes3.effect.damageAttribute, tes3.attribute.intelligence, 0,
+								tes3.effect.T_mysticism_Insight, -1, -1,
+								tes3.effect.restoreMagicka, -1, -1,
+								tes3.effect.fortifyMaximumMagicka, -1, -1 },
+	{ "T_IngMine_PearlBlueDae_01", tes3.effect.damageAttribute, tes3.attribute.intelligence, 0,
+								   tes3.effect.T_mysticism_Insight, -1, -1,
+								   tes3.effect.restoreMagicka, -1, -1,
+								   tes3.effect.fortifyMaximumMagicka, -1, -1 },
+	{ "T_IngMine_DiamondRed_01", tes3.effect.drainAttribute, tes3.attribute.endurance, 0,
+								 tes3.effect.invisibility, -1, -1,
+								 tes3.effect.T_mysticism_ReflectDmg, -1, -1,
+								 tes3.effect.resistFire, -1, -1 }
+}
+
 -- item id, item name, value
 local td_enchanted_items = {
 	{ "T_EnSc_Com_SummonAuroran", common.i18n("magic.itemScSummonAuroran"), 418 },
@@ -243,6 +275,22 @@ local function replaceEnchantments(table)
 				effect.duration = v[5 + (i - 1) * 6]
 				effect.min = v[6 + (i - 1) * 6]
 				effect.max = v[7 + (i - 1) * 6]
+			end
+		end
+	end
+end
+
+local function replaceIngredientEffects(table)
+	for k,v in pairs(table) do
+		local ingredient = tes3.getObject(v[1])
+		if ingredient then
+			for i = 1, 4, 1 do
+				if not v[2 + (i - 1) * 3] then
+					break
+				end
+				ingredient.effects[i] = v[2 + (i - 1) * 3]
+				ingredient.effectAttributeIds[i] = v[3 + (i - 1) * 3]
+				ingredient.effectSkillIds[i] = v[4 + (i - 1) * 3]
 			end
 		end
 	end
@@ -1300,6 +1348,7 @@ event.register(tes3.event.load, function()
 
 	if config.summoningSpells == true and config.boundSpells == true and config.interventionSpells == true and config.miscSpells == true then
 		replaceEnchantments(td_enchantments)
+		replaceIngredientEffects(td_ingredients)
 
 		for k,v in pairs(td_enchanted_items) do
 			local itemID, itemName, value = unpack(v)
