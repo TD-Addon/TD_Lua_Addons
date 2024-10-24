@@ -143,7 +143,7 @@ return {
 											"\n- Stops male Imga from equipping helmets and all Imga from equipping footwear.\n\nDefault: On\n\n",
 	
 	["mcm.fixVampireLabel"] = "Fix Vampire Heads",
-	["mcm.fixVampireDescription"] = "Stops Namira's shroud from hiding the player's head when equipped and allows vampire NPCs to use unique heads made specifically for them.\nRequires reload.\n\nDefault: On\n\n",
+	["mcm.fixVampireDescription"] = "Stops Namira's Shroud from hiding the player's head when equipped and allows vampire NPCs to use unique heads made specifically for them.\nRequires reload.\n\nDefault: On\n\n",
 	
 	["mcm.itemSoundsLabel"] = "Improve Item Sounds",
 	["mcm.itemSoundsDescription"] = "Gives some items from Tamriel Data, such as perfume and wasabi paste, more reasonable sounds when they are used or added to/removed from one's inventory.\nRequires reload.\n\nDefault: On\n\n",
