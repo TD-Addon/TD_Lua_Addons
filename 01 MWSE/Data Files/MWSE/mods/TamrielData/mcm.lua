@@ -17,12 +17,12 @@ local function registerModConfig()
     -- Sidebar Credits
     local credits = preferences.sidebar:createCategory{label=common.i18n("mcm.credits")}
     credits:createHyperlink{
-        text = common.i18n("mcm.mort"),
-        exec = "start https://www.nexusmods.com/morrowind/users/4138441/?tab=user+files",
-    }
-    credits:createHyperlink{
         text = common.i18n("mcm.Kynesifnar"),
         exec = "start https://www.nexusmods.com/users/56893332?tab=user+files",
+    }
+    credits:createHyperlink{
+        text = common.i18n("mcm.mort"),
+        exec = "start https://www.nexusmods.com/morrowind/users/4138441/?tab=user+files",
     }
     credits:createHyperlink{
         text = common.i18n("mcm.chef"),

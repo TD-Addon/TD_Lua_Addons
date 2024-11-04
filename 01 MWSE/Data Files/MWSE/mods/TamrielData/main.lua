@@ -9,7 +9,7 @@ local magic = require("tamrielData.magic")
 local weather = require("tamrielData.weather")
 
 -- Make sure we have an up-to-date version of MWSE.
-if (mwse.buildDate == nil) or (mwse.buildDate < 20240926) then
+if (mwse.buildDate == nil) or (mwse.buildDate < 20241102) then
     event.register(tes3.event.initialized, function()
         tes3ui.showNotifyMenu(common.i18n("main.mwseDate"))
     end)
@@ -269,20 +269,6 @@ local function adjustTravelPrices(e)
 end
 
 ---@param cell tes3cell
-local function getExteriorCell(cell, cellVisitTable)
-	if cell.isOrBehavesAsExterior then
-		return cell
-	end
-	
-	for ref in cell:iterateReferences(tes3.objectType.door) do
-		if ref.destination and not table.contains(cellVisitTable, ref.destination.cell) then
-			table.insert(cellVisitTable, ref.destination.cell)
-			return getExteriorCell(ref.destination.cell, cellVisitTable)
-		end
-	end
-end
-
----@param cell tes3cell
 local function isInterventionCell(cell, regionTable)
 	for k,v in pairs(regionTable) do
 		local regionID, xLeft, xRight, yBottom, yTop = unpack(v, 1, 5)
@@ -306,15 +292,13 @@ end
 local function limitInterventionMessage(e)
 	for k,v in pairs(e.source.effects) do
 		if v.id == tes3.effect.almsiviIntervention then
-			local cellVisitTable = { e.caster.cell }
-			local extCell = getExteriorCell(e.caster.cell, cellVisitTable)
+			local extCell = common.getExteriorCell(e.caster.cell)
 
 			if not extCell or not isInterventionCell(extCell, almsivi_intervention_regions) then
 				tes3ui.showNotifyMenu(common.i18n("main.rangeAlmsivi"))
 			end
 		elseif v.id == tes3.effect.T_intervention_Kyne then
-			local cellVisitTable = { e.caster.cell }
-			local extCell = getExteriorCell(e.caster.cell, cellVisitTable)
+			local extCell = common.getExteriorCell(e.caster.cell)
 
 			if not extCell or not isInterventionCell(extCell, kyne_intervention_regions) then
 				tes3ui.showNotifyMenu(common.i18n("main.rangeKyne"))
@@ -328,14 +312,14 @@ local function limitIntervention(e)
 	for k,v in pairs(e.source.effects) do
 		if v.id == tes3.effect.almsiviIntervention then
 			local cellVisitTable = { e.caster.cell }
-			local extCell = getExteriorCell(e.caster.cell, cellVisitTable)
+			local extCell = common.getExteriorCell(e.caster.cell, cellVisitTable)
 			
 			if not extCell or not isInterventionCell(extCell, almsivi_intervention_regions) then
 				return false
 			end
 		elseif v.id == tes3.effect.T_intervention_Kyne then
 			local cellVisitTable = { e.caster.cell }
-			local extCell = getExteriorCell(e.caster.cell, cellVisitTable)
+			local extCell = common.getExteriorCell(e.caster.cell, cellVisitTable)
 			
 			if not extCell or not isInterventionCell(extCell, kyne_intervention_regions) then
 				return false
@@ -418,9 +402,9 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.weatherChangedImmediate, weather.manageWeathers)
 		event.register(tes3.event.weatherTransitionStarted, weather.manageWeathers)
 
+		event.register(tes3.event.cellChanged, weather.changeStormOrigin)
 		event.register(tes3.event.weatherChangedImmediate, weather.changeStormOrigin)
 		event.register(tes3.event.weatherTransitionStarted, weather.changeStormOrigin)
-		event.register(tes3.event.cellChanged, weather.changeStormOrigin)
 	end
 
 	if config.fixPlayerRaceAnimations == true then

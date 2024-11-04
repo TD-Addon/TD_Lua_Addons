@@ -27,6 +27,11 @@ if config.summoningSpells == true then
 	tes3.claimSpellEffectId("T_summon_Draugr", 2109)
 	tes3.claimSpellEffectId("T_summon_Spriggan", 2110)
 	tes3.claimSpellEffectId("T_summon_BoneldGr", 2117)
+	tes3.claimSpellEffectId("T_summon_Ghost", 2126)
+	tes3.claimSpellEffectId("T_summon_Wraith", 2127)
+	tes3.claimSpellEffectId("T_summon_Barrowguard", 2128)
+	tes3.claimSpellEffectId("T_summon_MinoBarrowguard", 2129)
+	tes3.claimSpellEffectId("T_summon_SkeletonChampion", 2130)
 end
 
 if config.boundSpells == true then
@@ -47,7 +52,7 @@ if config.miscSpells == true then
 	tes3.claimSpellEffectId("T_alteration_Passwall", 2106)
 	tes3.claimSpellEffectId("T_mysticism_BanishDae", 2119)
 	tes3.claimSpellEffectId("T_mysticism_ReflectDmg", 2120)
-	--tes3.claimSpellEffectId("T_mysticism_DetHuman", 2121)
+	tes3.claimSpellEffectId("T_mysticism_DetHuman", 2121)
 	tes3.claimSpellEffectId("T_alteration_RadShield", 2123)
 	tes3.claimSpellEffectId("T_alteration_Wabbajack", 2124)
 	tes3.claimSpellEffectId("T_mysticism_Insight", 2125)
@@ -78,6 +83,11 @@ local td_summon_effects = {
 	{ tes3.effect.T_summon_Draugr, common.i18n("magic.summonDraugr"), "T_Sky_Und_Drgr_01", 29, "td\\s\\td_s_sum_draugr.dds", common.i18n("magic.summonDraugrDesc")},
 	{ tes3.effect.T_summon_Spriggan, common.i18n("magic.summonSpriggan"), "T_Sky_Cre_Spriggan_01", 48, "td\\s\\td_s_sum_sprig.dds", common.i18n("magic.summonSprigganDesc")},
 	{ tes3.effect.T_summon_BoneldGr, common.i18n("magic.summonGreaterBonelord"), "T_Mw_Und_BoneldGr_01", 71, "td\\s\\td_s_sum_gtr_bnlrd.dds", common.i18n("magic.summonGreaterBonelordDesc")},
+	{ tes3.effect.T_summon_Ghost, common.i18n("magic.summonGhost"), "T_Cyr_Und_Ghst_01", 7, "td\\s\\td_s_summ_ghost.dds", common.i18n("magic.summonGhostDesc")},
+	{ tes3.effect.T_summon_Wraith, common.i18n("magic.summonWraith"), "T_Cyr_Und_Wrth_01", 49, "td\\s\\td_s_summ_wraith.dds", common.i18n("magic.summonWraithDesc")},
+	{ tes3.effect.T_summon_Barrowguard, common.i18n("magic.summonBarrowguard"), "T_Cyr_Und_Mum_01", 11, "td\\s\\td_s_summ_brwgurd.dds", common.i18n("magic.summonBarrowguardDesc")},
+	{ tes3.effect.T_summon_MinoBarrowguard, common.i18n("magic.summonMinoBarrowguard"), "T_Cyr_Und_MinoBarrow_01", 57, "td\\s\\td_s_summ_mintur.dds", common.i18n("magic.summonMinoBarrowguardDesc")},
+	{ tes3.effect.T_summon_SkeletonChampion, common.i18n("magic.summonSkeletonChampion"), "T_Glb_Und_SkelCmpGls_01", 32, "td\\s\\td_s_sum_skele_c.dds", common.i18n("magic.summonSkeletonChampionDesc")},
 }
 
 -- effect id, effect name, item id, 2nd item ID, effect mana cost, icon, effect description
@@ -131,6 +141,11 @@ local td_summon_spells = {
 	{ "T_De_Cnj_SummonGreaterBonelord", tes3.spellType.spell, common.i18n("magic.summonGreaterBonelord"), 213, tes3.effect.T_summon_BoneldGr, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Cr_Cnj_AylSorcKSummon1", tes3.spellType.spell, nil, nil, tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 40, 1, 1 },
 	{ "T_Cr_Cnj_AylSorcKSummon3", tes3.spellType.spell, nil, nil, tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 40, 1, 1 },
+	{ "T_Cyr_Cnj_SummonGhost", tes3.spellType.spell, common.i18n("magic.summonGhost"), 21, tes3.effect.T_summon_Ghost, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Cyr_Cnj_SummonWraith", tes3.spellType.spell, common.i18n("magic.summonWraith"), 147, tes3.effect.T_summon_Wraith, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Cyr_Cnj_SummonBarrowguard", tes3.spellType.spell, common.i18n("magic.summonBarrowguard"), 33, tes3.effect.T_summon_Barrowguard, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Cyr_Cnj_SummonMinoBarrowguard", tes3.spellType.spell, common.i18n("magic.summonMinoBarrowguard"), 171, tes3.effect.T_summon_MinoBarrowguard, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonSkeletonChamp", tes3.spellType.spell, common.i18n("magic.summonSkeletonChampion"), 96, tes3.effect.T_summon_SkeletonChampion, tes3.effectRange.self, 0, 60, 1, 1 },
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -206,12 +221,12 @@ local td_ingredients = {
 	{ "T_IngCrea_BeetleShell_04", tes3.effect.fortifyAttribute, tes3.attribute.endurance, 0,
 								  tes3.effect.T_mysticism_ReflectDmg, -1, -1 },
 	{ "T_IngMine_PearlBlue_01", tes3.effect.damageAttribute, tes3.attribute.intelligence, 0,
-								tes3.effect.T_mysticism_Insight, -1, -1,
 								tes3.effect.restoreMagicka, -1, -1,
+								tes3.effect.T_mysticism_Insight, -1, -1,
 								tes3.effect.fortifyMaximumMagicka, -1, -1 },
 	{ "T_IngMine_PearlBlueDae_01", tes3.effect.damageAttribute, tes3.attribute.intelligence, 0,
-								   tes3.effect.T_mysticism_Insight, -1, -1,
 								   tes3.effect.restoreMagicka, -1, -1,
+								   tes3.effect.T_mysticism_Insight, -1, -1,
 								   tes3.effect.fortifyMaximumMagicka, -1, -1 },
 	{ "T_IngMine_DiamondRed_01", tes3.effect.drainAttribute, tes3.attribute.endurance, 0,
 								 tes3.effect.invisibility, -1, -1,
@@ -1024,7 +1039,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 	if config.interventionSpells == true then
 		local divineInterventionEffect = tes3.getMagicEffect(tes3.effect.divineIntervention)
 
-		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_intervention_effects[1])
+		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_intervention_effects[1])	-- Kyne's Intervention
 		tes3.addMagicEffect{
 			id = effectID,
 			name = effectName,
@@ -1364,7 +1379,7 @@ event.register(tes3.event.load, function()
 			replaceEnchantments(vanilla_enchantments)
 		end
 
-		tes3.getObject("T_Dae_UNI_Wabbajack").enchantment = tes3.getObject("T_Use_WabbajackUni")	-- Crashes game when registered to the loaded event with the wabbajack enchantment equipped
+		--tes3.getObject("T_Dae_UNI_Wabbajack").enchantment = tes3.getObject("T_Use_WabbajackUni")	-- Crashes game when registered to the loaded event with the wabbajack enchantment equipped
 	end
 	
 	--tes3.updateMagicGUI( { reference = tes3.player } ) -- Not needed unless this function is registered to the loaded event

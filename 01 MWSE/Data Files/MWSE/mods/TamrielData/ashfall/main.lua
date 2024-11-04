@@ -45,7 +45,7 @@ event.register(tes3.event.initialized, function()
 			tropical = 'tropical',
 			dry = 'dry',
 			volcanic = 'volcanic',
-			scorching = { min = -40, max = 25 },	-- Just using the dry setting like the Colovian Highlands wouldn't do justice for the regions that make up the Alik'r desert 
+			scorching = { min = -40, max = 25 },	-- Just using the dry climate like the Colovian Highlands wouldn't do justice for the regions that make up the Alik'r desert 
 		}
 
 		ashfall.registerActivators{
