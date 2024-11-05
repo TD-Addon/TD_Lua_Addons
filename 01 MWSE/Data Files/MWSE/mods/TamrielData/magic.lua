@@ -231,7 +231,11 @@ local td_ingredients = {
 	{ "T_IngMine_DiamondRed_01", tes3.effect.drainAttribute, tes3.attribute.endurance, 0,
 								 tes3.effect.invisibility, -1, -1,
 								 tes3.effect.T_mysticism_ReflectDmg, -1, -1,
-								 tes3.effect.resistFire, -1, -1 }
+								 tes3.effect.resistFire, -1, -1 },
+	{ "T_IngCrea_PrismaticDust_01", tes3.effect.light, -1, -1,
+									tes3.effect.T_alteration_RadShield, -1, -1,
+									tes3.effect.blind, -1, -1,
+									tes3.effect.restoreMagicka, -1, -1 }
 }
 
 -- item id, item name, value

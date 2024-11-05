@@ -360,9 +360,10 @@ event.register(tes3.event.loaded, function()
 	event.unregister(tes3.event.cellChanged, weather.manageWeathers)
 	event.unregister(tes3.event.weatherChangedImmediate, weather.manageWeathers)
 	event.unregister(tes3.event.weatherTransitionStarted, weather.manageWeathers)
+	event.unregister(tes3.event.cellChanged, weather.changeStormOrigin)
 	event.unregister(tes3.event.weatherChangedImmediate, weather.changeStormOrigin)
 	event.unregister(tes3.event.weatherTransitionStarted, weather.changeStormOrigin)
-	event.unregister(tes3.event.cellChanged, weather.changeStormOrigin)
+	event.unregister(tes3.event.soundObjectPlay, weather.silenceCreatures)
 	
 	event.unregister(tes3.event.equip, restrictEquip)
 	event.unregister(tes3.event.bodyPartAssigned, fixVampireHeadAssignment)
@@ -405,6 +406,8 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.cellChanged, weather.changeStormOrigin)
 		event.register(tes3.event.weatherChangedImmediate, weather.changeStormOrigin)
 		event.register(tes3.event.weatherTransitionStarted, weather.changeStormOrigin)
+
+		event.register(tes3.event.soundObjectPlay, weather.silenceCreatures)
 	end
 
 	if config.fixPlayerRaceAnimations == true then

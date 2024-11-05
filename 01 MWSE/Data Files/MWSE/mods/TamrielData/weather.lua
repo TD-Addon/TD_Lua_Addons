@@ -31,7 +31,7 @@ local defaultSnowColors = {
 
 	sundiscSunsetColor = tes3vector3.new(0.50196081399918,0.50196081399918,0.50196081399918)
 }
-local defaultSnowClouds = { cloudsMaxPercent = 1, cloudsSpeed = 1.5, cloudTexture = "Textures\\tx_bm_sky_snow.tga" }
+local defaultSnowSky = { cloudsMaxPercent = 1, cloudsSpeed = 1.5, cloudTexture = "Textures\\tx_bm_sky_snow.tga" }
 local defaultSnowParticles = { maxParticles = 1500, particleEntranceSpeed = 6, particleHeightMax = 700, particleHeightMin = 400, particleRadius = 800,
 									newParticle = "bm_snow_01.nif", precipitationFallSpeed = -575, isSnow = true, snowFallSpeedScale = 0.1 }	-- Of the numerical values, only maxParticles seems to be relevant for the snow controller
 local defaultSnowSound = ""
@@ -39,6 +39,8 @@ if mge.enabled() then
 	defaultSnowFogMGE = mgeWeatherConfig.getDistantFog(tes3.weather.snow)
 	defaultSnowWindMGE = mgeWeatherConfig.getWind(tes3.weather.snow).speed
 end
+local defaultSnow = { fog = defaultSnowFog, fogMGE = defaultSnowFogMGE, wind = defaultSnowWind, windMGE = defaultSnowWindMGE,
+						colors = defaultSnowColors, sky = defaultSnowSky, particles = defaultSnowParticles, sound = defaultSnowSound }
 
 local defaultAshFog = { landFogDayDepth = 1.1, landFogNightDepth = 1.2 }
 local defaultAshFogMGE
@@ -67,13 +69,15 @@ local defaultAshColors = {
 	
 	sundiscSunsetColor = tes3vector3.new(0.50196081399918,0.50196081399918,0.50196081399918)
 }
-local defaultAshClouds = { cloudsMaxPercent = 1, cloudsSpeed = 7, cloudTexture = "Textures\\tx_sky_ashstorm.tga" }
-local defaultAshStormClouds = { stormRootIndex = 1, mesh = "ashcloud.nif" }
+local defaultAshSky = { cloudsMaxPercent = 1, cloudsSpeed = 7, cloudTexture = "Textures\\tx_sky_ashstorm.tga" }
+local defaultAshClouds = { stormRootIndex = 1, mesh = "ashcloud.nif" }
 local defaultAshSound = "Ashstorm"
 if mge.enabled() then
 	defaultAshFogMGE = mgeWeatherConfig.getDistantFog(tes3.weather.ash)
 	defaultAshWindMGE = mgeWeatherConfig.getWind(tes3.weather.ash).speed
 end
+local defaultAsh = { fog = defaultAshFog, fogMGE = defaultAshFogMGE, wind = defaultAshWind, windMGE = defaultAshWindMGE,
+						colors = defaultAshColors, sky = defaultAshSky, clouds = defaultAshClouds, sound = defaultAshSound }
 
 local defaultBlizzardFog = { landFogDayDepth = 2.8, landFogNightDepth = 3 }
 local defaultBlizzardFogMGE
@@ -102,7 +106,7 @@ local defaultBlizzardColors = {
 	
 	sundiscSunsetColor = tes3vector3.new(0.50196081399918,0.50196081399918,0.50196081399918),
 }
-local defaultBlizzardClouds = { cloudsMaxPercent = 1, cloudsSpeed = 7.5, cloudTexture = "Textures\\tx_bm_sky_blizzard.tga" }
+local defaultBlizzardSky = { cloudsMaxPercent = 1, cloudsSpeed = 7.5, cloudTexture = "Textures\\tx_bm_sky_blizzard.tga" }
 local defaultBlizzardSound = "BM Blizzard"
 if mge.enabled() then
 	defaultBlizzardFogMGE = mgeWeatherConfig.getDistantFog(tes3.weather.blizzard)
@@ -139,16 +143,18 @@ local othrelethSporefallColors = {
 
 	sundiscSunsetColor = tes3vector3.new(0.87450987100601,0.87450987100601,0.87450987100601)
 }
-local othrelethSporefallClouds = { cloudsMaxPercent = 1, cloudsSpeed = 1, cloudTexture = "Textures\\tx_sky_foggy.dds" }
+local othrelethSporefallSky = { cloudsMaxPercent = 1, cloudsSpeed = 1, cloudTexture = "Textures\\tx_sky_foggy.dds" }
 local othrelethSporefallParticles = { maxParticles = 1000, particleEntranceSpeed = 6, particleHeightMax = 700, particleHeightMin = 400, particleRadius = 3600,
 											newParticle = "td\\td_weather_ow_spore.nif", precipitationFallSpeed = -575, isSnow = true, snowFallSpeedScale = 0.075 }
 local othrelethSporefallSound = ""
+local othrelethSporefall = { fog = othrelethSporefallFog, fogMGE = othrelethSporefallFogMGE, wind = othrelethSporefallWind, windMGE = othrelethSporefallWindMGE,
+								colors = othrelethSporefallColors, sky = othrelethSporefallSky, particles = othrelethSporefallParticles, sound = othrelethSporefallSound }
 
-local shipalSandFog = { landFogDayDepth = 1.2, landFogNightDepth = 1.2 }
-local shipalSandFogMGE = { distance = .14, offset = 85 }
-local shipalSandWind = 0.8
-local shipalSandWindMGE = 0.4
-local shipalSandColors = {
+local shipalSandstormFog = { landFogDayDepth = 1.2, landFogNightDepth = 1.2 }
+local shipalSandstormFogMGE = { distance = .14, offset = 85 }
+local shipalSandstormWind = 0.8
+local shipalSandstormWindMGE = 0.4
+local shipalSandstormColors = {
 	ambientSunriseColor = tes3vector3.new(0.21530009806156,0.14550277590752,0.11051461100578),
 	ambientDayColor = tes3vector3.new(0.29153820872307,0.19568987190723,0.12980020046234),
 	ambientSunsetColor = tes3vector3.new(0.15863129496574,0.13118956983089,0.10972380638123),
@@ -171,9 +177,44 @@ local shipalSandColors = {
 	
 	sundiscSunsetColor = tes3vector3.new(0.50196081399918,0.50196081399918,0.50196081399918)
 }
-local shipalSandClouds = { cloudsMaxPercent = 1, cloudsSpeed = 7, cloudTexture = "Textures\\tx_sky_ashstorm.tga" }
-local shipalSandStormClouds = { stormRootIndex = 1, mesh = "td\\td_sh_sand_cloud.nif" }
-local shipalSandSound = "T_SndEnv_SandStorm"
+local shipalSandstormSky = { cloudsMaxPercent = 1, cloudsSpeed = 7, cloudTexture = "Textures\\tx_sky_ashstorm.tga" }
+local shipalSandstormClouds = { stormRootIndex = 1, mesh = "td\\td_sh_sand_cloud.nif" }
+local shipalSandstormSound = "T_SndEnv_SandStorm"
+local shipalSandstorm = { fog = shipalSandstormFog, fogMGE = shipalSandstormFogMGE, wind = shipalSandstormWind, windMGE = shipalSandstormWindMGE,
+						colors = shipalSandstormColors, sky = shipalSandstormSky, clouds = shipalSandstormClouds, sound = shipalSandstormSound }
+
+local tropicalStormFog = { landFogDayDepth = 1.7, landFogNightDepth = 1.9 }
+local tropicalStormFogMGE = { distance = .13, offset = 100 }
+local tropicalStormWind = 2
+local tropicalStormWindMGE = 0.6
+local tropicalStormColors = {
+	ambientSunriseColor = tes3vector3.new(0.19833926856518,0.19834020733833,0.19834034144878),
+	ambientDayColor = tes3vector3.new(0.26627615094185,0.266282081604,0.26628294587135),
+	ambientSunsetColor = tes3vector3.new(0.21176472306252,0.21176472306252,0.21176472306252),
+	ambientNightColor = tes3vector3.new(0.1051777228713,0.11253328621387,0.12334341555834),
+	
+	skySunriseColor = tes3vector3.new(0.3021180331707,0.30640208721161,0.31970238685608),
+	skyDayColor = tes3vector3.new(0.43943184614182,0.46728873252869,0.51149290800095),
+	skySunsetColor = tes3vector3.new(0.3021180331707,0.30640208721161,0.31970238685608),
+	skyNightColor = tes3vector3.new(0.087008163332939,0.090532593429089,0.097644492983818),
+	
+	fogSunriseColor = tes3vector3.new(0.2162476927042,0.23177614808083,0.27332815527916),
+	fogDayColor = tes3vector3.new(0.32280033826828,0.34984081983566,0.39182490110397),
+	fogSunsetColor = tes3vector3.new(0.20606455206871,0.21729429066181,0.24860291182995),
+	fogNightColor = tes3vector3.new(0.07522377371788,0.07911616563797,0.086906954646111),
+	
+	sunSunriseColor = tes3vector3.new(0.10468751192093,0.13780814409256,0.21113251149654),
+	sunDayColor = tes3vector3.new(0.19020310044289,0.21166664361954,0.24804016947746),
+	sunSunsetColor = tes3vector3.new(0.10052275657654,0.14052282273769,0.19936349987984),
+	sunNightColor = tes3vector3.new(0.038123168051243,0.063679918646812,0.11018896102905),
+	
+	sundiscSunsetColor = tes3vector3.new(0.50196081399918,0.50196081399918,0.50196081399918),
+}
+local tropicalStormSky = { cloudsMaxPercent = 1, cloudsSpeed = 10, cloudTexture = "Textures\\tx_sky_ashstorm.tga" }
+local tropicalStormStormClouds = { stormRootIndex = 1, mesh = "td\\td_tropical_cloud.nif" }
+local tropicalStormSound = "T_SndEnv_TropicalStorm"
+local tropicalStorm = { fog = tropicalStormFog, fogMGE = tropicalStormFogMGE, wind = tropicalStormWind, windMGE = tropicalStormWindMGE,
+						colors = tropicalStormColors, sky = tropicalStormSky, clouds = tropicalStormStormClouds, sound = tropicalStormSound }
 
 local rainParticles = { "Raindrop" }
 local snowParticles = { "Snowflake", "BM_Snow_01", "tr_weather_ow_spore" }
@@ -183,10 +224,10 @@ local snowParticles = { "Snowflake", "BM_Snow_01", "tr_weather_ow_spore" }
 local region_weather_chances = {
 	{ "Othreleth Woods Region", 0, 0, 0, 25, 25, 6, 10, 15, 14, 5 },	-- Ash chance is set to 0 to prevent interference with sandstorms in SH
 	{ "Shipal-Shin Region", 8, 0, 0, 54, 18, 10, 5, 3, 0, 2 },
-	--{ "Abecean Sea Region", 3, 0, 0, 50, 20, 4, 3, 10, 0, 10 },
-	--{ "Stirk Isle Region", 3, 0, 0, 50, 20, 4, 3, 10, 0, 10 },
-	--{ "Gilded Hills Region", 3, 0, 0, 55, 20, 0, 4, 10, 0, 8 },
-	--{ "Gold Coast Region", 3, 0, 0, 50, 25, 0, 4, 10, 0, 8 },
+	{ "Abecean Sea Region", 3, 0, 0, 50, 20, 4, 3, 10, 0, 10 },
+	{ "Stirk Isle Region", 3, 0, 0, 50, 20, 4, 3, 10, 0, 10 },
+	{ "Gilded Hills Region", 3, 0, 0, 55, 20, 0, 4, 10, 0, 8 },
+	{ "Gold Coast Region", 3, 0, 0, 50, 25, 0, 4, 10, 0, 8 },
 }
 
 -- region id, origin x-coordinate, origin y-coordinate, y-cell top bound, y-cell bottom bound
@@ -204,13 +245,13 @@ local region_storm_origins = {
 	{ "Thirr Valley Region", -18932, -448768, -39, -50 },
 
 	-- Abecean tropical storms
-	{ "Abecean Sea Region", -2863000.000, -405600.000 },
-	{ "Colovian Highlands Region", -2863000.000, -405600.000 },
-	{ "Dasek Marsh Region", -2863000.000, -405600.000 },
-	{ "Gilded Hills Region", -2863000.000, -405600.000 },
-	{ "Gold Coast Region", -2863000.000, -405600.000 },
-	{ "Kvetchi Pass Region", -2863000.000, -405600.000 },
-	{ "Stirk Isle Region", -2863000.000, -405600.000 },
+	{ "Abecean Sea Region", -1347424.000, -490135.000 },
+	{ "Colovian Highlands Region", -1347424.000, -490135.000 },
+	{ "Dasek Marsh Region", -1347424.000, -490135.000 },
+	{ "Gilded Hills Region", -1347424.000, -490135.000 },
+	{ "Gold Coast Region", -1347424.000, -490135.000 },
+	{ "Kvetchi Pass Region", -1347424.000, -490135.000 },
+	{ "Stirk Isle Region", -1347424.000, -490135.000 },
 }
 
 ---@param weather tes3weather
@@ -292,7 +333,7 @@ local function changeWeatherColors(weather, colorTable)
 end
 
 ---@param weather tes3weather
-local function changeWeatherClouds(weather, cloudSettings)
+local function changeWeatherSky(weather, cloudSettings)
 	weather.cloudsMaxPercent = cloudSettings.cloudsMaxPercent
 	weather.cloudsSpeed = cloudSettings.cloudsSpeed
 	weather.cloudTexture = cloudSettings.cloudTexture
@@ -420,16 +461,16 @@ local function fixParticlesOnLoad(customWeather, isNext)
 end
 
 ---@param weather tes3weatherRain
-local function changeWeather(weather, fogVanilla, fogMGE, wind, windMGE, colors, clouds, sound, particles, stormClouds)
-	changeWeatherFog(weather, fogVanilla, fogMGE)
-	changeWeatherWind(weather, wind, windMGE)
-	changeWeatherColors(weather, colors)
-	changeWeatherClouds(weather, clouds)
-	changeWeatherSound(weather, sound)
-	if particles then
-		changeWeatherPrecipitation(weather, particles)
-	elseif stormClouds then
-		changeWeatherStormClouds(weather, stormClouds)
+local function changeWeather(weather, replacement)
+	changeWeatherFog(weather, replacement.fog, replacement.fogMGE)
+	changeWeatherWind(weather, replacement.wind, replacement.windMGE)
+	changeWeatherColors(weather, replacement.colors)
+	changeWeatherSky(weather, replacement.sky)
+	changeWeatherSound(weather, replacement.sound)
+	if replacement.particles then
+		changeWeatherPrecipitation(weather, replacement.particles)
+	elseif replacement.clouds then
+		changeWeatherStormClouds(weather, replacement.clouds)
 	end
 end
 
@@ -451,44 +492,52 @@ function this.manageWeathers(e)
 		weather = e.to
 	end
 
-	local extCell = common.getExteriorCell(tes3.player.cell)	-- Should be more reliable than
+	local extCell = common.getExteriorCell(tes3.player.cell)	-- Should be more reliable than getRegion
 
 	if extCell.region then
 		if weather.name == "Snow" or (nextWeather and nextWeather.name == "Snow") then
 			if extCell.region.id == "Othreleth Woods Region" or extCell.region.id == "Thirr Valley Region" or extCell.region.id == "Aanthirin Region" or extCell.region.id == "Shipal-Shin Region" then	   -- Regions that either are OW or border it without (currently) bordering a region with normal snow (like VM)
 				if weather.name == "Snow" then	-- This setup is kind of stupid, but I just didn't want for the region checks above to be present in two different places
-					changeWeather(weather, othrelethSporefallFog, othrelethSporefallFogMGE, othrelethSporefallWind, othrelethSporefallWindMGE, othrelethSporefallColors, othrelethSporefallClouds, othrelethSporefallSound, othrelethSporefallParticles, nil)
+					changeWeather(weather, othrelethSporefall)
 					if not e.to and not e.previousCell then
 						fixParticlesOnLoad(weather, false)
 					end
 				else	-- Exists to change the next weather if the player loads a game where the weather should be changing to the spore storm
-					changeWeather(nextWeather, othrelethSporefallFog, othrelethSporefallFogMGE, othrelethSporefallWind, othrelethSporefallWindMGE, othrelethSporefallColors, othrelethSporefallClouds, othrelethSporefallSound, othrelethSporefallParticles, nil)
+					changeWeather(nextWeather, othrelethSporefall)
 					if not e.to and not e.previousCell then
 						fixParticlesOnLoad(nextWeather, true)
 					end
 				end
 			elseif extCell.region.id == "Armun Ashlands Region" and extCell.gridX > -11 then	-- This is a very temporary solution for weather transitions that will work until the WBM release; MWSE will need actual support for custom weathers in order for transitions to work at that point
-				changeWeather(weather, othrelethSporefallFog, othrelethSporefallFogMGE, othrelethSporefallWind, othrelethSporefallWindMGE, othrelethSporefallColors, othrelethSporefallClouds, othrelethSporefallSound, othrelethSporefallParticles, nil)
+				changeWeather(weather, othrelethSporefall)
 			else
-				changeWeather(weather, defaultSnowFog, defaultSnowFogMGE, defaultSnowWind, defaultSnowWindMGE, defaultSnowColors, defaultSnowClouds, defaultSnowSound, defaultSnowParticles, nil)
+				if weather.name == "Snow" then
+					changeWeather(weather, defaultSnow)
+				else
+					changeWeather(nextWeather, defaultSnow)
+				end
 			end
 		elseif weather.name == "Ashstorm" or (nextWeather and nextWeather.name == "Ashstorm") then
 			if extCell.region.id == "Shipal-Shin Region" then
 				if weather.name == "Ashstorm" then
-					changeWeather(weather, shipalSandFog, shipalSandFogMGE, shipalSandWind, shipalSandWindMGE, shipalSandColors, shipalSandClouds, shipalSandSound, nil, shipalSandStormClouds)
+					changeWeather(weather, shipalSandstorm)
 				else
-					changeWeather(nextWeather, shipalSandFog, shipalSandFogMGE, shipalSandWind, shipalSandWindMGE, shipalSandColors, shipalSandClouds, shipalSandSound, nil, shipalSandStormClouds)
+					changeWeather(nextWeather, shipalSandstorm)
 				end
 			elseif (extCell.region.id == "Othreleth Woods Region" or extCell.region.id == "Thirr Valley Region") and extCell.gridY < -39 then	-- Another temporary solution for weather transitions
-				changeWeather(weather, shipalSandFog, shipalSandFogMGE, shipalSandWind, shipalSandWindMGE, shipalSandColors, shipalSandClouds, shipalSandSound, nil, shipalSandStormClouds)
+				changeWeather(weather, shipalSandstorm)
 			elseif extCell.region.id == "Abecean Sea Region" or extCell.region.id == "Stirk Isle Region" or extCell.region.id == "Gold Coast Region" or extCell.region.id == "Gilded Hills Region" or extCell.region.id == "Dasek Marsh Region" or extCell.region.id == "Kvetchi Pass Region" or extCell.region.id == "Colovian Highlands Region" then
-					if weather.name == "Ashstorm" then
-						--changeWeather(weather, shipalSandFog, shipalSandFogMGE, shipalSandWind, shipalSandWindMGE, shipalSandColors, shipalSandClouds, shipalSandSound, nil, shipalSandStormClouds)
-					else
-						--changeWeather(nextWeather, shipalSandFog, shipalSandFogMGE, shipalSandWind, shipalSandWindMGE, shipalSandColors, shipalSandClouds, shipalSandSound, nil, shipalSandStormClouds)
-					end
+				if weather.name == "Ashstorm" then
+					changeWeather(weather, tropicalStorm)
+				else
+					changeWeather(nextWeather, tropicalStorm)
+				end
 			else
-				changeWeather(weather, defaultAshFog, defaultAshFogMGE, defaultAshWind, defaultAshWindMGE, defaultAshColors, defaultAshClouds, defaultAshSound, nil, defaultAshStormClouds)
+				if weather.name == "Ashstorm" then
+					changeWeather(weather, defaultAsh)
+				else
+					changeWeather(nextWeather, defaultAsh)
+				end
 			end
 		end
 	end
@@ -536,6 +585,15 @@ function this.changeStormOrigin(e)
 		end
 
 		weather.stormOrigin = defaultStormOrigin	-- This kind of solution shouldn't be necessary, but MWSE doesn't allow for weathers to be nicely reset to their default settings
+	end
+end
+
+---@param e soundObjectPlayEventData
+function this.silenceCreatures(e)
+	if e.sound.id == "T_SndCrea_SeagullScream1" or e.sound.id == "T_SndCrea_SeagullScream2" or e.sound.id == "T_SndCrea_SeagullFlap" then	-- Could also account for T_SndCrea_MastreeveMoan, T_SndCrea_MastreeveRoar, T_SndCrea_MastreeveScream?
+		if tes3.getCurrentWeather().index == tes3.weather.ash then
+			return false	-- Seeing the birds fly in a tropical storm is bad enough, having to hear them as well is just insulting
+		end
 	end
 end
 
