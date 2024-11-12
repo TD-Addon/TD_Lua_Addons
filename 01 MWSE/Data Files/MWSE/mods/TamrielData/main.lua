@@ -6,6 +6,7 @@
 local common = require("tamrielData.common")
 local config = require("tamrielData.config")
 local magic = require("tamrielData.magic")
+local reputation = require("tamrielData.reputation")
 local weather = require("tamrielData.weather")
 
 -- Make sure we have an up-to-date version of MWSE.
@@ -356,6 +357,11 @@ event.register(tes3.event.loaded, function()
 	event.unregister(tes3.event.damage, magic.reflectDamageEffect)
 	event.unregister(tes3.event.damageHandToHand, magic.reflectDamageHHEffect)
 	event.unregister(tes3.event.magicCasted, magic.passwallEffect)
+
+	event.unregister(tes3.event.menuEnter, reputation.switchReputation, {filter = "MenuDialog"})
+	event.unregister(tes3.event.menuExit, reputation.switchReputation)
+	event.unregister(tes3.event.uiRefreshed, reputation.uiRefreshedCallback, {filter = "MenuStat_scroll_pane"})	-- Change to MenuStat_layout and work off of it as event data?
+	event.unregister(tes3.event.menuEnter, function(e) tes3ui.updateStatsPane() end)
 	
 	event.unregister(tes3.event.cellChanged, weather.manageWeathers)
 	event.unregister(tes3.event.weatherChangedImmediate, weather.manageWeathers)
@@ -408,6 +414,14 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.weatherTransitionStarted, weather.changeStormOrigin)
 
 		event.register(tes3.event.soundObjectPlay, weather.silenceCreatures)
+	end
+	
+	if config.provincialReputation == true then
+		event.register(tes3.event.menuEnter, reputation.switchReputation, {filter = "MenuDialog"})
+		event.register(tes3.event.menuExit, reputation.switchReputation)
+		
+		event.register(tes3.event.uiRefreshed, reputation.uiRefreshedCallback, {filter = "MenuStat_scroll_pane"})	-- Change to MenuStat_layout and work off of it as event data?
+		event.register(tes3.event.menuEnter, function(e) tes3ui.updateStatsPane() end)
 	end
 
 	if config.fixPlayerRaceAnimations == true then

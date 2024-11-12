@@ -25,6 +25,10 @@ local function registerModConfig()
         exec = "start https://www.nexusmods.com/morrowind/users/4138441/?tab=user+files",
     }
     credits:createHyperlink{
+        text = common.i18n("mcm.Rakanishu"),
+        exec = "start https://www.project-tamriel.com/memberlist.php?mode=viewprofile&u=239&sid=b46caae0a0f90403fca886455580631a",
+    }
+    credits:createHyperlink{
         text = common.i18n("mcm.chef"),
         exec = "start https://github.com/cheflul/Chefmod",
     }
@@ -88,6 +92,14 @@ local function registerModConfig()
         description = common.i18n("mcm.magickaExpandedDescription"),
         variable = mwse.mcm.createTableVariable{
             id = "overwriteMagickaExpanded",
+            table = config,
+        },
+    }
+    toggles:createOnOffButton{
+        label = common.i18n("mcm.provincialReputationLabel"),
+        description = common.i18n("mcm.provincialReputationDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "provincialReputation",
             table = config,
         },
     }

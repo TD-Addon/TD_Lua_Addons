@@ -32,6 +32,7 @@ if config.summoningSpells == true then
 	tes3.claimSpellEffectId("T_summon_Barrowguard", 2128)
 	tes3.claimSpellEffectId("T_summon_MinoBarrowguard", 2129)
 	tes3.claimSpellEffectId("T_summon_SkeletonChampion", 2130)
+	tes3.claimSpellEffectId("T_summon_AtroFrostMon", 2131)
 end
 
 if config.boundSpells == true then
@@ -88,6 +89,7 @@ local td_summon_effects = {
 	{ tes3.effect.T_summon_Barrowguard, common.i18n("magic.summonBarrowguard"), "T_Cyr_Und_Mum_01", 11, "td\\s\\td_s_summ_brwgurd.dds", common.i18n("magic.summonBarrowguardDesc")},
 	{ tes3.effect.T_summon_MinoBarrowguard, common.i18n("magic.summonMinoBarrowguard"), "T_Cyr_Und_MinoBarrow_01", 57, "td\\s\\td_s_summ_mintur.dds", common.i18n("magic.summonMinoBarrowguardDesc")},
 	{ tes3.effect.T_summon_SkeletonChampion, common.i18n("magic.summonSkeletonChampion"), "T_Glb_Und_SkelCmpGls_01", 32, "td\\s\\td_s_sum_skele_c.dds", common.i18n("magic.summonSkeletonChampionDesc")},
+	{ tes3.effect.T_summon_AtroFrostMon, common.i18n("magic.summonFrostMonarch"), "T_Dae_Cre_MonarchFr_01", 47, "td\\s\\td_s_sum_fst_monch.dds", common.i18n("magic.summonFrostMonarchDesc")},
 }
 
 -- effect id, effect name, item id, 2nd item ID, effect mana cost, icon, effect description
@@ -146,6 +148,7 @@ local td_summon_spells = {
 	{ "T_Cyr_Cnj_SummonBarrowguard", tes3.spellType.spell, common.i18n("magic.summonBarrowguard"), 33, tes3.effect.T_summon_Barrowguard, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Cyr_Cnj_SummonMinoBarrowguard", tes3.spellType.spell, common.i18n("magic.summonMinoBarrowguard"), 171, tes3.effect.T_summon_MinoBarrowguard, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Com_Cnj_SummonSkeletonChamp", tes3.spellType.spell, common.i18n("magic.summonSkeletonChampion"), 96, tes3.effect.T_summon_SkeletonChampion, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonFrostMonarch", tes3.spellType.spell, common.i18n("magic.summonFrostMonarch"), 141, tes3.effect.T_summon_AtroFrostMon, tes3.effectRange.self, 0, 60, 1, 1 },
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -238,6 +241,20 @@ local td_ingredients = {
 									tes3.effect.restoreMagicka, -1, -1 }
 }
 
+-- item id, item name, effect id
+local td_potions = {
+	{ "T_Com_Potion_ReflectDamage_B", common.i18n("magic.itemPotionReflectDamageB"), tes3.effect.T_mysticism_ReflectDmg },
+	{ "T_Com_Potion_ReflectDamage_C", common.i18n("magic.itemPotionReflectDamageC"), tes3.effect.T_mysticism_ReflectDmg },
+	{ "T_Com_Potion_ReflectDamage_S", common.i18n("magic.itemPotionReflectDamageS"), tes3.effect.T_mysticism_ReflectDmg },
+	{ "T_Com_Potion_ReflectDamage_Q", common.i18n("magic.itemPotionReflectDamageQ"), tes3.effect.T_mysticism_ReflectDmg },
+	{ "T_Com_Potion_ReflectDamage_E", common.i18n("magic.itemPotionReflectDamageE"), tes3.effect.T_mysticism_ReflectDmg },
+	{ "T_Com_Potion_Insight_B", common.i18n("magic.itemPotionInsightB"), tes3.effect.T_mysticism_Insight },
+	{ "T_Com_Potion_Insight_C", common.i18n("magic.itemPotionInsightC"), tes3.effect.T_mysticism_Insight },
+	{ "T_Com_Potion_Insight_S", common.i18n("magic.itemPotionInsightS"), tes3.effect.T_mysticism_Insight },
+	{ "T_Com_Potion_Insight_Q", common.i18n("magic.itemPotionInsightQ"), tes3.effect.T_mysticism_Insight },
+	{ "T_Com_Potion_Insight_E", common.i18n("magic.itemPotionInsightE"), tes3.effect.T_mysticism_Insight }
+}
+
 -- item id, item name, value
 local td_enchanted_items = {
 	{ "T_EnSc_Com_SummonAuroran", common.i18n("magic.itemScSummonAuroran"), 418 },
@@ -315,6 +332,26 @@ local function replaceIngredientEffects(table)
 	end
 end
 
+local function replacePotions(table)
+	for k,v in pairs(table) do
+		local potion = tes3.getObject(v[1])
+		if potion then
+			potion.name = v[2]
+			potion.effects[1].id = v[3]
+		end
+	end
+end
+
+local function editItems(table)
+	for k,v in pairs(table) do
+		local overridden_item = tes3.getObject(v[1])
+		if overridden_item then
+			overridden_item.name = v[2]
+			overridden_item.value = v[3]
+		end
+	end
+end
+
 ---@param e leveledItemPickedEventData
 function this.insightEffect(e)
 	local insightEffects = tes3.player.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_Insight })
@@ -351,19 +388,27 @@ function this.insightEffect(e)
 				local leveledItemTable = { }
 				local maxValue = 0
 				local minValue = 2147483647
+				local valueTemp = 0
 				local tableIndex = 1
 
 				for _,v in pairs(e.list.list) do
 					if v.levelRequired == maxLevel or (v.levelRequired < tes3.player.object.level and e.list.calculateFromAllLevels) then
-						leveledItemTable[tableIndex] = { item = v.object, value = v.object.value, probability = nil }
-						tableIndex = tableIndex + 1
 
-						if v.object.value > maxValue then
-							maxValue = v.object.value
+						if v.object.value then
+							valueTemp = v.object.value
+						else
+							valueTemp = 0	-- Avoids failures when encountering an item without a value
 						end
 
-						if v.object.value < minValue then
-							minValue = v.object.value
+						leveledItemTable[tableIndex] = { item = v.object, value = valueTemp, probability = nil }
+						tableIndex = tableIndex + 1
+						
+						if valueTemp > maxValue then
+							maxValue = valueTemp
+						end
+
+						if valueTemp < minValue then
+							minValue = valueTemp
 						end
 					end
 				end
@@ -1368,16 +1413,8 @@ event.register(tes3.event.load, function()
 	if config.summoningSpells == true and config.boundSpells == true and config.interventionSpells == true and config.miscSpells == true then
 		replaceEnchantments(td_enchantments)
 		replaceIngredientEffects(td_ingredients)
-
-		for k,v in pairs(td_enchanted_items) do
-			local itemID, itemName, value = unpack(v)
-			
-			local overridden_item = tes3.getObject(itemID)
-			if overridden_item then
-				overridden_item.name = itemName
-				overridden_item.value = value
-			end
-		end
+		replacePotions(td_potions)
+		editItems(td_enchanted_items)
 		
 		if config.changeVanillaEnchantments == true then
 			replaceEnchantments(vanilla_enchantments)

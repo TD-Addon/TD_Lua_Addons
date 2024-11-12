@@ -5,6 +5,7 @@ local defaultConfig = {
 	miscSpells = true,
 	changeVanillaEnchantments = true,
 	overwriteMagickaExpanded = true,
+	provincialReputation = true,
 	weatherChanges = true,
 	fixPlayerRaceAnimations = true,
 	restrictEquipment = true,
