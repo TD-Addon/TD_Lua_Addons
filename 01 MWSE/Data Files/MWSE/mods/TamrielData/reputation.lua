@@ -6,6 +6,8 @@
 
 local this = {}
 
+local common = require("tamrielData.common")
+
 local baseReputation
 
 -- Project information must be in reverse alphabetical order.
@@ -13,31 +15,37 @@ local baseReputation
 local projectTable = {
     {
         ["name"] = "Skyrim",
+        ["province"] = common.i18n("reputation.Skyrim"),
         ["installVar"] = "T_Glob_Installed_SHotN",
         ["repVar"] = "T_Glob_Rep_Sky"
     },
     {
         ["name"] = "Padomaic Isles",
+        ["province"] = common.i18n("reputation.PadomaicIsles"),
         ["installVar"] = "T_Glob_Installed_PI",
         ["repVar"] = "T_Glob_Rep_PI"
     },
     {
         ["name"] = "Morrowind",
+        ["province"] = common.i18n("reputation.Morrowind"),
         ["installVar"] = "",
         ["repVar"] = ""
     },
     {
         ["name"] = "High Rock",
+        ["province"] = common.i18n("reputation.HighRock"),
         ["installVar"] = "T_Glob_Installed_HR427",
         ["repVar"] = "T_Glob_Rep_Hr"
     },
     {
         ["name"] = "Hammerfell",
+        ["province"] = common.i18n("reputation.Hammerfell"),
         ["installVar"] = "T_Glob_Installed_Ham",
         ["repVar"] = "T_Glob_Rep_Ham"
     },
     {
         ["name"] = "Cyrodiil",
+        ["province"] = common.i18n("reputation.Cyrodiil"),
         ["installVar"] = "T_Glob_Installed_PC",
         ["repVar"] = "T_Glob_Rep_Cyr"
     }
@@ -65,9 +73,8 @@ local function createTooltip(e)
     tooltipLayout.childAlignY = 0.5
     tooltipLayout.flowDirection = top_to_bottom
     tooltipLayout:updateLayout()
-
     local tooltipLabel = tooltipLayout:createLabel{}
-    tooltipLabel.text = "Your fame rating in " .. name .. "."
+    tooltipLabel.text = common.i18n("reputation.tooltip", { name })
     tooltipLabel.positionX = 49
     tooltipLabel.width = 333
     tooltipLabel.height = 18
@@ -87,7 +94,7 @@ function this.uiRefreshedCallback()
 	local repLayout = vanillaLayout.parent
     vanillaLayout:destroy()
 
-	-- Find where the bounty's misc_layout is, so that the reputation blocks can be placed accordingly for the sake of compatiblity with mods affecting the stat menu such as Tidy Charsheet
+	-- Find where the bounty's misc_layout is so that the reputation blocks can be placed accordingly for the sake of compatiblity with mods affecting the stat menu such as Tidy Charsheet
 	local bountyPlacement = 0
 
 	for i = #repLayout.children, 1, -1 do
@@ -121,7 +128,7 @@ function this.uiRefreshedCallback()
             repBlock.widthProportional = 1.0
 
             local nameLabel = repBlock:createLabel({ id = "MenuStat_TD_Rep_" .. project.name .. "_name" })
-            nameLabel.text = project.name
+            nameLabel.text = project.province
             nameLabel.positionX = 10
             nameLabel.width = 169
             nameLabel.borderLeft = 10
@@ -149,7 +156,7 @@ function this.uiRefreshedCallback()
 
     -- Create text label for new "Reputation" section header
     local titleLabel = repLayout:createLabel({ id = "MenuStat_TD_Rep_Title" })
-    titleLabel.text = "Reputation"
+    titleLabel.text = common.i18n("reputation.title")
     titleLabel.color = tes3ui.getPalette("header_color")
     repLayout:reorderChildren((-1 * prCounter) - 2 + bountyPlacement, -1, 1)
 
@@ -183,7 +190,7 @@ function this.switchReputation(e)
 				tes3.player.object.reputation = tes3.getGlobal("T_Glob_Rep_Sky")
 			end
 		else
-			if baseReputation and (actorSource == "Cyr_Main.esm" or actorSource == "Sky_Main.esm") then	-- If the actor is (presumably) in Morrowind, then don't change the reputation because it is either unnecessary or may overwite a recent change to the reputation
+			if baseReputation and (actorSource == "Cyr_Main.esm" or actorSource == "Sky_Main.esm") then	-- If the actor is (presumably) in Morrowind, then don't change the reputation because it is unnecessary at best and may overwite a recent change at worst
 				tes3.player.object.reputation = baseReputation
 			end
 		end

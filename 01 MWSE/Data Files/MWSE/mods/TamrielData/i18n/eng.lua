@@ -123,6 +123,16 @@ return {
 	["magic.itemScSummonVermai"] = "Scroll of Summon Vermai",
 	["magic.itemScKynesIntervention"] = "Scroll of Kyne's Intervention",
 
+	-- Reputation Text
+	["reputation.title"] = "Reputation",
+	["reputation.tooltip"] = "Your level of renown in %s.",
+	["reputation.Morrowind"] = "Morrowind",
+	["reputation.Skyrim"] = "Skyrim",
+	["reputation.Cyrodiil"] = "Cyrodiil",
+	["reputation.PadomaicIsles"] = "Padomaic Isles",
+	["reputation.HighRock"] = "High Rock",
+	["reputation.Hammerfell"] = "Hammerfell",
+
 	-- MCM Text
 	["mcm.name"] = "Tamriel Data",
 	["mcm.preferences"] = "Preferences",
