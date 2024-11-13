@@ -39,8 +39,8 @@ return {
 	["magic.summonSpiderCentDesc"] = "Przywołuje pajęczego centuriona. Stworzenie pojawi się sześć stóp przed magiem i będzie atakowało każdą zagrażającą mu istotę, póki nie minie czas trwania efektu lub póki samo nie zostanie zabite. W obydwu przypadkach przywołana istota znika, powracając do swojego wymiaru. Pamiętaj, że jeśli przywołasz istotę z innego wymiaru wewnątrz miasta, miejska straż rzuci się na ciebie bez ostrzeżenia!",
 	["magic.summonWelkyndSpirit"] = "Przywołanie Zjawy Welkynd",
 	["magic.summonWelkyndSpiritDesc"] = "Przywołuje zjawę welkynd. Stworzenie pojawi się sześć stóp przed magiem i będzie atakowało każdą zagrażającą mu istotę, póki nie minie czas trwania efektu lub póki samo nie zostanie zabite. W obydwu przypadkach przywołana istota znika, powracając do swojego wymiaru. Pamiętaj, że jeśli przywołasz istotę z innego wymiaru wewnątrz miasta, miejska straż rzuci się na ciebie bez ostrzeżenia!",
-	["magic.summonAuroran"] = "Przywołanie Auroranina", -- Aly: ...I guess, it's like "American" -> "Amerykanin", still, someone may have a better idea
-	["magic.summonAuroranDesc"] = "Przywołuje z Otchłani auroranina. Stworzenie pojawi się sześć stóp przed magiem i będzie atakowało każdą zagrażającą mu istotę, póki nie minie czas trwania efektu lub póki samo nie zostanie zabite. W obydwu przypadkach przywołana istota znika, powracając do Otchłani. Pamiętaj, że jeśli przywołasz istotę z innego wymiaru wewnątrz miasta, miejska straż rzuci się na ciebie bez ostrzeżenia!",
+	["magic.summonAuroran"] = "Przywołanie Aurorana", -- Aly: changed this one, rolls better on tongue this way
+	["magic.summonAuroranDesc"] = "Przywołuje z Otchłani aurorana. Stworzenie pojawi się sześć stóp przed magiem i będzie atakowało każdą zagrażającą mu istotę, póki nie minie czas trwania efektu lub póki samo nie zostanie zabite. W obydwu przypadkach przywołana istota znika, powracając do Otchłani. Pamiętaj, że jeśli przywołasz istotę z innego wymiaru wewnątrz miasta, miejska straż rzuci się na ciebie bez ostrzeżenia!",
 	["magic.summonHerne"] = "Przywołanie Herna", -- Aly: digging through web, I've found something like that: "Herne the Hunter" -> "Hern Łowca", so I've decided to make it "Hern" in polish
 	["magic.summonHerneDesc"] = "Przywołuje z Otchłani herna. Stworzenie pojawi się sześć stóp przed magiem i będzie atakowało każdą zagrażającą mu istotę, póki nie minie czas trwania efektu lub póki samo nie zostanie zabite. W obydwu przypadkach przywołana istota znika, powracając do Otchłani. Pamiętaj, że jeśli przywołasz istotę z innego wymiaru wewnątrz miasta, miejska straż rzuci się na ciebie bez ostrzeżenia!",
 	["magic.summonMorphoid"] = "Przywołanie Morphoida", -- Aly: I have no fuckin' clue, keeping it as is; it's like in case of daedroth, it's left with english spelling
@@ -58,9 +58,11 @@ return {
 	["magic.summonBarrowguard"] = "Przywołanie Strażnika Kurhanu", -- Aly: getting this for now, there may be some better alternatives
 	["magic.summonBarrowguardDesc"] = "Przywołuje strażnika kurhanu. Stworzenie pojawi się sześć stóp przed magiem i będzie atakowało każdą zagrażającą mu istotę, póki nie minie czas trwania efektu lub póki samo nie zostanie zabite. W obydwu przypadkach przywołana istota znika, powracając do swojego wymiaru. Pamiętaj, że jeśli przywołasz istotę z innego wymiaru wewnątrz miasta, miejska straż rzuci się na ciebie bez ostrzeżenia!",
 	["magic.summonMinoBarrowguard"] = "Przywołanie Minotaura-Strażnika Kurhanu",
-	["magic.summonMinoBarrowguardDesc"] = "Przywołuje minotaura-straznika kurhanu. Stworzenie pojawi się sześć stóp przed magiem i będzie atakowało każdą zagrażającą mu istotę, póki nie minie czas trwania efektu lub póki samo nie zostanie zabite. W obydwu przypadkach przywołana istota znika, powracając do swojego wymiaru. Pamiętaj, że jeśli przywołasz istotę z innego wymiaru wewnątrz miasta, miejska straż rzuci się na ciebie bez ostrzeżenia!",
-	["magic.summonSkeletonChampion"] = "Przywołanie Szkieletu-bohatera",
+	["magic.summonMinoBarrowguardDesc"] = "Przywołuje minotaura-strażnika kurhanu. Stworzenie pojawi się sześć stóp przed magiem i będzie atakowało każdą zagrażającą mu istotę, póki nie minie czas trwania efektu lub póki samo nie zostanie zabite. W obydwu przypadkach przywołana istota znika, powracając do swojego wymiaru. Pamiętaj, że jeśli przywołasz istotę z innego wymiaru wewnątrz miasta, miejska straż rzuci się na ciebie bez ostrzeżenia!",
+	["magic.summonSkeletonChampion"] = "Przywołanie Szkieletu-Bohatera",
 	["magic.summonSkeletonChampionDesc"] = "Przywołuje szkielet-bohatera. Stworzenie pojawi się sześć stóp przed magiem i będzie atakowało każdą zagrażającą mu istotę, póki nie minie czas trwania efektu lub póki samo nie zostanie zabite. W obydwu przypadkach przywołana istota znika, powracając do swojego wymiaru. Pamiętaj, że jeśli przywołasz istotę z innego wymiaru wewnątrz miasta, miejska straż rzuci się na ciebie bez ostrzeżenia!",
+	["magic.summonFrostMonarch"] = "Przywołanie Monarchy Mrozu",
+	["magic.summonFrostMonarchDesc"] = "Przywołuje z Otchłani monarchę mrozu. Stworzenie pojawi się sześć stóp przed magiem i będzie atakowało każdą zagrażającą mu istotę, póki nie minie czas trwania efektu lub póki samo nie zostanie zabite. W obydwu przypadkach przywołana istota znika, powracając do Otchłani. Pamiętaj, że jeśli przywołasz istotę z innego wymiaru wewnątrz miasta, miejska straż rzuci się na ciebie bez ostrzeżenia!",
 
 	["magic.boundGreaves"] = "Zaklęte Nagolenniki",
 	["magic.boundGreavesDesc"] = "Przywołuje pomniejszą Daedrę zaklętą w postaci magicznych, niezwykle lekkich, daedrycznych nagolenników. Pancerz pojawia się automatycznie na ciele rzucającego. Po upłynięciu czasu trwania efektu, nagolenniki znikają, a postać ponownie nosi swój zwykły pancerz.",
@@ -95,6 +97,17 @@ return {
 	["magic.passWallDoorExterior"] = "Musisz pozostać w zamkniętej przestrzeni.",
 	["magic.passWallUnderwater"] = "Nie możesz być pod wodą.",
 
+	["magic.itemPotionReflectDamageB"] = "Słaba mikstura odbicia obrażeń",
+	["magic.itemPotionReflectDamageC"] = "Mała mikstura odbicia obrażeń",
+	["magic.itemPotionReflectDamageS"] = "Klasyczna miks. odbicia obrażeń",
+	["magic.itemPotionReflectDamageQ"] = "Duża mikstura odbicia obrażeń",
+	["magic.itemPotionReflectDamageE"] = "Dosk. mikstura odbicia obrażeń",
+	["magic.itemPotionInsightB"] = "Słaba mikstura intuicji",
+	["magic.itemPotionInsightC"] = "Mała mikstura intuicji",
+	["magic.itemPotionInsightS"] = "Klasyczna mikstura intuicji",
+	["magic.itemPotionInsightQ"] = "Duża mikstura intuicji",
+	["magic.itemPotionInsightE"] = "Doskonała mikstura intuicji",
+
 	["magic.itemScSummonAuroran"] = "Zwój Przywołania Auroranina",
 	["magic.itemScSummonBonelordGr"] = "Zwój Przodków",
 	["magic.itemScSummonDremoraArcher"] = "Zwój Przyw. Dremory-Łucznika",
@@ -110,6 +123,16 @@ return {
 	["magic.itemScSummonVermai"] = "Zwój Przywołania Vermai",
 	["magic.itemScKynesIntervention"] = "Zwój Interwencji Kyne",
 
+	-- Reputation Text
+	["reputation.title"] = "Reputacja",
+	["reputation.tooltip"] = "Twój rozgłos na obszarze %s.",
+	["reputation.Morrowind"] = "Morrowind",
+	["reputation.Skyrim"] = "Skyrim",
+	["reputation.Cyrodiil"] = "Cyrodiil",
+	["reputation.PadomaicIsles"] = "Wysp Padomaicznych",
+	["reputation.HighRock"] = "Wysokiej Skały",
+	["reputation.Hammerfell"] = "Hammerfell",
+
 	-- MCM Text
 	["mcm.name"] = "Tamriel Data",
 	["mcm.preferences"] = "Preferencje",
@@ -117,6 +140,7 @@ return {
 	["mcm.credits"] = "Autorzy:",
 	["mcm.mort"] = "mort - Oskryptowanie",
 	["mcm.Kynesifnar"] = "Kynesifnar - Oskryptowanie",
+	["mcm.Rakanishu"] = "Rakanishu - Oskryptowanie",
 	["mcm.chef"] = "chef - Zarządzanie TD_Addon-em",
 	["mcm.Cicero"] = "Cicero - Ikony",
 	["mcm.NullCascade"] = "NullCascade - Wsparcie MWSE",
@@ -125,16 +149,16 @@ return {
 
 	["mcm.summonSpellsLabel"] = "Nowe Zaklęcia Przywołania",
 	["mcm.summonSpellsDescription"] = "Dodaje nowe zaklęcia przywołania używające istoty dodane w Tamriel Data, takie jak Pożeracze, Herny, Mroczne Uwodzicielki czy Auroranie.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
-	
+
 	["mcm.boundSpellsLabel"] = "Nowe Zaklęte Przedmioty",
 	["mcm.boundSpellsDescription"] = "Dodaje nowe efekty zaklętych broni i pancerza.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
-	
+
 	["mcm.interventionSpellsLabel"] = "Nowe Zaklęcia Interwencji",
-	["mcm.interventionSpellsDescription"] = "Dodaje nowe zaklęcia interwencji dla różnych panteonów i bóstw Tamriel.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
-	
+	["mcm.interventionSpellsDescription"] = "Dodaje nowe zaklęcia interwencji dla różnych panteonów i bóstw Tamriel, takich jak norska bogini Kyne.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
+
 	["mcm.miscSpellsLabel"] = "Nowe Różnorodne Zaklęcia",
 	["mcm.miscSpellsDescription"] = "Dodaje nowe zaklęcia nie pasujące do żadnej z powyższych kategorii.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
-	
+
 	["mcm.vanillaEnchantmentsLabel"] = "Zmiana Efektów Zaklinania z Podstawowej Gry",
 	["mcm.vanillaEnchantmentsDescription"] = "Pozwala efektom zaklinania z podstawowej gry używać nowych efektów magicznych dodanych w Tamriel Data, gdy ma to sens, jak w przypadku Zwoju Zemsty Lorda Mhasa przywołującego dodatkowo zaklęte nagolenniki i naramienniki" ..
 												"\nWymaga aktywacji wszystkich powyższych ustawień zaklęć.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
@@ -143,8 +167,12 @@ return {
 	["mcm.magickaExpandedDescription"] = "Podmienia, dla spójności, niektóre efekty dodane w Magicka Expanded na takie same zaimplementowane również w Tamriel Data, jak np. Wypędzenie Daedry czy Przywołanie Vermai" ..
 											"\nPrzynosi efekt tylko w przypadku, gdy odpowiednie pakiety modu Magicka Expanded są zainstalowane, a powyższe ustawienia zaklęć są aktywne.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
 
+	["mcm.provincialReputationLabel"] = "System Prowincjonalnej Reputacji",
+	["mcm.provincialReputationDescription"] = "Modyfikuje interfejs użytkownika, wyświetlając reputację gracza w poszczególnych częściach Tamriel zamiast pojedynczej ogólnej wartości. Wartości te wpływają również na szansę powodzenia w przypadku pochlebstwa, groźby czy znieważenia." ..
+											"\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
+
 	["mcm.weatherChangesLabel"] = "Zmiana Efektów Pogodowych",
-	["mcm.weatherChangesDescription"] = "Dodaje nowe efekty pogodowe do niektórych regionów, jak np opad zarodników w Lasach Othreleth, a także wprowadza poprawki pogodowe w pozostałych regionach, jak np. popielne burze w częściach kontynentalnych Morrowind nie mające źródła na Czerwonej Górze.\nWymage ponownego uruchomienia gry.\n\nDomyślnie: Wł\n\n",
+	["mcm.weatherChangesDescription"] = "Dodaje nowe efekty pogodowe w niektórych regionach, jak np. opad zarodników w Lasach Othreleth, burze piaskowe w Shipal-Shin czy tropikalne burze w okolicach Morza Abeceańskiego. Wprowadza także poprawki pogodowe w pozostałych regionach, jak np. popielne burze w częściach kontynentalnych Morrowind nie mające źródła na Czerwonej Górze.\nWymage ponownego uruchomienia gry.\n\nDomyślnie: Wł\n\n",
 	
 	["mcm.animationFixLabel"] = "Poprawka Animacji Gracza dla Ras Dodanych w Tamriel Data",
 	["mcm.animationFixDescription"] = "Poprawia animacje dla odblokowanych przez mody grywalnych ras dodanych w Tamriel Data, takich jak Ohmes-raht czy Suthay.\nWymaga ponownego wczytania gry. Ogon może zniknąć do momentu ponownego wczytania gry, jeśli animacje z innych modów MWSE są w użyciu przez postać gracza." ..
