@@ -61,6 +61,8 @@ return {
 	["magic.summonMinoBarrowguardDesc"] = "Cet effet permet d'invoquer un minotaure gardien de tertre des Royaumes extérieurs. Il apparaît à 2 mètres du lanceur et attaque toute entité hostile à son maître jusqu'à ce que le sort prenne fin ou qu'il soit tué. Quand il meurt ou que le sort prend fin, il disparaît et retourne dans les Royaumes extérieurs. En cas d'invocation en ville, les gardes vous attaqueront, vous et votre invocation.",
 	["magic.summonSkeletonChampion"] = "Appel de squelette champion",
 	["magic.summonSkeletonChampionDesc"] = "Cet effet permet d'invoquer un squelette champion des Royaumes extérieurs. Il apparaît à 2 mètres du lanceur et attaque toute entité hostile à son maître jusqu'à ce que le sort prenne fin ou qu'il soit tué. Quand il meurt ou que le sort prend fin, il disparaît et retourne dans les Royaumes extérieurs. En cas d'invocation en ville, les gardes vous attaqueront, vous et votre invocation.",
+	["magic.summonFrostMonarch"] = "Appel de monarque de givre",
+	["magic.summonFrostMonarchDesc"] = "Cet effet permet d'invoquer un monarque de givre des Royaumes extérieurs. Il apparaît à 2 mètres du lanceur et attaque toute entité hostile à son maître jusqu'à ce que le sort prenne fin ou qu'il soit tué. Quand il meurt ou que le sort prend fin, il disparaît et retourne dans les Royaumes extérieurs. En cas d'invocation en ville, les gardes vous attaqueront, vous et votre invocation.",
 
 	["magic.boundGreaves"] = "Jambières liées",
 	["magic.boundGreavesDesc"] = "Ce sort permet d'invoquer un Daedra inférieur lié sous la forme d'une paire de jambières daedriques, magiques et d'une exceptionnelle légèreté. Elles apparaissent directement sur les jambes du lanceur, remplaçant automatiquement les jambières dont ce dernier était équipé. Quand l'effet prend fin, les jambières sont remplacées par celles dont le personnage était précédemment équipé.",
@@ -94,6 +96,17 @@ return {
 	["magic.passWallExterior"] = "Vous devez vous trouver dans un espace confiné.",
 	["magic.passWallDoorExterior"] = "Vous devez rester dans un espace confiné.",
 	["magic.passWallUnderwater"] = "Vous ne pouvez pas vous trouver sous l'eau.",
+	
+	["magic.itemPotionReflectDamageB"] = "Potion Réflexion dégâts bradée",
+	["magic.itemPotionReflectDamageC"] = "Potion Réflexion dégâts bas prix",
+	["magic.itemPotionReflectDamageS"] = "Potion Réflexion dégâts std",
+	["magic.itemPotionReflectDamageQ"] = "Potion Réflexion dégâts qualité",
+	["magic.itemPotionReflectDamageE"] = "Potion Réflexion dégâts choix",
+	["magic.itemPotionInsightB"] = "Pot. Perspicacité bradée",
+	["magic.itemPotionInsightC"] = "Pot. Perspicacité à bas prix",
+	["magic.itemPotionInsightS"] = "Pot. Perspicacité standard",
+	["magic.itemPotionInsightQ"] = "Pot. Perspicacité de qualité",
+	["magic.itemPotionInsightE"] = "Pot. Perspicacité de choix",
 
 	["magic.itemScSummonAuroran"] = "Parchemin d'Appel d'aurorien",
 	["magic.itemScSummonBonelordGr"] = "Parchemin des Ancêtres",
@@ -109,6 +122,16 @@ return {
 	["magic.itemScSummonStormMonarch"] = "Parch. Appel monarque tempêtes",
 	["magic.itemScSummonVermai"] = "Parch. d'Appel de vermaï",
 	["magic.itemScKynesIntervention"] = "Parch. d'Intervention de Kyne",
+	
+	-- Reputation Text
+	["reputation.title"] = "Réputation",
+	["reputation.tooltip"] = "Votre célébrité  %s.",
+	["reputation.Morrowind"] = "en Morrowind",
+	["reputation.Skyrim"] = "en Bordeciel",
+	["reputation.Cyrodiil"] = "en Cyrodil",
+	["reputation.PadomaicIsles"] = "dans les îles padomaïques",
+	["reputation.HighRock"] = "en Hauteroche",
+	["reputation.Hammerfell"] = "en Lenclume",
 
 	-- MCM Text
 	["mcm.name"] = "Ressources communes de Tamriel",
@@ -117,6 +140,7 @@ return {
 	["mcm.credits"] = "Crédits :",
 	["mcm.Kynesifnar"] = "Kynesifnar - Scripting",
 	["mcm.mort"] = "mort - Scripting",
+	["mcm.Rakanishu"] = "Rakanishu - Scripting",
 	["mcm.chef"] = "chef - Gestion de TD_Addon",
 	["mcm.Cicero"] = "Cicero - Icônes",
 	["mcm.NullCascade"] = "NullCascade - Support de MWSE",
@@ -130,7 +154,7 @@ return {
 	["mcm.boundSpellsDescription"] = "Ajoute de nouveaux sorts d'Invocation implémentant des armes et armures liées non couverts par le jeu de base.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 	
 	["mcm.interventionSpellsLabel"] = "Ajout de nouveaux sorts d'Intervention",
-	["mcm.interventionSpellsDescription"] = "Ajout de nouveaux sorts d'Intervention pour différents panthéons et dieux de Tamriel.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+	["mcm.interventionSpellsDescription"] = "Ajout de nouveaux sorts d'Intervention pour différents panthéons et dieux de Tamriel, comme la déesse nordique Kyne.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 	
 	["mcm.miscSpellsLabel"] = "Ajout de nouveaux sorts divers",
 	["mcm.miscSpellsDescription"] = "Ajoute de nouveaux sorts qui ne rentrent pas dans les catégories précédentes.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
@@ -142,9 +166,13 @@ return {
 	["mcm.magickaExpandedLabel"] = "Remplacer les effets de Magie étendue",
 	["mcm.magickaExpandedDescription"] = "Remplace certains effets magiques de Magie étendue avec ceux implémentés par Ressources communes de Tamriel pour être consistant, comme Bannissement de Daedra et Appel de vermaï." ..
 											"\nCette option n'aura d'effet que si les packs correspondants de Magie étendue sont installés et que les paramètres de Ressources communes de Tamriel ajoutant les nouveaux sorts correspondants sont activés.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+											
+	["mcm.provincialReputationLabel"] = "Système de réputation provinciale",
+	["mcm.provincialReputationDescription"] = "Modifie l'interface pour afficher la réputation du joueur dans différentes régions de Tamriel au lieu d'utiliser une unique valeur globale. Les chances du joueur de parvenir à admirer, intimider ou insulter quelqu'un sont également influencées par ces valeurs." ..
+											"\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 
 	["mcm.weatherChangesLabel"] = "Modifications de la météo",
-	["mcm.weatherChangesDescription"] = "Implémente de nouvelles météos dans certaines régions, comme des chutes de spores dans les Bois d'Othréleth, et ajuste la météo dans d'autres régions, comme le fait que les tempêtes de cendres sur le continent de Morrowind ne proviennent plus systématiquement du mont Ecarlate.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+	["mcm.weatherChangesDescription"] = "Implémente de nouvelles météos dans certaines régions, comme des chutes de spores dans les Bois d'Othréleth, des tempêtes de sable dans la région de Shipal-Shin, et des tempête tropicales dans la mer d'Abecéanne. De plus, cette option procède à des ajustements mineurs de la météo dans d'autres régions, comme le fait que les tempêtes de cendres sur le continent de Morrowind ne proviennent plus systématiquement du mont Ecarlate.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 	
 	["mcm.animationFixLabel"] = "Corriger les animations du joueur pour les nouvelles races",
 	["mcm.animationFixDescription"] = "Corrige les animations lorsque vous jouez un Khajiit Ohmes-raht ou Suthay via un plugin tiers.\nRequiert un rechargement. Votre queue peut disparaître jusqu'au rechargement quand des animations d'autres addons MWSE sont appliquées au joueur." ..

@@ -3,7 +3,6 @@ local defaultConfig = {
 	boundSpells = true,
 	interventionSpells = true,
 	miscSpells = true,
-	changeVanillaEnchantments = true,
 	overwriteMagickaExpanded = true,
 	provincialReputation = true,
 	weatherChanges = true,

@@ -186,6 +186,8 @@ local td_enchantments = {
 	{ "T_Once_SummonSeducer60", tes3.effect.T_summon_Seducer, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Once_SummonSeducerDark60", tes3.effect.T_summon_SeducerDark, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Once_SummonVermai60", tes3.effect.T_summon_Vermai, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonVermai120", tes3.effect.T_summon_Vermai, tes3.effectRange.self, 0, 120, 1, 1 },
+	{ "T_Once_SummonSkeletonChamp120", tes3.effect.T_summon_SkeletonChampion, tes3.effectRange.self, 0, 120, 1, 1 },
 	{ "T_Once_SummonStormMonarch60", tes3.effect.T_summon_AtroStormMon, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Once_SummonWelkyndSpirit60", tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Once_SummonAuroran60", tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 60, 1, 1 },
@@ -196,21 +198,20 @@ local td_enchantments = {
 	{ "T_Once_AylDaedricHerald2", tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 30, 1, 1 },
 	{ "T_Once_AylLoreArmor1", tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 20, 20 },
 	{ "T_Once_KynesIntervention", tes3.effect.T_intervention_Kyne, tes3.effectRange.self, 0, 1, 1, 1 },
+	{ "T_Once_QuelledGeas", tes3.effect.T_mysticism_BanishDae, tes3.effectRange.touch, 0, 1, 20, 40 },
+	{ "T_Once_LordMhasFortress", tes3.effect.boundBoots, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.T_bound_Greaves, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.boundCuirass, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.T_bound_Pauldrons, tes3.effectRange.self, 0, 90, 1, 1,
+								tes3.effect.boundGloves, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.boundHelm, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.boundShield, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.T_bound_Warhammer, tes3.effectRange.self, 0, 90, 1, 1 },
+	{ "T_Const_Ring_Namira", tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 1, 30, 30, tes3.effect.reflect, tes3.effectRange.self, 0, 1, 30, 30 },
+	{ "T_Const_FindersCharm", tes3.effect.T_mysticism_Insight, tes3.effectRange.self, 0, 1, 10, 10, tes3.effect.detectEnchantment, tes3.effectRange.self, 0, 1, 120, 120, tes3.effect.detectKey, tes3.effectRange.self, 0, 1, 120, 120 },
 	{ "T_Use_WabbajackUni", tes3.effect.T_alteration_Wabbajack, tes3.effectRange.target, 0, 1, 1, 1 }
-}
-
--- enchantment id, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
-local vanilla_enchantments = {
-	{ "sc_lordmhasvengeance_en", tes3.effect.boundBoots, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.T_bound_Greaves, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.boundCuirass, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.T_bound_Pauldrons, tes3.effectRange.self, 0, 60, 1, 1,
-								tes3.effect.boundGloves, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.boundHelm, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.boundShield, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.boundBattleAxe, tes3.effectRange.self, 0, 60, 1, 1 }
 }
 
 -- ingredient id, 1st effect id, 1st effect attribute id, 1st effect skill id, 2nd effect id, ...
 local td_ingredients = {
 	{ "T_IngFlor_PBloomBulb_01", tes3.effect.poison, -1, -1,
-								 tes3.effect.drainAttribute, tes3.attribute.speed, 0,
+								 tes3.effect.T_mysticism_ReflectDmg, -1, -1,
 								 tes3.effect.damageFatigue, -1, -1,
-								 tes3.effect.T_mysticism_ReflectDmg, -1, -1 },
+								 tes3.effect.light, -1, -1, },
 	{ "T_IngCrea_Eyestar_01", tes3.effect.nightEye, -1, -1,
 							  tes3.effect.T_mysticism_Insight, -1, -1,
 							  tes3.effect.weaknesstoMagicka, -1, -1,
@@ -269,7 +270,6 @@ local td_enchanted_items = {
 	{ "T_EnSc_Com_SummonSeducer", common.i18n("magic.itemScSummonSeducer"), 494 },
 	{ "T_EnSc_Com_SummonSeducerDark", common.i18n("magic.itemScSummonSeducerDark"), 713 },
 	{ "T_EnSc_Com_SummonStormMonarch", common.i18n("magic.itemScSummonStormMonarch"), 570 },
-	{ "T_EnSc_Com_SummonVermai", common.i18n("magic.itemScSummonVermai"), 275 },
 	{ "T_EnSc_Nor_KynesIntervention", common.i18n("magic.itemScKynesIntervention"), 63 }
 }
 
@@ -1415,10 +1415,6 @@ event.register(tes3.event.load, function()
 		replaceIngredientEffects(td_ingredients)
 		replacePotions(td_potions)
 		editItems(td_enchanted_items)
-		
-		if config.changeVanillaEnchantments == true then
-			replaceEnchantments(vanilla_enchantments)
-		end
 
 		--tes3.getObject("T_Dae_UNI_Wabbajack").enchantment = tes3.getObject("T_Use_WabbajackUni")	-- Crashes game when registered to the loaded event with the wabbajack enchantment equipped
 	end

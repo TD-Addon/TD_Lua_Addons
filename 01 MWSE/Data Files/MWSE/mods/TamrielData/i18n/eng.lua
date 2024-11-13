@@ -120,12 +120,11 @@ return {
 	["magic.itemScSummonSeducer"] = "Scroll of Summon Seducer",
 	["magic.itemScSummonSeducerDark"] = "Scroll of Summon Dark Seducer",
 	["magic.itemScSummonStormMonarch"] = "Scroll of Summon Storm Monarch",
-	["magic.itemScSummonVermai"] = "Scroll of Summon Vermai",
 	["magic.itemScKynesIntervention"] = "Scroll of Kyne's Intervention",
 
 	-- Reputation Text
 	["reputation.title"] = "Reputation",
-	["reputation.tooltip"] = "Your level of renown in %s.",
+	["reputation.tooltip"] = "Your fame rating in %s.",
 	["reputation.Morrowind"] = "Morrowind",
 	["reputation.Skyrim"] = "Skyrim",
 	["reputation.Cyrodiil"] = "Cyrodiil",
@@ -158,10 +157,6 @@ return {
 
 	["mcm.miscSpellsLabel"] = "Add New Miscellaneous Spells",
 	["mcm.miscSpellsDescription"] = "Adds new spells that do not fit into the categories above.\nRequires reload.\n\nDefault: On\n\n",
-
-	["mcm.vanillaEnchantmentsLabel"] = "Change Vanilla Enchantments",
-	["mcm.vanillaEnchantmentsDescription"] = "Allows vanilla enchantments to apply Tamriel Data's new magic effects when doing so makes sense, such as Scrolls of Lord Mhas' Vengeance summoning bound greaves and pauldrons in addition to the vanilla bound items." ..
-												"\nRequires all of the settings for new spells above to be enabled.\nRequires reload.\n\nDefault: On\n\n",
 
 	["mcm.magickaExpandedLabel"] = "Overwrite Magicka Expanded Effects",
 	["mcm.magickaExpandedDescription"] = "Replaces some magic effects from Magicka Expanded with ones that are also implemented by Tamriel Data for the sake of consistency, such as Banish Daedra and Summon Vermai." ..
