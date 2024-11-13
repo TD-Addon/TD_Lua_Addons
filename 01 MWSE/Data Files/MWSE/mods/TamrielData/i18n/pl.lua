@@ -99,23 +99,23 @@ return {
 
 	["magic.itemPotionReflectDamageB"] = "Słaba mikstura odbicia obrażeń",
 	["magic.itemPotionReflectDamageC"] = "Mała mikstura odbicia obrażeń",
-	["magic.itemPotionReflectDamageS"] = "Klasyczna miks. odbicia obrażeń",
+	["magic.itemPotionReflectDamageS"] = "Klasyczne odbicie obrażeń",
 	["magic.itemPotionReflectDamageQ"] = "Duża mikstura odbicia obrażeń",
 	["magic.itemPotionReflectDamageE"] = "Dosk. mikstura odbicia obrażeń",
 	["magic.itemPotionInsightB"] = "Słaba mikstura intuicji",
 	["magic.itemPotionInsightC"] = "Mała mikstura intuicji",
 	["magic.itemPotionInsightS"] = "Klasyczna mikstura intuicji",
 	["magic.itemPotionInsightQ"] = "Duża mikstura intuicji",
-	["magic.itemPotionInsightE"] = "Doskonała mikstura intuicji",
+	["magic.itemPotionInsightE"] = "Dosk. mikstura intuicji",
 
-	["magic.itemScSummonAuroran"] = "Zwój Przywołania Auroranina",
+	["magic.itemScSummonAuroran"] = "Zwój Przywołania Aurorana",
 	["magic.itemScSummonBonelordGr"] = "Zwój Przodków",
 	["magic.itemScSummonDremoraArcher"] = "Zwój Przyw. Dremory-Łucznika",
 	["magic.itemScSummonDremoraCaster"] = "Zwój Pieczęci Dagona",
 	["magic.itemScSummonGuardian"] = "Zwój Przywołania Stróża",
 	["magic.itemScSummonHerne"] = "Zwój Przywołania Herna",
 	["magic.itemScSummonLesserClannfear"] = "Zwój Skałogryza",
-	["magic.itemScSummonMorphoid"] = "Zwój Przywołania Morfoida",
+	["magic.itemScSummonMorphoid"] = "Zwój Przywołania Morphoida",
 	["magic.itemScSummonOgrim"] = "Zwój Przywołania Ogrima",
 	["magic.itemScSummonSeducer"] = "Zwój Przywołania Uwodzicielki",
 	["magic.itemScSummonSeducerDark"] = "Zwój Prz. Mrocznej Uwodzicielki",
@@ -125,7 +125,7 @@ return {
 
 	-- Reputation Text
 	["reputation.title"] = "Reputacja",
-	["reputation.tooltip"] = "Twój rozgłos na obszarze %s.",
+	["reputation.tooltip"] = "Twoja sława na obszarze %s.", -- Aly: it's not really consistent with stock polish translation where it's "Twoja sława w świecie Morrowind.", so it should be "Twoja sława w %s." but it wouldn't work for PI
 	["reputation.Morrowind"] = "Morrowind",
 	["reputation.Skyrim"] = "Skyrim",
 	["reputation.Cyrodiil"] = "Cyrodiil",
