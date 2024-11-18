@@ -113,6 +113,7 @@ local td_misc_effects = {
 	{ tes3.effect.T_alteration_Passwall, common.i18n("magic.miscPasswall"), 750, "td\\s\\td_s_passwall.tga", common.i18n("magic.miscPasswallDesc")},
 	{ tes3.effect.T_mysticism_BanishDae, common.i18n("magic.miscBanish"), 32, "td\\s\\td_s_ban_daedra.tga", common.i18n("magic.miscBanishDesc")},
 	{ tes3.effect.T_mysticism_ReflectDmg, common.i18n("magic.miscReflectDamage"), 20, "td\\s\\td_s_ref_dam.tga", common.i18n("magic.miscReflectDamageDesc")},
+	{ tes3.effect.T_mysticism_DetHuman, common.i18n("magic.miscDetectHumanoid"), 1.5, "td\\s\\td_s_det_hum.tga", common.i18n("magic.miscDetectHumanoidDesc")},
 	{ tes3.effect.T_alteration_RadShield, common.i18n("magic.miscRadiantShield"), 5, "td\\s\\td_s_radiant_shield.tga", common.i18n("magic.miscRadiantShieldDesc")},
 	{ tes3.effect.T_alteration_Wabbajack, common.i18n("magic.miscWabbajack"), 22, "td\\s\\td_s_wabbajack.tga", common.i18n("magic.miscWabbajackDesc")},
 	{ tes3.effect.T_mysticism_Insight, common.i18n("magic.miscInsight"), 10, "td\\s\\td_s_insight.tga", common.i18n("magic.miscInsightDesc")}
@@ -182,12 +183,14 @@ local td_enchantments = {
 	{ "T_Once_SummonDremoraCaster60", tes3.effect.T_summon_DremCast, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Once_SummonGuardian60", tes3.effect.T_summon_Guardian, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Once_SummonLesserClannfear60", tes3.effect.T_summon_LesserClfr, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonOgrim60", tes3.effect.T_summon_Ogrim, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonOgrim60", tes3.effect.T_summon_Ogrim, tes3.effectRange.self, 0, 60, 1, 1, nil },
+	{ "T_Once_SummonOgrim120", tes3.effect.T_summon_Ogrim, tes3.effectRange.self, 0, 120, 1, 1, nil },
 	{ "T_Once_SummonSeducer60", tes3.effect.T_summon_Seducer, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Once_SummonSeducerDark60", tes3.effect.T_summon_SeducerDark, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Once_SummonVermai60", tes3.effect.T_summon_Vermai, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Once_SummonVermai120", tes3.effect.T_summon_Vermai, tes3.effectRange.self, 0, 120, 1, 1 },
 	{ "T_Once_SummonSkeletonChamp120", tes3.effect.T_summon_SkeletonChampion, tes3.effectRange.self, 0, 120, 1, 1 },
+	{ "T_Once_SummonFrostMonarch120", tes3.effect.T_summon_AtroFrostMon, tes3.effectRange.self, 0, 120, 1, 1 },
 	{ "T_Once_SummonStormMonarch60", tes3.effect.T_summon_AtroStormMon, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Once_SummonWelkyndSpirit60", tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Once_SummonAuroran60", tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 60, 1, 1 },
@@ -201,6 +204,8 @@ local td_enchantments = {
 	{ "T_Once_QuelledGeas", tes3.effect.T_mysticism_BanishDae, tes3.effectRange.touch, 0, 1, 20, 40 },
 	{ "T_Once_LordMhasFortress", tes3.effect.boundBoots, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.T_bound_Greaves, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.boundCuirass, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.T_bound_Pauldrons, tes3.effectRange.self, 0, 90, 1, 1,
 								tes3.effect.boundGloves, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.boundHelm, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.boundShield, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.T_bound_Warhammer, tes3.effectRange.self, 0, 90, 1, 1 },
+	
+	{ "T_Once_SummonDremoraAll60", tes3.effect.summonDremora, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.T_summon_DremArch, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.T_summon_DremCast, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Const_Ring_Namira", tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 1, 30, 30, tes3.effect.reflect, tes3.effectRange.self, 0, 1, 30, 30 },
 	{ "T_Const_FindersCharm", tes3.effect.T_mysticism_Insight, tes3.effectRange.self, 0, 1, 10, 10, tes3.effect.detectEnchantment, tes3.effectRange.self, 0, 1, 120, 120, tes3.effect.detectKey, tes3.effectRange.self, 0, 1, 120, 120 },
 	{ "T_Use_WabbajackUni", tes3.effect.T_alteration_Wabbajack, tes3.effectRange.target, 0, 1, 1, 1 }
@@ -239,7 +244,11 @@ local td_ingredients = {
 	{ "T_IngCrea_PrismaticDust_01", tes3.effect.light, -1, -1,
 									tes3.effect.T_alteration_RadShield, -1, -1,
 									tes3.effect.blind, -1, -1,
-									tes3.effect.restoreMagicka, -1, -1 }
+									tes3.effect.restoreMagicka, -1, -1 },
+	{ "T_IngCrea_MothWingMw_02", tes3.effect.resistFire, -1, -1,
+								 tes3.effect.drainAttribute, tes3.attribute.speed, 0,
+								 tes3.effect.resistMagicka, -1, -1,
+								 tes3.effect.T_mysticism_Insight, -1, -1 }
 }
 
 -- item id, item name, effect id
@@ -258,19 +267,9 @@ local td_potions = {
 
 -- item id, item name, value
 local td_enchanted_items = {
-	{ "T_EnSc_Com_SummonAuroran", common.i18n("magic.itemScSummonAuroran"), 418 },
-	{ "T_EnSc_Com_SummonBonelordGr", common.i18n("magic.itemScSummonBonelordGr"), 674 },
-	{ "T_EnSc_Com_SummonDremoraArcher", common.i18n("magic.itemScSummonDremoraArcher"), 314 },
-	{ "T_EnSc_Com_SummonDremoraCaster", common.i18n("magic.itemScSummonDremoraCaster"), 295 },
-	{ "T_EnSc_Com_SummonGuardian", common.i18n("magic.itemScSummonGuardian"), 656 },
-	{ "T_EnSc_Com_SummonHerne", common.i18n("magic.itemScSummonHerne"), 171 },
-	{ "T_EnSc_Com_SummonLesserClnfear", common.i18n("magic.itemScSummonLesserClannfear"), 181 },
-	{ "T_EnSc_Com_SummonMorphoid", common.i18n("magic.itemScSummonMorphoid"), 200 },
-	{ "T_EnSc_Com_SummonOgrim", common.i18n("magic.itemScSummonOgrim"), 314 },
-	{ "T_EnSc_Com_SummonSeducer", common.i18n("magic.itemScSummonSeducer"), 494 },
-	{ "T_EnSc_Com_SummonSeducerDark", common.i18n("magic.itemScSummonSeducerDark"), 713 },
-	{ "T_EnSc_Com_SummonStormMonarch", common.i18n("magic.itemScSummonStormMonarch"), 570 },
-	{ "T_EnSc_Nor_KynesIntervention", common.i18n("magic.itemScKynesIntervention"), 63 }
+	{ "T_EnSc_Com_SummonDremoraArcher", common.i18n("magic.itemScSummonDremoraArcher"), 295 },
+	{ "T_EnSc_Com_SummonDremoraCaster", common.i18n("magic.itemScSummonDremoraCaster"), 314 },
+	{ "T_EnSc_Nor_KynesIntervention", common.i18n("magic.itemScKynesIntervention"), nil }
 }
 
 local function replaceSpells(table)
@@ -346,10 +345,60 @@ local function editItems(table)
 	for k,v in pairs(table) do
 		local overridden_item = tes3.getObject(v[1])
 		if overridden_item then
-			overridden_item.name = v[2]
-			overridden_item.value = v[3]
+			if v[2] then overridden_item.name = v[2] end
+			if v[3] then overridden_item.value = v[3] end
 		end
 	end
+end
+
+--- @param e uiEventEventData
+local function detectHumanoidEffect(e)
+	local detectHumanoidEffects = tes3.player.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetHuman })
+	if #detectHumanoidEffects > 0 then
+		local maxMagnitude = 0
+		for _,v in pairs(detectHumanoidEffects) do
+			if v > maxMagnitude then maxMagnitude = v.magnitude end
+		end
+
+		local north
+		if tes3.getPlayerCell().isInterior then
+			for static in tes3.getPlayerCell():iterateReferences(tes3.objectType.static) do
+				if static.id == "NorthMarker" then north = static.orientation.z end
+			end
+		else
+			north = 0
+		end
+
+		local detection
+		local playerMap = tes3ui.findMenu("MenuMap"):findChild("MenuMap_local_player")
+		local xConversion = playerMap.positionX / tes3.player.position.x				-- Not sure how to actually calculate the marker positions, using these for now
+		local yConversion = playerMap.positionY / tes3.player.position.y
+
+		for npc in tes3.getPlayerCell():iterateReferences(tes3.objectType.npc) do
+			if tes3.player.position:distance(npc.position) <= maxMagnitude then
+				detection = e.source:createImage({ id = -32588, path = "Textures\\td\\td_detect_humanoid_icon.dds" })
+				--detection.name = "detHum"
+
+				detection.positionX = npc.position.x * xConversion
+				detection.positionY = npc.position.y * yConversion
+
+				detection.absolutePosAlignX = -32668
+				detection.absolutePosAlignY = -32668
+
+				detection.width = 3
+				detection.height = 3
+			end
+		end
+	end
+
+	mwse.log(e.source.name)
+end
+
+--- @param e uiActivatedEventData
+local function detectHumanoidActivate(e)
+	mwse.log(e.element.name)
+
+	e.element:findChild("MenuMap_pane"):registerAfter(tes3.uiEvent.mouseClick, detectHumanoidEffect)
 end
 
 ---@param e leveledItemPickedEventData
@@ -414,7 +463,7 @@ function this.insightEffect(e)
 				end
 
 				local itemCount = #leveledItemTable
-				if maxValue ~= minValue then				-- If all items in the list have the same value, then math.remap will have problems and the probabilities should have the vanilla distribution anyways
+				if maxValue ~= minValue then				-- If all items in the list have the same value, then math.remap would have problems and the probabilities should have the vanilla distribution anyways
 					local effectFactor = 2					-- Increases or decreases the strength of the effect
 
 					local evenChance = 1 / itemCount
@@ -1264,7 +1313,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[4])		-- Radiant Shield
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[5])		-- Radiant Shield
 		tes3.addMagicEffect{
 			id = effectID,
 			name = effectName,
@@ -1306,7 +1355,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[5])		-- Wabbajack
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[6])		-- Wabbajack
 		tes3.addMagicEffect{
 			id = effectID,
 			name = effectName,
@@ -1348,7 +1397,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[6])		-- Insight
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[7])		-- Insight
 		tes3.addMagicEffect{
 			id = effectID,
 			name = effectName,
@@ -1407,6 +1456,9 @@ event.register(tes3.event.load, function()
 	end
 
 	if config.miscSpells == true then
+		--event.register(tes3.event.uiActivated, detectHumanoidActivate, { filter = "MenuMap" })	-- These event registrations are done here because doing so for the loaded event in the main function is too late
+		--event.register(tes3.event.uiActivated, detectHumanoidActivate, { filter = "MenuMulti" })
+
 		replaceSpells(td_misc_spells)
 	end
 

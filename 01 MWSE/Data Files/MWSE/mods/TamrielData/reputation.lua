@@ -83,7 +83,8 @@ end
 
 -- Create new reputation section with header, divider, and new entries 
 -- whenever something updates the Stat Menu and forces rebuild
-function this.uiRefreshedCallback()
+--- @param e uiRefreshedEventData
+function this.uiRefreshedCallback(e)
     local statMenu = tes3ui.findMenu("MenuStat")
 
     if (not statMenu) then return end

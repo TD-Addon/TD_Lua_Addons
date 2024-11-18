@@ -360,7 +360,7 @@ event.register(tes3.event.loaded, function()
 
 	event.unregister(tes3.event.menuEnter, reputation.switchReputation, {filter = "MenuDialog"})
 	event.unregister(tes3.event.menuExit, reputation.switchReputation)
-	event.unregister(tes3.event.uiRefreshed, reputation.uiRefreshedCallback, {filter = "MenuStat_scroll_pane"})	-- Change to MenuStat_layout and work off of it as event data?
+	event.unregister(tes3.event.uiRefreshed, reputation.uiRefreshedCallback, {filter = "MenuStat_scroll_pane"})
 	event.unregister(tes3.event.menuEnter, function(e) tes3ui.updateStatsPane() end)
 	
 	event.unregister(tes3.event.cellChanged, weather.manageWeathers)
