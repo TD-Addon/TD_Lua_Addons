@@ -82,6 +82,8 @@ return {
 	["magic.miscBanishDesc"] = "Wypędza daedrę będącą celem zaklęcia, jeśli jej poziom jest wystarczająco niski w porównaniu ze stopniem zaklęcia. Odniesione przez daedrę obrażenia powodują większą podatność na wypędzenie. W przypadku sukcesu ważniejszy dobytek daedry zostanie przeniesiony do rzucającego czar.",
 	["magic.miscReflectDamage"] = "Odbicie Obrażeń",
 	["magic.miscReflectDamageDesc"] = "Odbija fizyczne obrażenia w stronę atakującego. Stopień efektu określa procentową ilość odbitych obrażeń dla każdego ataku. Nieodbite obrażenia odniosą normalny skutek.",
+	["magic.miscDetectHumanoid"] = "Wykrycie Humanoida",
+	["magic.miscDetectHumanoidDesc"] = "Rzucający zaklęcie może wykrywać na odległość obecność istot niemechanicznych. Zostaną one oznaczone na mapie specjalnym symbolem. Efekt obejmuje wszystkie postacie, a jego poziom to promień (w stopach) obszaru, który zostanie magicznie przeszukany.",
 	["magic.miscRadiantShield"] = "Tarcza Blasku",
 	["magic.miscRadiantShieldDesc"] = "Tworzy świetlistą osłonę dookoła celu. Stopień efektu dodawany jest do klasy pancerza. Odporność celu na szkodliwe efekty magiczne wzrasta. Dodatkowo, krótkotrwale oślepia przeciwników w zwarciu.",
 	["magic.miscWabbajack"] = "Łabadżak", -- Aly: yes, it's just directly transcribed to polish alphabet (that's what polish TESIV and TESV did), it's said exactly the same as english
@@ -108,19 +110,8 @@ return {
 	["magic.itemPotionInsightQ"] = "Duża mikstura intuicji",
 	["magic.itemPotionInsightE"] = "Dosk. mikstura intuicji",
 
-	["magic.itemScSummonAuroran"] = "Zwój Przywołania Aurorana",
-	["magic.itemScSummonBonelordGr"] = "Zwój Przodków",
-	["magic.itemScSummonDremoraArcher"] = "Zwój Przyw. Dremory-Łucznika",
-	["magic.itemScSummonDremoraCaster"] = "Zwój Pieczęci Dagona",
-	["magic.itemScSummonGuardian"] = "Zwój Przywołania Stróża",
-	["magic.itemScSummonHerne"] = "Zwój Przywołania Herna",
-	["magic.itemScSummonLesserClannfear"] = "Zwój Skałogryza",
-	["magic.itemScSummonMorphoid"] = "Zwój Przywołania Morphoida",
-	["magic.itemScSummonOgrim"] = "Zwój Przywołania Ogrima",
-	["magic.itemScSummonSeducer"] = "Zwój Przywołania Uwodzicielki",
-	["magic.itemScSummonSeducerDark"] = "Zwój Prz. Mrocznej Uwodzicielki",
-	["magic.itemScSummonStormMonarch"] = "Zwój Przywołania Monarchy Burz",
-	["magic.itemScSummonVermai"] = "Zwój Przywołania Vermai",
+	["magic.itemScSummonDremoraArcher"] = "Zwój Pastwy Mehrunesa",
+	["magic.itemScSummonDremoraCaster"] = "Zwój Paktu Brzytwy",
 	["magic.itemScKynesIntervention"] = "Zwój Interwencji Kyne",
 
 	-- Reputation Text
