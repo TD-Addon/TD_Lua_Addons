@@ -1,6 +1,6 @@
 return {
 	-- Main Text
-	["main.mwseDate"] = "Ressources communes de Tamriel] MWSE n'est pas à jour ! Veuillez faire tourner MWSE-Update.exe pour pouvoir faire fonctionner ce mod.",
+	["main.mwseDate"] = "[Ressources communes de Tamriel] MWSE n'est pas à jour ! Veuillez faire tourner MWSE-Update.exe pour pouvoir faire fonctionner ce mod.",
 
 	["main.imgaShoes"] = "Les Imgas ne peuvent porter de chaussures.",
 	["main.imgaHelm"] = "Les Imgas mâles ne peuvent porter de casque.",
@@ -82,6 +82,8 @@ return {
 	["magic.miscBanishDesc"] = "Bannit tout Daedra sur lequel ce sort est lancé, à condition que la cible soit d'un niveau suffisamment bas comparé à la puissance du sort. Si le Daedra est blessé, il sera plus facile à bannir. Bannir un Daedra transfert tous ses biens d'importance au lanceur de sort.",
 	["magic.miscReflectDamage"] = "Réflexion de dégâts",
 	["magic.miscReflectDamageDesc"] = "Cet effet permet de renvoyer des dégâts physiques à un agresseur. La puissance de l'effet détermine le pourcentage de dégâts qui sera reflété pour chaque attaque. Tout dégât non réfléchi affecte normalement sa cible.",
+	["magic.miscDetectHumanoid"] = "Détection des humanoïdes",
+	["magic.miscDetectHumanoidDesc"] = "Cet effet permet de détecter n'importe quelle entité animée par un esprit ; elles apparaissent sous forme de symboles sur la carte. Cet effet comprend tous les personnages. La puissance de l'effet détermine la portée à laquelle le lanceur peut détecter des individus (en pieds).", 
 	["magic.miscRadiantShield"] = "Bouclier radieux",
 	["magic.miscRadiantShieldDesc"] = "Cet effet crée un bouclier de lumière brillante autour du sujet. La puissance de l'effet s'ajoute à la valeur d'armure du sujet, réduit considérablement les effets des attaques magiques, et aveugle brièvement les agresseurs au corps-à-corps.",
 	["magic.miscWabbajack"] = "Wabbajack",
@@ -108,24 +110,13 @@ return {
 	["magic.itemPotionInsightQ"] = "Pot. Perspicacité de qualité",
 	["magic.itemPotionInsightE"] = "Pot. Perspicacité de choix",
 
-	["magic.itemScSummonAuroran"] = "Parchemin d'Appel d'aurorien",
-	["magic.itemScSummonBonelordGr"] = "Parchemin des Ancêtres",
-	["magic.itemScSummonDremoraArcher"] = "Parch. Appel archer drémora",
-	["magic.itemScSummonDremoraCaster"] = "Parchemin du sceau de Dagon",
-	["magic.itemScSummonGuardian"] = "Parchemin d'Appel de gardien",
-	["magic.itemScSummonHerne"] = "Parchemin d'Appel d'herne",
-	["magic.itemScSummonLesserClannfear"] = "Parchemin de mange-rocher",
-	["magic.itemScSummonMorphoid"] = "Parch. d'Appel de morphoïde",
-	["magic.itemScSummonOgrim"] = "Parchemin d'Appel d'ogrim",
-	["magic.itemScSummonSeducer"] = "Parch. d'Appel de séductrice",
-	["magic.itemScSummonSeducerDark"] = "Parch. Appel sombre séductrice",
-	["magic.itemScSummonStormMonarch"] = "Parch. Appel monarque tempêtes",
-	["magic.itemScSummonVermai"] = "Parch. d'Appel de vermaï",
+	["magic.itemScSummonDremoraArcher"] = "Parch. de proie de Mérunès",
+	["magic.itemScSummonDremoraCaster"] = "Parch. de convention du Rasoir",
 	["magic.itemScKynesIntervention"] = "Parch. d'Intervention de Kyne",
 	
 	-- Reputation Text
 	["reputation.title"] = "Réputation",
-	["reputation.tooltip"] = "Votre célébrité  %s.",
+	["reputation.tooltip"] = "Votre célébrité %s.",
 	["reputation.Morrowind"] = "en Morrowind",
 	["reputation.Skyrim"] = "en Bordeciel",
 	["reputation.Cyrodiil"] = "en Cyrodil",
@@ -158,10 +149,6 @@ return {
 	
 	["mcm.miscSpellsLabel"] = "Ajout de nouveaux sorts divers",
 	["mcm.miscSpellsDescription"] = "Ajoute de nouveaux sorts qui ne rentrent pas dans les catégories précédentes.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
-	
-	["mcm.vanillaEnchantmentsLabel"] = "Modifier les enchantements vanilla",
-	["mcm.vanillaEnchantmentsDescription"] = "Permet aux enchantements vanilla d'appliquer des nouveaux effets magiques de Ressources communes de Tamriel là où cela fait sens. Par exemple, les parchemins de vengeance de Sire Mhas invoqueront des jambières et épaulières liées en plus des autres objets liés vanilla." ..
-												"\nRequiert que tous les paramètres ajoutant des nouveaux sorts soient activés.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 
 	["mcm.magickaExpandedLabel"] = "Remplacer les effets de Magie étendue",
 	["mcm.magickaExpandedDescription"] = "Remplace certains effets magiques de Magie étendue avec ceux implémentés par Ressources communes de Tamriel pour être consistant, comme Bannissement de Daedra et Appel de vermaï." ..
