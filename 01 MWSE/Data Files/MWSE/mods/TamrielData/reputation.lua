@@ -14,38 +14,38 @@ local baseReputation
 -- Info is based on T_D and project variables so don't change these unless they are changed in T_D
 local projectTable = {
     {
-        ["name"] = "Skyrim",
-        ["province"] = common.i18n("reputation.Skyrim"),
+        ["province"] = "Skyrim",
+        ["name"] = common.i18n("reputation.Skyrim"),
         ["installVar"] = "T_Glob_Installed_SHotN",
         ["repVar"] = "T_Glob_Rep_Sky"
     },
     {
-        ["name"] = "Padomaic Isles",
-        ["province"] = common.i18n("reputation.PadomaicIsles"),
+        ["province"] = "Padomaic Isles",
+        ["name"] = common.i18n("reputation.PadomaicIsles"),
         ["installVar"] = "T_Glob_Installed_PI",
         ["repVar"] = "T_Glob_Rep_PI"
     },
     {
-        ["name"] = "Morrowind",
-        ["province"] = common.i18n("reputation.Morrowind"),
+        ["province"] = "Morrowind",
+        ["name"] = common.i18n("reputation.Morrowind"),
         ["installVar"] = "",
         ["repVar"] = ""
     },
     {
-        ["name"] = "High Rock",
-        ["province"] = common.i18n("reputation.HighRock"),
+        ["province"] = "High Rock",
+        ["name"] = common.i18n("reputation.HighRock"),
         ["installVar"] = "T_Glob_Installed_HR427",
         ["repVar"] = "T_Glob_Rep_Hr"
     },
     {
-        ["name"] = "Hammerfell",
-        ["province"] = common.i18n("reputation.Hammerfell"),
+        ["province"] = "Hammerfell",
+        ["name"] = common.i18n("reputation.Hammerfell"),
         ["installVar"] = "T_Glob_Installed_Ham",
         ["repVar"] = "T_Glob_Rep_Ham"
     },
     {
-        ["name"] = "Cyrodiil",
-        ["province"] = common.i18n("reputation.Cyrodiil"),
+        ["province"] = "Cyrodiil",
+        ["name"] = common.i18n("reputation.Cyrodiil"),
         ["installVar"] = "T_Glob_Installed_PC",
         ["repVar"] = "T_Glob_Rep_Cyr"
     }
@@ -95,7 +95,7 @@ function this.uiRefreshedCallback(e)
 	local repLayout = vanillaLayout.parent
     vanillaLayout:destroy()
 
-	-- Find where the bounty's misc_layout is so that the reputation blocks can be placed accordingly for the sake of compatiblity with mods affecting the stat menu such as Tidy Charsheet
+	-- Find where the bounty's misc_layout is so that the reputation blocks can be placed accordingly for mods affecting the stat menu such as Tidy Charsheet
 	local bountyPlacement = 0
 
 	for i = #repLayout.children, 1, -1 do
@@ -113,10 +113,10 @@ function this.uiRefreshedCallback(e)
         local installVar = project.installVar
         local repVar = project.repVar
 
-        if project.name == "Morrowind" or (tes3.getGlobal(installVar) and tes3.getGlobal(installVar) > 0) then
+        if project.province == "Morrowind" or (tes3.getGlobal(installVar) and tes3.getGlobal(installVar) > 0) then
             prCounter = prCounter + 1
 
-            local repBlockId = "MenuStat_TD_Rep_" .. project.name .. "_layout"
+            local repBlockId = "MenuStat_TD_Rep_" .. project.province .. "_layout"
 
             local repBlock = repLayout:findChild(repBlockId)
             if repBlock then repBlock:destroy() end
@@ -128,15 +128,15 @@ function this.uiRefreshedCallback(e)
             repBlock.autoHeight = true
             repBlock.widthProportional = 1.0
 
-            local nameLabel = repBlock:createLabel({ id = "MenuStat_TD_Rep_" .. project.name .. "_name" })
-            nameLabel.text = project.province
+            local nameLabel = repBlock:createLabel({ id = "MenuStat_TD_Rep_" .. project.province .. "_name" })
+            nameLabel.text = project.name
             nameLabel.positionX = 10
             nameLabel.width = 169
             nameLabel.borderLeft = 10
 
-            local valueLabel = repBlock:createLabel({ id = "MenuStat_TD_Rep_" .. project.name .. "_value" })
+            local valueLabel = repBlock:createLabel({ id = "MenuStat_TD_Rep_" .. project.province .. "_value" })
 			
-            if project.name == "Morrowind" then
+            if project.province == "Morrowind" then
                 valueLabel.text = tes3.player.object.reputation
             else
 				local repVarGlobal = tes3.getGlobal(repVar)

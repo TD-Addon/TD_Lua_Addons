@@ -610,20 +610,17 @@ function this.replaceInterventionMarkers(cellTable, markerID)
 		local xCoord, yCoord = unpack(v)
 		local cell = tes3.getCell({ x = xCoord, y = yCoord })
 
-		local hasNewMarker = false
 		local vanillaMarker = nil
 		for ref in cell:iterateReferences(tes3.objectType.static) do
 			if ref.id == markerID then
-				hasNewMarker = true
+				break
 			elseif ref.id == "DivineMarker" then
 				vanillaMarker = ref
 			end
 		end
 
 		if vanillaMarker then
-			if not hasNewMarker then
-				tes3.createReference({ object = markerID, position = vanillaMarker.position, orientation = vanillaMarker.orientation })
-			end
+			tes3.createReference({ object = markerID, position = vanillaMarker.position, orientation = vanillaMarker.orientation })
 			vanillaMarker:delete()
 		end
 	end
