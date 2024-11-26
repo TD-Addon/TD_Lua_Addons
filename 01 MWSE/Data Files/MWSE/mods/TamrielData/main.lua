@@ -1,6 +1,6 @@
 --[[
 	Tamriel Data MWSE-Lua Addon v2.0
-	By mort and Kynesifnar
+	By Kynesifnar, mort, and Rakanishu
 ]]
 
 local common = require("tamrielData.common")
@@ -32,12 +32,28 @@ local item_sounds = {
 	{ "T_Com_Subst_Perfume_04", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"},
 	{ "T_Com_Subst_Perfume_05", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"},
 	{ "T_Com_Subst_Perfume_06", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"},
+	{ "T_Imp_Subst_IndulcetPreserve_01", "Item Potion Up", "Item Potion Down", "Swallow"},
+	{ "T_Imp_Subst_QuaestoVil_01", "Item Potion Up", "Item Potion Down", "Item Potion Down"},
+	{ "T_Imp_Subst_QuaestoVil_02", "Item Potion Up", "Item Potion Down", "Item Potion Down"},
+
 	{ "T_IngSpice_OliveOil_01", "Item Potion Up", "Item Potion Down", "Drink"},
 	{ "T_IngFood_Vinegar_01", "Item Potion Up", "Item Potion Down", "Drink"},
 	{ "T_IngCrea_OrcBlood_01", "Item Potion Up", "Item Potion Down", "Drink"},
-	{ "T_Imp_Subst_IndulcetPreserve_01", "Item Potion Up", "Item Potion Down", "Swallow"},
-	{ "T_Imp_Subst_QuaestoVil_01", "Item Potion Up", "Item Potion Down", "Item Potion Down"},
-	{ "T_Imp_Subst_QuaestoVil_02", "Item Potion Up", "Item Potion Down", "Item Potion Down"}
+
+	{ "misc_dwrv_coin00", "Item Gold Up", "Item Gold Down", "" },
+	{ "misc_dwrv_cursed_coin00", "Item Gold Up", "Item Gold Down", "" },
+	{ "T_Ayl_CoinBig_01", "Item Gold Up", "Item Gold Down", "" },
+	{ "T_Ayl_CoinGold_01", "Item Gold Up", "Item Gold Down", "" },
+	{ "T_Ayl_CoinSquare_01", "Item Gold Up", "Item Gold Down", "" },
+	{ "T_He_DirenniCoin_01", "Item Gold Up", "Item Gold Down", "" },
+	{ "T_Imp_CoinAlessian_01", "Item Gold Up", "Item Gold Down", "" },
+	{ "T_Imp_CoinReman_01", "Item Gold Up", "Item Gold Down", "" },
+	{ "T_Ayl_CoinSquare_01", "Item Gold Up", "Item Gold Down", "" },
+	{ "T_Nor_CoinBarrowCopper_01", "Item Gold Up", "Item Gold Down", "" },
+	{ "T_Nor_CoinBarrowIron_01", "Item Gold Up", "Item Gold Down", "" },
+	{ "T_Nor_CoinBarrowSilver_01", "Item Gold Up", "Item Gold Down", "" },
+	{ "T_De_HlaaluCompanyScrip_01", "Item Gold Up", "Item Gold Down", "" },
+	{ "T_De_HlaaluCompanyScrip_02", "Item Gold Up", "Item Gold Down", "" }
 }
 
 -- region id, xcell left bound, xcell right bound, ycell top bound, ycell bottom bound
@@ -351,6 +367,7 @@ dofile("TamrielData.mcm")
 
 event.register(tes3.event.loaded, function()
 
+	event.unregister(tes3.event.determinedAction, magic.useCustomSpell)
 	event.unregister(tes3.event.leveledItemPicked, magic.insightEffect)
 	--event.unregister(tes3.event.magicEffectRemoved, magic.wabbajackRemovedEffect)
 	--event.unregister(tes3.event.spellTick, magic.wabbajackAppliedEffect)
@@ -384,6 +401,10 @@ event.register(tes3.event.loaded, function()
 	event.unregister(tes3.event.calcTravelPrice, adjustTravelPrices)
 	event.unregister(tes3.event.magicCasted, limitInterventionMessage)
 	event.unregister(tes3.event.spellTick, limitIntervention)
+
+	if config.summoningSpells == true then
+		event.register(tes3.event.determinedAction, magic.useCustomSpell)
+	end
 
 	if config.interventionSpells == true then
 		magic.replaceInterventionMarkers(kyne_intervention_cells, "T_Aid_KyneInterventionMarker")
@@ -426,7 +447,7 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.menuEnter, reputation.switchReputation, {filter = "MenuDialog"})
 		event.register(tes3.event.menuExit, reputation.switchReputation)
 		
-		event.register(tes3.event.uiRefreshed, reputation.uiRefreshedCallback, {filter = "MenuStat_scroll_pane"})	-- Change to MenuStat_layout and work off of it as event data?
+		event.register(tes3.event.uiRefreshed, reputation.uiRefreshedCallback, {filter = "MenuStat_scroll_pane"})
 		event.register(tes3.event.menuEnter, function(e) tes3ui.updateStatsPane() end)
 	end
 
