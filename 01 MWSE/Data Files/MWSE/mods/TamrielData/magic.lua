@@ -766,7 +766,7 @@ local function banishDaedraEffect(e)
 	
 	local target = e.effectInstance.target
 
-	if (target.object.type ~= tes3.creatureType.daedra or target.isDead) then
+	if target.object.type ~= tes3.creatureType.daedra or target.isDead or table.contains(target.mobile.friendlyActors, e.sourceInstance.caster.mobile) then
 		e.effectInstance.state = tes3.spellState.retired
 		return
 	end
@@ -783,6 +783,7 @@ local function banishDaedraEffect(e)
 			end
 		end
 
+		target.mobile:startCombat(caster.mobile)
 		target:setActionFlag(tes3.actionFlag.onDeath)
 		tes3.setKillCount({ actor = target.object, count = tes3.getKillCount({ actor = target.object }) + 1 })
 		tes3.playSound{ sound = "mysticism hit", reference = target.mobile }
