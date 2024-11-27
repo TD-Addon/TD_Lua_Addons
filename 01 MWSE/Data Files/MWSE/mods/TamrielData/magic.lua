@@ -367,7 +367,7 @@ end
 local function equipActorSpell(session, spells)
 	for _,v in pairs(spells) do
 		if #session.mobile:getActiveMagicEffects({ effect = v[2] }) == 0 then
-			--e.session.selectedAction = 6
+			session.selectedAction = 6
 			local spell = tes3.getObject(v[1])
 			session.selectedSpell = spell
 			session.mobile:equipMagic({ source = spell })
@@ -379,7 +379,7 @@ end
 ---@param e determinedActionEventData
 function this.useCustomSpell(e)
 	local customSpells
-	if (e.session.selectedAction > 3 and e.session.selectedAction < 7) or e.session.selectedAction == 8 then
+	--if (e.session.selectedAction > 3 and e.session.selectedAction < 7) or e.session.selectedAction == 8 then	-- This condition requires that the actor is already casting a spell, but that can't be met if they cannot cast a non-MWSE spell
 		if config.summoningSpells then
 			customSpells = checkActorSpells(e.session.mobile, td_summon_spells)
 	
@@ -397,7 +397,7 @@ function this.useCustomSpell(e)
 			end
 		end
 		]]
-	end
+	--end
 end
 
 --- @param e uiEventEventData

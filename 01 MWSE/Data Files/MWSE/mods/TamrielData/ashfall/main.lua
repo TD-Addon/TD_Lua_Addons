@@ -2474,6 +2474,7 @@ event.register(tes3.event.initialized, function()
 		}
 
 		ashfall.registerFoods{
+			t_ingfood_meatdolphin_01 = types.meat,
 			t_ingcrea_meatdark_01 = types.meat,
 			t_ingflor_bertpodslice_01 = types.meat,
 			t_ingfood_meatarenthjerky_01 = types.meat,
