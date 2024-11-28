@@ -18,31 +18,30 @@ local function registerModConfig()
     local credits = preferences.sidebar:createCategory{label=common.i18n("mcm.credits")}
     credits:createHyperlink{
         text = common.i18n("mcm.Kynesifnar"),
-        exec = "start https://www.nexusmods.com/users/56893332?tab=user+files",
+        url = "https://www.nexusmods.com/users/56893332?tab=user+files",
     }
     credits:createHyperlink{
         text = common.i18n("mcm.mort"),
-        exec = "start https://www.nexusmods.com/morrowind/users/4138441/?tab=user+files",
+        url = "https://www.nexusmods.com/morrowind/users/4138441/?tab=user+files",
     }
-    credits:createHyperlink{
-        text = common.i18n("mcm.Rakanishu"),
-        exec = "start https://www.project-tamriel.com/memberlist.php?mode=viewprofile&u=239&sid=b46caae0a0f90403fca886455580631a",
+    credits:createInfo{
+        text = common.i18n("mcm.Rakanishu")
     }
     credits:createHyperlink{
         text = common.i18n("mcm.chef"),
-        exec = "start https://github.com/cheflul/Chefmod",
+        url = "https://github.com/cheflul/Chefmod",
     }
     credits:createHyperlink{
         text = common.i18n("mcm.Cicero"),
-        exec = "start https://www.nexusmods.com/morrowind/users/64610026?tab=user+files",
+        url = "https://www.nexusmods.com/morrowind/users/64610026?tab=user+files",
     }
     credits:createHyperlink{
         text = common.i18n("mcm.NullCascade"),
-        exec = "start https://www.nexusmods.com/morrowind/users/26153919?tab=user+files",
+        url = "https://www.nexusmods.com/morrowind/users/26153919?tab=user+files",
     }
     credits:createHyperlink{
         text = common.i18n("mcm.Hrnchamd"),
-        exec = "start https://www.nexusmods.com/morrowind/users/843673?tab=user+files",
+        url = "https://www.nexusmods.com/morrowind/users/843673?tab=user+files",
     }
 
     -- Feature Toggles

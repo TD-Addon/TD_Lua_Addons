@@ -207,7 +207,7 @@ local td_enchantments = {
 	{ "T_Once_SummonDremoraAll60", tes3.effect.summonDremora, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.T_summon_DremArch, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.T_summon_DremCast, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Const_Ring_Namira", tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 1, 30, 30, tes3.effect.reflect, tes3.effectRange.self, 0, 1, 30, 30 },
 	{ "T_Const_FindersCharm", tes3.effect.T_mysticism_Insight, tes3.effectRange.self, 0, 1, 10, 10, tes3.effect.detectEnchantment, tes3.effectRange.self, 0, 1, 120, 120, tes3.effect.detectKey, tes3.effectRange.self, 0, 1, 120, 120 },
-	{ "T_Use_WabbajackUni", tes3.effect.T_alteration_Wabbajack, tes3.effectRange.target, 0, 1, 1, 1 }
+	--{ "T_Use_WabbajackUni", tes3.effect.T_alteration_Wabbajack, tes3.effectRange.target, 0, 1, 1, 1 }
 }
 
 -- ingredient id, 1st effect id, 1st effect attribute id, 1st effect skill id, 2nd effect id, ...
@@ -379,7 +379,7 @@ end
 ---@param e determinedActionEventData
 function this.useCustomSpell(e)
 	local customSpells
-	--if (e.session.selectedAction > 3 and e.session.selectedAction < 7) or e.session.selectedAction == 8 then	-- This condition requires that the actor is already casting a spell, but that can't be met if they cannot cast a non-MWSE spell
+	--if (e.session.selectedAction > 3 and e.session.selectedAction < 7) or e.session.selectedAction == 8 then	-- These conditions require that the actor is already casting a spell, but that can't be happen if they cannot cast a non-MWSE spell
 		if config.summoningSpells then
 			customSpells = checkActorSpells(e.session.mobile, td_summon_spells)
 	
