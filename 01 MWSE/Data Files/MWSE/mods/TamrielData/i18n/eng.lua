@@ -159,7 +159,8 @@ return {
 											"\nRequires reload.\n\nDefault: On\n\n",
 
 	["mcm.weatherChangesLabel"] = "Change Weathers",
-	["mcm.weatherChangesDescription"] = "Adds new weathers to some regions, such as sporefall in the Othreleth Woods, sandstorms in Shipal-Shin, and tropical storms in and around the Abecean Sea. Also makes minor adjustments to the weather in other regions, such as ashstorms in parts of Morrowind's mainland not originating from Red Mountain.\nRequires restart.\n\nDefault: On\n\n",
+	["mcm.weatherChangesDescription"] = "Adds new weathers to some regions, such as sporefall in the Othreleth Woods, sandstorms in Shipal-Shin, and tropical storms in and around the Abecean Sea. Also makes minor adjustments to the weather in other regions, such as ashstorms in parts of Morrowind's mainland not originating from Red Mountain."..
+											"\nMay conflict with MWSE addons that affect weathers, such as Watch the Skies.\nRequires restart.\n\nDefault: On\n\n",
 
 	["mcm.animationFixLabel"] = "Fix Player Animations for Tamriel Data Races",
 	["mcm.animationFixDescription"] = "Fixes animations when playing as Ohmes-raht or Suthay Khajiit via 3rd party mods.\nRequires reload. Tail may vanish until reload when animations from other MWSE addons are applied to the player character." ..
@@ -180,5 +181,5 @@ return {
 
 	["mcm.interventionRangeLabel"] = "Limit Intervention Spell Range",
 	["mcm.interventionRangeDescription"] = "Restricts the range at which some intervention spells work, preventing them from being used to teleport across the entirety of Tamriel." ..
-											"\nMay conflict with MWSE addons that affect intervention spells or mods that add additional regions besides Tamriel Rebuilt and Project Tamriel.\nRequires reload.\n\nDefault: Off\n\n",
+											"\nMay conflict with MWSE addons that affect intervention spells or mods that add additional regions besides Tamriel Data.\nRequires reload.\n\nDefault: Off\n\n",
 }

@@ -10,7 +10,7 @@ local reputation = require("tamrielData.reputation")
 local weather = require("tamrielData.weather")
 
 -- Make sure we have an up-to-date version of MWSE.
-if (mwse.buildDate == nil) or (mwse.buildDate < 20241102) then
+if (mwse.buildDate == nil) or (mwse.buildDate < 20241130) then
     event.register(tes3.event.initialized, function()
         tes3ui.showNotifyMenu(common.i18n("main.mwseDate"))
     end)

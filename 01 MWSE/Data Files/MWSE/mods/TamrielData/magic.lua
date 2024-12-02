@@ -379,7 +379,7 @@ end
 ---@param e determinedActionEventData
 function this.useCustomSpell(e)
 	local customSpells
-	--if (e.session.selectedAction > 3 and e.session.selectedAction < 7) or e.session.selectedAction == 8 then	-- These conditions require that the actor is already casting a spell, but that can't be happen if they cannot cast a non-MWSE spell
+	--if (e.session.selectedAction > 3 and e.session.selectedAction < 7) or e.session.selectedAction == 8 then	-- These conditions require that the actor is already casting a spell, which can't happen if they are unable to cast a non-MWSE spell
 		if config.summoningSpells then
 			customSpells = checkActorSpells(e.session.mobile, td_summon_spells)
 	
