@@ -26,16 +26,16 @@ event.register(tes3.event.initialized, function()
 			seasoning = "seasoning",
 
 			-- Types of water containers
-			cup = { capacity = 25 },
-			glass = {  capacity = 25 },
-			goblet = {  capacity = 25 },
-			mug = {  capacity = 30 },
-			tankard = {  capacity = 30 },
-			flask = {  capacity = 80 },
-			bottle = { capacity = 90 },
-			pot = {  holdsStew = true, capacity = 100 },
-			jug = { capacity = 200 },
-			pitcher = { capacity = 190 },
+			cup = "cup",
+			glass = "glass",
+			goblet = "goblet",
+			mug = "mug",
+			tankard = "tankard",
+			flask = "flask",
+			bottle = "bottle",
+			pot = "pot",
+			jug = "jug",
+			pitcher = "pitcher",
 
 			-- Region climates
 			polar = 'polar',
