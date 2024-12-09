@@ -685,7 +685,7 @@ local function kynesInterventionEffect(e)
 		local caster = e.sourceInstance.caster
 		local marker = tes3.findClosestExteriorReferenceOfObject({ object = "T_Aid_KyneInterventionMarker" })
 		if marker then
-			tes3.positionCell({ reference = caster, position = marker.position, teleportCompanions = false })			
+			tes3.positionCell({ reference = caster, position = marker.position, orientation = marker.orientation, teleportCompanions = false })			
 		end
 	else
 		tes3ui.showNotifyMenu(tes3.findGMST(tes3.gmst.sTeleportDisabled).value)

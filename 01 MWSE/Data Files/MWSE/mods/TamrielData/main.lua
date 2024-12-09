@@ -153,9 +153,11 @@ local kyne_intervention_cells = {
 	--{-112, 11} -- Taurus Hall, as an example
 }
 
--- actor id, destination cell id, manual price, factor to multiply baseprice by
+-- actor id, destination cell id, factor to multiply baseprice by
 local travel_actor_prices = {
-	{ "TR_m1_DaedrothGindaman", nil, nil, 5}
+	{ "TR_m1_DaedrothGindaman", nil, 5},
+	{ "Sky_xRe_DSE_Arvund", "Karthwasten", 2.273},		-- 22 to 50
+	{ "Sky_xRe_KW_Aurius", "Dragonstar East", 2.273},		-- Markarth to DS/KW prices will probably need to be gone over too
 }
 
 ---@param e equipEventData
@@ -268,24 +270,17 @@ end
 
 ---@param e calcTravelPriceEventData
 local function adjustTravelPrices(e)
-	for k,v in pairs(travel_actor_prices) do
-		local actorID, destinationID, manualPrice, priceFactor = unpack(v, 1, 4)
-		if e.reference.baseObject.id == actorID then
-			if not destinationID or e.destination.cell.id == destinationID then
-				if manualPrice then
-					e.price = manualPrice
-				else
-					e.price = e.price * priceFactor
-				end
-
-				return true
-			end
+	for _,v in pairs(travel_actor_prices) do
+		local actorID, destinationID, factor = unpack(v, 1, 3)
+		if e.reference.baseObject.id == actorID and (not destinationID or e.destination.cell.id == destinationID) then
+			e.price = math.round(e.price * factor)	-- The price seems to work regardless, but I'm paranoid
+			return
 		end
 	end
 	
 	if e.reference.mobile.objectType == tes3.objectType.mobileNPC then
 		local providerInstance = e.reference.mobile.object
-		if string.find(providerInstance.faction.id, "Mages") and providerInstance.factionRank > 3 then	-- Increase price of teleporting between MG networks
+		if providerInstance.faction and string.find(providerInstance.faction.id, "Mages") and providerInstance.factionRank > 3 then	-- Increase price of teleporting between MG networks
 			e.price = e.price * 5;
 		end
 	end
