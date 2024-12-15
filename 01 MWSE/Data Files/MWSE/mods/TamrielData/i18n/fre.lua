@@ -159,7 +159,7 @@ return {
 											"\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 
 	["mcm.weatherChangesLabel"] = "Modifications de la météo",
-	["mcm.weatherChangesDescription"] = "Implémente de nouvelles météos dans certaines régions, comme des chutes de spores dans les Bois d'Othréleth, des tempêtes de sable dans la région de Shipal-Shin, et des tempête tropicales dans la mer d'Abecéanne. De plus, cette option procède à des ajustements mineurs de la météo dans d'autres régions, comme le fait que les tempêtes de cendres sur le continent de Morrowind ne proviennent plus systématiquement du mont Ecarlate.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+	["mcm.weatherChangesDescription"] = "Implémente de nouvelles météos dans certaines régions, comme des chutes de spores dans les Bois d'Othréleth, des tempêtes de sable dans la région de Shipal-Shin, et des tempête tropicales dans la mer d'Abecéanne. De plus, cette option procède à des ajustements mineurs de la météo dans d'autres régions, comme le fait que les tempêtes de cendres sur le continent de Morrowind ne proviennent plus systématiquement du mont Ecarlate.\nCette option risque d'entrer en conflit avec les mods MWSE qui touchent à la météo, comme Watch the Skies.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 	
 	["mcm.animationFixLabel"] = "Corriger les animations du joueur pour les nouvelles races",
 	["mcm.animationFixDescription"] = "Corrige les animations lorsque vous jouez un Khajiit Ohmes-raht ou Suthay via un plugin tiers.\nRequiert un rechargement. Votre queue peut disparaître jusqu'au rechargement quand des animations d'autres addons MWSE sont appliquées au joueur." ..
@@ -180,5 +180,5 @@ return {
 	
 	["mcm.interventionRangeLabel"] = "Limiter la portée des sorts d'Intervention",
 	["mcm.interventionRangeDescription"] = "Restreint la portée jusqu'à laquelle les sorts d'Intervention fonctionnent, vous empêchant de les utiliser pour vous téléporter d'un bout à l'autre de Tamriel." ..
-											"\nCette option pourrait entrer en conflit avec d'autres mods pour MWSE qui touchent aux sorts d'Intervention, ou avec les mods qui implémentent de nouvelles régions autres que les mods de provinces.\nRequiert un rechargement.\n\nPar défaut : désactivé\n\n",
+											"\nCette option pourrait entrer en conflit avec d'autres mods pour MWSE qui touchent aux sorts d'Intervention, ou avec les mods qui implémentent de nouvelles régions autres que Tamriel_Data.\nRequiert un rechargement.\n\nPar défaut : désactivé\n\n",
 }
