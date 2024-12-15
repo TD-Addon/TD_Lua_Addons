@@ -163,7 +163,8 @@ return {
 											"\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
 
 	["mcm.weatherChangesLabel"] = "Zmiana Efektów Pogodowych",
-	["mcm.weatherChangesDescription"] = "Dodaje nowe efekty pogodowe w niektórych regionach, jak np. opad zarodników w Lasach Othreleth, burze piaskowe w Shipal-Shin czy tropikalne burze w okolicach Morza Abeceańskiego. Wprowadza także poprawki pogodowe w pozostałych regionach, jak np. popielne burze w częściach kontynentalnych Morrowind nie mające źródła na Czerwonej Górze.\nWymage ponownego uruchomienia gry.\n\nDomyślnie: Wł\n\n",
+	["mcm.weatherChangesDescription"] = "Dodaje nowe efekty pogodowe w niektórych regionach, jak np. opad zarodników w Lasach Othreleth, burze piaskowe w Shipal-Shin czy tropikalne burze w okolicach Morza Abeceańskiego. Wprowadza także poprawki pogodowe w pozostałych regionach, jak np. popielne burze w częściach kontynentalnych Morrowind nie mające źródła na Czerwonej Górze."..
+										"\nMoże kolidować z innymi modami MWSE wpływającymi na efekty pogodowe, jak np. Watch the Skies.\nWymage ponownego uruchomienia gry.\n\nDomyślnie: Wł\n\n",
 	
 	["mcm.animationFixLabel"] = "Poprawka Animacji Gracza dla Ras Dodanych w Tamriel Data",
 	["mcm.animationFixDescription"] = "Poprawia animacje dla odblokowanych przez mody grywalnych ras dodanych w Tamriel Data, takich jak Ohmes-raht czy Suthay.\nWymaga ponownego wczytania gry. Ogon może zniknąć do momentu ponownego wczytania gry, jeśli animacje z innych modów MWSE są w użyciu przez postać gracza." ..
@@ -184,5 +185,5 @@ return {
 	
 	["mcm.interventionRangeLabel"] = "Ograniczenia Zasięgu Zaklęć Interwencji",
 	["mcm.interventionRangeDescription"] = "Ogranicza zasięg działania niektórych zaklęć interwencji, uniemożliwiając ich użycie aby teleportować się na terenach całego Tamriel." ..
-											"\nMoże kolidować z innymi modami MWSE, które wpływają na zaklęcia interwencji lub modami dodającymi nowe obszary poza Tamriel Rebuilt i Project Tamriel.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wył.\n\n",
+											"\nMoże kolidować z innymi modami MWSE, które wpływają na zaklęcia interwencji lub modami dodającymi nowe obszary poza Tamriel Data.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wył.\n\n",
 }
