@@ -4,6 +4,8 @@ return {
 
 	["main.imgaShoes"] = "Imga nie mogą nosić butów.",
 	["main.imgaHelm"] = "Samce Imga nie mogą nosić hełmów.", -- Aly: "samiec" is ok, I guess, it's a word used towards male animals which probably fit in case of beast(-ish?) race
+	["main.tsaesciShoes"] = "Tsaesci nie mogą nosić butów.",
+	["main.tsaesciPants"] = "Tsaesci nie mogą nosić spodni.",
 
 	["main.rangeAlmsivi"] = "Moc Almsivi nie rozciąga się na tych ziemiach.",
 	["main.rangeKyne"] = "Moc Kyne nie rozciąga się na tych ziemiach.",
@@ -77,7 +79,7 @@ return {
 	["magic.interventionKyneDesc"] = "Natychmiastowo przenosi rzucającego zaklęcie do najbliższej świątynii lub miejsca poświęconego norskiej bogini Kyne.",
 
 	["magic.miscPasswall"] = "Przeniknięcie Ściany", -- Aly: alternative could be "Przejście Ściany", (more direct) discuss with poles which one sounds better to them
-	["magic.miscPasswallDesc"] = "Pozwala przeniknąć przez stałe bariery w obszarach wewnętrznych do wolnej przestrzeni poza nimi. Efekt zawiedzie, jeśli miejsce docelowe jest wypełnione wodą, leży poza polem siłowym, zapieczętowaną bramą, lub znajduje się powyżej lub poniżej poziomu, na któym znajduje się rzucający zaklęcie.",
+	["magic.miscPasswallDesc"] = "Pozwala przeniknąć przez stałe bariery w obszarach wewnętrznych do wolnej przestrzeni poza nimi. Efekt zawiedzie, jeśli miejsce docelowe jest wypełnione wodą, położone jest poza polem siłowym, zapieczętowaną bramą, lub znajduje się powyżej lub poniżej poziomu, na któym znajduje się rzucający zaklęcie.",
 	["magic.miscBanish"] = "Wypędzenie Daedry",
 	["magic.miscBanishDesc"] = "Wypędza daedrę będącą celem zaklęcia, jeśli jej poziom jest wystarczająco niski w porównaniu ze stopniem zaklęcia. Odniesione przez daedrę obrażenia powodują większą podatność na wypędzenie. W przypadku sukcesu ważniejszy dobytek daedry zostanie przeniesiony do rzucającego czar.",
 	["magic.miscReflectDamage"] = "Odbicie Obrażeń",
@@ -90,6 +92,10 @@ return {
 	["magic.miscWabbajackDesc"] = "Łabadżak!",
 	["magic.miscInsight"] = "Intuicja",
 	["magic.miscInsightDesc"] = "Nieznacznie wypacza los, zwiększając szansę na znalezienie wartościowych przedmiotów.",
+	["magic.miscArmorResartus"] = "Odnowienie Pancerza",
+	["magic.miscArmorResartusDesc"] = "Odnawia wyposażony zaklęty pancerz. Stopień efektu odpowiada ilości ładunku oraz stanu, która zostanie przywrócona, rozdzielając punkty pomiędzy wszyskie wyposażone zaklęte elementy pancerza.",
+	["magic.miscWeaponResartus"] = "Odnowienie Broni",
+	["magic.miscWeaponResartusDesc"] = "Odnawia wyposażony zaklęty oręż. Stopień efektu odpowiada ilości ładunku oraz stanu, która zostanie przywrócona.",
 
 	["magic.wabbajackFailure"] = "Cel: %s jest zbyt potężny, nie może być poddany efektowi Łabadżaka!", -- Aly: ok this was harder to figure out due to adjectives inheriting gender of subject so: "Alex is strong" -> "Alex jest silny" but "Anna is strong" -> "Anna jest silna"; in this case "cel (target)" not %s is the subject so no matter what gender %s is, string will remain the same
 	["magic.banishFailure"] = "Cel: %s nie może zostać wypędzony, zaklęcie jest zbyt słabe!",
@@ -165,24 +171,28 @@ return {
 	["mcm.weatherChangesLabel"] = "Zmiana Efektów Pogodowych",
 	["mcm.weatherChangesDescription"] = "Dodaje nowe efekty pogodowe w niektórych regionach, jak np. opad zarodników w Lasach Othreleth, burze piaskowe w Shipal-Shin czy tropikalne burze w okolicach Morza Abeceańskiego. Wprowadza także poprawki pogodowe w pozostałych regionach, jak np. popielne burze w częściach kontynentalnych Morrowind nie mające źródła na Czerwonej Górze."..
 										"\nMoże kolidować z innymi modami MWSE wpływającymi na efekty pogodowe, jak np. Watch the Skies.\nWymage ponownego uruchomienia gry.\n\nDomyślnie: Wł\n\n",
-	
+
+	["mcm.creatureBehaviorsLabel"] = "Rozszerzenie Zachowania Stworzeń",
+	["mcm.creatureBehaviorsDescription"] = "Sprawia, że istoty zachowują się w bardziej interesujący lub mniej ograniczony przez możliwości silnika Morrowind, jak np. [Strident Runner] nie będą już niezdarnie wstawać na końcu każdej pętli animacji.".. --Aly: kinda half-assed without example part - for now
+											"\nWymage ponownego uruchomienia gry.\n\nDomyślnie: On\n\n",
+
 	["mcm.animationFixLabel"] = "Poprawka Animacji Gracza dla Ras Dodanych w Tamriel Data",
 	["mcm.animationFixDescription"] = "Poprawia animacje dla odblokowanych przez mody grywalnych ras dodanych w Tamriel Data, takich jak Ohmes-raht czy Suthay.\nWymaga ponownego wczytania gry. Ogon może zniknąć do momentu ponownego wczytania gry, jeśli animacje z innych modów MWSE są w użyciu przez postać gracza." ..
 										"\nJeśli podmiana animacji dodająca kości ogona do base_anim.nif jest w użyciu, ta funkcja jest prawdopodobnie zbędna.\n\nDomyślnie: Wł\n\n",
-	
+
 	["mcm.restrictEquipmentLabel"] ="Ograniczenia Ekwipunku dla Ras Dodanych w Tamriel Data",
 	["mcm.restrictEquipmentDescription"] = "Powstrzymuje rasy dodane w Tamriel Data przed noszeniem pewnych części ekwipunku, gdy jest to fizycznie nieprawdopodobne lub technicznie problematyczne.\nWymaga ponownego wczytania gry.\n\nDotyczące rasy oraz części ekwipunku:" ..
 											"\n- Imga nie mogą ubierać obuwia, samce Imga nie mogą ubierać hełmów.\n\nDomyślnie: Wł\n\n",
-	
+
 	["mcm.fixVampireLabel"] = "Poprawka Wampirzych Głów",
 	["mcm.fixVampireDescription"] = "Powstrzymuje Całun Namiry od ukrywania głowy gracza, gdy jest ubrany, oraz pozwala wampirzym postaciom niezależnym używać unikatowych głów stworzonych specjalnie dla nich.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
-	
+
 	["mcm.itemSoundsLabel"] = "Poprawione Efekty Dźwiękowe Przedmiotów",
 	["mcm.itemSoundsDescription"] = "Niektóre przedmioty dodane w Tamriel Data, jak pasta wasabi czy perfumy, używają bardziej sensownych efektów dźwiękowych, gdy są użyte lub dodane do/usunięte z ekwipunku.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
-	
+
 	["mcm.travelPricesLabel"] = "Regulacja Kosztów Podróży",
 	["mcm.travelPricesDescription"] = "Zmienia koszty podróży do miejsc docelowych dodanych przez Tamriel Rebuilt i Project Tamriel w przypadku, gdy ceny obliczone przez grę są nierozsądne, jak np w przypadku sieci teleportacyjnej Gildii Magów.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
-	
+
 	["mcm.interventionRangeLabel"] = "Ograniczenia Zasięgu Zaklęć Interwencji",
 	["mcm.interventionRangeDescription"] = "Ogranicza zasięg działania niektórych zaklęć interwencji, uniemożliwiając ich użycie aby teleportować się na terenach całego Tamriel." ..
 											"\nMoże kolidować z innymi modami MWSE, które wpływają na zaklęcia interwencji lub modami dodającymi nowe obszary poza Tamriel Data.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wył.\n\n",
