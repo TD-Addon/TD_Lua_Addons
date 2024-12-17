@@ -4,6 +4,8 @@ return {
 
 	["main.imgaShoes"] = "Imga cannot wear shoes.",
 	["main.imgaHelm"] = "Male Imga cannot wear helmets.",
+	["main.tsaesciShoes"] = "Tsaesci cannot wear shoes.",
+	["main.tsaesciPants"] = "Tsaesci cannot wear pants.",
 
 	["main.rangeAlmsivi"] = "The power of Almsivi does not extend to these lands.",
 	["main.rangeKyne"] = "The power of Kyne does not extend to these lands.",
@@ -90,6 +92,10 @@ return {
 	["magic.miscWabbajackDesc"] = "Wabbajack!",
 	["magic.miscInsight"] = "Insight",
 	["magic.miscInsightDesc"] = "This effect lightly twists fate, increasing the chance of discovering valuable items.",
+	["magic.miscArmorResartus"] = "Armor Resartus",
+	["magic.miscArmorResartusDesc"] = "This effect mends and recharges enchanted armor that is equipped by the caster. The magnitude is the units of condition and charge restored, which are distributed across all of the caster's enchanted armor.",
+	["magic.miscWeaponResartus"] = "Weapon Resartus",
+	["magic.miscWeaponResartusDesc"] = "This effect mends and recharges an enchanted weapon that is equipped by the caster. The magnitude is the units of condition and charge restored.",
 
 	["magic.wabbajackFailure"] = "%s is too strong to be Wabbajacked!",
 	["magic.banishFailure"] = "This spell is too weak to banish %s!",
@@ -161,6 +167,10 @@ return {
 	["mcm.weatherChangesLabel"] = "Change Weathers",
 	["mcm.weatherChangesDescription"] = "Adds new weathers to some regions, such as sporefall in the Othreleth Woods, sandstorms in Shipal-Shin, and tropical storms in and around the Abecean Sea. Also makes minor adjustments to the weather in other regions, such as ashstorms in parts of Morrowind's mainland not originating from Red Mountain."..
 											"\nMay conflict with MWSE addons that affect weathers, such as Watch the Skies.\nRequires restart.\n\nDefault: On\n\n",
+
+	["mcm.creatureBehaviorsLabel"] = "Enhance Creature Behaviors",
+	["mcm.creatureBehaviorsDescription"] = "Makes creatures behave in a more interesting manner or one that is less constrained by Morrowind's limitations, such as nesting Strident Runners not awkwardly getting up at the end of each animation loop."..
+											"\nRequires restart.\n\nDefault: On\n\n",
 
 	["mcm.animationFixLabel"] = "Fix Player Animations for Tamriel Data Races",
 	["mcm.animationFixDescription"] = "Fixes animations when playing as Ohmes-raht or Suthay Khajiit via 3rd party mods.\nRequires reload. Tail may vanish until reload when animations from other MWSE addons are applied to the player character." ..

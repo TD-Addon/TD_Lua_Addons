@@ -1,4 +1,4 @@
-local JoyOfPainting = require("mer.joyOfPainting")
+local JoyOfPainting = include("mer.joyOfPainting")
 
 local paletteItems = {
     {
@@ -39,13 +39,17 @@ local paletteItems = {
 }
 
 event.register(tes3.event.initialized, function()
-    for _, item in ipairs(paletteItems) do
-        JoyOfPainting.Palette.registerPaletteItem(item)
+    if JoyOfPainting then
+        for _,item in ipairs(paletteItems) do
+            JoyOfPainting.Palette.registerPaletteItem(item)
+        end
+
+        -- for _, brush in ipairs(brushes) do
+            -- JoyOfPainting.Brush.registerBrush(brush)
+        -- end
+
+        -- for _, paintType in ipairs(paintTypes) do
+            -- JoyOfPainting.Palette.registerPaintType(paintType)
+        -- end
     end
-	-- for _, brush in ipairs(brushes) do
-        -- JoyOfPainting.Brush.registerBrush(brush)
-    -- end
-    -- for _, paintType in ipairs(paintTypes) do
-        -- JoyOfPainting.Palette.registerPaintType(paintType)
-    -- end
 end)

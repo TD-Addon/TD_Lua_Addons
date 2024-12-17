@@ -6,6 +6,7 @@ local defaultConfig = {
 	overwriteMagickaExpanded = true,
 	provincialReputation = true,
 	weatherChanges = true,
+	creatureBehaviors = true,
 	fixPlayerRaceAnimations = true,
 	restrictEquipment = true,
 	fixVampireHeads = true,

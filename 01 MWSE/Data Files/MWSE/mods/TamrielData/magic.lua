@@ -57,6 +57,8 @@ if config.miscSpells == true then
 	tes3.claimSpellEffectId("T_alteration_RadShield", 2123)
 	tes3.claimSpellEffectId("T_alteration_Wabbajack", 2124)
 	tes3.claimSpellEffectId("T_mysticism_Insight", 2125)
+	tes3.claimSpellEffectId("T_restoration_ArmorResartus", 2132)
+	tes3.claimSpellEffectId("T_restoration_WeaponResartus", 2133)
 end
 
 -- The effect costs for most summons were initially calculated by mort using a formula (dependent on a creature's health and soul) that is now lost and were then adjusted as seemed reasonable.
@@ -116,7 +118,9 @@ local td_misc_effects = {
 	{ tes3.effect.T_mysticism_DetHuman, common.i18n("magic.miscDetectHumanoid"), 1.5, "td\\s\\td_s_det_hum.tga", common.i18n("magic.miscDetectHumanoidDesc")},
 	{ tes3.effect.T_alteration_RadShield, common.i18n("magic.miscRadiantShield"), 5, "td\\s\\td_s_radiant_shield.tga", common.i18n("magic.miscRadiantShieldDesc")},
 	{ tes3.effect.T_alteration_Wabbajack, common.i18n("magic.miscWabbajack"), 22, "td\\s\\td_s_wabbajack.tga", common.i18n("magic.miscWabbajackDesc")},
-	{ tes3.effect.T_mysticism_Insight, common.i18n("magic.miscInsight"), 10, "td\\s\\td_s_insight.tga", common.i18n("magic.miscInsightDesc")}
+	{ tes3.effect.T_mysticism_Insight, common.i18n("magic.miscInsight"), 10, "td\\s\\td_s_insight.tga", common.i18n("magic.miscInsightDesc")},
+	{ tes3.effect.T_restoration_ArmorResartus, common.i18n("magic.miscArmorResartus"), 60, "td\\s\\td_s_restore_ar.tga", common.i18n("magic.miscArmorResartusDesc")},
+	{ tes3.effect.T_restoration_WeaponResartus, common.i18n("magic.miscWeaponResartus"), 120, "td\\s\\td_s_restore_wpn.tga", common.i18n("magic.miscWeaponResartusDesc")},
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -175,6 +179,8 @@ local td_misc_spells = {
 	{ "T_Ayl_Alt_RadiantShield", tes3.spellType.spell, common.i18n("magic.miscRadiantShield"), 75, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 10, 10 },
 	{ "T_Cr_Alt_AuroranShield", tes3.spellType.ability, nil, nil, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 20, 20 },
 	{ "T_Com_Mys_Insight", tes3.spellType.spell, common.i18n("magic.miscInsight"), 76, tes3.effect.T_mysticism_Insight, tes3.effectRange.self, 0, 10, 15, 15 },
+	{ "T_Com_Res_ArmorResartus", tes3.spellType.spell, common.i18n("magic.miscArmorResartus"), 90, tes3.effect.T_restoration_ArmorResartus, tes3.effectRange.self, 0, 0, 20, 40 },
+	{ "T_Com_Res_WeaponResartus", tes3.spellType.spell, common.i18n("magic.miscWeaponResartus"), 90, tes3.effect.T_restoration_WeaponResartus, tes3.effectRange.self, 0, 0, 10, 20 },
 }
 
 -- enchantment id, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -272,7 +278,7 @@ local td_enchanted_items = {
 }
 
 local function replaceSpells(table)
-	for k,v in pairs(table) do
+	for _,v in pairs(table) do
 		local overridden_spell = tes3.getObject(v[1])
 		if overridden_spell then
 			overridden_spell.castType = v[2]
@@ -295,7 +301,7 @@ local function replaceSpells(table)
 end
 
 local function replaceEnchantments(table)
-	for k,v in pairs(table) do
+	for _,v in pairs(table) do
 		local overridden_enchantment = tes3.getObject(v[1])
 		if overridden_enchantment then
 			for i = 1, 8, 1 do
@@ -315,7 +321,7 @@ local function replaceEnchantments(table)
 end
 
 local function replaceIngredientEffects(table)
-	for k,v in pairs(table) do
+	for _,v in pairs(table) do
 		local ingredient = tes3.getObject(v[1])
 		if ingredient then
 			for i = 1, 4, 1 do
@@ -331,7 +337,7 @@ local function replaceIngredientEffects(table)
 end
 
 local function replacePotions(table)
-	for k,v in pairs(table) do
+	for _,v in pairs(table) do
 		local potion = tes3.getObject(v[1])
 		if potion then
 			potion.name = v[2]
@@ -341,7 +347,7 @@ local function replacePotions(table)
 end
 
 local function editItems(table)
-	for k,v in pairs(table) do
+	for _,v in pairs(table) do
 		local overridden_item = tes3.getObject(v[1])
 		if overridden_item then
 			if v[2] then overridden_item.name = v[2] end
@@ -398,6 +404,78 @@ function this.useCustomSpell(e)
 		end
 		]]
 	--end
+end
+
+---@param e tes3magicEffectTickEventData
+local function weaponResartusEffect(e)
+	if (not e:trigger()) then
+		return
+	end
+	
+	local weapon = tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.weapon})
+
+	if weapon then
+		weapon.itemData.condition = weapon.itemData.condition + e.effectInstance.magnitude
+		if weapon.itemData.condition > weapon.object.maxCondition then
+			weapon.itemData.condition = weapon.object.maxCondition
+		end
+		
+		weapon.itemData.charge = weapon.itemData.charge + e.effectInstance.magnitude
+		if weapon.itemData.charge > weapon.object.enchantment.maxCharge then
+			weapon.itemData.charge = weapon.object.enchantment.maxCharge
+		end
+	end
+
+	e.effectInstance.state = tes3.spellState.retired
+end
+
+---@param e tes3magicEffectTickEventData
+local function armorResartusEffect(e)
+	if (not e:trigger()) then
+		return
+	end
+	
+	local armor = {
+		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.cuirass }),
+		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.greaves }),
+		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.helmet }),
+		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.boots }),
+		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.shield }),
+		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.leftPauldron }),
+		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.rightPauldron }),
+		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.leftGauntlet }),
+		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.rightGauntlet }),
+		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.leftBracer }),
+		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.rightBracer })
+	}
+
+	local conditionMagnitude = e.effectInstance.magnitude
+	local chargeMagnitude = e.effectInstance.magnitude
+	local hasChanged = false
+
+	while conditionMagnitude > 0 or chargeMagnitude > 0 do
+		for _,item in pairs(armor) do
+			if item then
+				if conditionMagnitude > 0 and item.itemData.condition < item.object.maxCondition then
+					item.itemData.condition = item.itemData.condition + 1
+					conditionMagnitude = conditionMagnitude - 1
+					hasChanged = true
+				end
+				
+				if chargeMagnitude > 0 and item.itemData.charge < item.object.enchantment.maxCharge then
+					item.itemData.charge = item.itemData.charge + 1
+					chargeMagnitude = chargeMagnitude - 1
+					hasChanged = true
+				end
+			end
+		end
+
+		if not hasChanged then break end
+
+		hasChanged = false
+	end
+
+	e.effectInstance.state = tes3.spellState.retired
 end
 
 --- @param e uiEventEventData
@@ -1233,6 +1311,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 		local reflectEffect = tes3.getMagicEffect(tes3.effect.reflect)
 		local shieldEffect = tes3.getMagicEffect(tes3.effect.shield)
 		local burdenEffect = tes3.getMagicEffect(tes3.effect.burden)
+		local restoreEffect = tes3.getMagicEffect(tes3.effect.fortifyHealth)	-- The fortify VFX feels more appropriate for the resartus effects, but perhaps it should still be restoration?
 
 		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[1])	-- Passwall
 		tes3.addMagicEffect{
@@ -1483,6 +1562,90 @@ event.register(tes3.event.magicEffectsResolved, function()
 			size = reflectEffect.size,
 			sizeCap = reflectEffect.sizeCap,
 			onTick = nil,
+			onCollision = nil
+		}
+
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[8])		-- Armor Resartus
+		tes3.addMagicEffect{
+			id = effectID,
+			name = effectName,
+			description = effectDescription,
+			school = tes3.magicSchool.restoration,
+			baseCost = effectCost,
+			speed = restoreEffect.speed,
+			allowEnchanting = true,
+			allowSpellmaking = true,
+			appliesOnce = true,
+			canCastSelf = true,
+			canCastTarget = false,
+			canCastTouch = false,
+			casterLinked = restoreEffect.casterLinked,
+			hasContinuousVFX = restoreEffect.hasContinuousVFX,
+			hasNoDuration = true,
+			hasNoMagnitude = false,
+			illegalDaedra = restoreEffect.illegalDaedra,
+			isHarmful = false,
+			nonRecastable = false,
+			targetsAttributes = false,
+			targetsSkills = false,
+			unreflectable = false,
+			usesNegativeLighting = restoreEffect.usesNegativeLighting,
+			icon = iconPath,
+			particleTexture = restoreEffect.particleTexture,
+			castSound = restoreEffect.castSoundEffect.id,
+			castVFX = restoreEffect.castVisualEffect.id,
+			boltSound = restoreEffect.boltSoundEffect.id,
+			boltVFX = restoreEffect.boltVisualEffect.id,
+			hitSound = restoreEffect.hitSoundEffect.id,
+			hitVFX = restoreEffect.hitVisualEffect.id,
+			areaSound = restoreEffect.areaSoundEffect.id,
+			areaVFX = restoreEffect.areaVisualEffect.id,
+			lighting = {x = restoreEffect.lightingRed, y = restoreEffect.lightingGreen, z = restoreEffect.lightingBlue},
+			size = restoreEffect.size,
+			sizeCap = restoreEffect.sizeCap,
+			onTick = armorResartusEffect,
+			onCollision = nil
+		}
+
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[9])		-- Weapon Resartus
+		tes3.addMagicEffect{
+			id = effectID,
+			name = effectName,
+			description = effectDescription,
+			school = tes3.magicSchool.restoration,
+			baseCost = effectCost,
+			speed = restoreEffect.speed,
+			allowEnchanting = true,
+			allowSpellmaking = true,
+			appliesOnce = true,
+			canCastSelf = true,
+			canCastTarget = false,
+			canCastTouch = false,
+			casterLinked = restoreEffect.casterLinked,
+			hasContinuousVFX = restoreEffect.hasContinuousVFX,
+			hasNoDuration = true,
+			hasNoMagnitude = false,
+			illegalDaedra = restoreEffect.illegalDaedra,
+			isHarmful = false,
+			nonRecastable = false,
+			targetsAttributes = false,
+			targetsSkills = false,
+			unreflectable = false,
+			usesNegativeLighting = restoreEffect.usesNegativeLighting,
+			icon = iconPath,
+			particleTexture = restoreEffect.particleTexture,
+			castSound = restoreEffect.castSoundEffect.id,
+			castVFX = restoreEffect.castVisualEffect.id,
+			boltSound = restoreEffect.boltSoundEffect.id,
+			boltVFX = restoreEffect.boltVisualEffect.id,
+			hitSound = restoreEffect.hitSoundEffect.id,
+			hitVFX = restoreEffect.hitVisualEffect.id,
+			areaSound = restoreEffect.areaSoundEffect.id,
+			areaVFX = restoreEffect.areaVisualEffect.id,
+			lighting = {x = restoreEffect.lightingRed, y = restoreEffect.lightingGreen, z = restoreEffect.lightingBlue},
+			size = restoreEffect.size,
+			sizeCap = restoreEffect.sizeCap,
+			onTick = weaponResartusEffect,
 			onCollision = nil
 		}
 	end

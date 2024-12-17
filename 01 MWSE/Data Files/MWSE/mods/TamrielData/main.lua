@@ -160,6 +160,13 @@ local travel_actor_prices = {
 	{ "Sky_xRe_KW_Aurius", "Dragonstar East", 2.273},		-- Markarth to DS/KW prices will probably need to be gone over too
 }
 
+---@param e playGroupEventData
+local function loopStridentRunnerNesting(e)
+	if e.reference.baseObject.id == "T_Cyr_Fau_BirdStridN_01" and e.group == tes3.animationGroup.idle6 then
+		e.loopCount = -1	-- Ordinarily idles don't loop correctly (see: Vivec) and a MWScript solution (like for Vivec) doesn't work well on a hostile creature such as the Strident Runners, but this does.
+	end
+end
+
 ---@param e equipEventData
 local function restrictEquip(e)
 	if e.reference.mobile.object.race.id == "T_Val_Imga" then
@@ -187,6 +194,42 @@ local function restrictEquip(e)
 			if e.item.slot == tes3.clothingSlot.shoes then
 				if e.reference.mobile == tes3.mobilePlayer then
 					tes3ui.showNotifyMenu(common.i18n("main.imgaShoes"))
+				end
+				
+				return false
+			end
+		end
+	elseif e.reference.mobile.object.race.id == "T_Aka_Tsaesci" then
+		if e.item.objectType == tes3.objectType.armor then
+			if e.item.slot == tes3.armorSlot.boots then
+				if e.reference.mobile == tes3.mobilePlayer then
+					tes3ui.showNotifyMenu(common.i18n("main.tsaesciShoes"))
+				end
+				
+				return false
+			end
+			
+			if e.item.slot == tes3.armorSlot.greaves then
+				if e.reference.mobile == tes3.mobilePlayer then
+					tes3ui.showNotifyMenu(common.i18n("main.tsaesciPants"))
+				end
+				
+				return false
+			end
+		end
+		
+		if e.item.objectType == tes3.objectType.clothing then
+			if e.item.slot == tes3.clothingSlot.shoes then
+				if e.reference.mobile == tes3.mobilePlayer then
+					tes3ui.showNotifyMenu(common.i18n("main.tsaesciShoes"))
+				end
+				
+				return false
+			end	
+			
+			if e.item.slot == tes3.clothingSlot.pants then
+				if e.reference.mobile == tes3.mobilePlayer then
+					tes3ui.showNotifyMenu(common.i18n("main.tsaesciPants"))
 				end
 				
 				return false
@@ -389,6 +432,8 @@ event.register(tes3.event.loaded, function()
 	event.unregister(tes3.event.weatherTransitionStarted, weather.changeStormOrigin)
 	event.unregister(tes3.event.soundObjectPlay, weather.silenceCreatures)
 	
+	event.unregister(tes3.event.playGroup, loopStridentRunnerNesting)
+
 	event.unregister(tes3.event.equip, restrictEquip)
 	event.unregister(tes3.event.bodyPartAssigned, fixVampireHeadAssignment)
 	event.unregister(tes3.event.combatStarted, vampireHeadCombatStarted)
@@ -423,7 +468,15 @@ event.register(tes3.event.loaded, function()
 		
 		event.register(tes3.event.magicCasted, magic.passwallEffect)
 	end
-
+	
+	if config.provincialReputation == true then
+		event.register(tes3.event.menuEnter, reputation.switchReputation, {filter = "MenuDialog"})
+		event.register(tes3.event.menuExit, reputation.switchReputation)
+		
+		event.register(tes3.event.uiRefreshed, reputation.uiRefreshedCallback, {filter = "MenuStat_scroll_pane"})
+		event.register(tes3.event.menuEnter, function(e) tes3ui.updateStatsPane() end)
+	end
+	
 	if config.weatherChanges == true then
 		weather.changeRegionWeatherChances()
 		
@@ -438,12 +491,8 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.soundObjectPlay, weather.silenceCreatures)
 	end
 	
-	if config.provincialReputation == true then
-		event.register(tes3.event.menuEnter, reputation.switchReputation, {filter = "MenuDialog"})
-		event.register(tes3.event.menuExit, reputation.switchReputation)
-		
-		event.register(tes3.event.uiRefreshed, reputation.uiRefreshedCallback, {filter = "MenuStat_scroll_pane"})
-		event.register(tes3.event.menuEnter, function(e) tes3ui.updateStatsPane() end)
+	if config.creatureBehaviors == true then
+		event.register(tes3.event.playGroup, loopStridentRunnerNesting)
 	end
 
 	if config.fixPlayerRaceAnimations == true then
