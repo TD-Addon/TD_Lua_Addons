@@ -213,6 +213,8 @@ local td_enchantments = {
 	{ "T_Once_SummonDremoraAll60", tes3.effect.summonDremora, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.T_summon_DremArch, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.T_summon_DremCast, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Const_Ring_Namira", tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 1, 30, 30, tes3.effect.reflect, tes3.effectRange.self, 0, 1, 30, 30 },
 	{ "T_Const_FindersCharm", tes3.effect.T_mysticism_Insight, tes3.effectRange.self, 0, 1, 10, 10, tes3.effect.detectEnchantment, tes3.effectRange.self, 0, 1, 120, 120, tes3.effect.detectKey, tes3.effectRange.self, 0, 1, 120, 120 },
+	{ "T_Const_Robe_Reprisal", tes3.effect.frostShield, tes3.effectRange.self, 0, 1, 50, 50, tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 1, 10, 10 },
+	{ "T_Const_Onimaru_en", tes3.effect.fortifyAttack, tes3.effectRange.self, 0, 1, 10, 10, tes3.effect.resistMagicka, tes3.effectRange.self, 0, 1, 20, 20, tes3.effect.resistNormalWeapons, tes3.effectRange.self, 0, 1, 20, 20, tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 1, 20, 20, tes3.effect.summonDremora, tes3.effectRange.self, 0, 1, 1, 1 },
 	--{ "T_Use_WabbajackUni", tes3.effect.T_alteration_Wabbajack, tes3.effectRange.target, 0, 1, 1, 1 }
 }
 
@@ -286,7 +288,7 @@ local function replaceSpells(table)
 			if v[4] then overridden_spell.magickaCost = v[4] end
 			for i = 1, 8, 1 do
 				if not v[5 + (i - 1) * 6] then
-					break	-- This kind of break condition exists so that the tables don't have to have dozens of fields
+					break	-- This condition exists so that the tables don't have to have dozens of fields if they have less than 8 effects
 				end
 				local effect = overridden_spell.effects[i]
 				effect.id = v[5 + (i - 1) * 6]
