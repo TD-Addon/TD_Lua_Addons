@@ -4,6 +4,8 @@ return {
 
 	["main.imgaShoes"] = "Les Imgas ne peuvent porter de chaussures.",
 	["main.imgaHelm"] = "Les Imgas mâles ne peuvent porter de casque.",
+	["main.tsaesciShoes"] = "Les Tsaescis ne peuvent porter de chaussures.",
+    ["main.tsaesciPants"] = "Les Tsaescis ne peuvent porter de pantalon.", 
 
 	["main.rangeAlmsivi"] = "Le pouvoir d'Almsivi ne s'étend pas sur ces terres.",
 	["main.rangeKyne"] = "Le pouvoir de Kyne ne s'étend pas sur ces terres.",
@@ -90,6 +92,10 @@ return {
 	["magic.miscWabbajackDesc"] = "Wabbajack !",
 	["magic.miscInsight"] = "Perspicacité",
 	["magic.miscInsightDesc"] = "Cet effet influe légèrement sur le destin en augmentant les chances de découvrir des objets de valeur.",
+	["magic.miscArmorResartus"] = "Armure raccommodée",
+    ["magic.miscArmorResartusDesc"] = "Cet effet répare et recharge l'armure enchantée équipée par le lanceur. La puissant de l'effet correspond au nombre d'unités de condition et de charge restaurées, qui sont distribuées entre chacun des pièces d'armure enchantées du lanceur.",
+    ["magic.miscWeaponResartus"] = "Arme raccommodée",
+    ["magic.miscWeaponResartusDesc"] = "Cet effet répare et recharge l'arme enchantée équipée par le lanceur. La puissant de l'effet correspond au nombre d'unités de condition et de charge restaurées.", 
 
 	["magic.wabbajackFailure"] = "%s est trop puissant pour que Wabbajack l'affecte !",
 	["magic.banishFailure"] = "Ce sort est trop faible pour bannir : %s !",
@@ -160,6 +166,10 @@ return {
 
 	["mcm.weatherChangesLabel"] = "Modifications de la météo",
 	["mcm.weatherChangesDescription"] = "Implémente de nouvelles météos dans certaines régions, comme des chutes de spores dans les Bois d'Othréleth, des tempêtes de sable dans la région de Shipal-Shin, et des tempête tropicales dans la mer d'Abecéanne. De plus, cette option procède à des ajustements mineurs de la météo dans d'autres régions, comme le fait que les tempêtes de cendres sur le continent de Morrowind ne proviennent plus systématiquement du mont Ecarlate.\nCette option risque d'entrer en conflit avec les mods MWSE qui touchent à la météo, comme Watch the Skies.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+	
+	["mcm.creatureBehaviorsLabel"] = "Amélioration des comportements des créatures",
+    ["mcm.creatureBehaviorsDescription"] = "Fait en sorte que les créatures se comportent d'une façon plus intéressante et moins restreinte par les limitation du moteur de jeu. Par exemple, les coureurs stridents ne se relèveront plus maladroitement à la fin de chaque boucle d'animation."..
+                                        "\nRequiert un rechargement.\n\nPar défaut : activé\n\n", 
 	
 	["mcm.animationFixLabel"] = "Corriger les animations du joueur pour les nouvelles races",
 	["mcm.animationFixDescription"] = "Corrige les animations lorsque vous jouez un Khajiit Ohmes-raht ou Suthay via un plugin tiers.\nRequiert un rechargement. Votre queue peut disparaître jusqu'au rechargement quand des animations d'autres addons MWSE sont appliquées au joueur." ..

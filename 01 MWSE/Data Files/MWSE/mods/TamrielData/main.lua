@@ -417,6 +417,7 @@ event.register(tes3.event.loaded, function()
 	event.unregister(tes3.event.damagedHandToHand, magic.reflectDamageStun)
 	event.unregister(tes3.event.damage, magic.reflectDamageEffect)
 	event.unregister(tes3.event.damageHandToHand, magic.reflectDamageHHEffect)
+	event.unregister(tes3.event.containerClosed, magic.deleteBanishDaedraContainer)
 	event.unregister(tes3.event.magicCasted, magic.passwallEffect)
 
 	event.unregister(tes3.event.menuEnter, reputation.switchReputation, {filter = "MenuDialog"})
@@ -465,6 +466,8 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.damagedHandToHand, magic.reflectDamageStun)
 		event.register(tes3.event.damage, magic.reflectDamageEffect)
 		event.register(tes3.event.damageHandToHand, magic.reflectDamageHHEffect)
+
+		event.register(tes3.event.containerClosed, magic.deleteBanishDaedraContainer)
 		
 		event.register(tes3.event.magicCasted, magic.passwallEffect)
 	end

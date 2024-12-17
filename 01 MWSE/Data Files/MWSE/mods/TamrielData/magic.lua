@@ -838,6 +838,20 @@ function this.reflectDamageHHEffect(e)
 	end
 end
 
+---@param e containerClosedEventData
+function this.deleteBanishDaedraContainer(e)
+	if e.reference.baseObject.id == "T_Glb_BanishDae_Empty" and #e.reference.object.inventory == 0 then	-- isEmpty does not work here
+		for light in e.reference.cell:iterateReferences(tes3.objectType.light) do
+			if light.position.x == e.reference.position.x and light.position.y == e.reference.position.y and light.position.z == e.reference.position.z and light.baseObject.id == "T_Glb_BanishDae_Light" then
+				light:delete()
+				break
+			end
+		end
+
+		e.reference:delete() 
+	end
+end
+
 ---@param e tes3magicEffectTickEventData
 local function banishDaedraEffect(e)
 	if (not e:trigger()) then
@@ -863,28 +877,34 @@ local function banishDaedraEffect(e)
 			end
 		end
 
-		target.mobile:startCombat(caster.mobile)
+		--target.mobile:startCombat(caster.mobile)
 		target:setActionFlag(tes3.actionFlag.onDeath)
 		tes3.setKillCount({ actor = target.object, count = tes3.getKillCount({ actor = target.object }) + 1 })
 		tes3.playSound{ sound = "mysticism hit", reference = target.mobile }
 		local vfx = tes3.createVisualEffect({ object = "T_VFX_Banish", lifespan = 1.5, position = target.position })
 		target:disable()
 		
-		local targetHandle = tes3.makeSafeObjectHandle(target)	-- Might as well use the handles, right?
-		local casterHandle = tes3.makeSafeObjectHandle(caster)
+		local targetHandle = tes3.makeSafeObjectHandle(target)
 		timer.delayOneFrame(function()
 			timer.delayOneFrame(function()		-- Give MWScripts using onDeath time to run
-				if not targetHandle:valid() or not casterHandle:valid() then
+				if not targetHandle:valid() then
 					return
 				end
 
 				local target = targetHandle:getObject()
-				local caster = casterHandle:getObject()
-				local hasNotPlayedSound = true
-				for _,v in pairs(target.mobile.inventory) do
-					if table.contains(uniqueItems, v.object) then
-						tes3.transferItem({ from = target, to = caster, item = v.object, count = 99, completeTransfer = true, playSound = hasNotPlayedSound })	-- This setup can account for how Dregas Volar's items are given to the player, so that they don't end up with two of both
-						hasNotPlayedSound = false	-- Make sure that only the pickup sound for the first item plays
+
+				if #uniqueItems > 0 then	-- Don't bother if there is definitely not going to be loot
+					local container = tes3.createReference({ object = "T_Glb_BanishDae_Empty", position = target.position + tes3vector3.new(0, 0, target.mobile.height) , orientation = target.orientation, cell = target.cell })
+					for _,v in pairs(target.mobile.inventory) do
+						if table.contains(uniqueItems, v.object) then
+							tes3.transferItem({ from = target, to = container, item = v.object, count = 999, limitCapacity = false })	-- This setup can account for how Dregas Volar's items are given to the player, so that they don't end up with two of both
+						end
+					end
+
+					if #container.object.inventory == 0 then
+						container:disable()	-- Just in case
+					else
+						tes3.createReference({ object = "T_Glb_BanishDae_Light", position = target.position + tes3vector3.new(0, 0, target.mobile.height) , orientation = target.orientation, cell = target.cell })
 					end
 				end
 
