@@ -422,6 +422,7 @@ event.register(tes3.event.loaded, function()
 
 	event.unregister(tes3.event.menuEnter, reputation.switchReputation, {filter = "MenuDialog"})
 	event.unregister(tes3.event.menuExit, reputation.switchReputation)
+	event.unregister(tes3.event.cellChanged, reputation.travelSwitchReputation)
 	event.unregister(tes3.event.uiRefreshed, reputation.uiRefreshedCallback, {filter = "MenuStat_scroll_pane"})
 	event.unregister(tes3.event.menuEnter, function(e) tes3ui.updateStatsPane() end)
 	
@@ -475,6 +476,7 @@ event.register(tes3.event.loaded, function()
 	if config.provincialReputation == true then
 		event.register(tes3.event.menuEnter, reputation.switchReputation, {filter = "MenuDialog"})
 		event.register(tes3.event.menuExit, reputation.switchReputation)
+		event.register(tes3.event.cellChanged, reputation.travelSwitchReputation)
 		
 		event.register(tes3.event.uiRefreshed, reputation.uiRefreshedCallback, {filter = "MenuStat_scroll_pane"})
 		event.register(tes3.event.menuEnter, function(e) tes3ui.updateStatsPane() end)

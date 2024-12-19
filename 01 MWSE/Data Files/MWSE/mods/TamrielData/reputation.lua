@@ -170,32 +170,48 @@ end
 -- Switch the player's reputation value with one of the provincial values depending on the source ESM of the actor that they are speaking with
 ---@param e menuEnterEventData
 function this.switchReputation(e)
-	
 	local actorTarget = tes3.rayTest{			-- tes3.getPlayerTarget doesn't work in conversations
 		position = tes3.getPlayerEyePosition(),
 		direction = tes3.getPlayerEyeVector(),
 		root = {tes3.game.worldPickRoot},
 		ignore = {tes3.player}
 	}
-
-	if not actorTarget or not actorTarget.reference then return end
+    
+	if not actorTarget or not actorTarget.reference or actorTarget.reference.baseObject.objectType ~= tes3.objectType.npc then return end
 
 	local actorSource = actorTarget.reference.sourceMod
 	
 	if actorSource then
-		if e.menuMode then
+		if e.menuMode and (actorSource == "Cyr_Main.esm" or actorSource == "Sky_Main.esm") then  -- menuEnter
 			baseReputation = tes3.player.object.reputation
-			if actorSource == "Cyr_Main.esm" then
+			if actorSource == "Cyr_Main.esm" then           -- As more provinces are released, these conditions will need to be expanded
 				tes3.player.object.reputation = tes3.getGlobal("T_Glob_Rep_Cyr")
 			elseif actorSource == "Sky_Main.esm" then
 				tes3.player.object.reputation = tes3.getGlobal("T_Glob_Rep_Sky")
 			end
-		else
+		else    -- menuExit
 			if baseReputation and (actorSource == "Cyr_Main.esm" or actorSource == "Sky_Main.esm") then	-- If the actor is (presumably) in Morrowind, then don't change the reputation because it is unnecessary at best and may overwite a recent change at worst
-				tes3.player.object.reputation = baseReputation
-			end
+                if actorSource == "Cyr_Main.esm" then   -- Account for the player's Morrowind reputation increasing while talking to an NPC that is not from Morrowind; this only works (consistently) if the reputation outside of Morrowind has not changed in the same conversation
+                    if tes3.getGlobal("T_Glob_Rep_Cyr") < tes3.player.object.reputation then baseReputation = baseReputation + (tes3.player.object.reputation - tes3.getGlobal("T_Glob_Rep_Cyr")) end
+                elseif actorSource == "Sky_Main.esm" then
+                    if tes3.getGlobal("T_Glob_Rep_Sky") < tes3.player.object.reputation then baseReputation = baseReputation + (tes3.player.object.reputation - tes3.getGlobal("T_Glob_Rep_Sky")) end
+                end
+                
+                tes3.player.object.reputation = baseReputation
+                baseReputation = nil    -- The menuExit event does not know which menu the player is exiting from, but since baseReputation can only be set during menuEnter and must exist for menuExit, setting it to nil here will prevent menuExit from running unless exiting from the dialogue menu
+                                        -- Interestingly, exiting other menus while in the dialogue menu does not trigger the menu exit event, so exiting the persuasion/travel menus does not swap the player's reputation when they are still talking.
+            end
 		end
 	end
+end
+
+-- Travelling does not trigger the menuExit event, so this function replaces the Morrowind reputation with baseReputation if it exists on a cell change, which can only be true if the player was in the dialogue menu
+---@param e cellChangedEventData
+function this.travelSwitchReputation(e)
+    if baseReputation then  -- The rayTest obviously can't work here, so the Morrowind reputation increasing while speaking to an NPC outside of Morrowind cannot be accounted for
+        tes3.player.object.reputation = baseReputation
+        baseReputation = nil
+    end
 end
 
 return this
