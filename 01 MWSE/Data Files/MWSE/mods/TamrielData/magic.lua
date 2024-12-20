@@ -840,6 +840,24 @@ function this.reflectDamageHHEffect(e)
 	end
 end
 
+---@param e cellChangedEventData
+function this.banishDaedraCleanup(e)
+	if e.previousCell then
+		local banished = false
+		for ref in tes3.getCell({ id = "T_BanishTemp" }):iterateReferences(tes3.objectType.creature) do
+			banished = true
+			tes3.positionCell({ reference = ref, position = { 0, 0, 0 }, cell = "T_Banish" })	-- Move to another cell so that only recent banishments have to be iterated over every time that the cell is changed
+			ref:disable()
+		end
+
+		if banished then	-- Only iterate through the statics if a daedra was actually banished
+			for ref in e.previousCell:iterateReferences(tes3.objectType.static) do
+				if ref.baseObject.id == "T_VFX_Empty" then ref:delete() end	-- Remove every trace of the effect
+			end
+		end
+	end
+end
+
 ---@param e containerClosedEventData
 function this.deleteBanishDaedraContainer(e)
 	if e.reference.baseObject.id == "T_Glb_BanishDae_Empty" and #e.reference.object.inventory == 0 then	-- isEmpty does not work here
@@ -880,17 +898,17 @@ local function banishDaedraEffect(e)
 		end
 
 		--target.mobile:startCombat(caster.mobile)
+		--target.mobile:kill()
 		target:setActionFlag(tes3.actionFlag.onDeath)
-		--target.mobile.health.current = 0
 		tes3.setKillCount({ actor = target.object, count = tes3.getKillCount({ actor = target.object }) + 1 })
-		tes3.playSound{ sound = "mysticism hit", reference = target.mobile }
+		local soundSource = tes3.createReference({ object = "T_VFX_Empty", position = target.position + tes3vector3.new(0, 0, target.mobile.height/2) , orientation = target.orientation, cell = target.cell })
+		tes3.playSound{ sound = "mysticism hit", reference = soundSource }
 		local vfx = tes3.createVisualEffect({ object = "T_VFX_Banish", lifespan = 1.5, position = target.position })
-		target:disable()
 		
 		local targetHandle = tes3.makeSafeObjectHandle(target)
 		timer.delayOneFrame(function()
 			timer.delayOneFrame(function()		-- Give MWScripts using onDeath time to run
-				if not targetHandle:valid() then
+				if not targetHandle or not targetHandle:valid() then
 					return
 				end
 
@@ -904,16 +922,14 @@ local function banishDaedraEffect(e)
 						end
 					end
 
-					if #container.object.inventory == 0 then
-						mwse.log("Before Container")
-						container:disable()	-- Just in case
-						mwse.log("After Container")
+					if #container.object.inventory == 0 then	-- Just in case
+						container:delete()
 					else
 						tes3.createReference({ object = "T_Glb_BanishDae_Light", position = target.position + tes3vector3.new(0, 0, target.mobile.height) , orientation = target.orientation, cell = target.cell })
 					end
 				end
 
-				--target:delete()	-- Can cause problems with the sound playing and crashes when cast on a summoned daedra that is then resummoned
+				tes3.positionCell({ reference = target, position = { 0, 0, 0 }, cell = "T_BanishTemp" })	-- This has to be put after the item transfers for them to work, rather than before the delays where it really belongs
 			end)
 		end)
 	else
