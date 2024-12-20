@@ -544,7 +544,7 @@ function this.insightEffect(e)
 		
 		if effectiveMagnitude > 0 then
 			if e.list.chanceForNothing > 0 then
-				local nothingFactor = 1 - (effectiveMagnitude * .85)	-- 0% chance of getting nothing seems OP and too obvious, so the probability of getting nothing is reduced by 85% at most
+				local nothingFactor = 1 - (effectiveMagnitude * .9)	-- 0% chance of getting nothing seems OP and too obvious, so the probability of getting nothing is reduced by 90% at most
 				local nothingChance = e.list.chanceForNothing * nothingFactor
 				if math.random() * 100 < nothingChance then
 					e.pick = nil
@@ -879,6 +879,7 @@ local function banishDaedraEffect(e)
 
 		--target.mobile:startCombat(caster.mobile)
 		target:setActionFlag(tes3.actionFlag.onDeath)
+		--target.mobile.health.current = 0
 		tes3.setKillCount({ actor = target.object, count = tes3.getKillCount({ actor = target.object }) + 1 })
 		tes3.playSound{ sound = "mysticism hit", reference = target.mobile }
 		local vfx = tes3.createVisualEffect({ object = "T_VFX_Banish", lifespan = 1.5, position = target.position })
@@ -902,7 +903,9 @@ local function banishDaedraEffect(e)
 					end
 
 					if #container.object.inventory == 0 then
+						mwse.log("Before Container")
 						container:disable()	-- Just in case
+						mwse.log("After Container")
 					else
 						tes3.createReference({ object = "T_Glb_BanishDae_Light", position = target.position + tes3vector3.new(0, 0, target.mobile.height) , orientation = target.orientation, cell = target.cell })
 					end
@@ -1410,8 +1413,8 @@ event.register(tes3.event.magicEffectsResolved, function()
 			boltVFX = soultrapEffect.boltVisualEffect.id,
 			hitSound = "T_SndObj_Silence",
 			hitVFX = "T_VFX_Empty",
-			areaSound = soultrapEffect.areaSoundEffect.id,
-			areaVFX = soultrapEffect.areaVisualEffect.id,
+			areaSound = "T_SndObj_Silence",
+			areaVFX = "T_VFX_Empty",
 			lighting = {x = soultrapEffect.lightingRed, y = soultrapEffect.lightingGreen, z = soultrapEffect.lightingBlue},
 			size = soultrapEffect.size,
 			sizeCap = soultrapEffect.sizeCap,

@@ -81,7 +81,7 @@ return {
 	["magic.miscPasswall"] = "Passwall",
 	["magic.miscPasswallDesc"] = "In an indoor area, this effect permits the caster to pass through a solid barrier to a vacant space behind it. The effect will fail if the destination beyond the traversed barrier is filled with water, is blocked by a forcefield, sigil gate, or ward, or lies above or below the caster.",
 	["magic.miscBanish"] = "Banish Daedra",
-	["magic.miscBanishDesc"] = "Banishes any daedra that the spell is cast upon, if the target is of sufficiently low level compared to the spell's magnitude. If the daedra is wounded, then it will be easier to banish. Banishing a daedra will transfer any of their important belongings to the caster.",
+	["magic.miscBanishDesc"] = "Banishes any daedra that the spell is cast upon, if the target is of sufficiently low level compared to the spell's magnitude. If the daedra is wounded, then it will be easier to banish. Banishing a daedra will transfer any of their important belongings to a sigil that is left behind.",
 	["magic.miscReflectDamage"] = "Reflect Damage",
 	["magic.miscReflectDamageDesc"] = "This effect allows the subject to reflect physical damage back at an attacker. The effect's magnitude is the percent damage that will be reflected for each attack. Any unreflected damage is dealt to the defender normally.",
 	["magic.miscDetectHumanoid"] = "Detect Humanoid",

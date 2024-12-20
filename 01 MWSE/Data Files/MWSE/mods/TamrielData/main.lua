@@ -10,7 +10,7 @@ local reputation = require("tamrielData.reputation")
 local weather = require("tamrielData.weather")
 
 -- Make sure we have an up-to-date version of MWSE.
-if (mwse.buildDate == nil) or (mwse.buildDate < 20241130) then
+if (mwse.buildDate == nil) or (mwse.buildDate < 20241219) then
     event.register(tes3.event.initialized, function()
         tes3ui.showNotifyMenu(common.i18n("main.mwseDate"))
     end)
@@ -246,9 +246,9 @@ local function fixVampireHeadAssignment(e)
 				if e.reference.mobile.object then
 					if e.reference.mobile.object.baseObject.head.id == "T_B_De_UNI_HeadOrlukhTR" then	-- Handles the unique head for Varos of the Orlukh bloodline
 							e.bodyPart = e.reference.mobile.object.baseObject.head
-					end
-
-					if e.reference.mobile.object.baseObject.head.id == "T_B_Imp_UNI_HeadHerriusPC" then	-- Handles the unique head for Herrius Thimistrel
+					elseif e.reference.mobile.object.baseObject.head.id == "T_B_Imp_UNI_HeadHerrius2PC" then	-- Handles the unique head for Herrius Thimistrel when he is openly a vampire
+							e.bodyPart = e.reference.mobile.object.baseObject.head
+					elseif e.reference.mobile.object.baseObject.head.id == "T_B_Imp_UNI_HeadHerriusPC" then	-- Handles the unique head for Herrius Thimistrel
 						if e.reference.mobile.inCombat or e.reference.mobile.isDead then
 							e.bodyPart = tes3.getObject("T_B_Imp_UNI_HeadHerrius2PC")
 						else
@@ -397,6 +397,8 @@ local function fixPlayerAnimations()
 		else
 			tes3.loadAnimation({ reference = tes3.player, file = "epos_kha_upr_anim_m.nif" })
 		end
+	--elseif tes3.player.object.race.id == "T_Aka_Tsaesci"
+		--tes3.loadAnimation({ reference = tes3.player, file = "pi_tsa_base_anim.nif" })
 	end
 end
 
