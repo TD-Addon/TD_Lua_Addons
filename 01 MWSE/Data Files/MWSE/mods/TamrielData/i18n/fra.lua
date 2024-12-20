@@ -74,6 +74,8 @@ return {
 	["magic.boundWarhammerDesc"] = "Ce sort permet d'invoquer un Daedra inférieur lié sous la forme d'un marteau de guerre daedrique, magique et d'une exceptionnelle légèreté. Il apparaît dans la main du lanceur, remplaçant automatiquement celui dont ce dernier était équipé. Quand l'effet prend fin, l'arme disparaît, remplacée par celle dont le personnage était précédemment équipé.",
 	["magic.boundPauldrons"] = "Epaulières liées",
 	["magic.boundPauldronsDesc"] = "Ce sort permet d'invoquer un Daedra inférieur lié sous la forme d'une paire d'épaulières daedriques, magiques et d'une exceptionnelle légèreté. Elles apparaissent directement sur les épaules du lanceur, remplaçant automatiquement les épaulières dont ce dernier était équipé. Quand l'effet prend fin, les épaulières sont remplacées par celles dont le personnage était précédemment équipé.",
+	["magic.boundThrowingKnives"] = "Couteaux de lancer liés",
+	["magic.boundThrowingKnivesDesc"] = "Ce sort permet d'invoquer un Daedra inférieur lié sous la forme de couteaux de lancer daedriques, magiques et d'une exceptionnelle légèreté. Ils apparaissent directement dans la main du lanceur, remplaçant automatiquement ceux dont ce dernier était équipé. Quand l'effet prend fin, les armes disparaissent, remplacées par celle dont le personnage était précédemment équipé.",
 
 	["magic.interventionKyne"] = "Intervention de Kyne",
 	["magic.interventionKyneDesc"] = "Le sujet réapparaît immédiatement au niveau du plus proche temple ou lieu sacré de la déesse nordique Kyne.",
@@ -81,7 +83,7 @@ return {
 	["magic.miscPasswall"] = "Passe-muraille",
 	["magic.miscPasswallDesc"] = "En intérieur, cet effet permet au lanceur de traverser une barrière solide vers un espace vide derrière celle-ci. L'effet échouera si la destination au-delà de la barrière traversée est emplie d'eau, bloquée par un champ de force, une porte scellée ou une barrière, ou se trouve au-dessus ou au-dessous du lanceur.",
 	["magic.miscBanish"] = "Banissement de Daedra",
-	["magic.miscBanishDesc"] = "Bannit tout Daedra sur lequel ce sort est lancé, à condition que la cible soit d'un niveau suffisamment bas comparé à la puissance du sort. Si le Daedra est blessé, il sera plus facile à bannir. Bannir un Daedra transfert tous ses biens d'importance au lanceur de sort.",
+	["magic.miscBanishDesc"] = "Bannit tout Daedra sur lequel ce sort est lancé, à condition que la cible soit d'un niveau suffisamment bas comparé à la puissance du sort. Si le Daedra est blessé, il sera plus facile à bannir. Bannir un Daedra transfert tous ses biens d'importance dans un sceau laissé à sa place.",
 	["magic.miscReflectDamage"] = "Réflexion de dégâts",
 	["magic.miscReflectDamageDesc"] = "Cet effet permet de renvoyer des dégâts physiques à un agresseur. La puissance de l'effet détermine le pourcentage de dégâts qui sera reflété pour chaque attaque. Tout dégât non réfléchi affecte normalement sa cible.",
 	["magic.miscDetectHumanoid"] = "Détection des humanoïdes",
