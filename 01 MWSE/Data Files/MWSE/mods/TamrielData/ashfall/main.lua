@@ -55,7 +55,7 @@ event.register(tes3.event.initialized, function()
 			t_com_var_barrelwater_01    = types.waterClean,
 			t_glb_terrwater_waterjet_01 = types.waterClean,
 
-            -- Water: Dirty
+			-- Water: Dirty
 			t_bre_furn_bathhalfbarrel_01    = types.waterDirty,
 			t_com_furn_bath_01              = types.waterDirty,
 			t_com_furn_bathhalfbarrel_01    = types.waterDirty,
@@ -102,8 +102,8 @@ event.register(tes3.event.initialized, function()
 			t_imp_furnr_bath_02_w           = types.waterDirty,
 
 			-- Water: Kegs
-			t_bre_furn_kegstand_01  = types.keg
-            t_nor_furnm_kegstand_01 = types.keg
+			t_bre_furn_kegstand_01  = types.keg,
+            t_nor_furnm_kegstand_01 = types.keg,
 
             -- Water: Wells
               -- High Rock
@@ -480,6 +480,7 @@ event.register(tes3.event.initialized, function()
 			t_sky_flora_wrothggrap01       = types.vegetation,
 
 			-- Trees
+			  -- Cyrodiil
 			t_cyr_flora_treepoplar_01       = types.tree,
 			t_cyr_florabw_tree_01           = types.tree,
 			t_cyr_florabw_tree_02           = types.tree,
@@ -541,11 +542,13 @@ event.register(tes3.event.initialized, function()
 			t_cyr_floravm_tree_05           = types.tree,
 			t_cyr_floravm_tree_06           = types.tree,
 			t_cyr_floraww_tree_01           = types.tree,
+			  -- Elsweyr
 			t_els_florakr_palmtree_01       = types.tree,
 			t_els_florakr_palmtree_02       = types.tree,
 			t_els_florakr_palmtree_03       = types.tree,
 			t_els_florakr_palmtree_04       = types.tree,
 			t_els_florakr_palmtree_05       = types.tree,
+			  -- Hammerfell
 			t_ham_florarl_treecarnivore_01  = types.tree,
 			t_ham_florarl_treecarnivore_02  = types.tree,
 			t_ham_florarl_treecarnivore_03  = types.tree,
@@ -558,6 +561,7 @@ event.register(tes3.event.initialized, function()
 			t_ham_flora_treeolive_02        = types.tree,
 			t_ham_flora_treeolive_03        = types.tree,
 			t_ham_flora_treeolive_04        = types.tree,
+			  -- Morrowind
 			t_mw_flora_munzur_01            = types.tree,
 			t_mw_flora_munzur_02            = types.tree,
 			t_mw_flora_munzur_03            = types.tree,
@@ -642,6 +646,7 @@ event.register(tes3.event.initialized, function()
 			t_mw_floratv_treegeran_06       = types.tree,
 			t_mw_floratv_treegeran_07       = types.tree,
 			t_mw_floratv_treegeran_08       = types.tree,
+			  -- Skyrim
 			t_sky_flora_treelarchbrn01_01   = types.tree,
 			t_sky_flora_treelarchbrn01_02   = types.tree,
 			t_sky_flora_treelarchbrn02_01   = types.tree,
@@ -878,6 +883,7 @@ event.register(tes3.event.initialized, function()
 			t_sky_flora_treepine7snow_12    = types.tree,
 			t_sky_flora_treepine7snow_13    = types.tree,
 			t_sky_flora_treepine7snow_14    = types.tree,
+
 			t_cyr_florach_treelog_01      = types.wood,
 			t_cyr_florach_treelog_02      = types.wood,
 			t_cyr_floragc_treelog_01      = types.wood,
