@@ -50,16 +50,11 @@ event.register(tes3.event.initialized, function()
 
 		ashfall.registerActivators{
 
-            -- Kegs?
-			-- t_bre_furn_kegstand_01  = types.keg,
-			-- t_nor_furnm_kegstand_01 = types.keg,
-			-- NOTE: kegs are actived differently, here is detailed walkthrough:
-			-- https://discord.com/channels/210394599246659585/563569893404835881/1317235437923995769
-
-		    -- Water sources
+		    -- Water: Clean
 			t_com_var_barrelwater_01    = types.waterClean,
 			t_glb_terrwater_waterjet_01 = types.waterClean,
 
+            -- Water: Dirty
 			t_bre_furn_bathhalfbarrel_01    = types.waterDirty,
 			t_com_furn_bath_01              = types.waterDirty,
 			t_com_furn_bathhalfbarrel_01    = types.waterDirty,
@@ -105,20 +100,33 @@ event.register(tes3.event.initialized, function()
 			t_imp_furnr_bath_01             = types.waterDirty,
 			t_imp_furnr_bath_02_w           = types.waterDirty,
 
+            -- Water: Wells
+              -- High Rock
 			t_bre_setostr_x_well_01   = types.well,
 			t_bre_setostr_x_well_02   = types.well,
+			  -- Morrowind
 			t_de_sethla_x_well_01     = types.well,
 			t_de_setind_x_well_01     = types.well,
 			t_de_setred_x_well_01     = types.well,
 			t_de_setveloth_x_well     = types.well,
 			t_de_setveloth_x_well_01  = types.well,
+			  -- Cyrodiil
+			t_imp_legioncyr_x_well_01 = types.well,
+			t_imp_legioncyr_x_well_02 = types.well,
 			t_imp_legionmw_x_well_02  = types.well,
+			t_imp_legionsky_x_well_01 = types.well,
+			t_imp_legionsky_x_well_02 = types.well,
 			t_imp_setgcpoor_x_well_01 = types.well,
+			t_imp_setsky_x_well_01    = types.well,
+			t_imp_setsky_x_well_02    = types.well,
+			t_imp_setsky_x_well_03    = types.well,
+			  -- Skyrim
 			t_nor_set_well_01         = types.well,
 			t_nor_set_well_02         = types.well,
 			t_nor_set_well_03         = types.well,
 			t_nor_set_well_04         = types.well,
 			t_nor_set_well_05         = types.well,
+			  -- Hammerfell
 			t_rga_setreach_x_pool_01  = types.well,
 
 			-- Vegetation
@@ -220,6 +228,19 @@ event.register(tes3.event.initialized, function()
 			t_cyr_flora_wispstalk03        = types.vegetation,
 			t_cyr_flora_wispstalk04        = types.vegetation,
 			t_cyr_flora_wispstalk05        = types.vegetation,
+			  -- Hammerfell
+			t_ham_florarl_cactus_01        = types.vegetation,
+			t_ham_florarl_cactus_02        = types.vegetation,
+			t_ham_florarl_cactus_03        = types.vegetation,
+			t_ham_florarl_pillarcactus_01  = types.vegetation,
+			t_ham_florarl_pillarcactus_02  = types.vegetation,
+			t_ham_florarl_pillarcactus_03  = types.vegetation,
+			t_ham_florarl_pillarcactus_04  = types.vegetation,
+			t_ham_florarl_pillarcactus_05  = types.vegetation,
+			t_ham_florarl_pillarcactus_06  = types.vegetation,
+			t_ham_florarl_pillarcactus_07  = types.vegetation,
+			t_ham_florarl_shrub_01         = types.vegetation,
+			t_ham_florarl_shrub_02         = types.vegetation,
 			  -- Morrowind
 			t_mw_flora_red_lily_01         = types.vegetation,
 			t_mw_flora_thornelowan         = types.vegetation,
@@ -520,6 +541,14 @@ event.register(tes3.event.initialized, function()
 			t_els_florakr_palmtree_03       = types.tree,
 			t_els_florakr_palmtree_04       = types.tree,
 			t_els_florakr_palmtree_05       = types.tree,
+			t_ham_florarl_treecarnivore_01  = types.tree,
+			t_ham_florarl_treecarnivore_02  = types.tree,
+			t_ham_florarl_treecarnivore_03  = types.tree,
+			t_ham_florarl_treecarnivore_04  = types.tree,
+			t_ham_florarl_treecarnivore_05  = types.tree,
+			t_ham_florarl_treecarnivore_06  = types.tree,
+			t_ham_florarl_treecarnivore_07  = types.tree,
+			t_ham_florarl_treecarnivore_08  = types.tree,
 			t_ham_flora_treeolive_01        = types.tree,
 			t_ham_flora_treeolive_02        = types.tree,
 			t_ham_flora_treeolive_03        = types.tree,
@@ -3311,6 +3340,26 @@ event.register(tes3.event.initialized, function()
 			t_qyc_shellwarevase_02 = { capacity = 200 },
 			t_rga_blackwarebowl_01 = { capacity = 60, holdsStew = true },
 			t_rga_blackwarecup_01 = { capacity = 25 },
+			t_rga_bottle_01 = { capacity = 90 },
+			t_rga_bottle_02 = { capacity = 90 },
+			t_rga_bottle_03 = { capacity = 90 },
+			t_rga_bottle_04 = { capacity = 90 },
+			t_rga_bottle_05 = { capacity = 200 },
+			t_rga_bottle_06 = { capacity = 200 },
+			t_rga_bottle_07 = { capacity = 90 },
+			t_rga_bottle_08 = { capacity = 200 },
+			t_rga_bottle_09 = { capacity = 90 },
+			t_rga_bottle_10 = { capacity = 200 },
+			t_rga_bottle_11 = { capacity = 90 },
+			t_rga_bottle_12 = { capacity = 90 },
+			t_rga_bottle_13 = { capacity = 90 },
+			t_rga_bottle_14 = { capacity = 90 },
+			t_rga_bottle_15 = { capacity = 200 },
+			t_rga_bottle_16 = { capacity = 200 },
+			t_rga_bottle_17 = { capacity = 90 },
+			t_rga_bottle_18 = { capacity = 200 },
+			t_rga_bottle_19 = { capacity = 90 },
+			t_rga_bottle_20 = { capacity = 200 },
 			t_rga_claybowl_01 = { capacity = 60, holdsStew = true },
 			t_rga_claybowl_02 = { capacity = 60, holdsStew = true },
 			t_rga_claybowl_03 = { capacity = 60, holdsStew = true },
