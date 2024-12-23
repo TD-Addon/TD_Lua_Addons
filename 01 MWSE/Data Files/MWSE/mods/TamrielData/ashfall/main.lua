@@ -49,6 +49,13 @@ event.register(tes3.event.initialized, function()
 		}
 
 		ashfall.registerActivators{
+
+            -- Kegs?
+			-- t_bre_furn_kegstand_01  = types.keg,
+			-- t_nor_furnm_kegstand_01 = types.keg,
+			-- NOTE: kegs are actived differently, here is detailed walkthrough:
+			-- https://discord.com/channels/210394599246659585/563569893404835881/1317235437923995769
+
 		    -- Water sources
 			t_com_var_barrelwater_01    = types.waterClean,
 			t_glb_terrwater_waterjet_01 = types.waterClean,
@@ -113,10 +120,6 @@ event.register(tes3.event.initialized, function()
 			t_nor_set_well_04         = types.well,
 			t_nor_set_well_05         = types.well,
 			t_rga_setreach_x_pool_01  = types.well,
-
-            -- Kegs?
-			t_bre_furn_kegstand_01  = types.keg,
-			t_nor_furnm_kegstand_01 = types.keg,
 
 			-- Vegetation
 			  -- Cyrodiil
