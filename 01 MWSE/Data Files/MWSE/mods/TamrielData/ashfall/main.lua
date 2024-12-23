@@ -12,6 +12,7 @@ event.register(tes3.event.initialized, function()
 			deadTree = "deadTree",
 			waterClean = "waterClean",
 			waterDirty = "waterDirty",
+			keg = "keg",
 			well = "well",
 			stoneSource = "stoneSource",
 
@@ -99,6 +100,10 @@ event.register(tes3.event.initialized, function()
 			t_imp_furn_bath_01_w            = types.waterDirty,
 			t_imp_furnr_bath_01             = types.waterDirty,
 			t_imp_furnr_bath_02_w           = types.waterDirty,
+
+			-- Water: Kegs
+			t_bre_furn_kegstand_01  = types.keg
+            t_nor_furnm_kegstand_01 = types.keg
 
             -- Water: Wells
               -- High Rock
