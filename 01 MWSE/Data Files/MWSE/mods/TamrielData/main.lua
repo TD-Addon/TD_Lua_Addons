@@ -132,7 +132,7 @@ local kyne_intervention_regions = {
 	{ "Troll's Teeth Mountains Region", nil, nil, nil, nil },
 	{ "Uld Vraech Region", nil, nil, nil, nil },
 	{ "Valstaag Highlands Region", nil, nil, nil, nil },
-	{ "Velothi Mountains Region", -41, -29, -8, 20 },
+	{ "Velothi Mountains Region", -41, -18, -8, 20 },
 	{ "Vorndgad Forest Region", nil, nil, nil, nil },
 	{ "White Plains Region", nil, nil, nil, nil },
 	{ "Wuurthal Dale Region", nil, nil, nil, nil },
@@ -159,6 +159,133 @@ local travel_actor_prices = {
 	{ "Sky_xRe_DSE_Arvund", "Karthwasten", 2.273},		-- 22 to 50
 	{ "Sky_xRe_KW_Aurius", "Dragonstar East", 2.273},		-- Markarth to DS/KW prices will probably need to be gone over too
 }
+
+-- bodypart id
+local hats = {
+	"T_C_BreEpHatWizard01_Hr",
+	"T_C_BreEpHatWizard02_Hr",
+	"T_C_ComCmHat01_Hr",
+	"T_C_ComCmHat02_Hr",
+	"T_C_ComCmHat03_Hr",
+	"T_C_ComCmHat04_Hr",
+	"T_C_ComCmHat05_Hr",
+	"T_C_ComCmHat06_Hr",
+	"T_C_ComEqHat01_Hr",
+	"T_C_ComEtHat01_Hr",
+	"T_C_ComEtHat02_Hr",
+	"T_C_ComEtHat03_Hr",
+	"T_C_ComEtHat04_Hr",
+	"T_C_ComEtHat05_Hr",
+	"T_C_ComFoolsHat01_Hr",
+	"T_C_ComFoolsHat02_Hr",
+	"T_C_ComCmCoif01_Hr",
+	"T_C_ComCmCoif02_Hr",
+	"T_C_ComEtClothCoif_Hr",
+	"T_C_DeCmHatTelv01_Hr",
+	"T_C_DeCmHatTelv02_Hr",
+	"T_C_DeCmHatTelv03_Hr",
+	"T_C_DeCmHatTelv04_Hr",
+	"T_C_DeCmHatTelv05_Hr",
+	"T_C_DeEpHatTelv01_Hr",
+	"T_C_DeEpHatTelv02_Hr",
+	"T_C_DeEpHatTelv03_Hr",
+	"T_C_DeEtHatTelv01_Hr",
+	"T_C_DeEtHatTelv02_Hr",
+	"T_C_DeExHatTelv01_Hr",
+	"T_C_DeExHatTelv02_Hr",
+	"T_C_ImpCmHatColWest01_Hr",
+	"T_C_ImpCmHatColWest02_Hr",
+	"T_C_ImpEpColHat01_Hr",
+	"T_C_ImpEpColHat02_Hr",
+	"T_C_ImpEpHatColWest01_Hr",
+	"T_C_ImpEpHatColWest02_Hr",
+	"T_C_ImpEtHatColNorth01_Hr",
+	"T_C_ImpEtHatColNorth02_Hr",
+	"T_C_ImpEtHatColNorth03_Hr",
+	"T_C_ImpEtHatColNorth04_Hr",
+	"T_C_ImpEtHatColNorth05_Hr",
+	"T_A_ReaLeatherHat01_Hr",
+	"T_A_ImpEpHat02_Hr",
+}
+
+---@param e equippedEventData
+local function hatHelmetEquip(e)
+	if e.item.objectType == tes3.objectType.armor then
+		if e.item.slot == tes3.armorSlot.helmet and tes3.getEquippedItem({ actor = e.actor, objectType = tes3.objectType.clothing, slot = tes3.clothingSlot.hat }) then
+			e.mobile:unequip({ clothingSlot = tes3.clothingSlot.hat })
+		end
+	elseif e.item.objectType == tes3.objectType.clothing then
+		if e.item.slot == tes3.clothingSlot.hat and tes3.getEquippedItem({ actor = e.actor, objectType = tes3.objectType.armor, slot = tes3.armorSlot.helmet }) then
+			e.mobile:unequip({ armorSlot = tes3.armorSlot.helmet })
+		end
+	end
+end
+
+---@param e cellChangedEventData
+local function replaceHatCell(e)
+	for armor in e.cell:iterateReferences(tes3.objectType.armor) do
+		if armor.object.slot == tes3.armorSlot.helmet and not armor.object.isClosedHelmet then
+			if armor.object.sourceMod == "Tamriel_Data.esm" or armor.object.sourceMod == "TR_Mainland.esm" or armor.object.sourceMod == "Cyr_Main.esm" or armor.object.sourceMod == "Sky_Main.esm"	then
+				if tes3.getObject(armor.object.id .. "H") then
+					tes3.createReference({ object = armor.object.id .. "H", orientation = armor.orientation, position = armor.position, cell = armor.cell, scale = armor.scale })
+					armor:delete()
+				end
+			end
+		end
+	end
+
+	for actor in e.cell:iterateReferences({ tes3.objectType.npc, tes3.objectType.creature, tes3.objectType.container }) do
+		for _,itemStack in pairs(actor.object.inventory) do	-- Containers don't have mobiles, but object can access the instances for all of the applicable references
+			if itemStack.object.objectType == tes3.objectType.armor and itemStack.object.slot == tes3.armorSlot.helmet and not itemStack.object.isClosedHelmet then
+				if itemStack.object.sourceMod == "Tamriel_Data.esm" or itemStack.object.sourceMod == "TR_Mainland.esm" or itemStack.object.sourceMod == "Cyr_Main.esm" or itemStack.object.sourceMod == "Sky_Main.esm"	then
+					if tes3.getObject(itemStack.object.id .. "H") and itemStack.count > 0 then	-- The count can equal 0 after the item has been removed, which would result in an extra item being added were it not for this condition
+						tes3.addItem({ reference = actor, item = itemStack.object.id .. "H", count = itemStack.count, playSound = false })
+						tes3.removeItem({ reference = actor, item = itemStack.object, count = itemStack.count, playSound = false })
+					end
+				end
+			end
+		end
+	end
+end
+
+---@param e leveledItemPickedEventData
+local function replaceHatLeveledItem(e)
+	if e.pick and e.pick.objectType == tes3.objectType.armor and e.pick.slot == tes3.armorSlot.helmet and not e.pick.isClosedHelmet then
+		if e.pick.sourceMod == "Tamriel_Data.esm" or e.pick.sourceMod == "TR_Mainland.esm" or e.pick.sourceMod == "Cyr_Main.esm" or e.pick.sourceMod == "Sky_Main.esm"	then
+			local hatItem = tes3.getObject(e.pick.id .. "H")
+			if hatItem and not hatItem.sourceMod then e.pick = hatItem end
+		end
+	end
+end
+
+local function createHatObjects()
+	for armor in tes3.iterateObjects(tes3.objectType.armor) do
+		if armor.slot == tes3.armorSlot.helmet and not armor.isClosedHelmet then	-- Closed helmets are not going to be hats by definition
+			if armor.sourceMod == "Tamriel_Data.esm" or armor.sourceMod == "TR_Mainland.esm" or armor.sourceMod == "Cyr_Main.esm" or armor.sourceMod == "Sky_Main.esm"	then -- Only affect TD hats or unique versions from PTR
+				if string.find(armor.id, "Hat") or string.find(armor.name, "Hat") or string.find(string.lower(armor.icon), "hat") then	-- Check whether these conditions are actually worth having
+					for _,v in pairs(hats) do
+						if armor.parts[1].male and armor.parts[1].male.id == v and not tes3.getObject(armor.id .. "H") and #(armor.id .. "H") < 31 then
+							local hat = tes3.createObject({ objectType = tes3.objectType.clothing, id = armor.id .. "H" })
+							hat.name = armor.name
+							hat.value = armor.value
+							hat.weight = armor.weight
+							hat.icon = armor.icon
+							hat.mesh = armor.mesh
+							hat.parts[1] = armor.parts[1]
+							hat.script = armor.script
+							hat.enchantment = armor.enchantment
+							hat.enchantCapacity = armor.enchantCapacity
+							hat.blocked = armor.blocked
+							hat.slot = tes3.clothingSlot.hat
+
+							break
+						end
+					end
+				end
+			end
+		end
+	end
+end
 
 ---@param e playGroupEventData
 local function loopStridentRunnerNesting(e)
@@ -197,6 +324,16 @@ local function restrictEquip(e)
 				end
 				
 				return false
+			end
+			
+			if e.item.slot == tes3.clothingSlot.hat then
+				if e.reference.mobile.object.female == false then
+					if e.reference.mobile == tes3.mobilePlayer then
+						tes3ui.showNotifyMenu(common.i18n("main.imgaHat"))
+					end
+					
+					return false
+				end
 			end
 		end
 	elseif e.reference.mobile.object.race.id == "T_Aka_Tsaesci" then
@@ -294,7 +431,7 @@ end
 
 ---@param e playItemSoundEventData
 local function improveItemSounds(e)
-	for k,v in pairs(item_sounds) do
+	for _,v in pairs(item_sounds) do
 		local itemID, upSound, downSound, useSound = unpack(v)
 		
 		if e.item.id == itemID then
@@ -397,8 +534,8 @@ local function fixPlayerAnimations()
 		else
 			tes3.loadAnimation({ reference = tes3.player, file = "epos_kha_upr_anim_m.nif" })
 		end
-	--elseif tes3.player.object.race.id == "T_Aka_Tsaesci"
-		--tes3.loadAnimation({ reference = tes3.player, file = "pi_tsa_base_anim.nif" })
+	elseif tes3.player.object.race.id == "T_Aka_Tsaesci" then
+		tes3.loadAnimation({ reference = tes3.player, file = "pi_tsa_base_anim.nif" })
 	end
 end
 
@@ -436,6 +573,10 @@ event.register(tes3.event.loaded, function()
 	event.unregister(tes3.event.weatherChangedImmediate, weather.changeStormOrigin)
 	event.unregister(tes3.event.weatherTransitionStarted, weather.changeStormOrigin)
 	event.unregister(tes3.event.soundObjectPlay, weather.silenceCreatures)
+
+	event.unregister(tes3.event.leveledItemPicked, replaceHatLeveledItem)
+	event.unregister(tes3.event.cellChanged, replaceHatCell)
+	event.unregister(tes3.event.equipped, hatHelmetEquip)
 	
 	event.unregister(tes3.event.playGroup, loopStridentRunnerNesting)
 
@@ -498,6 +639,15 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.weatherTransitionStarted, weather.changeStormOrigin)
 
 		event.register(tes3.event.soundObjectPlay, weather.silenceCreatures)
+	end
+
+	if config.hats == true then
+		if not tes3.clothingSlot.hat then tes3.addClothingSlot({ slot = 24, name = "Hat", key = "hat" }) end
+		createHatObjects()
+
+		event.register(tes3.event.leveledItemPicked, replaceHatLeveledItem, {priority = -100})
+		event.register(tes3.event.cellChanged, replaceHatCell)
+		event.register(tes3.event.equipped, hatHelmetEquip)
 	end
 	
 	if config.creatureBehaviors == true then

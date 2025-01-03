@@ -4,6 +4,7 @@ return {
 
 	["main.imgaShoes"] = "Imga cannot wear shoes.",
 	["main.imgaHelm"] = "Male Imga cannot wear helmets.",
+	["main.imgaHat"] = "Male Imga cannot wear hats.",
 	["main.tsaesciShoes"] = "Tsaesci cannot wear shoes.",
 	["main.tsaesciPants"] = "Tsaesci cannot wear pants.",
 
@@ -169,6 +170,10 @@ return {
 	["mcm.weatherChangesLabel"] = "Change Weathers",
 	["mcm.weatherChangesDescription"] = "Adds new weathers to some regions, such as sporefall in the Othreleth Woods, sandstorms in Shipal-Shin, and tropical storms in and around the Abecean Sea. Also makes minor adjustments to the weather in other regions, such as ashstorms in parts of Morrowind's mainland not originating from Red Mountain."..
 											"\nMay conflict with MWSE addons that affect weathers, such as Watch the Skies.\nRequires restart.\n\nDefault: On\n\n",
+
+	["mcm.hatsLabel"] = "Hats as Clothing",
+	["mcm.hatsDescription"] = "Makes hats from Tamriel Data function as clothing rather than armor."..
+											"\nMay conflict with MWSE addons that add new types of clothing.\nRequires restart.\n\nDefault: On\n\n",
 
 	["mcm.creatureBehaviorsLabel"] = "Enhance Creature Behaviors",
 	["mcm.creatureBehaviorsDescription"] = "Makes creatures behave in a more interesting manner or one that is less constrained by Morrowind's limitations, such as nesting Strident Runners not awkwardly getting up at the end of each animation loop."..

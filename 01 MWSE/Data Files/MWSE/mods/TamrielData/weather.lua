@@ -573,7 +573,7 @@ function this.changeStormOrigin(e)
 		weather = e.to
 	end
 
-	if weather.index == tes3.weather.ash or weather.index == tes3.weather.blight then
+	if weather and weather.index == tes3.weather.ash or weather.index == tes3.weather.blight then
 		for _,v in pairs(region_storm_origins) do
 			local regionID, xCoord, yCoord, yUpperLimit, yLowerLimit = unpack(v, 1, 5)
 

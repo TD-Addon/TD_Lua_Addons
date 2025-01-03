@@ -103,6 +103,14 @@ local function registerModConfig()
         },
     }
     toggles:createOnOffButton{
+        label = common.i18n("mcm.hatsLabel"),
+        description = common.i18n("mcm.hatsDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "hats",
+            table = config,
+        },
+    }
+    toggles:createOnOffButton{
         label = common.i18n("mcm.creatureBehaviorsLabel"),
         description = common.i18n("mcm.creatureBehaviorsDescription"),
         variable = mwse.mcm.createTableVariable{
