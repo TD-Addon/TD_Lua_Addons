@@ -2,6 +2,36 @@
 event.register(tes3.event.initialized, function()
     local gh_config = include("graphicHerbalism.config")
     if gh_config then
+		--gh_config.blacklist["t_glb_fauna_seabiscuit1"] = false
+		--gh_config.blacklist["t_glb_fauna_seabiscuit2"] = false
+		--gh_config.blacklist["t_glb_fauna_seabiscuit3"] = false
+		--gh_config.blacklist["t_glb_fauna_shellauger1"] = false
+		--gh_config.blacklist["t_glb_fauna_shellauger2"] = false
+		--gh_config.blacklist["t_glb_fauna_shellauger3"] = false
+		--gh_config.blacklist["t_glb_fauna_shellauger4"] = false
+		--gh_config.blacklist["t_glb_fauna_shellckfrg1"] = false
+		--gh_config.blacklist["t_glb_fauna_shellckfrg2"] = false
+		--gh_config.blacklist["t_glb_fauna_shellckfrg3"] = false
+		--gh_config.blacklist["t_glb_fauna_shellckfrg4"] = false
+		--gh_config.blacklist["t_glb_fauna_shellckfrg5"] = false
+		--gh_config.blacklist["t_glb_fauna_shellckfrg6"] = false
+		--gh_config.blacklist["t_glb_fauna_shellcockl1"] = false
+		--gh_config.blacklist["t_glb_fauna_shellcockl2"] = false
+		--gh_config.blacklist["t_glb_fauna_shellcockl3"] = false
+		--gh_config.blacklist["t_glb_fauna_shellcockl4"] = false
+		--gh_config.blacklist["t_glb_fauna_shellcockl5"] = false
+		--gh_config.blacklist["t_glb_fauna_shellcockl6"] = false
+		--gh_config.blacklist["t_glb_fauna_shellconch"] = false
+		--gh_config.blacklist["t_glb_fauna_shellsnail1"] = false
+		--gh_config.blacklist["t_glb_fauna_shellsnail2"] = false
+		--gh_config.blacklist["t_mw_fauna_ventworm_01"] = false
+		--gh_config.blacklist["t_mw_fauna_ventworm_02"] = false
+		--gh_config.blacklist["t_mw_fauna_ventworm_03"] = false
+		--gh_config.blacklist["t_mw_fauna_ventworm_04"] = false
+		--gh_config.blacklist["t_pi_fauna_fishslvspd1"] = false
+		--gh_config.blacklist["t_pi_fauna_fishslvspd2"] = false
+		--gh_config.blacklist["t_pi_fauna_fishslvspd3"] = false
+
 		gh_config.whitelist["t_glb_fauna_seabiscuit1"] = true
 		gh_config.whitelist["t_glb_fauna_seabiscuit2"] = true
 		gh_config.whitelist["t_glb_fauna_seabiscuit3"] = true

@@ -9,14 +9,6 @@ local magic = require("tamrielData.magic")
 local reputation = require("tamrielData.reputation")
 local weather = require("tamrielData.weather")
 
--- Make sure we have an up-to-date version of MWSE.
-if (mwse.buildDate == nil) or (mwse.buildDate < 20241219) then
-    event.register(tes3.event.initialized, function()
-        tes3ui.showNotifyMenu(common.i18n("main.mwseDate"))
-    end)
-    return
-end
-
 mwse.log("[Tamriel Data MWSE-Lua] Initialized Version 2.0")
 
 -- item id, pickup sound id, putdown sound id, equip sound id
@@ -224,10 +216,14 @@ end
 ---@param e cellChangedEventData
 local function replaceHatCell(e)
 	for armor in e.cell:iterateReferences(tes3.objectType.armor) do
-		if armor.object.slot == tes3.armorSlot.helmet and not armor.object.isClosedHelmet then
+		if armor and armor.object and armor.object.slot == tes3.armorSlot.helmet and not armor.object.isClosedHelmet then
 			if armor.object.sourceMod == "Tamriel_Data.esm" or armor.object.sourceMod == "TR_Mainland.esm" or armor.object.sourceMod == "Cyr_Main.esm" or armor.object.sourceMod == "Sky_Main.esm"	then
 				if tes3.getObject(armor.object.id .. "H") then
-					tes3.createReference({ object = armor.object.id .. "H", orientation = armor.orientation, position = armor.position, cell = armor.cell, scale = armor.scale })
+					local hat = tes3.createReference({ object = armor.object.id .. "H", orientation = armor.orientation, position = armor.position, cell = armor.cell, scale = armor.scale })
+					
+					local armorOwner, requirement = tes3.getOwner({ reference = armor })
+					if armorOwner then tes3.setOwner({ reference = hat, owner = armorOwner, requiredRank = requirement, requiredGlobal = requirement }) end
+
 					armor:delete()
 				end
 			end
@@ -236,7 +232,7 @@ local function replaceHatCell(e)
 
 	for actor in e.cell:iterateReferences({ tes3.objectType.npc, tes3.objectType.creature, tes3.objectType.container }) do
 		for _,itemStack in pairs(actor.object.inventory) do	-- Containers don't have mobiles, but object can access the instances for all of the applicable references
-			if itemStack.object.objectType == tes3.objectType.armor and itemStack.object.slot == tes3.armorSlot.helmet and not itemStack.object.isClosedHelmet then
+			if itemStack and itemStack.object and itemStack.object.objectType == tes3.objectType.armor and itemStack.object.slot == tes3.armorSlot.helmet and not itemStack.object.isClosedHelmet then
 				if itemStack.object.sourceMod == "Tamriel_Data.esm" or itemStack.object.sourceMod == "TR_Mainland.esm" or itemStack.object.sourceMod == "Cyr_Main.esm" or itemStack.object.sourceMod == "Sky_Main.esm"	then
 					if tes3.getObject(itemStack.object.id .. "H") and itemStack.count > 0 then	-- The count can equal 0 after the item has been removed, which would result in an extra item being added were it not for this condition
 						tes3.addItem({ reference = actor, item = itemStack.object.id .. "H", count = itemStack.count, playSound = false })

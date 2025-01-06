@@ -1,7 +1,5 @@
 return {
 	-- Main Text
-	["main.mwseDate"] = "[Tamriel Data] MWSE is out of date! You will need to update to a more recent version to use this mod.",
-
 	["main.imgaShoes"] = "Imga cannot wear shoes.",
 	["main.imgaHelm"] = "Male Imga cannot wear helmets.",
 	["main.imgaHat"] = "Male Imga cannot wear hats.",

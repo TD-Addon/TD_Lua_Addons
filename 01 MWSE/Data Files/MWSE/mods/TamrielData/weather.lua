@@ -578,7 +578,7 @@ function this.changeStormOrigin(e)
 			local regionID, xCoord, yCoord, yUpperLimit, yLowerLimit = unpack(v, 1, 5)
 
 			local extCell = common.getExteriorCell(tes3.player.cell)
-			if extCell.region and extCell.region.id == regionID and (not yUpperLimit or (extCell.gridY <= yUpperLimit and extCell.gridY >= yLowerLimit)) then	-- I would like to just use getRegion, but *noooooo*, I have to account for regions between ones with different ashstorm origins like OW
+			if extCell and extCell.region and extCell.region.id == regionID and (not yUpperLimit or (extCell.gridY <= yUpperLimit and extCell.gridY >= yLowerLimit)) then	-- I would like to just use getRegion, but *noooooo*, I have to account for regions between ones with different ashstorm origins like OW
 				weather.stormOrigin = tes3vector2.new(xCoord, yCoord)
 				return
 			end

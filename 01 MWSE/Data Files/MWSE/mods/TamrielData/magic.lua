@@ -689,7 +689,8 @@ end
 
 ---@param e spellResistEventData
 function this.radiantShieldSpellResistEffect(e)
-	local radiantShieldEffects = e.target.mobile:getActiveMagicEffects({ effect = tes3.effect.T_alteration_RadShield })
+	local radiantShieldEffects
+	if e.target.mobile then radiantShieldEffects = e.target.mobile:getActiveMagicEffects({ effect = tes3.effect.T_alteration_RadShield }) end	-- Sometimes e.target.mobile just doesn't exist
 		
 	-- Only resist hostile effects; 'not e.effect' is checked because the documentation says that e.effect "may not always be available" and I'd rather resist the odd positive effects than not resist harmful ones
 	if #radiantShieldEffects > 0 and (not e.effect or e.effect.object.isHarmful) then
