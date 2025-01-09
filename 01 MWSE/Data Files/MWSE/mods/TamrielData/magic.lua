@@ -693,7 +693,7 @@ function this.radiantShieldSpellResistEffect(e)
 	if e.target.mobile then radiantShieldEffects = e.target.mobile:getActiveMagicEffects({ effect = tes3.effect.T_alteration_RadShield }) end	-- Sometimes e.target.mobile just doesn't exist
 		
 	-- Only resist hostile effects; 'not e.effect' is checked because the documentation says that e.effect "may not always be available" and I'd rather resist the odd positive effects than not resist harmful ones
-	if #radiantShieldEffects > 0 and (not e.effect or e.effect.object.isHarmful) then
+	if radiantShieldEffects and #radiantShieldEffects > 0 and (not e.effect or e.effect.object.isHarmful) then
 		for _,v in pairs(radiantShieldEffects) do
 			e.resistedPercent = e.resistedPercent + v.magnitude
 		end
@@ -1198,7 +1198,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 	if config.summoningSpells == true then
 		local summonHungerEffect = tes3.getMagicEffect(tes3.effect.summonHunger)
 
-		for k, v in pairs(td_summon_effects) do
+		for k,v in pairs(td_summon_effects) do
 			local effectID, effectName, creatureID, effectCost, iconPath, effectDescription = unpack(v)
 			tes3.addMagicEffect{
 				id = effectID,
@@ -1248,7 +1248,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 	if config.boundSpells == true then
 		local boundCuirassEffect = tes3.getMagicEffect(tes3.effect.boundCuirass)
 
-		for k, v in pairs(td_bound_effects) do
+		for k,v in pairs(td_bound_effects) do
 			local effectID, effectName, itemID, itemID_02, effectCost, iconPath, effectDescription = unpack(v)
 			tes3.addMagicEffect{
 				id = effectID,

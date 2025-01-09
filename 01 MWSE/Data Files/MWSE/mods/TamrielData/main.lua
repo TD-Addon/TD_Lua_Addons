@@ -1,5 +1,5 @@
 --[[
-	Tamriel Data MWSE-Lua Addon v2.0
+	Tamriel Data MWSE-Lua Addon v2.1
 	By Kynesifnar, mort, and Rakanishu
 ]]
 
@@ -9,7 +9,7 @@ local magic = require("tamrielData.magic")
 local reputation = require("tamrielData.reputation")
 local weather = require("tamrielData.weather")
 
-mwse.log("[Tamriel Data MWSE-Lua] Initialized Version 2.0")
+mwse.log("[Tamriel Data MWSE-Lua] Initialized Version 2.1")
 
 -- item id, pickup sound id, putdown sound id, equip sound id
 local item_sounds = {	
@@ -230,16 +230,25 @@ local function replaceHatCell(e)
 		end
 	end
 
+	local replaceableHelmets
+	local helmetNumber
 	for actor in e.cell:iterateReferences({ tes3.objectType.npc, tes3.objectType.creature, tes3.objectType.container }) do
-		for _,itemStack in pairs(actor.object.inventory) do	-- Containers don't have mobiles, but object can access the instances for all of the applicable references
+		replaceableHelmets = {}
+		helmetNumber = 1
+		for _,itemStack in pairs(actor.object.inventory) do	-- Containers don't have mobiles, but the object property can access the instances for all of the applicable references
 			if itemStack and itemStack.object and itemStack.object.objectType == tes3.objectType.armor and itemStack.object.slot == tes3.armorSlot.helmet and not itemStack.object.isClosedHelmet then
 				if itemStack.object.sourceMod == "Tamriel_Data.esm" or itemStack.object.sourceMod == "TR_Mainland.esm" or itemStack.object.sourceMod == "Cyr_Main.esm" or itemStack.object.sourceMod == "Sky_Main.esm"	then
-					if tes3.getObject(itemStack.object.id .. "H") and itemStack.count > 0 then	-- The count can equal 0 after the item has been removed, which would result in an extra item being added were it not for this condition
-						tes3.addItem({ reference = actor, item = itemStack.object.id .. "H", count = itemStack.count, playSound = false })
-						tes3.removeItem({ reference = actor, item = itemStack.object, count = itemStack.count, playSound = false })
+					if tes3.getObject(itemStack.object.id .. "H") and itemStack.count > 0 then
+						replaceableHelmets[helmetNumber] = { itemStack.object.id, itemStack.count }
+						helmetNumber = helmetNumber + 1
 					end
 				end
 			end
+		end
+
+		for _,helmet in pairs(replaceableHelmets) do
+			tes3.addItem({ reference = actor, item = helmet[1] .. "H", count = helmet[2], playSound = false })
+			tes3.removeItem({ reference = actor, item = helmet[1], count = helmet[2], playSound = false })
 		end
 	end
 end
@@ -260,7 +269,7 @@ local function createHatObjects()
 			if armor.sourceMod == "Tamriel_Data.esm" or armor.sourceMod == "TR_Mainland.esm" or armor.sourceMod == "Cyr_Main.esm" or armor.sourceMod == "Sky_Main.esm"	then -- Only affect TD hats or unique versions from PTR
 				if string.find(armor.id, "Hat") or string.find(armor.name, "Hat") or string.find(string.lower(armor.icon), "hat") then	-- Check whether these conditions are actually worth having
 					for _,v in pairs(hats) do
-						if armor.parts[1].male and armor.parts[1].male.id == v and not tes3.getObject(armor.id .. "H") and #(armor.id .. "H") < 31 then
+						if armor.parts[1].male and armor.parts[1].male.id == v and not tes3.getObject(armor.id .. "H") and #(armor.id .. "H") < 32 then
 							local hat = tes3.createObject({ objectType = tes3.objectType.clothing, id = armor.id .. "H" })
 							hat.name = armor.name
 							hat.value = armor.value
