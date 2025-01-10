@@ -2834,7 +2834,7 @@ event.register(tes3.event.initialized, function()
 			t_ingcrea_starfish_01 = types.meat,
 			t_ingcrea_starfish_02 = types.meat,
 			t_ingcrea_starfish_03 = types.meat,
-			t_ingcrea _stridentbirdegg_01 = types.egg,
+			t_ingcrea_stridentbirdegg_01 = types.egg,
 			t_ingcrea_sturgeonroe_01 = types.food,
 			t_ingcrea_sturgeonmeat_01 = types.meat,
 			t_ingcrea_barracudasteak_01 = types.meat,
