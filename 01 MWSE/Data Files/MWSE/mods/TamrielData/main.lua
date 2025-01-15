@@ -31,6 +31,8 @@ local item_sounds = {
 	{ "T_IngSpice_OliveOil_01", "Item Potion Up", "Item Potion Down", "Drink"},
 	{ "T_IngFood_Vinegar_01", "Item Potion Up", "Item Potion Down", "Drink"},
 	{ "T_IngCrea_OrcBlood_01", "Item Potion Up", "Item Potion Down", "Drink"},
+	{ "T_IngFlor_Siyat_01", "Item Potion Up", "Item Potion Down", "greneat"},
+	{ "T_IngFood_Siyat_02", "Item Potion Up", "Item Potion Down", "greneat"},
 
 	{ "misc_dwrv_coin00", "Item Gold Up", "Item Gold Down", "" },
 	{ "misc_dwrv_cursed_coin00", "Item Gold Up", "Item Gold Down", "" },
@@ -45,7 +47,23 @@ local item_sounds = {
 	{ "T_Nor_CoinBarrowIron_01", "Item Gold Up", "Item Gold Down", "" },
 	{ "T_Nor_CoinBarrowSilver_01", "Item Gold Up", "Item Gold Down", "" },
 	{ "T_De_HlaaluCompanyScrip_01", "Item Gold Up", "Item Gold Down", "" },
-	{ "T_De_HlaaluCompanyScrip_02", "Item Gold Up", "Item Gold Down", "" }
+	{ "T_De_HlaaluCompanyScrip_02", "Item Gold Up", "Item Gold Down", "" },
+
+	{ "T_EnSc_Ayl_Blessed", "Item Misc Up", "Item Misc Down", "scroll" },
+	{ "T_EnSc_Ayl_CavernsOfTruth", "Item Misc Up", "Item Misc Down", "scroll" },
+	{ "T_EnSc_Ayl_DaedricHerald1", "Item Misc Up", "Item Misc Down", "scroll" },
+	{ "T_EnSc_Ayl_DaedricHerald2", "Item Misc Up", "Item Misc Down", "scroll" },
+	{ "T_EnSc_Ayl_Destroyed", "Item Misc Up", "Item Misc Down", "scroll" },
+	{ "T_EnSc_Ayl_Enter", "Item Misc Up", "Item Misc Down", "scroll" },
+	{ "T_EnSc_Ayl_FoamingWave1", "Item Misc Up", "Item Misc Down", "scroll" },
+	{ "T_EnSc_Ayl_FoamingWave2", "Item Misc Up", "Item Misc Down", "scroll" },
+	{ "T_EnSc_Ayl_FromLight", "Item Misc Up", "Item Misc Down", "scroll" },
+	{ "T_EnSc_Ayl_GodlyPower1", "Item Misc Up", "Item Misc Down", "scroll" },
+	{ "T_EnSc_Ayl_GodlyPower2", "Item Misc Up", "Item Misc Down", "scroll" },
+	{ "T_EnSc_Ayl_LoreArmor1", "Item Misc Up", "Item Misc Down", "scroll" },
+	{ "T_EnSc_Ayl_LoreArmor2", "Item Misc Up", "Item Misc Down", "scroll" },
+	{ "T_EnSc_Ayl_Wisdom1", "Item Misc Up", "Item Misc Down", "scroll" },
+	{ "T_EnSc_Ayl_Wisdom2", "Item Misc Up", "Item Misc Down", "scroll" },
 }
 
 -- region id, xcell left bound, xcell right bound, ycell top bound, ycell bottom bound
@@ -282,7 +300,6 @@ local function createHatObjects()
 							hat.enchantCapacity = armor.enchantCapacity
 							hat.blocked = armor.blocked
 							hat.slot = tes3.clothingSlot.hat
-
 							break
 						end
 					end

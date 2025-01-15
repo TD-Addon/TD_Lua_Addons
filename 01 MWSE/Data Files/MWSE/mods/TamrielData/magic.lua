@@ -179,6 +179,7 @@ local td_misc_spells = {
 	{ "T_Com_Mys_ReflectDamage", tes3.spellType.spell, common.i18n("magic.miscReflectDamage"), 76, tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 5, 10, 20 },
 	{ "T_Ayl_Alt_RadiantShield", tes3.spellType.spell, common.i18n("magic.miscRadiantShield"), 75, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 10, 10 },
 	{ "T_Cr_Alt_AuroranShield", tes3.spellType.ability, nil, nil, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 20, 20 },
+	{ "T_Cr_Alt_AylSorcKLightShield", tes3.spellType.spell, common.i18n("magic.miscRadiantShield"), 10, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 12, 10, 10, tes3.effect.light, tes3.effectRange.self, 0, 12, 20, 20 },
 	{ "T_Com_Mys_Insight", tes3.spellType.spell, common.i18n("magic.miscInsight"), 76, tes3.effect.T_mysticism_Insight, tes3.effectRange.self, 0, 10, 15, 15 },
 	{ "T_Com_Res_ArmorResartus", tes3.spellType.spell, common.i18n("magic.miscArmorResartus"), 90, tes3.effect.T_restoration_ArmorResartus, tes3.effectRange.self, 0, 0, 20, 40 },
 	{ "T_Com_Res_WeaponResartus", tes3.spellType.spell, common.i18n("magic.miscWeaponResartus"), 90, tes3.effect.T_restoration_WeaponResartus, tes3.effectRange.self, 0, 0, 10, 20 },
@@ -257,7 +258,10 @@ local td_ingredients = {
 	{ "T_IngCrea_MothWingMw_02", tes3.effect.resistFire, -1, -1,
 								 tes3.effect.drainAttribute, tes3.attribute.speed, 0,
 								 tes3.effect.resistMagicka, -1, -1,
-								 tes3.effect.T_mysticism_Insight, -1, -1 }
+								 tes3.effect.T_mysticism_Insight, -1, -1 },
+	--{ "T_IngMine_Agate_01", tes3.effect.reflect, -1, -1,
+	--						tes3.effect.T_alteration_RadShield, -1, -1,			-- I keep going back and forth on this
+	--						tes3.effect.silence, -1, -1 }
 }
 
 -- item id, item name, effect id
