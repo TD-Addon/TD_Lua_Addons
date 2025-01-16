@@ -174,7 +174,7 @@ return {
 											"\nMay conflict with MWSE addons that add new types of clothing.\nRequires restart.\n\nDefault: On\n\n",
 
 	["mcm.creatureBehaviorsLabel"] = "Enhance Creature Behaviors",
-	["mcm.creatureBehaviorsDescription"] = "Makes creatures behave in a more interesting manner or one that is less constrained by Morrowind's limitations, such as nesting Strident Runners not awkwardly getting up at the end of each animation loop."..
+	["mcm.creatureBehaviorsDescription"] = "Makes creatures behave in a more interesting manner or one that is less constrained by Morrowind's limitations, such as tanthas in western Cyrodiil attacking the player when one of their nests is looted."..
 											"\nRequires restart.\n\nDefault: On\n\n",
 
 	["mcm.animationFixLabel"] = "Fix Player Animations for Tamriel Data Races",

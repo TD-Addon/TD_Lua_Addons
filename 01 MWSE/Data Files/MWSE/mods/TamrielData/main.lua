@@ -43,7 +43,6 @@ local item_sounds = {
 	{ "T_He_DirenniCoin_01", "Item Gold Up", "Item Gold Down", "" },
 	{ "T_Imp_CoinAlessian_01", "Item Gold Up", "Item Gold Down", "" },
 	{ "T_Imp_CoinReman_01", "Item Gold Up", "Item Gold Down", "" },
-	{ "T_Ayl_CoinSquare_01", "Item Gold Up", "Item Gold Down", "" },
 	{ "T_Nor_CoinBarrowCopper_01", "Item Gold Up", "Item Gold Down", "" },
 	{ "T_Nor_CoinBarrowIron_01", "Item Gold Up", "Item Gold Down", "" },
 	{ "T_Nor_CoinBarrowSilver_01", "Item Gold Up", "Item Gold Down", "" },
@@ -303,6 +302,32 @@ local function createHatObjects()
 							hat.slot = tes3.clothingSlot.hat
 							break
 						end
+					end
+				end
+			end
+		end
+	end
+end
+
+---@param e activateEventData
+local function tanthaNestDefend(e)
+	if e.target.id == "T_Cyr_Fauna_NestTant_01" or e.target.id == "T_Cyr_Fauna_NestTant_02" or e.target.id == "T_Cyr_Fauna_NestTant_03" or e.target.id == "T_Cyr_Fauna_NestTant_04" then
+		local actors = tes3.findActorsInProximity({ reference = e.target,  range = 1536 })
+		if actors then
+			local playerDetected = false
+			for _,actor in pairs(actors) do
+				if actor.reference.baseObject.id == "T_Cyr_Fau_Tantha_01" then
+					if e.activator.mobile.isSneaking and tes3.worldController.mobManager.processManager:detectSneak(actor, e.activator.mobile) then
+						playerDetected = true
+						break
+					end
+				end
+			end
+
+			if not e.activator.mobile.isSneaking or playerDetected then
+				for _,actor in pairs(actors) do
+					if actor.reference.baseObject.id == "T_Cyr_Fau_Tantha_01" then
+						actor:startCombat(e.activator.mobile)
 					end
 				end
 			end
@@ -602,6 +627,7 @@ event.register(tes3.event.loaded, function()
 	event.unregister(tes3.event.equipped, hatHelmetEquip)
 	
 	event.unregister(tes3.event.playGroup, loopStridentRunnerNesting)
+	event.unregister(tes3.event.activate, tanthaNestDefend, {priority = 250})
 
 	event.unregister(tes3.event.equip, restrictEquip)
 	event.unregister(tes3.event.bodyPartAssigned, fixVampireHeadAssignment)
@@ -675,6 +701,7 @@ event.register(tes3.event.loaded, function()
 	
 	if config.creatureBehaviors == true then
 		event.register(tes3.event.playGroup, loopStridentRunnerNesting)
+		event.register(tes3.event.activate, tanthaNestDefend, {priority = 250})	-- The priority is set so that the function is guranteed to work with GH even if the nests are removed from the blacklist
 	end
 
 	if config.fixPlayerRaceAnimations == true then

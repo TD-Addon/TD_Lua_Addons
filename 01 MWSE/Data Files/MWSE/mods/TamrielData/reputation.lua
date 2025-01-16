@@ -191,12 +191,12 @@ function this.switchReputation(e)
 			end
 		else    -- menuExit
 			if baseReputation and (actorSource == "Cyr_Main.esm" or actorSource == "Sky_Main.esm") then	-- If the actor is (presumably) in Morrowind, then don't change the reputation because it is unnecessary at best and may overwite a recent change at worst
-                if actorSource == "Cyr_Main.esm" then   -- Account for the player's Morrowind reputation increasing while talking to an NPC that is not from Morrowind; this only works (consistently) if the reputation outside of Morrowind has not changed in the same conversation
-                    if tes3.getGlobal("T_Glob_Rep_Cyr") < tes3.player.object.reputation then baseReputation = baseReputation + (tes3.player.object.reputation - tes3.getGlobal("T_Glob_Rep_Cyr")) end
+                if actorSource == "Cyr_Main.esm" then   -- Account for the player's Morrowind reputation increasing while talking to an NPC that is not from Morrowind; this only works (consistently) if the reputation outside of Morrowind has not changed in the same conversation. Scratch that, it doesn't seem to work consistently in any case.
+                    --if tes3.getGlobal("T_Glob_Rep_Cyr") < tes3.player.object.reputation then baseReputation = baseReputation + (tes3.player.object.reputation - tes3.getGlobal("T_Glob_Rep_Cyr")) end
                 elseif actorSource == "Sky_Main.esm" then
-                    if tes3.getGlobal("T_Glob_Rep_Sky") < tes3.player.object.reputation then baseReputation = baseReputation + (tes3.player.object.reputation - tes3.getGlobal("T_Glob_Rep_Sky")) end
+                    --if tes3.getGlobal("T_Glob_Rep_Sky") < tes3.player.object.reputation then baseReputation = baseReputation + (tes3.player.object.reputation - tes3.getGlobal("T_Glob_Rep_Sky")) end
                 end
-                
+                -- Make another reputation global, have quests outside of Morrowind increase that, and then add it to reputation while setting it to 0 in Lua.
                 tes3.player.object.reputation = baseReputation
                 baseReputation = nil    -- The menuExit event does not know which menu the player is exiting from, but since baseReputation can only be set during menuEnter and must exist for menuExit, setting it to nil here will prevent menuExit from running unless exiting from the dialogue menu
                                         -- Interestingly, exiting other menus while in the dialogue menu does not trigger the menu exit event, so exiting the persuasion/travel menus does not swap the player's reputation when they are still talking.
