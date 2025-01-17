@@ -309,29 +309,56 @@ local function createHatObjects()
 	end
 end
 
----@param e activateEventData
-local function tanthaNestDefend(e)
-	if e.target.id == "T_Cyr_Fauna_NestTant_01" or e.target.id == "T_Cyr_Fauna_NestTant_02" or e.target.id == "T_Cyr_Fauna_NestTant_03" or e.target.id == "T_Cyr_Fauna_NestTant_04" then
-		local actors = tes3.findActorsInProximity({ reference = e.target,  range = 1536 })
-		if actors then
-			local playerDetected = false
-			for _,actor in pairs(actors) do
-				if actor.reference.baseObject.id == "T_Cyr_Fau_Tantha_01" then
-					if e.activator.mobile.isSneaking and tes3.worldController.mobManager.processManager:detectSneak(actor, e.activator.mobile) then
-						playerDetected = true
-						break
-					end
-				end
+---@param e combatStartedEventData
+---@param creatureID string
+local function creatureGroupDefend(e, creatureID)
+	local actors = tes3.findActorsInProximity({ reference = e.target, range = 2048 })
+	if actors then
+		for _,actor in pairs(actors) do
+			mwse.log(actor.reference.baseObject.id)
+			if actor.reference.baseObject.id == creatureID then
+				actor:startCombat(e.actor)
 			end
+		end
+	end
+end
 
-			if not e.activator.mobile.isSneaking or playerDetected then
-				for _,actor in pairs(actors) do
-					if actor.reference.baseObject.id == "T_Cyr_Fau_Tantha_01" then
-						actor:startCombat(e.activator.mobile)
-					end
+---@param e combatStartedEventData
+local function onGroupAttacked(e)
+	if e.target.reference.baseObject.id == "T_Cyr_Fau_Tantha_01" then
+		creatureGroupDefend(e, "T_Cyr_Fau_Tantha_01")
+	end
+end
+
+---@param e activateEventData
+---@param creatureID string
+local function creatureNestDefend(e, creatureID)
+	local actors = tes3.findActorsInProximity({ reference = e.target, range = 2048 })
+	if actors then
+		local playerDetected = false
+		for _,actor in pairs(actors) do
+			if actor.reference.baseObject.id == creatureID then
+				if e.activator.mobile.isSneaking and tes3.worldController.mobManager.processManager:detectSneak(actor, e.activator.mobile) then
+					playerDetected = true
+					break
 				end
 			end
 		end
+
+		if not e.activator.mobile.isSneaking or playerDetected then
+			for _,actor in pairs(actors) do
+				if actor.reference.baseObject.id == creatureID then
+					actor:startCombat(e.activator.mobile)
+				end
+			end
+		end
+	end
+end
+
+---@param e activateEventData
+local function onNestLoot(e)
+	if e.target.id == "T_Cyr_Fauna_NestTant_01" or e.target.id == "T_Cyr_Fauna_NestTant_02" or e.target.id == "T_Cyr_Fauna_NestTant_03" or e.target.id == "T_Cyr_Fauna_NestTant_04" then
+		creatureNestDefend(e, "T_Cyr_Fau_Tantha_01")
 	end
 end
 
@@ -627,7 +654,8 @@ event.register(tes3.event.loaded, function()
 	event.unregister(tes3.event.equipped, hatHelmetEquip)
 	
 	event.unregister(tes3.event.playGroup, loopStridentRunnerNesting)
-	event.unregister(tes3.event.activate, tanthaNestDefend, {priority = 250})
+	event.unregister(tes3.event.activate, onNestLoot, {priority = 250})
+	event.unregister(tes3.event.combatStarted, onGroupAttacked)
 
 	event.unregister(tes3.event.equip, restrictEquip)
 	event.unregister(tes3.event.bodyPartAssigned, fixVampireHeadAssignment)
@@ -701,7 +729,8 @@ event.register(tes3.event.loaded, function()
 	
 	if config.creatureBehaviors == true then
 		event.register(tes3.event.playGroup, loopStridentRunnerNesting)
-		event.register(tes3.event.activate, tanthaNestDefend, {priority = 250})	-- The priority is set so that the function is guranteed to work with GH even if the nests are removed from the blacklist
+		event.register(tes3.event.activate, onNestLoot, {priority = 250})	-- The priority is set so that the function is guranteed to work with GH even if the nests are removed from the blacklist
+		event.register(tes3.event.combatStarted, onGroupAttacked)
 	end
 
 	if config.fixPlayerRaceAnimations == true then
