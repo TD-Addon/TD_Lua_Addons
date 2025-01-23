@@ -5,6 +5,7 @@
 
 local common = require("tamrielData.common")
 local config = require("tamrielData.config")
+local behavior = require("TamrielData.behavior")
 local magic = require("tamrielData.magic")
 local reputation = require("tamrielData.reputation")
 local weather = require("tamrielData.weather")
@@ -309,66 +310,6 @@ local function createHatObjects()
 	end
 end
 
----@param e combatStartedEventData
----@param creatureID string
-local function creatureGroupDefend(e, creatureID)
-	local actors = tes3.findActorsInProximity({ reference = e.target, range = 2048 })
-	if actors then
-		for _,actor in pairs(actors) do
-			mwse.log(actor.reference.baseObject.id)
-			if actor.reference.baseObject.id == creatureID then
-				actor:startCombat(e.actor)
-			end
-		end
-	end
-end
-
----@param e combatStartedEventData
-local function onGroupAttacked(e)
-	if e.target.reference.baseObject.id == "T_Cyr_Fau_Tantha_01" then
-		creatureGroupDefend(e, "T_Cyr_Fau_Tantha_01")
-	end
-end
-
----@param e activateEventData
----@param creatureID string
-local function creatureNestDefend(e, creatureID)
-	local actors = tes3.findActorsInProximity({ reference = e.target, range = 2048 })
-	if actors then
-		local playerDetected = false
-		for _,actor in pairs(actors) do
-			if actor.reference.baseObject.id == creatureID then
-				if e.activator.mobile.isSneaking and tes3.worldController.mobManager.processManager:detectSneak(actor, e.activator.mobile) then
-					playerDetected = true
-					break
-				end
-			end
-		end
-
-		if not e.activator.mobile.isSneaking or playerDetected then
-			for _,actor in pairs(actors) do
-				if actor.reference.baseObject.id == creatureID then
-					actor:startCombat(e.activator.mobile)
-				end
-			end
-		end
-	end
-end
-
----@param e activateEventData
-local function onNestLoot(e)
-	if e.target.id == "T_Cyr_Fauna_NestTant_01" or e.target.id == "T_Cyr_Fauna_NestTant_02" or e.target.id == "T_Cyr_Fauna_NestTant_03" or e.target.id == "T_Cyr_Fauna_NestTant_04" then
-		creatureNestDefend(e, "T_Cyr_Fau_Tantha_01")
-	end
-end
-
----@param e playGroupEventData
-local function loopStridentRunnerNesting(e)
-	if e.reference.baseObject.id == "T_Cyr_Fau_BirdStridN_01" and e.group == tes3.animationGroup.idle6 then
-		e.loopCount = -1	-- Ordinarily idles don't loop correctly (see: Vivec) and a MWScript solution (like for Vivec) doesn't work well on a hostile creature such as the Strident Runners, but this does.
-	end
-end
-
 ---@param e equipEventData
 local function restrictEquip(e)
 	if e.reference.mobile.object.race.id == "T_Val_Imga" then
@@ -619,54 +560,8 @@ dofile("TamrielData.mcm")
 
 event.register(tes3.event.loaded, function()
 
-	event.unregister(tes3.event.determinedAction, magic.useCustomSpell)
-	event.unregister(tes3.event.leveledItemPicked, magic.insightEffect)
-	--event.unregister(tes3.event.magicEffectRemoved, magic.wabbajackRemovedEffect)
-	--event.unregister(tes3.event.spellTick, magic.wabbajackAppliedEffect)
-	event.unregister(tes3.event.spellResist, magic.radiantShieldSpellResistEffect)
-	event.unregister(tes3.event.damaged, magic.radiantShieldDamagedEffect)
-	event.unregister(tes3.event.magicEffectRemoved, magic.radiantShieldRemovedEffect)
-	event.unregister(tes3.event.spellTick, magic.radiantShieldAppliedEffect)
-	event.unregister(tes3.event.damaged, magic.reflectDamageStun)
-	event.unregister(tes3.event.damagedHandToHand, magic.reflectDamageStun)
-	event.unregister(tes3.event.damage, magic.reflectDamageEffect)
-	event.unregister(tes3.event.damageHandToHand, magic.reflectDamageHHEffect)
-	event.unregister(tes3.event.cellChanged, magic.banishDaedraCleanup)
-	event.unregister(tes3.event.containerClosed, magic.deleteBanishDaedraContainer)
-	event.unregister(tes3.event.magicCasted, magic.passwallEffect)
-
-	event.unregister(tes3.event.menuEnter, reputation.switchReputation, {filter = "MenuDialog"})
-	event.unregister(tes3.event.menuExit, reputation.switchReputation)
-	event.unregister(tes3.event.cellChanged, reputation.travelSwitchReputation)
-	event.unregister(tes3.event.uiRefreshed, reputation.uiRefreshedCallback, {filter = "MenuStat_scroll_pane"})
-	event.unregister(tes3.event.menuEnter, function(e) tes3ui.updateStatsPane() end)
-	
-	event.unregister(tes3.event.cellChanged, weather.manageWeathers)
-	event.unregister(tes3.event.weatherChangedImmediate, weather.manageWeathers)
-	event.unregister(tes3.event.weatherTransitionStarted, weather.manageWeathers)
-	event.unregister(tes3.event.cellChanged, weather.changeStormOrigin)
-	event.unregister(tes3.event.weatherChangedImmediate, weather.changeStormOrigin)
-	event.unregister(tes3.event.weatherTransitionStarted, weather.changeStormOrigin)
-	event.unregister(tes3.event.soundObjectPlay, weather.silenceCreatures)
-
-	event.unregister(tes3.event.leveledItemPicked, replaceHatLeveledItem)
-	event.unregister(tes3.event.cellChanged, replaceHatCell)
-	event.unregister(tes3.event.equipped, hatHelmetEquip)
-	
-	event.unregister(tes3.event.playGroup, loopStridentRunnerNesting)
-	event.unregister(tes3.event.activate, onNestLoot, {priority = 250})
-	event.unregister(tes3.event.combatStarted, onGroupAttacked)
-
-	event.unregister(tes3.event.equip, restrictEquip)
-	event.unregister(tes3.event.bodyPartAssigned, fixVampireHeadAssignment)
-	event.unregister(tes3.event.combatStarted, vampireHeadCombatStarted)
-	event.unregister(tes3.event.playItemSound, improveItemSounds)
-	event.unregister(tes3.event.calcTravelPrice, adjustTravelPrices)
-	event.unregister(tes3.event.magicCasted, limitInterventionMessage)
-	event.unregister(tes3.event.spellTick, limitIntervention)
-
 	if config.summoningSpells == true then
-		event.register(tes3.event.determinedAction, magic.useCustomSpell)
+		event.register(tes3.event.determinedAction, magic.useCustomSpell, { unregisterOnLoad = true })
 	end
 
 	if config.interventionSpells == true then
@@ -674,63 +569,64 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.miscSpells == true then
-		event.register(tes3.event.leveledItemPicked, magic.insightEffect)
+		event.register(tes3.event.leveledItemPicked, magic.insightEffect, { unregisterOnLoad = true })
 		
-		--event.register(tes3.event.magicEffectRemoved, magic.wabbajackRemovedEffect)
-		--event.register(tes3.event.spellTick, magic.wabbajackAppliedEffect)
+		--event.register(tes3.event.magicEffectRemoved, magic.wabbajackRemovedEffect, { unregisterOnLoad = true })
+		--event.register(tes3.event.spellTick, magic.wabbajackAppliedEffect, { unregisterOnLoad = true })
 
-		event.register(tes3.event.spellResist, magic.radiantShieldSpellResistEffect)
-		event.register(tes3.event.damaged, magic.radiantShieldDamagedEffect)
-		event.register(tes3.event.magicEffectRemoved, magic.radiantShieldRemovedEffect)
-		event.register(tes3.event.spellTick, magic.radiantShieldAppliedEffect)
+		event.register(tes3.event.spellResist, magic.radiantShieldSpellResistEffect, { unregisterOnLoad = true })
+		event.register(tes3.event.damaged, magic.radiantShieldDamagedEffect, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.radiantShieldRemovedEffect, { unregisterOnLoad = true })
+		event.register(tes3.event.spellTick, magic.radiantShieldAppliedEffect, { unregisterOnLoad = true })
 
-		event.register(tes3.event.damaged, magic.reflectDamageStun)
-		event.register(tes3.event.damagedHandToHand, magic.reflectDamageStun)
-		event.register(tes3.event.damage, magic.reflectDamageEffect)
-		event.register(tes3.event.damageHandToHand, magic.reflectDamageHHEffect)
+		event.register(tes3.event.damaged, magic.reflectDamageStun, { unregisterOnLoad = true })
+		event.register(tes3.event.damagedHandToHand, magic.reflectDamageStun, { unregisterOnLoad = true })
+		event.register(tes3.event.damage, magic.reflectDamageEffect, { unregisterOnLoad = true })
+		event.register(tes3.event.damageHandToHand, magic.reflectDamageHHEffect, { unregisterOnLoad = true })
 
-		event.register(tes3.event.cellChanged, magic.banishDaedraCleanup)
-		event.register(tes3.event.containerClosed, magic.deleteBanishDaedraContainer)
+		event.register(tes3.event.cellChanged, magic.banishDaedraCleanup, { unregisterOnLoad = true })
+		event.register(tes3.event.containerClosed, magic.deleteBanishDaedraContainer, { unregisterOnLoad = true })
 		
-		event.register(tes3.event.magicCasted, magic.passwallEffect)
+		event.register(tes3.event.magicCasted, magic.passwallEffect, { unregisterOnLoad = true })
 	end
 	
 	if config.provincialReputation == true then
-		event.register(tes3.event.menuEnter, reputation.switchReputation, {filter = "MenuDialog"})
-		event.register(tes3.event.menuExit, reputation.switchReputation)
-		event.register(tes3.event.cellChanged, reputation.travelSwitchReputation)
+		event.register(tes3.event.menuEnter, reputation.switchReputation, { filter = "MenuDialog", unregisterOnLoad = true })
+		event.register(tes3.event.menuExit, reputation.switchReputation, { unregisterOnLoad = true })
+		event.register(tes3.event.cellChanged, reputation.travelSwitchReputation, { unregisterOnLoad = true })
 		
-		event.register(tes3.event.uiRefreshed, reputation.uiRefreshedCallback, {filter = "MenuStat_scroll_pane"})
-		event.register(tes3.event.menuEnter, function(e) tes3ui.updateStatsPane() end)
+		event.register(tes3.event.uiRefreshed, reputation.uiRefreshedCallback, { filter = "MenuStat_scroll_pane", unregisterOnLoad = true })
+		event.register(tes3.event.menuEnter, function(e) tes3ui.updateStatsPane() end, { unregisterOnLoad = true })
 	end
 	
 	if config.weatherChanges == true then
 		weather.changeRegionWeatherChances()
 		
-		event.register(tes3.event.cellChanged, weather.manageWeathers)
-		event.register(tes3.event.weatherChangedImmediate, weather.manageWeathers)
-		event.register(tes3.event.weatherTransitionStarted, weather.manageWeathers)
+		event.register(tes3.event.cellChanged, weather.manageWeathers, { unregisterOnLoad = true })
+		event.register(tes3.event.weatherChangedImmediate, weather.manageWeathers, { unregisterOnLoad = true })
+		event.register(tes3.event.weatherTransitionStarted, weather.manageWeathers, { unregisterOnLoad = true })
 
-		event.register(tes3.event.cellChanged, weather.changeStormOrigin)
-		event.register(tes3.event.weatherChangedImmediate, weather.changeStormOrigin)
-		event.register(tes3.event.weatherTransitionStarted, weather.changeStormOrigin)
+		event.register(tes3.event.cellChanged, weather.changeStormOrigin, { unregisterOnLoad = true })
+		event.register(tes3.event.weatherChangedImmediate, weather.changeStormOrigin, { unregisterOnLoad = true })
+		event.register(tes3.event.weatherTransitionStarted, weather.changeStormOrigin, { unregisterOnLoad = true })
 
-		event.register(tes3.event.soundObjectPlay, weather.silenceCreatures)
+		event.register(tes3.event.soundObjectPlay, weather.silenceCreatures, { unregisterOnLoad = true })
 	end
 
 	if config.hats == true then
 		if not tes3.clothingSlot.hat then tes3.addClothingSlot({ slot = 24, name = "Hat", key = "hat" }) end
 		createHatObjects()
 
-		event.register(tes3.event.leveledItemPicked, replaceHatLeveledItem, {priority = -100})
-		event.register(tes3.event.cellChanged, replaceHatCell)
-		event.register(tes3.event.equipped, hatHelmetEquip)
+		event.register(tes3.event.leveledItemPicked, replaceHatLeveledItem, { priority = -100, unregisterOnLoad = true })
+		event.register(tes3.event.cellChanged, replaceHatCell, { unregisterOnLoad = true })
+		event.register(tes3.event.equipped, hatHelmetEquip, { unregisterOnLoad = true })
 	end
 	
 	if config.creatureBehaviors == true then
-		event.register(tes3.event.playGroup, loopStridentRunnerNesting)
-		event.register(tes3.event.activate, onNestLoot, {priority = 250})	-- The priority is set so that the function is guranteed to work with GH even if the nests are removed from the blacklist
-		event.register(tes3.event.combatStarted, onGroupAttacked)
+		event.register(tes3.event.playGroup, behavior.loopStridentRunnerNesting, { unregisterOnLoad = true })
+		event.register(tes3.event.activate, behavior.onNestLoot, { priority = 250, unregisterOnLoad = true })	-- The priority is set so that the function is guranteed to work with GH even if the nests are removed from the blacklist
+		event.register(tes3.event.combatStarted, behavior.onGroupAttacked, { unregisterOnLoad = true })
+		--event.register(tes3.event.playGroup, behavior.auroranDeathDim, { unregisterOnLoad = true })
 	end
 
 	if config.fixPlayerRaceAnimations == true then
@@ -738,24 +634,32 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.restrictEquipment == true then
-		event.register(tes3.event.equip, restrictEquip)
+		event.register(tes3.event.equip, restrictEquip, { unregisterOnLoad = true })
 	end
 	
 	if config.fixVampireHeads == true then
-		event.register(tes3.event.bodyPartAssigned, fixVampireHeadAssignment)
-		event.register(tes3.event.combatStarted, vampireHeadCombatStarted)
+		event.register(tes3.event.bodyPartAssigned, fixVampireHeadAssignment, { unregisterOnLoad = true })
+		event.register(tes3.event.combatStarted, vampireHeadCombatStarted, { unregisterOnLoad = true })
 	end
 	
 	if config.improveItemSounds == true then
-		event.register(tes3.event.playItemSound, improveItemSounds)
+		event.register(tes3.event.playItemSound, improveItemSounds, { unregisterOnLoad = true })
 	end
 
 	if config.adjustTravelPrices == true then
-		event.register(tes3.event.calcTravelPrice, adjustTravelPrices)
+		event.register(tes3.event.calcTravelPrice, adjustTravelPrices, { unregisterOnLoad = true })
 	end
 	
 	if config.limitIntervention == true then
-		event.register(tes3.event.magicCasted, limitInterventionMessage)
-		event.register(tes3.event.spellTick, limitIntervention)
+		event.register(tes3.event.magicCasted, limitInterventionMessage, { unregisterOnLoad = true })
+		event.register(tes3.event.spellTick, limitIntervention, { unregisterOnLoad = true })
+	end
+
+	if config.changeMorrowindFactionNames == true then
+		tes3.getFaction("Fighters Guild").name = common.i18n("main.morrowindFightersGuild")
+		tes3.getFaction("Mages Guild").name = common.i18n("main.morrowindMagesGuild")
+		tes3.getFaction("Thieves Guild").name = common.i18n("main.morrowindThievesGuild")
+		tes3.getFaction("Imperial Legion").name = common.i18n("main.morrowindImperialLegion")
+		tes3.getFaction("Dark Brotherhood").name = common.i18n("main.morrowindDarkBrotherhood")
 	end
 end)

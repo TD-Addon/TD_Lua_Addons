@@ -159,6 +159,14 @@ local function registerModConfig()
         },
     }
     toggles:createOnOffButton{
+        label = common.i18n("mcm.factionNamesLabel"),
+        description = common.i18n("mcm.factionNamesDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "changeMorrowindFactionNames",
+            table = config,
+        },
+    }
+    toggles:createOnOffButton{
         label = common.i18n("mcm.interventionRangeLabel"),
         description = common.i18n("mcm.interventionRangeDescription"),
         variable = mwse.mcm.createTableVariable{

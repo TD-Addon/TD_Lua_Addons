@@ -13,6 +13,7 @@ local defaultConfig = {
 	fixVampireHeads = true,
 	improveItemSounds = true,
 	adjustTravelPrices = true,
+	changeMorrowindFactionNames = tes3.getLanguage() == "eng",
 	limitIntervention = false
 }
 

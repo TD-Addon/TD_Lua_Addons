@@ -9,6 +9,12 @@ return {
 	["main.rangeAlmsivi"] = "The power of Almsivi does not extend to these lands.",
 	["main.rangeKyne"] = "The power of Kyne does not extend to these lands.",
 
+	["main.morrowindFightersGuild"] = "Morrowind Fighters Guild",
+	["main.morrowindMagesGuild"] = "Morrowind Mages Guild",
+	["main.morrowindThievesGuild"] = "Morrowind Thieves Guild",
+	["main.morrowindImperialLegion"] = "Morrowind Imperial Legion",
+	["main.morrowindDarkBrotherhood"] = "Morrowind Dark Brotherhood",
+
 	-- Magic Text
 	["magic.summonDevourer"] = "Summon Devourer",
 	["magic.summonDevourerDesc"] = "This effect summons a devourer from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight.",
@@ -193,6 +199,9 @@ return {
 
 	["mcm.travelPricesLabel"] = "Adjust Travel Prices",
 	["mcm.travelPricesDescription"] = "Changes the cost of traveling to destinations added by Tamriel Rebuilt and Project Tamriel when Morrowind's calculated prices are unreasonable, such as between Mages Guild networks.\nRequires reload.\n\nDefault: On\n\n",
+	
+	["mcm.factionNamesLabel"] = "Change Names of Morrowind Factions",
+	["mcm.factionNamesDescription"] = "Prefaces the names of factions in Morrowind (such as the Imperial Legion, the Fighters Guild, etc.) with \"Morrowind\" so that they follow Tamriel Data's naming scheme for factions.\nRequires reload.\n\nDefault: On, unless a language other than English is being used\n\n",
 
 	["mcm.interventionRangeLabel"] = "Limit Intervention Spell Range",
 	["mcm.interventionRangeDescription"] = "Restricts the range at which some intervention spells work, preventing them from being used to teleport across the entirety of Tamriel." ..
