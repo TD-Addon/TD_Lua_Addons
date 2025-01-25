@@ -56,10 +56,40 @@ function this.onNestLoot(e)
 	end
 end
 
+local lamiaReferences = {}
+local dreughReferences = {}
+
+---@param e mobileActivatedEventData
+function this.onMobileActivated(e)
+	if e.reference.baseObject.name:lower():find("lamia") then
+		lamiaReferences[e.reference] = true
+	elseif e.reference.baseObject.name:lower():find("dreugh") then
+		dreughReferences[e.reference] = true
+	end
+end
+
+---@param e mobileDeactivatedEventData
+function this.onMobileDeactivated(e)
+	lamiaReferences[e.reference] = nil
+	dreughReferences[e.reference] = nil
+end
+
+function this.creatureDetectionTick()
+	for lamia in pairs(lamiaReferences) do
+		---@cast lamia tes3reference
+		for dreugh in pairs(dreughReferences) do
+			if lamia.position:distanceXY(dreugh.position) < 4096 then
+				lamia.mobile:startCombat(dreugh.mobile)
+				dreugh.mobile:startCombat(lamia.mobile)
+			end
+		end
+	end
+end
+
 ---@param e playGroupEventData
 function this.loopStridentRunnerNesting(e)
 	if e.reference.baseObject.id == "T_Cyr_Fau_BirdStridN_01" and e.group == tes3.animationGroup.idle6 then
-		e.loopCount = -1	-- Ordinarily idles don't loop correctly (see: Vivec) and a MWScript solution (like for Vivec) doesn't work well on a hostile creature such as the Strident Runners, but this does.
+		e.loopCount = -1	-- Ordinarily idles don't loop correctly (see: Vivec) and a MWScript solution (like the one that some mods use for Vivec) doesn't work well on a hostile creature such as the Strident Runners, but this does.
 	end
 end
 

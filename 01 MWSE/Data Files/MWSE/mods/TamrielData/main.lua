@@ -626,7 +626,10 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.playGroup, behavior.loopStridentRunnerNesting, { unregisterOnLoad = true })
 		event.register(tes3.event.activate, behavior.onNestLoot, { priority = 250, unregisterOnLoad = true })	-- The priority is set so that the function is guranteed to work with GH even if the nests are removed from the blacklist
 		event.register(tes3.event.combatStarted, behavior.onGroupAttacked, { unregisterOnLoad = true })
-		--event.register(tes3.event.playGroup, behavior.auroranDeathDim, { unregisterOnLoad = true })
+
+		timer.start{duration = 5, iterations = -1, type = timer.simulate, callback = behavior.creatureDetectionTick}
+		event.register(tes3.event.mobileActivated, behavior.onMobileActivated, { unregisterOnLoad = true })
+		event.register(tes3.event.mobileDeactivated, behavior.onMobileDeactivated, { unregisterOnLoad = true })
 	end
 
 	if config.fixPlayerRaceAnimations == true then
