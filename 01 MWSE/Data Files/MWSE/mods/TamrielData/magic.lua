@@ -5,6 +5,21 @@ local config = require("tamrielData.config")
 
 local wabbajackLock = false
 
+local northMarkerCos = 0
+local northMarkerSin = 0
+local mapWidth = 0
+local mapHeight = 0
+local multiWidth = 0
+local multiHeight = 0
+local interiorMapOriginX = 0
+local interiorMapOriginY = 0
+local interiorMultiOriginX = 0
+local interiorMultiOriginY = 0
+local mapOriginGridX = 0
+local mapOriginGridY = 0
+local multiOriginGridX = 0
+local multiOriginGridY = 0
+
 if config.summoningSpells == true then
 	tes3.claimSpellEffectId("T_summon_Devourer", 2090)
 	tes3.claimSpellEffectId("T_summon_DremArch", 2091)
@@ -177,6 +192,7 @@ local td_misc_spells = {
 	{ "T_Com_Mys_UNI_Passwall", tes3.spellType.spell, common.i18n("magic.miscPasswall"), 96, tes3.effect.T_alteration_Passwall, tes3.effectRange.touch, 25, 0, 0, 0 },
 	{ "T_Com_Mys_BanishDaedra", tes3.spellType.spell, common.i18n("magic.miscBanish"), 64, tes3.effect.T_mysticism_BanishDae, tes3.effectRange.touch, 0, 0, 10, 10 },
 	{ "T_Com_Mys_ReflectDamage", tes3.spellType.spell, common.i18n("magic.miscReflectDamage"), 76, tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 5, 10, 20 },
+	{ "T_Com_Mys_DetectHumanoid", tes3.spellType.spell, common.i18n("magic.miscDetectHumanoid"), 38, tes3.effect.T_mysticism_DetHuman, tes3.effectRange.self, 0, 5, 50, 150 },
 	{ "T_Ayl_Alt_RadiantShield", tes3.spellType.spell, common.i18n("magic.miscRadiantShield"), 75, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 10, 10 },
 	{ "T_Cr_Alt_AuroranShield", tes3.spellType.ability, nil, nil, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 20, 20 },
 	{ "T_Cr_Alt_AylSorcKLightShield", tes3.spellType.spell, common.i18n("magic.miscRadiantShield"), 10, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 12, 10, 10, tes3.effect.light, tes3.effectRange.self, 0, 12, 20, 20 },
@@ -486,54 +502,132 @@ local function armorResartusEffect(e)
 	e.effectInstance.state = tes3.spellState.retired
 end
 
---- @param e uiEventEventData
-local function detectHumanoidEffect(e)
+-- Diject's mapMarkerLib was an invaluable reference for the calculations required for these map markers to work
+--- @param e cellChangedEventData
+function this.calculateMapValues(e)
+	local mapPane = tes3ui.findMenu("MenuMap"):findChild("MenuMap_pane")
+	local mapCell = mapPane:findChild("MenuMap_map_cell")
+	local multiPane = tes3ui.findMenu("MenuMulti"):findChild("MenuMap_pane")
+	local multiCell = multiPane:findChild("MenuMap_map_cell")
+
+	if e.cell.isInterior then
+		local mapPlayerMarker = mapPane:findChild("MenuMap_local_player")
+		local multiPlayerMarker = multiPane.parent.parent:findChild("MenuMap_local_player")
+
+		local northMarkerAngle = 0
+		for ref in e.cell:iterateReferences({tes3.objectType.static}) do
+			if ref.baseObject.id == "NorthMarker" then
+				northMarkerAngle = ref.orientation.z
+				break
+			end
+		end
+
+		northMarkerCos = math.cos(northMarkerAngle)
+		northMarkerSin = math.sin(northMarkerAngle)
+		
+		mapWidth = mapCell.width
+		mapHeight = mapCell.height
+		multiWidth = multiCell.width
+		multiHeight = multiCell.height
+
+		local xShift = -tes3.player.position.x
+		local yShift = tes3.player.position.y
+		local xNorm = xShift * northMarkerCos + yShift * northMarkerSin
+		local yNorm = yShift * northMarkerCos - xShift * northMarkerSin
+	
+		interiorMapOriginX = mapPlayerMarker.positionX + xNorm / (8192 / mapWidth)
+		interiorMapOriginY = mapPlayerMarker.positionY - yNorm / (8192 / mapHeight)
+		interiorMultiOriginX = -multiPane.parent.positionX + multiPlayerMarker.positionX + xNorm / (8192 / multiWidth)
+		interiorMultiOriginY = -multiPane.parent.positionY + multiPlayerMarker.positionY - yNorm / (8192 / multiHeight)
+	else
+		-- It seems as though this is not being updated exactly when it should be; exterior markers will move across cells as the player moves around.
+		local mapLayout = mapPane:findChild("MenuMap_map_layout")
+		local mapCellProperty = mapCell:getPropertyObject("MenuMap_cell")
+		local multiCellProperty = multiCell:getPropertyObject("MenuMap_cell")
+		local multiLayout = multiPane:findChild("MenuMap_map_layout")
+
+		if mapCellProperty and multiCellProperty then
+			mapOriginGridX = mapCellProperty.gridX - math.floor(mapCell.positionX / mapCell.width)	-- Should each set of lines really have different types of values in the numerators?
+			mapOriginGridY = mapCellProperty.gridY - math.floor(mapLayout.positionY / mapCell.height)
+			multiOriginGridX = multiCellProperty.gridX - math.floor(multiCell.positionX / multiCell.width)
+			multiOriginGridY = multiCellProperty.gridY - math.floor(multiLayout.positionY / multiCell.height)
+		end
+	end
+end
+
+---@param pane tes3uiElement
+local function deleteHumanoidDetections(pane)
+	for _,child in pairs (pane.children) do
+		if child.name == "detHum" then child:destroy() end
+	end
+end
+
+---@param position tes3vector3
+---@return number, number, number, number
+local function calcInteriorPos(position)
+	local xNorm = position.x * northMarkerCos - position.y * northMarkerSin
+	local yNorm = -position.y * northMarkerCos - position.x * northMarkerSin
+
+	local mapX = interiorMapOriginX + xNorm / (8192 / mapWidth)
+	local mapY = interiorMapOriginY - yNorm / (8192 / mapHeight)
+	local multiX = interiorMultiOriginX + xNorm / (8192 / multiWidth)
+	local multiY = interiorMultiOriginY - yNorm / (8192 / multiHeight)
+
+	return mapX, mapY, multiX, multiY
+end
+
+---@param position tes3vector3
+---@return number, number, number, number
+local function calcExteriorPos(position)
+	local mapX = (position.x / 8192 - mapOriginGridX) * mapWidth
+	local mapY = (position.y / 8192 - mapOriginGridY - 1) * mapHeight
+	local multiX = (position.x / 8192 - multiOriginGridX) * multiWidth
+	local multiY = (position.y / 8192 - multiOriginGridY - 1) * multiHeight
+
+	return mapX, mapY, multiX, multiY
+end
+
+---@param pane tes3uiElement
+---@param x number
+---@param y number
+local function createHumanoidDetections(pane, x, y)
+	local detection = pane:createImage({ id = "detHum", path = "textures\\td\\td_detect_humanoid_icon.dds" })
+	detection.positionX = x
+	detection.positionY = y
+	detection.absolutePosAlignX = -32668
+	detection.absolutePosAlignY = -32668
+	detection.width = 3
+	detection.height = 3
+end
+
+--- @param e magicEffectRemovedEventData
+function this.detectHumanoidTick(e)
+	if e and e.reference and e.reference ~= tes3.player then return end	-- I would just use a filter, but that triggers a warning for some reason
+
+	local menuPane = tes3ui.findMenu("MenuMap"):findChild("MenuMap_pane")
+	local multiPane = tes3ui.findMenu("MenuMulti"):findChild("MenuMap_pane")
+
+	deleteHumanoidDetections(menuPane)
+	deleteHumanoidDetections(multiPane)
+
 	local detectHumanoidEffects = tes3.player.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetHuman })
 	if #detectHumanoidEffects > 0 then
 		local maxMagnitude = 0
 		for _,v in pairs(detectHumanoidEffects) do
-			if v > maxMagnitude then maxMagnitude = v.magnitude end
+			if v.magnitude > maxMagnitude then maxMagnitude = v.magnitude end
 		end
 
-		local north
-		if tes3.getPlayerCell().isInterior then
-			for static in tes3.getPlayerCell():iterateReferences(tes3.objectType.static) do
-				if static.id == "NorthMarker" then north = static.orientation.z end
-			end
-		else
-			north = 0
-		end
+		for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = maxMagnitude * 22.1 })) do
+			if actor.actorType == tes3.actorType.npc then
+				local mapX, mapY, multiX, multiY
+				if tes3.player.cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(actor.position)
+				else mapX, mapY, multiX, multiY = calcExteriorPos(actor.position) end
 
-		local detection
-		local playerMap = tes3ui.findMenu("MenuMap"):findChild("MenuMap_local_player")
-		local xConversion = playerMap.positionX / tes3.player.position.x				-- Not sure how to actually calculate the marker positions, using these for now
-		local yConversion = playerMap.positionY / tes3.player.position.y
-
-		for npc in tes3.getPlayerCell():iterateReferences(tes3.objectType.npc) do
-			if tes3.player.position:distance(npc.position) <= maxMagnitude then
-				detection = e.source:createImage({ id = -32588, path = "Textures\\td\\td_detect_humanoid_icon.dds" })
-				--detection.name = "detHum"
-
-				detection.positionX = npc.position.x * xConversion
-				detection.positionY = npc.position.y * yConversion
-
-				detection.absolutePosAlignX = -32668
-				detection.absolutePosAlignY = -32668
-
-				detection.width = 3
-				detection.height = 3
+				createHumanoidDetections(menuPane, mapX, mapY)
+				createHumanoidDetections(multiPane, multiX, multiY)
 			end
 		end
 	end
-
-	mwse.log(e.source.name)
-end
-
---- @param e uiActivatedEventData
-local function detectHumanoidActivate(e)
-	mwse.log(e.element.name)
-
-	e.element:findChild("MenuMap_pane"):registerAfter(tes3.uiEvent.mouseClick, detectHumanoidEffect)
 end
 
 ---@param e leveledItemPickedEventData
@@ -1357,9 +1451,10 @@ event.register(tes3.event.magicEffectsResolved, function()
 		local levitateEffect = tes3.getMagicEffect(tes3.effect.levitate)
 		local soultrapEffect = tes3.getMagicEffect(tes3.effect.soultrap)
 		local reflectEffect = tes3.getMagicEffect(tes3.effect.reflect)
+		local detectEffect = tes3.getMagicEffect(tes3.effect.detectAnimal)
 		local shieldEffect = tes3.getMagicEffect(tes3.effect.shield)
 		local burdenEffect = tes3.getMagicEffect(tes3.effect.burden)
-		local restoreEffect = tes3.getMagicEffect(tes3.effect.fortifyHealth)	-- The fortify VFX feels more appropriate for the resartus effects, but perhaps it should still be restoration?
+		local restoreEffect = tes3.getMagicEffect(tes3.effect.fortifyHealth)	-- The fortify VFX feels more appropriate for the resartus effects, but perhaps it should still be restoration? 
 
 		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[1])	-- Passwall
 		tes3.addMagicEffect{
@@ -1483,6 +1578,48 @@ event.register(tes3.event.magicEffectsResolved, function()
 			lighting = {x = reflectEffect.lightingRed, y = reflectEffect.lightingGreen, z = reflectEffect.lightingBlue},
 			size = reflectEffect.size,
 			sizeCap = reflectEffect.sizeCap,
+			onTick = nil,
+			onCollision = nil
+		}
+
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[4])		-- Detect Humanoid
+		tes3.addMagicEffect{
+			id = effectID,
+			name = effectName,
+			description = effectDescription,
+			school = tes3.magicSchool.mysticism,
+			baseCost = effectCost,
+			speed = detectEffect.speed,
+			allowEnchanting = true,
+			allowSpellmaking = true,
+			appliesOnce = true,
+			canCastSelf = true,
+			canCastTarget = false,
+			canCastTouch = false,
+			casterLinked = detectEffect.casterLinked,
+			hasContinuousVFX = detectEffect.hasContinuousVFX,
+			hasNoDuration = false,
+			hasNoMagnitude = false,
+			illegalDaedra = detectEffect.illegalDaedra,
+			isHarmful = false,
+			nonRecastable = false,
+			targetsAttributes = false,
+			targetsSkills = false,
+			unreflectable = false,
+			usesNegativeLighting = detectEffect.usesNegativeLighting,
+			icon = iconPath,
+			particleTexture = detectEffect.particleTexture,
+			castSound = detectEffect.castSoundEffect.id,
+			castVFX = detectEffect.castVisualEffect.id,
+			boltSound = detectEffect.boltSoundEffect.id,
+			boltVFX = detectEffect.boltVisualEffect.id,
+			hitSound = detectEffect.hitSoundEffect.id,
+			hitVFX = detectEffect.hitVisualEffect.id,
+			areaSound = detectEffect.areaSoundEffect.id,
+			areaVFX = detectEffect.areaVisualEffect.id,
+			lighting = {x = detectEffect.lightingRed, y = detectEffect.lightingGreen, z = detectEffect.lightingBlue},
+			size = detectEffect.size,
+			sizeCap = detectEffect.sizeCap,
 			onTick = nil,
 			onCollision = nil
 		}
@@ -1714,9 +1851,6 @@ event.register(tes3.event.load, function()
 	end
 
 	if config.miscSpells == true then
-		--event.register(tes3.event.uiActivated, detectHumanoidActivate, { filter = "MenuMap" })	-- These event registrations are done here because doing so for the loaded event in the main function is too late
-		--event.register(tes3.event.uiActivated, detectHumanoidActivate, { filter = "MenuMulti" })
-
 		this.replaceSpells(td_misc_spells)
 	end
 

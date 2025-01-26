@@ -2,7 +2,8 @@ local this = {}
 
 local common = require("tamrielData.common")
 
--- T_Glb_Cre_Lami_01 dreugh T_Cyr_Cre_Dreu_01 T_Glb_Cre_DreuDs_01 T_Glb_Cre_DreuMoW_01
+local lamiaReferences = {}
+local dreughReferences = {}
 
 ---@param e combatStartedEventData
 ---@param creatureID string
@@ -56,11 +57,8 @@ function this.onNestLoot(e)
 	end
 end
 
-local lamiaReferences = {}
-local dreughReferences = {}
-
 ---@param e mobileActivatedEventData
-function this.onMobileActivated(e)
+function this.onMobileActivated(e)		-- Special thanks to G7 for showing me where he used this kind of setup in one of his mods; it is a much more efficient system than what I had in mind.
 	if e.reference.baseObject.name:lower():find("lamia") then
 		lamiaReferences[e.reference] = true
 	elseif e.reference.baseObject.name:lower():find("dreugh") then

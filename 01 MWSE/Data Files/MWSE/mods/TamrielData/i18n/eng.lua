@@ -92,7 +92,7 @@ return {
 	["magic.miscReflectDamage"] = "Reflect Damage",
 	["magic.miscReflectDamageDesc"] = "This effect allows the subject to reflect physical damage back at an attacker. The effect's magnitude is the percent damage that will be reflected for each attack. Any unreflected damage is dealt to the defender normally.",
 	["magic.miscDetectHumanoid"] = "Detect Humanoid",
-	["magic.miscDetectHumanoidDesc"] = "The caster of this effect can detect any entity animated by a spirit; they appear on the map as symbols. This effect includes all characters. The effect's magnitude is the range in feet from the caster that people are detected.",
+	["magic.miscDetectHumanoidDesc"] = "The caster of this effect can detect any entity animated by a spirit; they appear on the map as symbols. This effect includes all people. The effect's magnitude is the range in feet from the caster that humanoids are detected.",
 	["magic.miscRadiantShield"] = "Radiant Shield",
 	["magic.miscRadiantShieldDesc"] = "This effect creates a shield of brilliant light around the subject's entire body. The spell adds its magnitude to the subject's Armor Rating, resists harmful magic, and briefly blinds attackers in melee.",
 	["magic.miscWabbajack"] = "Wabbajack",

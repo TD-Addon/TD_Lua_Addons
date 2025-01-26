@@ -574,6 +574,11 @@ event.register(tes3.event.loaded, function()
 		--event.register(tes3.event.magicEffectRemoved, magic.wabbajackRemovedEffect, { unregisterOnLoad = true })
 		--event.register(tes3.event.spellTick, magic.wabbajackAppliedEffect, { unregisterOnLoad = true })
 
+		event.register(tes3.event.cellChanged, magic.calculateMapValues, { unregisterOnLoad = true })
+		timer.start{duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectHumanoidTick}
+		event.register(tes3.event.magicCasted, magic.detectHumanoidTick, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.detectHumanoidTick, { unregisterOnLoad = true })
+
 		event.register(tes3.event.spellResist, magic.radiantShieldSpellResistEffect, { unregisterOnLoad = true })
 		event.register(tes3.event.damaged, magic.radiantShieldDamagedEffect, { unregisterOnLoad = true })
 		event.register(tes3.event.magicEffectRemoved, magic.radiantShieldRemovedEffect, { unregisterOnLoad = true })
