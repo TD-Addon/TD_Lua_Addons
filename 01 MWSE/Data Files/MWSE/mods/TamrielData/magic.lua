@@ -502,20 +502,17 @@ local function armorResartusEffect(e)
 	e.effectInstance.state = tes3.spellState.retired
 end
 
--- Diject's mapMarkerLib was an invaluable reference for the calculations required for these map markers to work
---- @param e cellChangedEventData
-function this.calculateMapValues(e)
-	local mapPane = tes3ui.findMenu("MenuMap"):findChild("MenuMap_pane")
+-- Diject's mapMarkerLib was an invaluable reference for the calculations required to make these map markers work
+local function calculateMapValues(mapPane, multiPane)
 	local mapCell = mapPane:findChild("MenuMap_map_cell")
-	local multiPane = tes3ui.findMenu("MenuMulti"):findChild("MenuMap_pane")
 	local multiCell = multiPane:findChild("MenuMap_map_cell")
 
-	if e.cell.isInterior then
+	if tes3.player.cell.isInterior then
 		local mapPlayerMarker = mapPane:findChild("MenuMap_local_player")
 		local multiPlayerMarker = multiPane.parent.parent:findChild("MenuMap_local_player")
 
 		local northMarkerAngle = 0
-		for ref in e.cell:iterateReferences({tes3.objectType.static}) do
+		for ref in tes3.player.cell:iterateReferences({tes3.objectType.static}) do
 			if ref.baseObject.id == "NorthMarker" then
 				northMarkerAngle = ref.orientation.z
 				break
@@ -535,10 +532,20 @@ function this.calculateMapValues(e)
 		local xNorm = xShift * northMarkerCos + yShift * northMarkerSin
 		local yNorm = yShift * northMarkerCos - xShift * northMarkerSin
 	
-		interiorMapOriginX = mapPlayerMarker.positionX + xNorm / (8192 / mapWidth)
-		interiorMapOriginY = mapPlayerMarker.positionY - yNorm / (8192 / mapHeight)
-		interiorMultiOriginX = -multiPane.parent.positionX + multiPlayerMarker.positionX + xNorm / (8192 / multiWidth)
-		interiorMultiOriginY = -multiPane.parent.positionY + multiPlayerMarker.positionY - yNorm / (8192 / multiHeight)
+		local newInteriorMapOriginX = mapPlayerMarker.positionX + xNorm / (8192 / mapWidth)
+		local newInteriorMapOriginY = mapPlayerMarker.positionY - yNorm / (8192 / mapHeight)
+		local newInteriorMultiOriginX = -multiPane.parent.positionX + multiPlayerMarker.positionX + xNorm / (8192 / multiWidth)
+		local newInteriorMultiOriginY = -multiPane.parent.positionY + multiPlayerMarker.positionY - yNorm / (8192 / multiHeight)
+
+		if not (math.isclose(interiorMapOriginX, newInteriorMapOriginX, 2) and (math.isclose(interiorMapOriginY, newInteriorMapOriginY, 2))) then
+			interiorMapOriginX = newInteriorMapOriginX
+			interiorMapOriginY = newInteriorMapOriginY
+		end
+
+		if not (math.isclose(interiorMultiOriginX, newInteriorMapOriginX, 2) and (math.isclose(interiorMultiOriginY, newInteriorMapOriginY, 2))) then
+			interiorMultiOriginX = newInteriorMultiOriginX
+			interiorMultiOriginY = newInteriorMultiOriginY
+		end
 	else
 		-- It seems as though this is not being updated exactly when it should be; exterior markers will move across cells as the player moves around.
 		local mapLayout = mapPane:findChild("MenuMap_map_layout")
@@ -602,10 +609,12 @@ end
 
 --- @param e magicEffectRemovedEventData
 function this.detectHumanoidTick(e)
-	if e and e.reference and e.reference ~= tes3.player then return end	-- I would just use a filter, but that triggers a warning for some reason
+	if e.reference and e.reference ~= tes3.player then return end	-- I would just use a filter, but that triggers a warning for some reason
 
 	local menuPane = tes3ui.findMenu("MenuMap"):findChild("MenuMap_pane")
 	local multiPane = tes3ui.findMenu("MenuMulti"):findChild("MenuMap_pane")
+
+	calculateMapValues(menuPane, multiPane)
 
 	deleteHumanoidDetections(menuPane)
 	deleteHumanoidDetections(multiPane)
@@ -617,7 +626,7 @@ function this.detectHumanoidTick(e)
 			if v.magnitude > maxMagnitude then maxMagnitude = v.magnitude end
 		end
 
-		for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = maxMagnitude * 22.1 })) do
+		for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = maxMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua 
 			if actor.actorType == tes3.actorType.npc then
 				local mapX, mapY, multiX, multiY
 				if tes3.player.cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(actor.position)
