@@ -159,6 +159,14 @@ local function registerModConfig()
         },
     }
     toggles:createOnOffButton{
+        label = common.i18n("mcm.butterflyMothTooltipLabel"),
+        description = common.i18n("mcm.butterflyMothTooltipDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "butterflyMothTooltip",
+            table = config,
+        },
+    }
+    toggles:createOnOffButton{
         label = common.i18n("mcm.factionNamesLabel"),
         description = common.i18n("mcm.factionNamesDescription"),
         variable = mwse.mcm.createTableVariable{

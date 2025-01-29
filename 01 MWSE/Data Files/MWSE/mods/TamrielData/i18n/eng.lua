@@ -103,6 +103,8 @@ return {
 	["magic.miscArmorResartusDesc"] = "This effect mends and recharges enchanted armor that is equipped by the caster. The magnitude is the units of condition and charge restored, which are distributed across all of the caster's enchanted armor.",
 	["magic.miscWeaponResartus"] = "Weapon Resartus",
 	["magic.miscWeaponResartusDesc"] = "This effect mends and recharges an enchanted weapon that is equipped by the caster. The magnitude is the units of condition and charge restored.",
+	["magic.miscCorruption"] = "Corruption",
+	["magic.miscCorruptionDesc"] = "This effect creates a shadowy counterpart of the target that will aid the caster in combat.",
 
 	["magic.wabbajackFailure"] = "%s is too strong to be Wabbajacked!",
 	["magic.banishFailure"] = "This spell is too weak to banish %s!",
@@ -200,8 +202,11 @@ return {
 	["mcm.travelPricesLabel"] = "Adjust Travel Prices",
 	["mcm.travelPricesDescription"] = "Changes the cost of traveling to destinations added by Tamriel Rebuilt and Project Tamriel when Morrowind's calculated prices are unreasonable, such as between Mages Guild networks.\nRequires reload.\n\nDefault: On\n\n",
 	
+	["mcm.butterflyMothTooltipLabel"] = "Ingredient Tooltip for Butterflies and Moths",
+	["mcm.butterflyMothTooltipDescription"] = "Shows the effects, weight, and value of ingredients that can be harvested from butterflies and moths when looking at them, much like the Graphic Herbalism feature that does so for harvestable containers.\nRequires reload.\n\nDefault: On, if Graphic Herbalism is installed and its feature for showing ingredient tooltips is active\n\n",
+
 	["mcm.factionNamesLabel"] = "Change Names of Morrowind Factions",
-	["mcm.factionNamesDescription"] = "Prefaces the names of factions in Morrowind (such as the Imperial Legion, the Fighters Guild, etc.) with \"Morrowind\" so that they follow Tamriel Data's naming scheme for factions.\nRequires reload.\n\nDefault: On, unless a language other than English is being used\n\n",
+	["mcm.factionNamesDescription"] = "Prefaces the names of factions in Morrowind (such as the Imperial Legion, the Fighters Guild, etc.) with \"Morrowind\" so that they follow Tamriel Data's naming scheme for factions.\nRequires reload.\n\nDefault: On, if the game's language is English\n\n",
 
 	["mcm.interventionRangeLabel"] = "Limit Intervention Spell Range",
 	["mcm.interventionRangeDescription"] = "Restricts the range at which some intervention spells work, preventing them from being used to teleport across the entirety of Tamriel." ..

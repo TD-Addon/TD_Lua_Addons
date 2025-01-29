@@ -2,6 +2,8 @@ local this = {}
 
 this.i18n = mwse.loadTranslations("TamrielData")
 
+this.gh_config = include("graphicHerbalism.config")
+
 -- Util functions
 function table.contains(table, element)
 	for _,v in pairs(table) do

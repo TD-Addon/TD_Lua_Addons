@@ -219,6 +219,81 @@ local hats = {
 	"T_A_ImpEpHat02_Hr",
 }
 
+local TD_ButterflyMothTooltip = {}
+
+-- The following function is based on one that G7 made for Graphic Herbalism
+---@param e uiObjectTooltipEventData
+local function butterflyMothTooltip(e)
+	if e.reference and e.reference.baseObject.objectType == tes3.objectType.creature and e.reference.baseObject.sourceMod == "Tamriel_Data.esm" then
+		local isButterfly = string.find(e.reference.baseObject.id, "Butterfly")
+		local isMoth = string.find(e.reference.baseObject.id, "Moth")
+		if isButterfly or isMoth then
+			local visibleEffects = math.clamp(math.floor(tes3.mobilePlayer.alchemy.current / tes3.findGMST(tes3.gmst.fWortChanceValue).value), 0, 4)
+	
+			local first, second = string.find(e.reference.baseObject.id, "_%a+_")
+			local region = string.sub(e.reference.baseObject.id, first + 1, second - 1)
+
+			-- The ID could be found by looking through the creatures script instead, but this should be quicker and will work as long as the format of the IDs remains consistent
+			local ingredientID = "T_IngCrea_"
+			if isButterfly then ingredientID = ingredientID .. "ButterflyWing" .. region .. "_01"
+			elseif isMoth then ingredientID = ingredientID .. "MothWing" .. region .. "_01" end
+
+			local ingredient = tes3.getObject(ingredientID)
+
+			if ingredient then
+				local parent = e.tooltip:createBlock({ id = TD_ButterflyMothTooltip.parent })
+				parent.flowDirection = "top_to_bottom"
+				parent.childAlignX = 0.5
+				parent.autoHeight = true
+				parent.autoWidth = true
+		
+				local label = parent:createLabel({ id = TD_ButterflyMothTooltip.weight, text = string.format("Weight: %.2f", ingredient.weight) })
+				label.wrapText = true
+		
+				local label = parent:createLabel({ id = TD_ButterflyMothTooltip.value, text = string.format("Value: %d", ingredient.value) })
+				label.wrapText = true
+		
+				for i = 1, 4 do
+					local effect = tes3.getMagicEffect(ingredient.effects[i])
+					local target = math.max(ingredient.effectAttributeIds[i], ingredient.effectSkillIds[i])
+		
+					local block = parent:createBlock({ id = TD_ButterflyMothTooltip[i] })
+					block.autoHeight = true
+					block.autoWidth = true
+		
+					if effect == nil then
+					elseif i > visibleEffects then
+						local label = block:createLabel({ text = "?" })
+						label.wrapText = true
+					else
+						local image = block:createImage({ path = ("icons\\" .. effect.icon) })
+						image.wrapText = false
+						image.borderLeft = 4
+		
+						local targetName
+						if effect.targetsAttributes then
+							targetName = tes3.findGMST(888 + target).value
+						elseif effect.targetsSkills then
+							targetName = tes3.findGMST(896 + target).value
+						end
+					
+						local effectName
+						if targetName then
+							effectName = tes3.findGMST(1283 + effect.id).value:match("%S+") .. " " .. targetName
+						else
+							effectName = effect.name
+						end
+
+						local label = block:createLabel({ text = effectName })
+						label.wrapText = false
+						label.borderLeft = 4
+					end
+				end
+			end
+		end
+	end
+end
+
 ---@param e equippedEventData
 local function hatHelmetEquip(e)
 	if e.item.objectType == tes3.objectType.armor then
@@ -660,6 +735,18 @@ event.register(tes3.event.loaded, function()
 	if config.limitIntervention == true then
 		event.register(tes3.event.magicCasted, limitInterventionMessage, { unregisterOnLoad = true })
 		event.register(tes3.event.spellTick, limitIntervention, { unregisterOnLoad = true })
+	end
+
+	if config.butterflyMothTooltip == true then
+		TD_ButterflyMothTooltip.parent = tes3ui.registerID("TD_ButterflyMothTooltip_Parent")
+		TD_ButterflyMothTooltip.weight = tes3ui.registerID("TD_ButterflyMothTooltip_Weight")
+		TD_ButterflyMothTooltip.value = tes3ui.registerID("TD_ButterflyMothTooltip_Value")
+		TD_ButterflyMothTooltip[1] = tes3ui.registerID("TD_ButterflyMothTooltip_Effect_1")
+		TD_ButterflyMothTooltip[2] = tes3ui.registerID("TD_ButterflyMothTooltip_Effect_2")
+		TD_ButterflyMothTooltip[3] = tes3ui.registerID("TD_ButterflyMothTooltip_Effect_3")
+		TD_ButterflyMothTooltip[4] = tes3ui.registerID("TD_ButterflyMothTooltip_Effect_4")
+
+		event.register(tes3.event.uiObjectTooltip, butterflyMothTooltip, { priority=200, unregisterOnLoad = true })
 	end
 
 	if config.changeMorrowindFactionNames == true then

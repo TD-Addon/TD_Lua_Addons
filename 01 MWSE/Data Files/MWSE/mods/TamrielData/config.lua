@@ -1,3 +1,5 @@
+local common = require("tamrielData.common")
+
 local defaultConfig = {
 	summoningSpells = true,
 	boundSpells = true,
@@ -13,6 +15,7 @@ local defaultConfig = {
 	fixVampireHeads = true,
 	improveItemSounds = true,
 	adjustTravelPrices = true,
+	butterflyMothTooltip = common.gh_config and common.gh_config.showTooltips,
 	changeMorrowindFactionNames = tes3.getLanguage() == "eng",
 	limitIntervention = false
 }

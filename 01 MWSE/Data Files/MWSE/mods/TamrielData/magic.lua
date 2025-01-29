@@ -74,6 +74,7 @@ if config.miscSpells == true then
 	tes3.claimSpellEffectId("T_mysticism_Insight", 2125)
 	tes3.claimSpellEffectId("T_restoration_ArmorResartus", 2132)
 	tes3.claimSpellEffectId("T_restoration_WeaponResartus", 2133)
+	tes3.claimSpellEffectId("T_conjuration_Corruption", 2134)
 end
 
 -- The effect costs for most summons were initially calculated by mort using a formula (dependent on a creature's health and soul) that is now lost and were then adjusted as seemed reasonable.
@@ -136,6 +137,7 @@ local td_misc_effects = {
 	{ tes3.effect.T_mysticism_Insight, common.i18n("magic.miscInsight"), 10, "td\\s\\td_s_insight.tga", common.i18n("magic.miscInsightDesc")},
 	{ tes3.effect.T_restoration_ArmorResartus, common.i18n("magic.miscArmorResartus"), 60, "td\\s\\td_s_restore_ar.tga", common.i18n("magic.miscArmorResartusDesc")},
 	{ tes3.effect.T_restoration_WeaponResartus, common.i18n("magic.miscWeaponResartus"), 120, "td\\s\\td_s_restore_wpn.tga", common.i18n("magic.miscWeaponResartusDesc")},
+	{ tes3.effect.T_conjuration_Corruption, common.i18n("magic.miscCorruption"), 120, "td\\s\\tr_s_skull_corr.tga", common.i18n("magic.miscCorruptionDesc")},
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -611,29 +613,35 @@ end
 function this.detectHumanoidTick(e)
 	if e.reference and e.reference ~= tes3.player then return end	-- I would just use a filter, but that triggers a warning for some reason
 
-	local menuPane = tes3ui.findMenu("MenuMap"):findChild("MenuMap_pane")
-	local multiPane = tes3ui.findMenu("MenuMulti"):findChild("MenuMap_pane")
+	local mapMenu = tes3ui.findMenu("MenuMap")
+	local multiMenu = tes3ui.findMenu("MenuMulti")
+	local mapPane, multiPane
 
-	calculateMapValues(menuPane, multiPane)
+	if mapMenu then mapPane = mapMenu:findChild("MenuMap_pane") end
+	if multiMenu then multiPane = multiMenu:findChild("MenuMap_pane") end
 
-	deleteHumanoidDetections(menuPane)
-	deleteHumanoidDetections(multiPane)
-
-	local detectHumanoidEffects = tes3.player.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetHuman })
-	if #detectHumanoidEffects > 0 then
-		local maxMagnitude = 0
-		for _,v in pairs(detectHumanoidEffects) do
-			if v.magnitude > maxMagnitude then maxMagnitude = v.magnitude end
-		end
-
-		for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = maxMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua 
-			if actor.actorType == tes3.actorType.npc then
-				local mapX, mapY, multiX, multiY
-				if tes3.player.cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(actor.position)
-				else mapX, mapY, multiX, multiY = calcExteriorPos(actor.position) end
-
-				createHumanoidDetections(menuPane, mapX, mapY)
-				createHumanoidDetections(multiPane, multiX, multiY)
+	if mapMenu and multiMenu then
+		calculateMapValues(mapPane, multiPane)
+	
+		deleteHumanoidDetections(mapPane)
+		deleteHumanoidDetections(multiPane)
+	
+		local detectHumanoidEffects = tes3.player.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetHuman })
+		if #detectHumanoidEffects > 0 then
+			local maxMagnitude = 0
+			for _,v in pairs(detectHumanoidEffects) do
+				if v.magnitude > maxMagnitude then maxMagnitude = v.magnitude end
+			end
+	
+			for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = maxMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua 
+				if actor.actorType == tes3.actorType.npc then
+					local mapX, mapY, multiX, multiY
+					if tes3.player.cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(actor.position)
+					else mapX, mapY, multiX, multiY = calcExteriorPos(actor.position) end
+	
+					createHumanoidDetections(mapPane, mapX, mapY)
+					createHumanoidDetections(multiPane, multiX, multiY)
+				end
 			end
 		end
 	end
@@ -1305,7 +1313,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 	if config.summoningSpells == true then
 		local summonHungerEffect = tes3.getMagicEffect(tes3.effect.summonHunger)
 
-		for k,v in pairs(td_summon_effects) do
+		for _,v in pairs(td_summon_effects) do
 			local effectID, effectName, creatureID, effectCost, iconPath, effectDescription = unpack(v)
 			tes3.addMagicEffect{
 				id = effectID,
@@ -1355,7 +1363,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 	if config.boundSpells == true then
 		local boundCuirassEffect = tes3.getMagicEffect(tes3.effect.boundCuirass)
 
-		for k,v in pairs(td_bound_effects) do
+		for _,v in pairs(td_bound_effects) do
 			local effectID, effectName, itemID, itemID_02, effectCost, iconPath, effectDescription = unpack(v)
 			tes3.addMagicEffect{
 				id = effectID,
@@ -1463,7 +1471,8 @@ event.register(tes3.event.magicEffectsResolved, function()
 		local detectEffect = tes3.getMagicEffect(tes3.effect.detectAnimal)
 		local shieldEffect = tes3.getMagicEffect(tes3.effect.shield)
 		local burdenEffect = tes3.getMagicEffect(tes3.effect.burden)
-		local restoreEffect = tes3.getMagicEffect(tes3.effect.fortifyHealth)	-- The fortify VFX feels more appropriate for the resartus effects, but perhaps it should still be restoration? 
+		local restoreEffect = tes3.getMagicEffect(tes3.effect.fortifyHealth)	-- The fortify VFX feels more appropriate for the resartus effects, but perhaps it should still be restoration?
+		local turnEffect = tes3.getMagicEffect(tes3.effect.turnUndead)
 
 		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[1])	-- Passwall
 		tes3.addMagicEffect{
@@ -1840,6 +1849,48 @@ event.register(tes3.event.magicEffectsResolved, function()
 			size = restoreEffect.size,
 			sizeCap = restoreEffect.sizeCap,
 			onTick = weaponResartusEffect,
+			onCollision = nil
+		}
+
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[10])		-- Corruption
+		tes3.addMagicEffect{
+			id = effectID,
+			name = effectName,
+			description = effectDescription,
+			school = tes3.magicSchool.conjuration,
+			baseCost = effectCost,
+			speed = turnEffect.speed,
+			allowEnchanting = false,
+			allowSpellmaking = false,
+			appliesOnce = true,
+			canCastSelf = true,
+			canCastTarget = false,
+			canCastTouch = false,
+			casterLinked = turnEffect.casterLinked,
+			hasContinuousVFX = turnEffect.hasContinuousVFX,
+			hasNoDuration = false,
+			hasNoMagnitude = true,
+			illegalDaedra = turnEffect.illegalDaedra,
+			isHarmful = true,
+			nonRecastable = false,
+			targetsAttributes = false,
+			targetsSkills = false,
+			unreflectable = false,
+			usesNegativeLighting = turnEffect.usesNegativeLighting,
+			icon = iconPath,
+			particleTexture = turnEffect.particleTexture,
+			castSound = turnEffect.castSoundEffect.id,
+			castVFX = turnEffect.castVisualEffect.id,
+			boltSound = turnEffect.boltSoundEffect.id,
+			boltVFX = turnEffect.boltVisualEffect.id,
+			hitSound = turnEffect.hitSoundEffect.id,
+			hitVFX = turnEffect.hitVisualEffect.id,
+			areaSound = turnEffect.areaSoundEffect.id,
+			areaVFX = turnEffect.areaVisualEffect.id,
+			lighting = {x = turnEffect.lightingRed, y = turnEffect.lightingGreen, z = turnEffect.lightingBlue},
+			size = turnEffect.size,
+			sizeCap = turnEffect.sizeCap,
+			onTick = nil,
 			onCollision = nil
 		}
 	end
