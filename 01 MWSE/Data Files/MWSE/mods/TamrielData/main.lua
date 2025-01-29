@@ -225,18 +225,20 @@ local TD_ButterflyMothTooltip = {}
 ---@param e uiObjectTooltipEventData
 local function butterflyMothTooltip(e)
 	if e.reference and e.reference.baseObject.objectType == tes3.objectType.creature and e.reference.baseObject.sourceMod == "Tamriel_Data.esm" then
-		local isButterfly = string.find(e.reference.baseObject.id, "Butterfly")
-		local isMoth = string.find(e.reference.baseObject.id, "Moth")
+		local refID = e.reference.baseObject.id
+		local isButterfly = string.find(refID, "Butterfly")
+		local isMoth = string.find(refID, "Moth")
 		if isButterfly or isMoth then
 			local visibleEffects = math.clamp(math.floor(tes3.mobilePlayer.alchemy.current / tes3.findGMST(tes3.gmst.fWortChanceValue).value), 0, 4)
 	
-			local first, second = string.find(e.reference.baseObject.id, "_%a+_")
-			local region = string.sub(e.reference.baseObject.id, first + 1, second - 1)
+			local first, second = string.find(refID, "_%a+_")
+			local region = string.sub(refID, first + 1, second - 1)
 
 			-- The ID could be found by looking through the creatures script instead, but this should be quicker and will work as long as the format of the IDs remains consistent
 			local ingredientID = "T_IngCrea_"
-			if isButterfly then ingredientID = ingredientID .. "ButterflyWing" .. region .. "_01"
-			elseif isMoth then ingredientID = ingredientID .. "MothWing" .. region .. "_01" end
+			if isButterfly then ingredientID = ingredientID .. "ButterflyWing" .. region .. string.sub(refID, -3)
+			elseif refID == "T_Cyr_Fau_Moth_01" then ingredientID = "T_IngCrea_MoonMothWing_01"	-- Thanks to this item being older than the creatures, its ID has a different format than the other ingredients.
+			elseif isMoth then ingredientID = ingredientID .. "MothWing" .. region .. string.sub(refID, -3) end
 
 			local ingredient = tes3.getObject(ingredientID)
 
