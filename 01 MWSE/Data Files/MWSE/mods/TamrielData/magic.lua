@@ -1226,7 +1226,7 @@ function this.passwallEffect(e)
 
 						if checkWard then
 							for _,detection in pairs(checkWard) do
-								if detection.reference and string.find(detection.reference.baseObject.id, "T_Aid_PasswallWard_") then	-- Prevents teleporting through T_Aid_PasswallWard statics
+								if detection.reference and detection.reference.baseObject.id:find("T_Aid_PasswallWard_") then	-- Prevents teleporting through T_Aid_PasswallWard statics
 									tes3ui.showNotifyMenu(common.i18n("magic.passWallWard"))
 									return
 								end
@@ -1272,9 +1272,9 @@ function this.passwallEffect(e)
 										tes3ui.showNotifyMenu(common.i18n("magic.passwallAlpha"))
 									end
 								end
-							elseif hitReference.baseObject.objectType == tes3.objectType.door and ((string.find(string.lower(hitReference.baseObject.name), "door") or string.find(string.lower(hitReference.baseObject.name), "wooden gate") or string.find(string.lower(hitReference.baseObject.name), "palace gates") or
-									string.find(string.lower(hitReference.baseObject.name), "stone gate") or string.find(string.lower(hitReference.baseObject.name), "old iron gate")) and
-									not (string.find(string.lower(hitReference.baseObject.name), "trap") or string.find(string.lower(hitReference.baseObject.name), "cell") or string.find(string.lower(hitReference.baseObject.name), "tent"))) then
+							elseif hitReference.baseObject.objectType == tes3.objectType.door and (hitReference.baseObject.name:lower():find("door") or hitReference.baseObject.name:lower():find("wooden gate") or hitReference.baseObject.name:lower():find("palace gates") or
+									hitReference.baseObject.name:lower():find("stone gate") or hitReference.baseObject.name:lower():find("old iron gate")) and
+									not (hitReference.baseObject.name:lower():find("trap") or hitReference.baseObject.name:lower():find("cell") or hitReference.baseObject.name:lower():find("tent")) then
 								if not hitReference.destination then
 									local bestPosition = passwallCalculate(wallPosition, forward, right, up, unitRange)
 									if bestPosition then

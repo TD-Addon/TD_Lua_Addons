@@ -226,19 +226,19 @@ local TD_ButterflyMothTooltip = {}
 local function butterflyMothTooltip(e)
 	if e.reference and e.reference.baseObject.objectType == tes3.objectType.creature and e.reference.baseObject.sourceMod == "Tamriel_Data.esm" then
 		local refID = e.reference.baseObject.id
-		local isButterfly = string.find(refID, "Butterfly")
-		local isMoth = string.find(refID, "Moth")
+		local isButterfly = refID:find("Butterfly")
+		local isMoth = refID:find("Moth")
 		if isButterfly or isMoth then
 			local visibleEffects = math.clamp(math.floor(tes3.mobilePlayer.alchemy.current / tes3.findGMST(tes3.gmst.fWortChanceValue).value), 0, 4)
 	
-			local first, second = string.find(refID, "_%a+_")
-			local region = string.sub(refID, first + 1, second - 1)
+			local first, second = refID:find("_%a+_")
+			local region = refID:sub(first + 1, second - 1)
 
 			-- The ID could be found by looking through the creatures script instead, but this should be quicker and will work as long as the format of the IDs remains consistent
 			local ingredientID = "T_IngCrea_"
-			if isButterfly then ingredientID = ingredientID .. "ButterflyWing" .. region .. string.sub(refID, -3)
+			if isButterfly then ingredientID = ingredientID .. "ButterflyWing" .. region .. refID:sub(-3)
 			elseif refID == "T_Cyr_Fau_Moth_01" then ingredientID = "T_IngCrea_MoonMothWing_01"	-- Thanks to this item being older than the creatures, its ID has a different format than the other ingredients.
-			elseif isMoth then ingredientID = ingredientID .. "MothWing" .. region .. string.sub(refID, -3) end
+			elseif isMoth then ingredientID = ingredientID .. "MothWing" .. region .. refID:sub(-3) end
 
 			local ingredient = tes3.getObject(ingredientID)
 
@@ -363,7 +363,7 @@ local function createHatObjects()
 	for armor in tes3.iterateObjects(tes3.objectType.armor) do
 		if armor.slot == tes3.armorSlot.helmet and not armor.isClosedHelmet then	-- Closed helmets are not going to be hats by definition
 			if armor.sourceMod == "Tamriel_Data.esm" or armor.sourceMod == "TR_Mainland.esm" or armor.sourceMod == "Cyr_Main.esm" or armor.sourceMod == "Sky_Main.esm"	then -- Only affect TD hats or unique versions from PTR
-				if string.find(armor.id, "Hat") or string.find(armor.name, "Hat") or string.find(string.lower(armor.icon), "hat") then	-- Check whether these conditions are actually worth having
+				if armor.id:find("Hat") or armor.name:find("Hat") or armor.icon:lower():find("hat") then	-- Check whether these conditions are actually worth having
 					for _,v in pairs(hats) do
 						if armor.parts[1].male and armor.parts[1].male.id == v and not tes3.getObject(armor.id .. "H") and #(armor.id .. "H") < 32 then
 							local hat = tes3.createObject({ objectType = tes3.objectType.clothing, id = armor.id .. "H" })
@@ -553,7 +553,7 @@ local function adjustTravelPrices(e)
 	
 	if e.reference.mobile.objectType == tes3.objectType.mobileNPC then
 		local providerInstance = e.reference.mobile.object
-		if providerInstance.faction and string.find(providerInstance.faction.id, "Mages") and providerInstance.factionRank > 3 then	-- Increase price of teleporting between MG networks
+		if providerInstance.faction and providerInstance.faction.id:find("Mages") and providerInstance.factionRank > 3 then	-- Increase price of teleporting between MG networks
 			e.price = e.price * 5;
 		end
 	end
