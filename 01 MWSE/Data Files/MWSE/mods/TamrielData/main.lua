@@ -582,6 +582,7 @@ local function adjustTravelPrices(e)
 end
 
 ---@param cell tes3cell
+---@param regionTable table
 local function isInterventionCell(cell, regionTable)
 	for k,v in pairs(regionTable) do
 		local regionID, xLeft, xRight, yBottom, yTop = unpack(v, 1, 5)
@@ -659,7 +660,7 @@ dofile("TamrielData.mcm")
 
 event.register(tes3.event.loaded, function()
 
-	-- Initialize 
+	-- Initialize player data
 	local data = tes3.player.data
     data.Tamriel_Data = data.Tamriel_Data or {}
     local myData = data.Tamriel_Data

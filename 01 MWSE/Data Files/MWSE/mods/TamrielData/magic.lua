@@ -310,6 +310,7 @@ local td_enchanted_items = {
 	{ "T_EnSc_Nor_KynesIntervention", common.i18n("magic.itemScKynesIntervention"), nil }
 }
 
+---@param table table
 function this.replaceSpells(table)
 	for _,v in pairs(table) do
 		local overridden_spell = tes3.getObject(v[1])
@@ -333,6 +334,7 @@ function this.replaceSpells(table)
 	end
 end
 
+---@param table table
 function this.replaceEnchantments(table)
 	for _,v in pairs(table) do
 		local overridden_enchantment = tes3.getObject(v[1])
@@ -353,6 +355,7 @@ function this.replaceEnchantments(table)
 	end
 end
 
+---@param table table
 function this.replaceIngredientEffects(table)
 	for _,v in pairs(table) do
 		local ingredient = tes3.getObject(v[1])
@@ -369,6 +372,7 @@ function this.replaceIngredientEffects(table)
 	end
 end
 
+---@param table table
 function this.replacePotions(table)
 	for _,v in pairs(table) do
 		local potion = tes3.getObject(v[1])
@@ -379,6 +383,7 @@ function this.replacePotions(table)
 	end
 end
 
+---@param table table
 function this.editItems(table)
 	for _,v in pairs(table) do
 		local overridden_item = tes3.getObject(v[1])
@@ -390,6 +395,8 @@ function this.editItems(table)
 end
 
 ---@param actor tes3mobileNPC
+---@param table table
+---@return table
 local function checkActorSpells(actor, table)
 	local customSpells = { }
 	local customSpellIndex = 1
@@ -403,6 +410,8 @@ local function checkActorSpells(actor, table)
 	return customSpells
 end
 
+---@param session tes3combatSession
+---@param spells table
 local function equipActorSpell(session, spells)
 	for _,v in pairs(spells) do
 		if #session.mobile:getActiveMagicEffects({ effect = v[2] }) == 0 then
@@ -530,6 +539,8 @@ local function armorResartusEffect(e)
 end
 
 -- Diject's mapMarkerLib was an invaluable reference for the calculations required to make these map markers work
+---@param mapPane tes3uiElement
+---@param multiPane tes3uiElement
 local function calculateMapValues(mapPane, multiPane)
 	local mapCell = mapPane:findChild("MenuMap_map_cell")
 	local multiCell = multiPane:findChild("MenuMap_map_cell")
@@ -877,6 +888,8 @@ function this.radiantShieldAppliedEffect(e)
 	end
 end
 
+---@param cellTable table
+---@param markerID string
 function this.replaceInterventionMarkers(cellTable, markerID)
 	for _,v in pairs(cellTable) do
 		local xCoord, yCoord = unpack(v)
@@ -941,6 +954,7 @@ end
 
 ---@param reflectDamageEffects tes3activeMagicEffect[]
 ---@param damage number
+---@return number, number
 local function reflectDamageCalculate(reflectDamageEffects, damage)
 	local percentMagnitude
 	local reflectedDamage = 0
@@ -954,7 +968,7 @@ local function reflectDamageCalculate(reflectDamageEffects, damage)
 		damage = 0		-- Make sure that the effect can't heal the defender
 	end
 
-	return { damage, reflectedDamage }
+	return damage, reflectedDamage
 end
 
 ---@param e damageEventData
@@ -962,7 +976,7 @@ function this.reflectDamageEffect(e)
 	if e.attacker and e.source == tes3.damageSource.attack and e.damage > 0 then
 		local reflectDamageEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_ReflectDmg })
 		if #reflectDamageEffects > 0 then
-			local damage, reflectedDamage = unpack(reflectDamageCalculate(reflectDamageEffects, e.damage))
+			local damage, reflectedDamage = reflectDamageCalculate(reflectDamageEffects, e.damage)
 			e.attacker:applyDamage({ damage = reflectedDamage, playerAttack = true })
 			e.damage = damage
 		end
@@ -974,7 +988,7 @@ function this.reflectDamageHHEffect(e)
 	if e.attacker and e.source == tes3.damageSource.attack and e.fatigueDamage > 0 then
 		local reflectDamageEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_ReflectDmg })
 		if #reflectDamageEffects > 0 then
-			local damage, reflectedDamage = unpack(reflectDamageCalculate(reflectDamageEffects, e.fatigueDamage))
+			local damage, reflectedDamage = reflectDamageCalculate(reflectDamageEffects, e.fatigueDamage)
 			e.attacker:applyFatigueDamage(reflectedDamage, 0, false)
 			e.fatigueDamage = damage
 		end
@@ -1082,6 +1096,7 @@ local function banishDaedraEffect(e)
 end
 
 ---@param node niNode
+---@return boolean
 local function hasAlphaBlend(node)
 	for _,child in pairs(node.children) do
 		if child.alphaProperty then
@@ -1101,6 +1116,7 @@ end
 ---@param right tes3vector3
 ---@param up tes3vector3
 ---@param unitRange number
+---@return tes3vector3
 local function passwallCalculate(wallPosition, forward, right, up, unitRange)
 	local nodeArr = tes3.mobilePlayer.cell.pathGrid.nodes
 	local playerPosition = tes3.mobilePlayer.position

@@ -255,6 +255,8 @@ local region_storm_origins = {
 }
 
 ---@param weather tes3weather
+---@param vanillaFog table
+---@param mgeFog table
 local function changeWeatherFog(weather, vanillaFog, mgeFog)
 	weather.landFogDayDepth = vanillaFog.landFogDayDepth
 	weather.landFogNightDepth = vanillaFog.landFogNightDepth
@@ -265,6 +267,8 @@ local function changeWeatherFog(weather, vanillaFog, mgeFog)
 end
 
 ---@param weather tes3weather
+---@param windVanilla number
+---@param windMGE number
 local function changeWeatherWind(weather, windVanilla, windMGE)
 	weather.windSpeed = windVanilla
 
@@ -274,6 +278,7 @@ local function changeWeatherWind(weather, windVanilla, windMGE)
 end
 
 ---@param weather tes3weather
+---@param colorTable table
 local function changeWeatherColors(weather, colorTable)
 	weather.ambientSunriseColor.r = colorTable.ambientSunriseColor.r
 	weather.ambientSunriseColor.g = colorTable.ambientSunriseColor.g
@@ -333,6 +338,7 @@ local function changeWeatherColors(weather, colorTable)
 end
 
 ---@param weather tes3weather
+---@param cloudSettings table
 local function changeWeatherSky(weather, cloudSettings)
 	weather.cloudsMaxPercent = cloudSettings.cloudsMaxPercent
 	weather.cloudsSpeed = cloudSettings.cloudsSpeed
@@ -401,6 +407,7 @@ local function loadParticle(meshPath)
 end
 
 ---@param weather tes3weatherRain
+---@param particleSettings table
 local function changeWeatherPrecipitation(weather, particleSettings)
 	weather.maxParticles = particleSettings.maxParticles
 	weather.particleEntranceSpeed = particleSettings.particleEntranceSpeed
@@ -429,6 +436,7 @@ local function changeWeatherPrecipitation(weather, particleSettings)
 end
 
 ---@param weather tes3weather
+---@param stormClouds table
 local function changeWeatherStormClouds(weather, stormClouds)
 	local clouds = tes3.loadMesh(stormClouds.mesh, false)	-- If useCache is true, then running this function twice with the same stormClouds will result in sceneStormRoot having nil children attached to it
 
@@ -443,6 +451,7 @@ end
 
 -- Checks whether the player is loading into a cell with a suitable custom weather active so that particle settings are actually applied; this change is visible to the player, but is necessary and unavoidable until MWSE has proper support for custom weathers
 ---@param customWeather tes3weather
+---@param isNext boolean
 local function fixParticlesOnLoad(customWeather, isNext)
 	local controller = customWeather.controller
 
@@ -461,6 +470,7 @@ local function fixParticlesOnLoad(customWeather, isNext)
 end
 
 ---@param weather tes3weatherRain
+---@param replacement table
 local function changeWeather(weather, replacement)
 	changeWeatherFog(weather, replacement.fog, replacement.fogMGE)
 	changeWeatherWind(weather, replacement.wind, replacement.windMGE)
