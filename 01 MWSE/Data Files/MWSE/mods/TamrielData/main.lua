@@ -12,6 +12,10 @@ local weather = require("tamrielData.weather")
 
 mwse.log("[Tamriel Data MWSE-Lua] Initialized Version 2.1")
 
+local player_data_defaults = {
+	corruptionReferenceID = ""
+}
+
 -- item id, pickup sound id, putdown sound id, equip sound id
 local item_sounds = {	
 	{ "T_Imp_Subst_Blackdrake_01", "Item Misc Up", "Item Misc Down", "T_SndObj_DrugSniff"},
@@ -220,6 +224,24 @@ local hats = {
 }
 
 local TD_ButterflyMothTooltip = {}
+
+-- Taken from MWSE's documentation
+---@param data table
+---@param defaults table
+local function initTableVlaues(data, defaults)
+    for k,v in pairs(defaults) do
+        if data[k] == nil then
+            if type(v) ~= "table" then
+                data[k] = v
+            elseif v == {} then
+                data[k] = {}
+            else
+                data[k] = {}
+                initTableValues(data[k], v)
+            end
+        end
+    end
+end
 
 -- The following function is based on one that G7 made for Graphic Herbalism
 ---@param e uiObjectTooltipEventData
@@ -637,6 +659,12 @@ dofile("TamrielData.mcm")
 
 event.register(tes3.event.loaded, function()
 
+	-- Initialize 
+	local data = tes3.player.data
+    data.Tamriel_Data = data.Tamriel_Data or {}
+    local myData = data.Tamriel_Data
+    initTableVlaues(myData, player_data_defaults)
+
 	if config.summoningSpells == true then
 		event.register(tes3.event.determinedAction, magic.useCustomSpell, { unregisterOnLoad = true })
 	end
@@ -645,8 +673,9 @@ event.register(tes3.event.loaded, function()
 		magic.replaceInterventionMarkers(kyne_intervention_cells, "T_Aid_KyneInterventionMarker")
 	end
 
-	if config.miscSpells == true then
-		event.register(tes3.event.leveledItemPicked, magic.insightEffect, { unregisterOnLoad = true })
+	if config.miscSpells == true then		
+		event.register(tes3.event.activate, magic.corruptionBlockActivation, { unregisterOnLoad = true })
+		event.register(tes3.event.mobileActivated, magic.corruptionSummoned, { unregisterOnLoad = true })
 		
 		--event.register(tes3.event.magicEffectRemoved, magic.wabbajackRemovedEffect, { unregisterOnLoad = true })
 		--event.register(tes3.event.spellTick, magic.wabbajackAppliedEffect, { unregisterOnLoad = true })
@@ -654,6 +683,8 @@ event.register(tes3.event.loaded, function()
 		timer.start{duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectHumanoidTick}
 		event.register(tes3.event.magicCasted, magic.detectHumanoidTick, { unregisterOnLoad = true })
 		event.register(tes3.event.magicEffectRemoved, magic.detectHumanoidTick, { unregisterOnLoad = true })
+
+		event.register(tes3.event.leveledItemPicked, magic.insightEffect, { unregisterOnLoad = true })
 
 		event.register(tes3.event.spellResist, magic.radiantShieldSpellResistEffect, { unregisterOnLoad = true })
 		event.register(tes3.event.damaged, magic.radiantShieldDamagedEffect, { unregisterOnLoad = true })
@@ -758,4 +789,5 @@ event.register(tes3.event.loaded, function()
 		tes3.getFaction("Imperial Legion").name = common.i18n("main.morrowindImperialLegion")
 		tes3.getFaction("Dark Brotherhood").name = common.i18n("main.morrowindDarkBrotherhood")
 	end
+	
 end)

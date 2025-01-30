@@ -20,6 +20,9 @@ local mapOriginGridY = 0
 local multiOriginGridX = 0
 local multiOriginGridY = 0
 
+local corruptionActorID = "T_Glb_Cre_Gremlin_01"	-- A funny default, just in case
+local corruptionCasted = false
+
 if config.summoningSpells == true then
 	tes3.claimSpellEffectId("T_summon_Devourer", 2090)
 	tes3.claimSpellEffectId("T_summon_DremArch", 2091)
@@ -75,6 +78,7 @@ if config.miscSpells == true then
 	tes3.claimSpellEffectId("T_restoration_ArmorResartus", 2132)
 	tes3.claimSpellEffectId("T_restoration_WeaponResartus", 2133)
 	tes3.claimSpellEffectId("T_conjuration_Corruption", 2134)
+	tes3.claimSpellEffectId("T_conjuration_CorruptionSummon", 2135)
 end
 
 -- The effect costs for most summons were initially calculated by mort using a formula (dependent on a creature's health and soul) that is now lost and were then adjusted as seemed reasonable.
@@ -137,7 +141,8 @@ local td_misc_effects = {
 	{ tes3.effect.T_mysticism_Insight, common.i18n("magic.miscInsight"), 10, "td\\s\\td_s_insight.tga", common.i18n("magic.miscInsightDesc")},
 	{ tes3.effect.T_restoration_ArmorResartus, common.i18n("magic.miscArmorResartus"), 60, "td\\s\\td_s_restore_ar.tga", common.i18n("magic.miscArmorResartusDesc")},
 	{ tes3.effect.T_restoration_WeaponResartus, common.i18n("magic.miscWeaponResartus"), 120, "td\\s\\td_s_restore_wpn.tga", common.i18n("magic.miscWeaponResartusDesc")},
-	{ tes3.effect.T_conjuration_Corruption, common.i18n("magic.miscCorruption"), 120, "td\\s\\tr_s_skull_corr.tga", common.i18n("magic.miscCorruptionDesc")},
+	{ tes3.effect.T_conjuration_Corruption, common.i18n("magic.miscCorruption"), 40, "td\\s\\tr_s_skull_corr.tga", common.i18n("magic.miscCorruptionDesc")},
+	{ tes3.effect.T_conjuration_CorruptionSummon, common.i18n("magic.miscCorruption"), 0, "td\\s\\tr_s_skull_corr.tga", common.i18n("magic.miscCorruptionDesc")},
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -201,6 +206,7 @@ local td_misc_spells = {
 	{ "T_Com_Mys_Insight", tes3.spellType.spell, common.i18n("magic.miscInsight"), 76, tes3.effect.T_mysticism_Insight, tes3.effectRange.self, 0, 10, 15, 15 },
 	{ "T_Com_Res_ArmorResartus", tes3.spellType.spell, common.i18n("magic.miscArmorResartus"), 90, tes3.effect.T_restoration_ArmorResartus, tes3.effectRange.self, 0, 0, 20, 40 },
 	{ "T_Com_Res_WeaponResartus", tes3.spellType.spell, common.i18n("magic.miscWeaponResartus"), 90, tes3.effect.T_restoration_WeaponResartus, tes3.effectRange.self, 0, 0, 10, 20 },
+	{ "T_Dae_Cnj_UNI_CorruptionSummon", tes3.spellType.spell, common.i18n("magic.miscCorruption"), 0, tes3.effect.T_conjuration_CorruptionSummon, tes3.effectRange.self, 0, 30, 1, 1 },
 }
 
 -- enchantment id, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -236,7 +242,8 @@ local td_enchantments = {
 	{ "T_Const_Robe_Reprisal", tes3.effect.frostShield, tes3.effectRange.self, 0, 1, 50, 50, tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 1, 10, 10 },
 	{ "T_Const_Onimaru_en", tes3.effect.fortifyAttack, tes3.effectRange.self, 0, 1, 10, 10, tes3.effect.resistMagicka, tes3.effectRange.self, 0, 1, 20, 20, tes3.effect.resistNormalWeapons, tes3.effectRange.self, 0, 1, 20, 20, tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 1, 20, 20, tes3.effect.summonDremora, tes3.effectRange.self, 0, 1, 1, 1 },
 	{ "T_Const_NadiaInsight", tes3.effect.T_mysticism_Insight, tes3.effectRange.self, 0, 1, 30, 30 },
-	--{ "T_Use_WabbajackUni", tes3.effect.T_alteration_Wabbajack, tes3.effectRange.target, 0, 1, 1, 1 }
+	--{ "T_Use_WabbajackUni", tes3.effect.T_alteration_Wabbajack, tes3.effectRange.target, 0, 1, 1, 1 },
+	{ "T_Use_SkullOfCorruption", tes3.effect.T_conjuration_Corruption, tes3.effectRange.target, 0, 30, 1, 1 },	-- Why oh why is this ID not Uni?
 }
 
 -- ingredient id, 1st effect id, 1st effect attribute id, 1st effect skill id, 2nd effect id, ...
@@ -430,6 +437,24 @@ function this.useCustomSpell(e)
 		end
 		]]
 	--end
+end
+
+-- Stop the player from talking to the summon, or the summon from talking to the player (just in case)
+---@param e activateEventData
+function this.corruptionBlockActivation(e)
+	if e.target.id == tes3.player.data.Tamriel_Data.corruptionReferenceID or (e.activator.id == tes3.player.data.Tamriel_Data.corruptionReferenceID and e.target == tes3.player) then return false end
+end
+
+---@param e mobileActivatedEventData
+function this.corruptionSummoned(e)
+	if corruptionCasted and e.reference.baseObject.id == corruptionActorID then	-- Apply VFX to summon here as well?
+		corruptionCasted = false
+		tes3.player.data.Tamriel_Data.corruptionReferenceID = e.reference.id
+		e.mobile.alarm = 0
+		e.mobile.fight = 100
+		e.mobile.flee = 0
+		e.mobile.hello = 0
+	end
 end
 
 ---@param e tes3magicEffectTickEventData
@@ -1472,7 +1497,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 		local shieldEffect = tes3.getMagicEffect(tes3.effect.shield)
 		local burdenEffect = tes3.getMagicEffect(tes3.effect.burden)
 		local restoreEffect = tes3.getMagicEffect(tes3.effect.fortifyHealth)	-- The fortify VFX feels more appropriate for the resartus effects, but perhaps it should still be restoration?
-		local turnEffect = tes3.getMagicEffect(tes3.effect.turnUndead)
+		local summonDremoraEffect = tes3.getMagicEffect(tes3.effect.summonDremora)
 
 		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[1])	-- Passwall
 		tes3.addMagicEffect{
@@ -1859,38 +1884,94 @@ event.register(tes3.event.magicEffectsResolved, function()
 			description = effectDescription,
 			school = tes3.magicSchool.conjuration,
 			baseCost = effectCost,
-			speed = turnEffect.speed,
+			speed = summonDremoraEffect.speed,
+			allowEnchanting = false,
+			allowSpellmaking = false,
+			appliesOnce = true,
+			canCastSelf = false,
+			canCastTarget = true,
+			canCastTouch = false,
+			casterLinked = summonDremoraEffect.casterLinked,
+			hasContinuousVFX = summonDremoraEffect.hasContinuousVFX,
+			hasNoDuration = false,
+			hasNoMagnitude = true,
+			illegalDaedra = summonDremoraEffect.illegalDaedra,
+			isHarmful = true,
+			nonRecastable = false,
+			targetsAttributes = false,
+			targetsSkills = false,
+			unreflectable = true,
+			usesNegativeLighting = summonDremoraEffect.usesNegativeLighting,
+			icon = iconPath,
+			particleTexture = summonDremoraEffect.particleTexture,
+			castSound = summonDremoraEffect.castSoundEffect.id,
+			castVFX = summonDremoraEffect.castVisualEffect.id,
+			boltSound = summonDremoraEffect.boltSoundEffect.id,
+			boltVFX = summonDremoraEffect.boltVisualEffect.id,
+			hitSound = summonDremoraEffect.hitSoundEffect.id,
+			hitVFX = summonDremoraEffect.hitVisualEffect.id,
+			areaSound = summonDremoraEffect.areaSoundEffect.id,
+			areaVFX = summonDremoraEffect.areaVisualEffect.id,
+			lighting = {x = summonDremoraEffect.lightingRed, y = summonDremoraEffect.lightingGreen, z = summonDremoraEffect.lightingBlue},
+			size = summonDremoraEffect.size,
+			sizeCap = summonDremoraEffect.sizeCap,
+			onTick = function(eventData)
+				if (not eventData:trigger()) then
+					return
+				end
+				
+				if eventData.effectInstance.target.id ~= tes3.player.data.Tamriel_Data.corruptionReferenceID then	-- Memory errors can be reported if the effect is applied to the summon and doing so is weird anyways
+					corruptionActorID = eventData.effectInstance.target.baseObject.id
+					corruptionCasted = true
+					tes3.cast({ reference = eventData.sourceInstance.caster, spell = "T_Dae_Cnj_UNI_CorruptionSummon", alwaysSucceeds = true, bypassResistances = true, instant = true, target = eventData.sourceInstance.caster })
+				end
+
+				eventData.effectInstance.state = tes3.spellState.retired
+			end,
+			onCollision = nil
+		}
+
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[11])		-- Corruption Summon
+		tes3.addMagicEffect{
+			id = effectID,
+			name = effectName,
+			description = effectDescription,
+			school = tes3.magicSchool.conjuration,
+			baseCost = effectCost,
+			speed = summonDremoraEffect.speed,
 			allowEnchanting = false,
 			allowSpellmaking = false,
 			appliesOnce = true,
 			canCastSelf = true,
 			canCastTarget = false,
 			canCastTouch = false,
-			casterLinked = turnEffect.casterLinked,
-			hasContinuousVFX = turnEffect.hasContinuousVFX,
+			casterLinked = summonDremoraEffect.casterLinked,
+			hasContinuousVFX = summonDremoraEffect.hasContinuousVFX,
 			hasNoDuration = false,
 			hasNoMagnitude = true,
-			illegalDaedra = turnEffect.illegalDaedra,
-			isHarmful = true,
+			illegalDaedra = summonDremoraEffect.illegalDaedra,
+			isHarmful = false,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			usesNegativeLighting = turnEffect.usesNegativeLighting,
+			usesNegativeLighting = summonDremoraEffect.usesNegativeLighting,
 			icon = iconPath,
-			particleTexture = turnEffect.particleTexture,
-			castSound = turnEffect.castSoundEffect.id,
-			castVFX = turnEffect.castVisualEffect.id,
-			boltSound = turnEffect.boltSoundEffect.id,
-			boltVFX = turnEffect.boltVisualEffect.id,
-			hitSound = turnEffect.hitSoundEffect.id,
-			hitVFX = turnEffect.hitVisualEffect.id,
-			areaSound = turnEffect.areaSoundEffect.id,
-			areaVFX = turnEffect.areaVisualEffect.id,
-			lighting = {x = turnEffect.lightingRed, y = turnEffect.lightingGreen, z = turnEffect.lightingBlue},
-			size = turnEffect.size,
-			sizeCap = turnEffect.sizeCap,
-			onTick = nil,
+			particleTexture = summonDremoraEffect.particleTexture,
+			castSound = summonDremoraEffect.castSoundEffect.id,
+			castVFX = summonDremoraEffect.castVisualEffect.id,
+			boltSound = summonDremoraEffect.boltSoundEffect.id,
+			boltVFX = summonDremoraEffect.boltVisualEffect.id,
+			hitSound = summonDremoraEffect.hitSoundEffect.id,
+			hitVFX = summonDremoraEffect.hitVisualEffect.id,
+			areaSound = summonDremoraEffect.areaSoundEffect.id,
+			areaVFX = summonDremoraEffect.areaVisualEffect.id,
+			lighting = {x = summonDremoraEffect.lightingRed, y = summonDremoraEffect.lightingGreen, z = summonDremoraEffect.lightingBlue},
+			size = summonDremoraEffect.size,
+			sizeCap = summonDremoraEffect.sizeCap,
+			onTick = function(eventData)
+				eventData:triggerSummon(corruptionActorID)
+			end,
 			onCollision = nil
 		}
 	end
