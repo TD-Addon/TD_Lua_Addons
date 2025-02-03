@@ -3147,7 +3147,7 @@ event.register(tes3.event.initialized, function()
 			t_ingfood_lyco_01 = types.food,
 			t_ingfood_mango_01 = types.food,
 			t_ingfood_meatalit_01 = types.meat,
-			t_ingfood_meatarenthjerky_01 = types.meat,
+			t_ingfood_meatarenthjerky_01 = types.food,
 			t_ingfood_meatbeef_01 = types.meat,
 			t_ingfood_meatboar_01 = types.meat,
 			t_ingfood_meatboar_02 = types.meat,
