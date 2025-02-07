@@ -79,6 +79,8 @@ if config.miscSpells == true then
 	tes3.claimSpellEffectId("T_restoration_WeaponResartus", 2133)
 	tes3.claimSpellEffectId("T_conjuration_Corruption", 2134)
 	tes3.claimSpellEffectId("T_conjuration_CorruptionSummon", 2135)
+	tes3.claimSpellEffectId("T_illusion_DistractCreature", 2136)
+	tes3.claimSpellEffectId("T_illusion_DistractHumanoid", 2137)
 end
 
 -- The effect costs for most summons were initially calculated by mort using a formula (dependent on a creature's health and soul) that is now lost and were then adjusted as seemed reasonable.
@@ -141,8 +143,10 @@ local td_misc_effects = {
 	{ tes3.effect.T_mysticism_Insight, common.i18n("magic.miscInsight"), 10, "td\\s\\td_s_insight.tga", common.i18n("magic.miscInsightDesc")},
 	{ tes3.effect.T_restoration_ArmorResartus, common.i18n("magic.miscArmorResartus"), 60, "td\\s\\td_s_restore_ar.tga", common.i18n("magic.miscArmorResartusDesc")},
 	{ tes3.effect.T_restoration_WeaponResartus, common.i18n("magic.miscWeaponResartus"), 120, "td\\s\\td_s_restore_wpn.tga", common.i18n("magic.miscWeaponResartusDesc")},
-	{ tes3.effect.T_conjuration_Corruption, common.i18n("magic.miscCorruption"), 40, "td\\s\\tr_s_skull_corr.tga", common.i18n("magic.miscCorruptionDesc")},
-	{ tes3.effect.T_conjuration_CorruptionSummon, common.i18n("magic.miscCorruption"), 0, "td\\s\\tr_s_skull_corr.tga", common.i18n("magic.miscCorruptionDesc")},
+	{ tes3.effect.T_conjuration_Corruption, common.i18n("magic.miscCorruption"), 40, "td\\s\\td_s_skull_corr.tga", common.i18n("magic.miscCorruptionDesc")},
+	{ tes3.effect.T_conjuration_CorruptionSummon, common.i18n("magic.miscCorruption"), 0, "td\\s\\td_s_skull_corr.tga", common.i18n("magic.miscCorruptionDesc")},
+	{ tes3.effect.T_illusion_DistractCreature, common.i18n("magic.miscDistractCreature"), 0.5, "td\\s\\td_s_dist_cre.tga", common.i18n("magic.miscDistractCreatureDesc")},
+	{ tes3.effect.T_illusion_DistractHumanoid, common.i18n("magic.miscDistractHumanoid"), 1, "td\\s\\td_s_dist_hum.tga", common.i18n("magic.miscDistractHumanoidDesc")},
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -207,6 +211,8 @@ local td_misc_spells = {
 	{ "T_Com_Res_ArmorResartus", tes3.spellType.spell, common.i18n("magic.miscArmorResartus"), 90, tes3.effect.T_restoration_ArmorResartus, tes3.effectRange.self, 0, 0, 20, 40 },
 	{ "T_Com_Res_WeaponResartus", tes3.spellType.spell, common.i18n("magic.miscWeaponResartus"), 90, tes3.effect.T_restoration_WeaponResartus, tes3.effectRange.self, 0, 0, 10, 20 },
 	{ "T_Dae_Cnj_UNI_CorruptionSummon", tes3.spellType.spell, common.i18n("magic.miscCorruption"), 0, tes3.effect.T_conjuration_CorruptionSummon, tes3.effectRange.self, 0, 30, 1, 1 },
+	{ "T_Com_Ilu_DistractCreature", tes3.spellType.spell, common.i18n("magic.miscDistractCreature"), 11, tes3.effect.T_illusion_DistractCreature, tes3.effectRange.target, 0, 15, 20, 20 },
+	{ "T_Com_Ilu_DistractHumanoid", tes3.spellType.spell, common.i18n("magic.miscDistractHumanoid"), 22, tes3.effect.T_illusion_DistractHumanoid, tes3.effectRange.target, 0, 15, 20, 20 },
 }
 
 -- enchantment id, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -309,6 +315,32 @@ local td_enchanted_items = {
 	{ "T_EnSc_Com_SummonDremoraCaster", common.i18n("magic.itemScSummonDremoraCaster"), 314 },
 	{ "T_EnSc_Nor_KynesIntervention", common.i18n("magic.itemScKynesIntervention"), nil }
 }
+
+-- race name, female, distraction voice files, distraction end voice lines
+local distractedVoiceLines = {
+	{ "Argonian", false, { "vo\\a\\m\\Idl_AM001.mp3", "vo\\a\\m\\Hlo_AM056.mp3" }, { "vo\\a\\m\\Idl_AM008.mp3" } },
+	{ "Argonian", true, { "vo\\a\\f\\Idl_AF007.mp3", "vo\\a\\f\\Idl_AF004.mp3" }, { "vo\\a\\f\\Idl_AF002.mp3" } },
+	{ "Breton", false, { }, { } },
+	{ "Breton", true, { "vo\\b\\f\\Idl_BF001.mp3", "vo\\b\\f\\Idl_BF005.mp3" }, { "vo\\b\\f\\Idl_BF003.mp3" } },
+	{ "Dark Elf", false, { "vo\\d\\m\\Idl_DM006.mp3", "vo\\d\\m\\Idl_DM007.mp3" }, { "vo\\d\\m\\Idl_DM008.mp3" } },
+	{ "Dark Elf", true, { "vo\\d\\f\\Idl_DF006.mp3" }, { "vo\\d\\f\\Idl_DF003.mp3" } },
+	{ "High Elf", false, { "vo\\h\\m\\Hlo_HM056.mp3" }, { "vo\\i\\m\\Idl_HF007.mp3" } },
+	{ "High Elf", true, { "vo\\h\\f\\Hlo_HF056.mp3" }, { "vo\\i\\f\\Idl_HF007.mp3" } },
+	{ "Imperial", false, { "vo\\i\\m\\Idl_IM008.mp3", "vo\\i\\m\\Idl_IM003.mp3" }, { "vo\\i\\m\\Idl_IM005.mp3" } },
+	{ "Imperial", true, { "vo\\i\\f\\Idl_IF001.mp3" }, { "vo\\i\\f\\Idl_IF009.mp3" } },
+	{ "Khajiit", false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },	-- The main reason for using race names instead of IDs is to make the Khajiit easier, but that should change when/if certain forms get their own voicelines
+	{ "Khajiit", true, { "vo\\k\\f\\Idl_KF005.mp3", "vo\\k\\f\\Idl_KF006.mp3", "vo\\k\\f\\Idl_KF007.mp3" }, { "vo\\k\\f\\Idl_KF002.mp3", "vo\\k\\f\\Idl_KF003.mp3" } },
+	{ "Nord", false, { "vo\\n\\m\\Idl_NM001.mp3" }, { "vo\\n\\m\\Idl_NM009.mp3" } },
+	{ "Nord", true, { "vo\\n\\f\\Idl_NF002.mp3", "vo\\n\\f\\Idl_NF004.mp3" }, { "vo\\n\\f\\Idl_NM008.mp3" } },
+	{ "Orc", false, { "vo\\o\\m\\Idl_OM001.mp3", "vo\\o\\m\\Idl_OM002.mp3" }, { "vo\\o\\m\\Idl_OM004.mp3", "vo\\o\\m\\Idl_OM009.mp3" } },
+	{ "Orc", true, { "vo\\o\\f\\Idl_OF009.mp3" }, { } },
+	{ "Redguard", false, { }, { } },
+	{ "Redguard", true, { "vo\\r\\f\\Idl_RF002.mp3", "vo\\r\\f\\Idl_RF008.mp3" }, { "vo\\r\\f\\Idl_RF003.mp3", "vo\\r\\f\\Idl_RF007.mp3" } },
+	{ "Wood Elf", false, { "vo\\w\\m\\Idl_WM009.mp3" }, { "vo\\w\\m\\Idl_WM006.mp3", "vo\\w\\m\\Idl_WM007.mp3" } },
+	{ "Wood Elf", true, { "vo\\w\\f\\Idl_WF006.mp3", "vo\\w\\f\\Idl_WF009.mp3" }, { "vo\\w\\f\\Idl_WF003.mp3", "vo\\w\\f\\Idl_WF007.mp3" } },
+}
+
+local distractedReferences = {}	-- Should probably decide on a consistent naming scheme for tables
 
 ---@param table table
 function this.replaceSpells(table)
@@ -448,17 +480,255 @@ function this.useCustomSpell(e)
 	--end
 end
 
--- Stop the player from talking to the summon, or the summon from talking to the player (just in case)
+function this.distractedReturnTick()
+	for ref in pairs(distractedReferences) do
+		---@cast ref tes3reference
+		if ref.data.tamrielData and ref.data.tamrielData.distract then
+			if (ref.mobile.actorType == tes3.actorType.npc and #ref.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_DistractHumanoid }) == 0) or (ref.mobile.actorType == tes3.actorType.creature and #ref.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_DistractCreature }) == 0) then
+				if not ref.mobile.isMovingForward then
+					tes3.setAIWander({ reference = ref, range = ref.data.tamrielData.distract.distance, duration = ref.data.tamrielData.distract.duration, time = ref.data.tamrielData.distract.hour, idles = ref.data.tamrielData.distract.idles })
+					
+					if ref.data.tamrielData.distract.distance == 0 then
+						ref.orientation = ref.data.tamrielData.distract.orientation -- If they are supposed to actually wander around, then not resetting the orientation feels more natural, hence it being under this condition
+						ref.data.tamrielData.distractOldPosition = ref.data.tamrielData.distract.position	-- They don't quite return to their original positions, so this is used with onDistractedReferenceActivated to do so
+					end
+
+					ref.data.tamrielData.distract = nil
+					distractedReferences[ref] = nil
+				end
+			end
+		end
+	end
+end
+
+---@param e referenceActivatedEventData
+function this.onDistractedReferenceActivated(e)
+	if e.reference.data and e.reference.data.tamrielData then
+		if e.reference.data.tamrielData.distract then
+			distractedReferences[e.reference] = true
+		elseif e.reference.data.tamrielData.distractOldPosition then
+			e.reference.position = e.reference.data.tamrielData.distractOldPosition
+			e.reference.data.tamrielData.distractOldPosition = nil
+		end
+	end
+end
+
+---@param e referenceDeactivatedEventData
+function this.onDistractedReferenceDeactivated(e)
+	distractedReferences[e.reference] = nil
+end
+
+---@param e cellChangedEventData
+function this.distractCellChangedEffect(e)
+	if e.previousCell then							-- Don't run when loading a game; all of this could be done in onDistractedReferenceActivated, but there would be no way to distinguish between loading a game and just changing the cell
+		for ref in pairs(distractedReferences) do
+			---@cast ref tes3reference
+			if ref.cell == e.cell and ref.data.tamrielData and ref.data.tamrielData.distract then	-- As long as the game is not being loaded, the distract effects should not be present
+				tes3.setAIWander({ reference = ref, range = ref.data.tamrielData.distract.distance, duration = ref.data.tamrielData.distract.duration, time = ref.data.tamrielData.distract.hour, idles = ref.data.tamrielData.distract.idles })
+				ref.position = ref.data.tamrielData.distract.position
+				if ref.data.tamrielData.distract.distance == 0 then ref.orientation = ref.data.tamrielData.distract.orientation end	-- Maybe get rid of this condition for cell changes?
+				ref.data.tamrielData.distract = nil
+				distractedReferences[ref] = nil
+			end
+		end
+	end
+end
+
+---@param ref tes3reference
+---@param isEnd boolean
+local function playDistractedVoiceLine(ref, isEnd)
+	for _,v in pairs(distractedVoiceLines) do
+		local raceName, isFemale, voicesStart, voicesEnd = unpack(v)
+		if ref.object.female == isFemale and ref.object.race.name == raceName then
+			local voices
+			if not isEnd then voices = voicesStart
+			else voices = voicesEnd end
+
+			if voices then
+				local path = voices[math.random(#voices)]
+				tes3.say({ reference = ref, soundPath = path })
+			end
+
+			return
+		end
+	end
+end
+
+---@param e magicEffectRemovedEventData
+function this.distractRemovedEffect(e)
+	if e.effect.id == tes3.effect.T_illusion_DistractCreature or e.effect.id == tes3.effect.T_illusion_DistractHumanoid then
+		if e.reference and e.reference.data.tamrielData and e.reference.data.tamrielData.distract then
+			if math.random() < 0.45 then playDistractedVoiceLine(e.reference, true) end
+			tes3.setAITravel({ reference = e.reference, destination = e.reference.data.tamrielData.distract.position })
+		end
+	end
+end
+
+---@param ref tes3reference
+---@param package tes3aiPackageWander
+local function distractSavePackage(ref, package)
+	ref.data.tamrielData = {}
+
+	if not package then
+		ref.data.tamrielData.distract = {
+			position = {
+				ref.position.x,
+				ref.position.y,
+				ref.position.z
+			},
+			orientation = {
+				ref.orientation.x,
+				ref.orientation.y,
+				ref.orientation.z
+			},
+			cell = ref.cell.id,
+			distance = 0,
+			duration = 0,
+			hour = 0,
+			idles = { 60, 20, 10, 0, 0, 0, 0, 0 }
+		}
+	elseif package.type == 0 then	-- Have condition for preexisting travel package too?
+		local packageIdles = {}
+		for k,v in pairs(package.idles) do
+			packageIdles[k] = v.chance
+		end
+
+		ref.data.tamrielData.distract = {
+			position = {
+				ref.position.x,
+				ref.position.y,
+				ref.position.z
+			},
+			orientation = {
+				ref.orientation.x,
+				ref.orientation.y,
+				ref.orientation.z
+			},
+			cell = ref.cell.id,
+			distance = package.distance,
+			duration = package.duration,
+			hour = package.hourOfDay,
+			idles = packageIdles
+		}
+	end
+end
+
+---@param e tes3magicEffectTickEventData
+local function distractEffect(e)
+	local target = e.effectInstance.target
+	local range = e.effectInstance.magnitude * 22.1
+	
+	local activePackage = target.mobile.aiPlanner:getActivePackage()
+	if not activePackage or activePackage.type < 1 then
+		local distance
+		local playerDistance
+		local destination
+
+		local bestDistance = 0
+		local bestPlayerDistance = 0
+		local bestDestination
+		
+		distractSavePackage(target, activePackage)
+		if target.cell.isInterior then
+			local nodeArr = target.cell.pathGrid.nodes
+		
+			for _,node in pairs(nodeArr) do
+				if math.abs(node.position.z - target.position.z) < 384 then
+					distance = target.position:distance(node.position)
+					playerDistance = tes3.player.position:distance(node.position)
+					
+					if distance <= range and distance >= bestDistance and playerDistance > bestPlayerDistance then
+						bestDistance = distance
+						bestPlayerDistance = playerDistance
+						bestDestination = node.position
+					end
+				end
+			end
+		else
+			for rotation = 0, 342, 18 do
+				local pathCollision = tes3.rayTest{	-- This is not a very rigorous check, but anything that works better would also be much more complicated, so this is it for now
+					position = target.position + tes3vector3.new(0, 0, 0.25 * target.mobile.height),
+					direction = target.orientation + tes3vector3.new(0, 0, rotation),
+					maxDistance = range + target.mobile.boundSize2D.y / 2,
+					root = {tes3.game.worldObjectRoot},
+					ignore = {target},
+				}
+
+				if pathCollision and pathCollision.distance then distance = pathCollision.distance - target.mobile.boundSize2D.y / 2
+				else distance = range end
+
+				if distance >= bestDistance then
+					destination = target.position + tes3vector3.new(math.sin(math.rad(rotation)) * range, math.cos(math.rad(rotation)) * range, 0)
+					playerDistance = tes3.player.position:distance(destination)
+
+					if playerDistance > bestPlayerDistance then
+						bestDistance = distance
+						bestPlayerDistance = playerDistance
+						bestDestination = destination
+					end
+				end
+			end
+		end
+
+		if bestDestination then
+			if math.random() < 0.45 then playDistractedVoiceLine(target, false) end
+			tes3.setAITravel({ reference = target, destination = bestDestination })
+			distractedReferences[target] = true
+		else  
+			target.data.tamrielData.distract = nil
+		end
+	end
+end
+
+---@param e tes3magicEffectTickEventData
+local function distractHumanoidEffect(e)
+	if (not e:trigger()) then
+		return
+	end
+
+	local target = e.effectInstance.target	-- Level restriction? Tied to magnitude?
+
+	if not target or target.mobile.actorType ~= tes3.actorType.npc or target.mobile.isDead or target.mobile.inCombat or (target.data.tamrielData and target.data.tamrielData.distract) then
+		e.effectInstance.state = tes3.spellState.retired	-- This condition seems to be hit when the effect expires
+		return
+	end
+	
+	if target.mobile.isPlayerDetected then
+		tes3.triggerCrime({ type = tes3.crimeType.trespass })	-- trigger crime doesn't seem to be working for some reason
+		e.effectInstance.state = tes3.spellState.retired
+		return
+	end
+	
+	distractEffect(e)
+end
+
+---@param e tes3magicEffectTickEventData
+local function distractCreatureEffect(e)
+	if (not e:trigger()) then
+		return
+	end
+
+	local target = e.effectInstance.target	-- Level restriction? Tied to magnitude?
+
+	if not target or target.mobile.actorType ~= tes3.actorType.creature or target.mobile.isDead or target.mobile.inCombat or (target.data.tamrielData and target.data.tamrielData.distract) then	-- Require player to sneak?
+		e.effectInstance.state = tes3.spellState.retired
+		return
+	end
+
+	distractEffect(e)
+end
+
+-- Stop the player from talking to the summon and the summon from talking to the player (just in case)
 ---@param e activateEventData
 function this.corruptionBlockActivation(e)
-	if e.target.id == tes3.player.data.Tamriel_Data.corruptionReferenceID or (e.activator.id == tes3.player.data.Tamriel_Data.corruptionReferenceID and e.target == tes3.player) then return false end
+	if e.target.id == tes3.player.data.tamrielData.corruptionReferenceID or (e.activator.id == tes3.player.data.tamrielData.corruptionReferenceID and e.target == tes3.player) then return false end
 end
 
 ---@param e mobileActivatedEventData
 function this.corruptionSummoned(e)
 	if corruptionCasted and e.reference.baseObject.id == corruptionActorID then	-- Apply VFX to summon here as well?
 		corruptionCasted = false
-		tes3.player.data.Tamriel_Data.corruptionReferenceID = e.reference.id
+		tes3.player.data.tamrielData.corruptionReferenceID = e.reference.id
 		e.mobile.alarm = 0
 		e.mobile.fight = 100
 		e.mobile.flee = 0
@@ -1148,14 +1418,14 @@ local function passwallCalculate(wallPosition, forward, right, up, unitRange)
 							position = node.position - (forward * rayTestOffset) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
 							direction = forward,
 							maxDistance = rayTestOffset * 2,
-							root = {tes3.game.sceneGraphCollideString},	-- Only checks collisions? There isn't any documentation, but it is capable of hitting stuff
+							--root = {tes3.game.sceneGraphCollideString},
 							useBackTriangles = true,
 						}
 						local targetX = tes3.rayTest{
 							position = node.position - (right * rayTestOffset) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
 							direction = right,
 							maxDistance = rayTestOffset * 2,
-							root = {tes3.game.sceneGraphCollideString},
+							--root = {tes3.game.sceneGraphCollideString},
 							useBackTriangles = true,
 						}
 						
@@ -1204,14 +1474,14 @@ local function passwallCalculate(wallPosition, forward, right, up, unitRange)
 											position = incrementPosition - (forward * rayTestOffset) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
 											direction = forward,
 											maxDistance = rayTestOffset * 2,
-											root = {tes3.game.sceneGraphCollideString},
+											--root = {tes3.game.sceneGraphCollideString},	-- Does not actually have collision meshes
 											useBackTriangles = true,
 										}
 										local targetX = tes3.rayTest{
 											position = node.position - (right * rayTestOffset) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
 											direction = right,
 											maxDistance = rayTestOffset * 2,
-											root = {tes3.game.sceneGraphCollideString},
+											--root = {tes3.game.sceneGraphCollideString},
 											useBackTriangles = true,
 										}
 										
@@ -1268,7 +1538,7 @@ function this.passwallEffect(e)
 						if checkWard then
 							for _,detection in pairs(checkWard) do
 								if detection.reference and detection.reference.baseObject.id:find("T_Aid_PasswallWard_") then	-- Prevents teleporting through T_Aid_PasswallWard statics
-									tes3ui.showNotifyMenu(common.i18n("magic.passWallWard"))
+									tes3ui.showNotifyMenu(common.i18n("magic.passwallWard"))
 									return
 								end
 							end
@@ -1319,18 +1589,18 @@ function this.passwallEffect(e)
 								if not hitReference.destination then
 									local bestPosition = passwallCalculate(wallPosition, forward, right, up, unitRange)
 									if bestPosition then
-										tes3.triggerCrime({ type = tes3.crimeType.trespass })
+										if hitReference.lockNode then tes3.triggerCrime({ type = tes3.crimeType.trespass }) end
 										tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
 										local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
 										tes3.mobilePlayer.position = bestPosition
 									end
 								elseif hitReference.destination and hitReference.destination.cell.isInterior then
-									tes3.triggerCrime({ type = tes3.crimeType.trespass })
+									if hitReference.lockNode then tes3.triggerCrime({ type = tes3.crimeType.trespass }) end
 									tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
 									local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
 									tes3.positionCell({ cell = hitReference.destination.cell, position = hitReference.destination.marker.position, orientation = hitReference.destination.marker.orientation, teleportCompanions = false })
 								else
-									tes3ui.showNotifyMenu(common.i18n("magic.passWallDoorExterior"))
+									tes3ui.showNotifyMenu(common.i18n("magic.passwallDoorExterior"))
 								end
 							end
 						end
@@ -1338,10 +1608,10 @@ function this.passwallEffect(e)
 						tes3ui.showNotifyMenu(tes3.findGMST(tes3.gmst.sTeleportDisabled).value)
 					end
 				else
-					tes3ui.showNotifyMenu(common.i18n("magic.passWallUnderwater"))
+					tes3ui.showNotifyMenu(common.i18n("magic.passwallUnderwater"))
 				end
 			else
-				tes3ui.showNotifyMenu(common.i18n("magic.passWallExterior"))
+				tes3ui.showNotifyMenu(common.i18n("magic.passwallExterior"))
 			end
 
 			return
@@ -1514,6 +1784,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 		local burdenEffect = tes3.getMagicEffect(tes3.effect.burden)
 		local restoreEffect = tes3.getMagicEffect(tes3.effect.fortifyHealth)	-- The fortify VFX feels more appropriate for the resartus effects, but perhaps it should still be restoration?
 		local summonDremoraEffect = tes3.getMagicEffect(tes3.effect.summonDremora)
+		local blindEffect = tes3.getMagicEffect(tes3.effect.blind)
 
 		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[1])	-- Passwall
 		tes3.addMagicEffect{
@@ -1936,7 +2207,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 					return
 				end
 				
-				if eventData.effectInstance.target.id ~= tes3.player.data.Tamriel_Data.corruptionReferenceID then	-- Memory errors can be reported if the effect is applied to the summon and doing so is weird anyways
+				if eventData.effectInstance.target.id ~= tes3.player.data.tamrielData.corruptionReferenceID then	-- Memory errors can be reported if the effect is applied to the summon and doing so is weird anyways
 					corruptionActorID = eventData.effectInstance.target.baseObject.id
 					corruptionCasted = true
 					tes3.cast({ reference = eventData.sourceInstance.caster, spell = "T_Dae_Cnj_UNI_CorruptionSummon", alwaysSucceeds = true, bypassResistances = true, instant = true, target = eventData.sourceInstance.caster })
@@ -1970,7 +2241,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
-			unreflectable = false,
+			unreflectable = summonDremoraEffect.unreflectable,
 			usesNegativeLighting = summonDremoraEffect.usesNegativeLighting,
 			icon = iconPath,
 			particleTexture = summonDremoraEffect.particleTexture,
@@ -1988,6 +2259,90 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onTick = function(eventData)
 				eventData:triggerSummon(corruptionActorID)
 			end,
+			onCollision = nil
+		}
+
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[12])		-- Distract Creature
+		tes3.addMagicEffect{
+			id = effectID,
+			name = effectName,
+			description = effectDescription,
+			school = tes3.magicSchool.illusion,
+			baseCost = effectCost,
+			speed = blindEffect.speed,
+			allowEnchanting = true,
+			allowSpellmaking = true,
+			appliesOnce = true,
+			canCastSelf = false,
+			canCastTarget = true,	-- The GUI for making custom magic effects doesn't like just having an effect only work at target range, so the distract spells also work at touch range for now
+			canCastTouch = true,
+			casterLinked = blindEffect.casterLinked,
+			hasContinuousVFX = blindEffect.hasContinuousVFX,
+			hasNoDuration = false,
+			hasNoMagnitude = false,
+			illegalDaedra = blindEffect.illegalDaedra,
+			isHarmful = false,
+			nonRecastable = false,
+			targetsAttributes = false,
+			targetsSkills = false,
+			unreflectable = true,
+			usesNegativeLighting = blindEffect.usesNegativeLighting,
+			icon = iconPath,
+			particleTexture = blindEffect.particleTexture,
+			castSound = blindEffect.castSoundEffect.id,
+			castVFX = blindEffect.castVisualEffect.id,
+			boltSound = blindEffect.boltSoundEffect.id,
+			boltVFX = blindEffect.boltVisualEffect.id,
+			hitSound = blindEffect.hitSoundEffect.id,
+			hitVFX = blindEffect.hitVisualEffect.id,
+			areaSound = blindEffect.areaSoundEffect.id,
+			areaVFX = blindEffect.areaVisualEffect.id,
+			lighting = {x = blindEffect.lightingRed, y = blindEffect.lightingGreen, z = blindEffect.lightingBlue},
+			size = blindEffect.size,
+			sizeCap = blindEffect.sizeCap,
+			onTick = distractCreatureEffect,
+			onCollision = nil
+		}
+
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[13])		-- Distract Humanoid
+		tes3.addMagicEffect{
+			id = effectID,
+			name = effectName,
+			description = effectDescription,
+			school = tes3.magicSchool.illusion,
+			baseCost = effectCost,
+			speed = blindEffect.speed,
+			allowEnchanting = true,
+			allowSpellmaking = true,
+			appliesOnce = true,
+			canCastSelf = false,
+			canCastTarget = true,
+			canCastTouch = true,
+			casterLinked = blindEffect.casterLinked,
+			hasContinuousVFX = blindEffect.hasContinuousVFX,
+			hasNoDuration = false,
+			hasNoMagnitude = false,
+			illegalDaedra = blindEffect.illegalDaedra,
+			isHarmful = false,
+			nonRecastable = false,
+			targetsAttributes = false,
+			targetsSkills = false,
+			unreflectable = true,
+			usesNegativeLighting = blindEffect.usesNegativeLighting,
+			icon = iconPath,
+			particleTexture = blindEffect.particleTexture,
+			castSound = blindEffect.castSoundEffect.id,
+			castVFX = blindEffect.castVisualEffect.id,
+			boltSound = blindEffect.boltSoundEffect.id,
+			boltVFX = blindEffect.boltVisualEffect.id,
+			hitSound = blindEffect.hitSoundEffect.id,
+			hitVFX = blindEffect.hitVisualEffect.id,
+			areaSound = blindEffect.areaSoundEffect.id,
+			areaVFX = blindEffect.areaVisualEffect.id,
+			lighting = {x = blindEffect.lightingRed, y = blindEffect.lightingGreen, z = blindEffect.lightingBlue},
+			size = blindEffect.size,
+			sizeCap = blindEffect.sizeCap,
+			onTick = distractHumanoidEffect,
 			onCollision = nil
 		}
 	end

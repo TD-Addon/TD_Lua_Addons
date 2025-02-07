@@ -228,7 +228,7 @@ local TD_ButterflyMothTooltip = {}
 -- Taken from MWSE's documentation
 ---@param data table
 ---@param defaults table
-local function initTableVlaues(data, defaults)
+local function initTableValues(data, defaults)
     for k,v in pairs(defaults) do
         if data[k] == nil then
             if type(v) ~= "table" then
@@ -662,9 +662,9 @@ event.register(tes3.event.loaded, function()
 
 	-- Initialize player data
 	local data = tes3.player.data
-    data.Tamriel_Data = data.Tamriel_Data or {}
-    local myData = data.Tamriel_Data
-    initTableVlaues(myData, player_data_defaults)
+    data.tamrielData = data.tamrielData or {}
+    local myData = data.tamrielData
+    initTableValues(myData, player_data_defaults)
 
 	if config.summoningSpells == true then
 		event.register(tes3.event.determinedAction, magic.useCustomSpell, { unregisterOnLoad = true })
@@ -674,7 +674,13 @@ event.register(tes3.event.loaded, function()
 		magic.replaceInterventionMarkers(kyne_intervention_cells, "T_Aid_KyneInterventionMarker")
 	end
 
-	if config.miscSpells == true then		
+	if config.miscSpells == true then
+		timer.start{duration = 1, iterations = -1, type = timer.simulate, callback = magic.distractedReturnTick}
+		event.register(tes3.event.referenceActivated, magic.onDistractedReferenceActivated, { unregisterOnLoad = true })
+		event.register(tes3.event.referenceDeactivated, magic.onDistractedReferenceDeactivated, { unregisterOnLoad = true })
+		event.register(tes3.event.cellChanged, magic.distractCellChangedEffect, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.distractRemovedEffect, { unregisterOnLoad = true })
+
 		event.register(tes3.event.activate, magic.corruptionBlockActivation, { unregisterOnLoad = true })
 		event.register(tes3.event.mobileActivated, magic.corruptionSummoned, { unregisterOnLoad = true })
 		
