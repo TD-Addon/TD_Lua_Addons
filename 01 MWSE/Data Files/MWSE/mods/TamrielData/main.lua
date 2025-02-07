@@ -678,7 +678,6 @@ event.register(tes3.event.loaded, function()
 		timer.start{duration = 1, iterations = -1, type = timer.simulate, callback = magic.distractedReturnTick}
 		event.register(tes3.event.referenceActivated, magic.onDistractedReferenceActivated, { unregisterOnLoad = true })
 		event.register(tes3.event.referenceDeactivated, magic.onDistractedReferenceDeactivated, { unregisterOnLoad = true })
-		event.register(tes3.event.cellChanged, magic.distractCellChangedEffect, { unregisterOnLoad = true })
 		event.register(tes3.event.magicEffectRemoved, magic.distractRemovedEffect, { unregisterOnLoad = true })
 
 		event.register(tes3.event.activate, magic.corruptionBlockActivation, { unregisterOnLoad = true })

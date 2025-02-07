@@ -513,44 +513,50 @@ function this.onDistractedReferenceActivated(e)
 	end
 end
 
+-- Originally most of this function's code was in a function trigged by cellChanged, but that could lead to NPCs visibly teleporting around when moving between exterior cells
 ---@param e referenceDeactivatedEventData
 function this.onDistractedReferenceDeactivated(e)
-	distractedReferences[e.reference] = nil
-end
+	local ref = e.reference
 
----@param e cellChangedEventData
-function this.distractCellChangedEffect(e)
-	if e.previousCell then							-- Don't run when loading a game; all of this could be done in onDistractedReferenceActivated, but there would be no way to distinguish between loading a game and just changing the cell
-		for ref in pairs(distractedReferences) do
-			---@cast ref tes3reference
-			if ref.cell == e.cell and ref.data.tamrielData and ref.data.tamrielData.distract then	-- As long as the game is not being loaded, the distract effects should not be present
-				tes3.setAIWander({ reference = ref, range = ref.data.tamrielData.distract.distance, duration = ref.data.tamrielData.distract.duration, time = ref.data.tamrielData.distract.hour, idles = ref.data.tamrielData.distract.idles })
-				ref.position = ref.data.tamrielData.distract.position
-				if ref.data.tamrielData.distract.distance == 0 then ref.orientation = ref.data.tamrielData.distract.orientation end	-- Maybe get rid of this condition for cell changes?
-				ref.data.tamrielData.distract = nil
-				distractedReferences[ref] = nil
-			end
-		end
+	if ref.data and distractedReferences[ref] and ref.data.tamrielData and ref.data.tamrielData.distract then
+		tes3.setAIWander({ reference = ref, range = ref.data.tamrielData.distract.distance, duration = ref.data.tamrielData.distract.duration, time = ref.data.tamrielData.distract.hour, idles = ref.data.tamrielData.distract.idles })
+		ref.position = ref.data.tamrielData.distract.position
+		if ref.data.tamrielData.distract.distance == 0 then ref.orientation = ref.data.tamrielData.distract.orientation end
+		ref.data.tamrielData.distract = nil
+
+		distractedReferences[ref] = nil
 	end
 end
 
 ---@param ref tes3reference
 ---@param isEnd boolean
 local function playDistractedVoiceLine(ref, isEnd)
-	for _,v in pairs(distractedVoiceLines) do
-		local raceName, isFemale, voicesStart, voicesEnd = unpack(v)
-		if ref.object.female == isFemale and ref.object.race.name == raceName then
-			local voices
-			if not isEnd then voices = voicesStart
-			else voices = voicesEnd end
-
-			if voices then
-				local path = voices[math.random(#voices)]
-				tes3.say({ reference = ref, soundPath = path })
+	if ref.mobile.actorType == tes3.actorType.npc then
+		for _,v in pairs(distractedVoiceLines) do
+			local raceName, isFemale, voicesStart, voicesEnd = unpack(v)
+			if ref.baseObject.female == isFemale and ref.baseObject.race.name == raceName then
+				local voices
+				if not isEnd then voices = voicesStart
+				else voices = voicesEnd end
+	
+				if voices then
+					local path = voices[math.random(#voices)]
+					tes3.say({ reference = ref, soundPath = path })
+				end
+	
+				return
 			end
-
-			return
 		end
+	elseif ref.mobile.actorType == tes3.actorType.creature then
+		local creature = ref.baseObject
+
+		while (creature.soundCreature) do
+			creature = creature.soundCreature	-- Get the base sound creature
+		end
+		
+		local soundGen = tes3.getSoundGenerator(creature.id, tes3.soundGenType.moan)
+	
+		if soundGen then tes3.playSound({ reference = ref, sound = soundGen.sound }) end
 	end
 end
 
@@ -1474,7 +1480,7 @@ local function passwallCalculate(wallPosition, forward, right, up, unitRange)
 											position = incrementPosition - (forward * rayTestOffset) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
 											direction = forward,
 											maxDistance = rayTestOffset * 2,
-											--root = {tes3.game.sceneGraphCollideString},	-- Does not actually have collision meshes
+											--root = {tes3.game.sceneGraphCollideString},	-- Does not actually have collision meshes; replace with object and pick roots?
 											useBackTriangles = true,
 										}
 										local targetX = tes3.rayTest{
