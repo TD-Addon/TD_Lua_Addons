@@ -411,7 +411,7 @@ end
 
 ---@param e equipEventData
 local function restrictEquip(e)
-	if e.reference.mobile.object.race.id == "T_Val_Imga" then
+	if e.reference.baseObject.objectType == tes3.objectType.npc and e.reference.mobile.object.race.id == "T_Val_Imga" then
 		if e.item.objectType == tes3.objectType.armor then
 			if e.item.slot == tes3.armorSlot.boots then
 				if e.reference.mobile == tes3.mobilePlayer then
@@ -492,7 +492,7 @@ end
 
 ---@param e bodyPartAssignedEventData
 local function fixVampireHeadAssignment(e)
-	if e.index == tes3.activeBodyPart.head then
+	if e.reference.baseObject.objectType == tes3.objectType.npc and e.index == tes3.activeBodyPart.head then
 		if not e.object or e.object.objectType ~= tes3.objectType.armor then
 			if e.reference.mobile then
 				if e.reference.mobile.object then
@@ -537,7 +537,7 @@ end
 
 ---@param e combatStartedEventData
 local function vampireHeadCombatStarted(e)
-	if e.actor.reference.bodyPartManager then
+	if e.actor.objectType == tes3.objectType.mobileNPC and e.actor.reference.bodyPartManager then
 		if e.actor.reference.bodyPartManager:getActiveBodyPart(0, 0).bodyPart.id == "T_B_Imp_UNI_HeadHerriusPC" then
 			e.actor.reference:updateEquipment()		-- Will trigger fixVampireHeadAssignment via the bodyPartAssigned event
 		end
@@ -623,7 +623,7 @@ end
 
 ---@param e spellTickEventData
 local function limitIntervention(e)
-	for k,v in pairs(e.source.effects) do
+	for _,v in pairs(e.source.effects) do
 		if v.id == tes3.effect.almsiviIntervention then
 			local cellVisitTable = { e.caster.cell }
 			local extCell = common.getExteriorCell(e.caster.cell, cellVisitTable)
