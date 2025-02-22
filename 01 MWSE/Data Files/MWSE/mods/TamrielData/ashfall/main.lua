@@ -120,7 +120,7 @@ event.register(tes3.event.initialized, function()
 			t_de_setveloth_x_well_01  = types.well,
 			t_dwe_dngruin_f_well_01   = types.well,
 			  -- Cyrodiil
-			t_ayl_dngruin_x_well_01
+			t_ayl_dngruin_x_well_01   = types.well,
 			t_imp_legioncyr_x_well_01 = types.well,
 			t_imp_legioncyr_x_well_02 = types.well,
 			t_imp_legionmw_x_well_01  = types.well,
@@ -3421,7 +3421,6 @@ event.register(tes3.event.initialized, function()
 			t_he_greenceladonvase_02 = { capacity = 200 },
 			t_he_greenceladonvase_03 = { capacity = 200 },
 			t_he_nacrebowl_01 = { capacity = 60, holdsstew = true },
-			t_he_nacrebowl_01 = { capacity = 60, holdsstew = true },
 			t_he_nacrecup_01 = { capacity = 25 },
 			t_he_nacregoblet_01 = { capacity = 25 },
 			t_he_shellbowl_01 = { capacity = 30, holdsstew = true },
@@ -3498,8 +3497,6 @@ event.register(tes3.event.initialized, function()
 			t_nor_woodenbowl_03b = { capacity = 60, holdsStew = true },
 			t_nor_woodenbowl_04a = { capacity = 60, holdsStew = true },
 			t_nor_woodenbowl_04b = { capacity = 60, holdsStew = true },
-			t_nor_woodentankard_01a = {  capacity = 30 },
-			t_nor_woodentankard_01b = {  capacity = 30 },
 			t_nor_woodengoblet_01a = {  capacity = 25 },
 			t_nor_woodengoblet_01b = {  capacity = 25 },
 			t_nor_woodengoblet_01c = {  capacity = 25 },
