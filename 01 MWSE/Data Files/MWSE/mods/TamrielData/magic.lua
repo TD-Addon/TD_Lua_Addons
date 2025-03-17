@@ -256,6 +256,7 @@ local td_enchantments = {
 	--{ "T_Use_WabbajackUni", tes3.effect.T_alteration_Wabbajack, tes3.effectRange.target, 0, 1, 1, 1 },
 	{ "T_Use_SkullOfCorruption", tes3.effect.T_conjuration_Corruption, tes3.effectRange.target, 0, 0, 1, 1 },	-- Why oh why is this ID not Uni?
 	{ "T_Use_SummonGuardian60", tes3.effect.T_summon_Guardian, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Const_VelothsPauld_R", tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 1, 30, 30 },
 }
 
 -- ingredient id, 1st effect id, 1st effect attribute id, 1st effect skill id, 2nd effect id, ...
@@ -348,32 +349,32 @@ local distractedVoiceLines = {
 
 local distractedReferences = {}	-- Should probably decide on a consistent naming scheme for tables
 
--- race id, skeleton mesh file
-local raceSkeletonMeshes = {
-	{ "Argonian", "tr\\cr\\xtr_skeleton_arg_01.nif" },
-	{ "Breton", "r\\xskeleton.nif" },
-	{ "Dark Elf", "r\\xskeleton.nif" },
-	{ "High Elf", "r\\xskeleton.nif" },
-	{ "Imperial", "r\\xskeleton.nif" },
-	{ "Khajiit", "tr\\cr\\xtr_skeleton_khajiit.nif" },
-	{ "Nord", "r\\xskeleton.nif" },
-	{ "Orc", "tr\\cr\\xtr_skeleton_orc.nif" },
-	{ "Redguard", "r\\xskeleton.nif" },
-	{ "Wood Elf", "r\\xskeleton.nif" },
-	{ "T_Cnq_ChimeriQuey", "r\\xskeleton.nif" },
-	{ "T_Cnq_Keptu", "r\\xskeleton.nif" },
-	{ "T_Els_Cathay", "r\\xskeleton.nif" },	-- The plantigrade Khajiit should get their own skeletons
-	{ "T_Els_Cathay-raht", "tr\\cr\\xtr_skeleton_khajiit.nif" },
-	{ "T_Els_Dagi-raht", "tr\\cr\\xtr_skeleton_khajiit.nif" },
-	{ "T_Els_Ohmes", "r\\xskeleton.nif" },
-	{ "T_Els_Ohmes-raht", "r\\xskeleton.nif" },
-	{ "T_Els_Suthay", "r\\xskeleton.nif" },
-	{ "T_Hr_Riverfolk", "r\\xskeleton.nif" },
-	{ "T_Mw_Malahk_Orc", "tr\\cr\\xtr_skeleton_orc.nif" },
-	{ "T_Pya_SeaElf", "r\\xskeleton.nif" },
-	{ "T_Sky_Hill_Giant", "r\\xskeleton.nif" },		-- Giants should eventually get their own skeleton mesh though
-	{ "T_Sky_Reachman", "r\\xskeleton.nif" },
-	{ "T_Yne_Ynesai", "r\\xskeleton.nif" },		-- Imga, and Tsaesci skeletons will take more effort
+-- race id, skeleton body part id
+local raceSkeletonBodyParts = {
+	{ "Argonian", "T_B_GazeVeloth_SkeletonArg_01", "T_C_GazeVeloth_SkeletonArg_01" },	-- Use the other Argonian skeletons too depending on the hair mesh of the target?
+	{ "Breton", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
+	{ "Dark Elf", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
+	{ "High Elf", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
+	{ "Imperial", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
+	{ "Khajiit", "T_B_GazeVeloth_SkeletonKha_01", "T_C_GazeVeloth_SkeletonKha_01" },
+	{ "Nord", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
+	{ "Orc", "T_B_GazeVeloth_SkeletonOrc_01", "T_C_GazeVeloth_SkeletonOrc_01" },
+	{ "Redguard", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
+	{ "Wood Elf", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
+	{ "T_Cnq_ChimeriQuey", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
+	{ "T_Cnq_Keptu", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
+	{ "T_Els_Cathay", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },	-- The plantigrade Khajiit should get their own skeletons
+	{ "T_Els_Cathay-raht", "T_B_GazeVeloth_SkeletonKha_01", "T_C_GazeVeloth_SkeletonKha_01" },
+	{ "T_Els_Dagi-raht", "T_B_GazeVeloth_SkeletonKha_01", "T_C_GazeVeloth_SkeletonKha_01" },
+	{ "T_Els_Ohmes", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
+	{ "T_Els_Ohmes-raht", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
+	{ "T_Els_Suthay", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
+	{ "T_Hr_Riverfolk", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
+	{ "T_Mw_Malahk_Orc", "T_B_GazeVeloth_SkeletonOrc_01", "T_C_GazeVeloth_SkeletonOrc_01" },
+	{ "T_Pya_SeaElf", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
+	{ "T_Sky_Hill_Giant", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },		-- Giants should eventually get their own skeleton mesh though
+	{ "T_Sky_Reachman", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
+	{ "T_Yne_Ynesai", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },		-- Imga, and Tsaesci skeletons will take more effort
 }
 
 ---@param table table
@@ -514,6 +515,25 @@ function this.useCustomSpell(e)
 	--end
 end
 
+---@param e bodyPartAssignedEventData
+function this.gazeOfVelothBodyPartAssigned(e)
+	if e.reference.data.tamrielData and e.reference.data.tamrielData.gazeOfVelothSkeleton then
+		if e.index == tes3.partIndex.chest then
+			for _,v in pairs(raceSkeletonBodyParts) do
+				if e.reference.baseObject.race.id == v[1] then
+					if e.bodyPart.partType == tes3.activeBodyPartLayer.base then
+						e.bodyPart = tes3.getObject(v[2])
+					else
+						e.bodyPart = tes3.getObject(v[3])
+					end
+				end
+			end
+		else
+			e.bodyPart = nil
+		end
+	end
+end
+
 ---@param e tes3magicEffectTickEventData
 local function gazeOfVelothEffect(e)
 	if (not e:trigger()) then
@@ -529,21 +549,27 @@ local function gazeOfVelothEffect(e)
 
 	if target.mobile.health.base <= 250 then
 		target.mobile:kill()
+		tes3.triggerCrime({ type = tes3.crimeType.killing, victim = target.mobile })
+		tes3.incrementKillCount({ actor = target.baseObject })
 
-		for _,v in pairs(raceSkeletonMeshes) do
+		for _,v in pairs(raceSkeletonBodyParts) do
 			if target.baseObject.race.id == v[1] then
-				target.mesh = v[2]
+				target.data.tamrielData = target.data.tamrielData or {}
+				target.data.tamrielData.gazeOfVelothSkeleton = true
+				target:updateEquipment()
+				
 				e.effectInstance.state = tes3.spellState.retired
 				return
 			end
 		end
 
-		target.mesh = "hr\\n\\cr_lich_dust.nif"	-- Temporary
-		e.effectInstance.state = tes3.spellState.retired
-		return
+		local container = tes3.createReference({ object = "T_Glb_GazeVeloth_Empty", position = target.position , orientation = target.orientation, cell = target.cell })	-- If this runs, then the target does not belong to a compatible race listed in raceSkeletonBodyParts
+		tes3.transferInventory({ from = target, to = container, limitCapacity = false })
+		tes3.positionCell({ reference = target, position = { 0, 0, -53.187 }, cell = "T_GazeOfVeloth" })	-- All sorts of problems can arise from disabling a target within the effect event
+	else
+		target.mobile:applyDamage({ damage = 100, playerAttack = true })
 	end
-
-	target.mobile:applyDamage({ damage = 100, playerAttack = true })
+	
 	e.effectInstance.state = tes3.spellState.retired
 end
 
@@ -580,7 +606,7 @@ function this.onDistractedReferenceActivated(e)
 	end
 end
 
--- Originally most of this function's code was in a function trigged by cellChanged, but that could lead to NPCs visibly teleporting around when moving between exterior cells
+-- Most of this function's code was originally in a function trigged by cellChanged, but that could lead to NPCs visibly teleporting around when moving between exterior cells
 ---@param e referenceDeactivatedEventData
 function this.onDistractedReferenceDeactivated(e)
 	local ref = e.reference
@@ -601,14 +627,14 @@ local function playDistractedVoiceLine(ref, isEnd)
 	if ref.mobile.actorType == tes3.actorType.npc then
 		for _,v in pairs(distractedVoiceLines) do
 			local raceName, isFemale, voicesStart, voicesEnd = unpack(v)
-			if ref.baseObject.female == isFemale and ref.baseObject.race.name == raceName then
+			if ref.baseObject.race.name == raceName and ref.baseObject.female == isFemale then
 				local voices
 				if not isEnd then voices = voicesStart
 				else voices = voicesEnd end
 	
 				if voices then
 					local path = voices[math.random(#voices)]
-					tes3.say({ reference = ref, soundPath = path })
+					if path then tes3.say({ reference = ref, soundPath = path }) end
 				end
 	
 				return
@@ -640,7 +666,7 @@ end
 ---@param ref tes3reference
 ---@param package tes3aiPackageWander
 local function distractSavePackage(ref, package)
-	ref.data.tamrielData = {}
+	ref.data.tamrielData = ref.data.tamrielData or {}
 
 	if not package then
 		ref.data.tamrielData.distract = {
@@ -688,32 +714,57 @@ end
 
 ---@param e tes3magicEffectTickEventData
 local function distractEffect(e)
+	if (not e:trigger()) then
+		return
+	end
+	
 	local target = e.effectInstance.target
 	local range = e.effectInstance.magnitude * 22.1
 	
 	local activePackage = target.mobile.aiPlanner:getActivePackage()
 	if not activePackage or activePackage.type < 1 then
 		local distance
-		local playerDistance
+		local playerFinalDistance
+		local playerThirdDistance
 		local destination
 
 		local bestDistance = 0
-		local bestPlayerDistance = 0
+		local bestPlayerFinalDistance = 0
+		local bestPlayerThirdDistance = 0
 		local bestDestination
 		
 		distractSavePackage(target, activePackage)
 		if target.cell.isInterior then
+			local initialNode = common.getInitialNode(target)
 			local nodeArr = target.cell.pathGrid.nodes
-		
-			for _,node in pairs(nodeArr) do
-				if math.abs(node.position.z - target.position.z) < 384 then
-					distance = target.position:distance(node.position)
-					playerDistance = tes3.player.position:distance(node.position)
-					
-					if distance <= range and distance >= bestDistance and playerDistance > bestPlayerDistance then
-						bestDistance = distance
-						bestPlayerDistance = playerDistance
-						bestDestination = node.position
+			if initialNode then		-- Just in case
+				for _,node in pairs(nodeArr) do
+					if math.abs(node.position.z - target.position.z) < 384 then		-- This is meant to stop actors from walking up/down several flights of stairs, which I think would feel unrealistic
+						distance = target.position:distance(node.position)
+						if distance <= range then
+							local path = common.pathGridSearch(initialNode, node)
+							if path then	-- If no path exists, then the destination should not be valid
+								mwse.log("Path")
+								mwse.log(#path)
+								playerFinalDistance = tes3.player.position:distance(node.position)
+
+								--if path[3] then
+								--	playerThirdDistance = tes3.player.position:distance(path[3].position)
+								--	mwse.log(path[3].position.x)
+								--	mwse.log(path[3].position.y)
+								--	mwse.log(path[3].position.z)
+								--	mwse.log(playerThirdDistance)
+								--end
+
+								if distance >= bestDistance and playerFinalDistance > bestPlayerFinalDistance then	-- and (not path[3] or playerThirdDistance >= bestPlayerThirdDistance) -- Is there a better way to arrange these condition checks?
+									bestDistance = distance
+									bestPlayerFinalDistance = playerFinalDistance
+									bestDestination = node.position
+
+									--if path[3] then bestPlayerThirdDistance = playerThirdDistance end
+								end
+							end
+						end
 					end
 				end
 			end
@@ -732,11 +783,11 @@ local function distractEffect(e)
 
 				if distance >= bestDistance then
 					destination = target.position + tes3vector3.new(math.sin(math.rad(rotation)) * range, math.cos(math.rad(rotation)) * range, 0)
-					playerDistance = tes3.player.position:distance(destination)
+					playerFinalDistance = tes3.player.position:distance(destination)
 
-					if playerDistance > bestPlayerDistance then
+					if playerFinalDistance > bestPlayerFinalDistance then
 						bestDistance = distance
-						bestPlayerDistance = playerDistance
+						bestPlayerFinalDistance = playerFinalDistance
 						bestDestination = destination
 					end
 				end
@@ -761,16 +812,16 @@ local function distractHumanoidEffect(e)
 
 	local target = e.effectInstance.target	-- Level restriction? Tied to magnitude?
 
-	if not target or target.mobile.actorType ~= tes3.actorType.npc or target.mobile.isDead or target.mobile.inCombat or (target.data.tamrielData and target.data.tamrielData.distract) then
+	if not target or target.mobile.actorType ~= tes3.actorType.npc or target.mobile.isDead or target.mobile.inCombat or target.mobile.isPlayerDetected or (target.data.tamrielData and target.data.tamrielData.distract) then
 		e.effectInstance.state = tes3.spellState.retired	-- This condition seems to be hit when the effect expires
 		return
 	end
 	
-	if target.mobile.isPlayerDetected then
-		tes3.triggerCrime({ type = tes3.crimeType.trespass })	-- trigger crime doesn't seem to be working for some reason
-		e.effectInstance.state = tes3.spellState.retired
-		return
-	end
+	--	if target.mobile.isPlayerDetected then
+	--		tes3.triggerCrime({ type = tes3.crimeType.trespass })
+	--		e.effectInstance.state = tes3.spellState.retired
+	--		return
+	--	end
 	
 	distractEffect(e)
 end
@@ -783,7 +834,7 @@ local function distractCreatureEffect(e)
 
 	local target = e.effectInstance.target	-- Level restriction? Tied to magnitude?
 
-	if not target or target.mobile.actorType ~= tes3.actorType.creature or target.mobile.isDead or target.mobile.inCombat or (target.data.tamrielData and target.data.tamrielData.distract) then	-- Require player to sneak?
+	if not target or target.mobile.actorType ~= tes3.actorType.creature or target.mobile.isDead or target.mobile.inCombat or target.mobile.isPlayerDetected or (target.data.tamrielData and target.data.tamrielData.distract) then	-- Require player to sneak?
 		e.effectInstance.state = tes3.spellState.retired
 		return
 	end
@@ -1469,7 +1520,7 @@ local function banishDaedraEffect(e)
 		--target.mobile:startCombat(caster.mobile)
 		--target.mobile:kill()
 		target:setActionFlag(tes3.actionFlag.onDeath)
-		tes3.setKillCount({ actor = target.object, count = tes3.getKillCount({ actor = target.object }) + 1 })
+		tes3.incrementKillCount({ actor = target.object })
 		local soundSource = tes3.createReference({ object = "T_VFX_Empty", position = target.position + tes3vector3.new(0, 0, target.mobile.height/2) , orientation = target.orientation, cell = target.cell })
 		tes3.playSound{ sound = "mysticism hit", reference = soundSource }
 		local vfx = tes3.createVisualEffect({ object = "T_VFX_Banish", lifespan = 1.5, position = target.position })
@@ -1804,7 +1855,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 				hitVFX = summonHungerEffect.hitVisualEffect.id,
 				areaSound = summonHungerEffect.areaSoundEffect.id,
 				areaVFX = summonHungerEffect.areaVisualEffect.id,
-				lighting = {x = summonHungerEffect.lightingRed, y = summonHungerEffect.lightingGreen, z = summonHungerEffect.lightingBlue},
+				lighting = {x = summonHungerEffect.lightingRed / 255, y = summonHungerEffect.lightingGreen / 255, z = summonHungerEffect.lightingBlue / 255},
 				size = summonHungerEffect.size,
 				sizeCap = summonHungerEffect.sizeCap,
 				onTick = function(eventData)
@@ -1854,7 +1905,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 				hitVFX = boundCuirassEffect.hitVisualEffect.id,
 				areaSound = boundCuirassEffect.areaSoundEffect.id,
 				areaVFX = boundCuirassEffect.areaVisualEffect.id,
-				lighting = {x = boundCuirassEffect.lightingRed, y = boundCuirassEffect.lightingGreen, z = boundCuirassEffect.lightingBlue},
+				lighting = {x = boundCuirassEffect.lightingRed / 255, y = boundCuirassEffect.lightingGreen / 255, z = boundCuirassEffect.lightingBlue / 255},
 				size = boundCuirassEffect.size,
 				sizeCap = boundCuirassEffect.sizeCap,
 				onTick = function(eventData)
@@ -1911,7 +1962,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			hitVFX = divineInterventionEffect.hitVisualEffect.id,
 			areaSound = divineInterventionEffect.areaSoundEffect.id,
 			areaVFX = divineInterventionEffect.areaVisualEffect.id,
-			lighting = {x = divineInterventionEffect.lightingRed, y = divineInterventionEffect.lightingGreen, z = divineInterventionEffect.lightingBlue},
+			lighting = {x = divineInterventionEffect.lightingRed / 255, y = divineInterventionEffect.lightingGreen / 255, z = divineInterventionEffect.lightingBlue / 255},
 			size = divineInterventionEffect.size,
 			sizeCap = divineInterventionEffect.sizeCap,
 			onTick = kynesInterventionEffect,
@@ -1966,7 +2017,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			hitVFX = "T_VFX_Empty",							-- Currently has to use VFX because otherwise Morrowind crashes when casting the effect on some actors despite this parameter being "optional"
 			areaSound = "T_SndObj_Silence",
 			areaVFX = "T_VFX_Empty",							-- Problems can apparently still arise from missing boltVFX and areaVFX for some people
-			lighting = {x = levitateEffect.lightingRed, y = levitateEffect.lightingGreen, z = levitateEffect.lightingBlue},
+			lighting = {x = levitateEffect.lightingRed / 255, y = levitateEffect.lightingGreen / 255, z = levitateEffect.lightingBlue / 255},
 			size = levitateEffect.size,
 			sizeCap = levitateEffect.sizeCap,
 			onTick = function(eventData) eventData:trigger() end,
@@ -2008,7 +2059,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			hitVFX = "T_VFX_Empty",
 			areaSound = "T_SndObj_Silence",
 			areaVFX = "T_VFX_Empty",
-			lighting = {x = soultrapEffect.lightingRed, y = soultrapEffect.lightingGreen, z = soultrapEffect.lightingBlue},
+			lighting = {x = soultrapEffect.lightingRed / 255, y = soultrapEffect.lightingGreen / 255, z = soultrapEffect.lightingBlue / 255},
 			size = soultrapEffect.size,
 			sizeCap = soultrapEffect.sizeCap,
 			onTick = banishDaedraEffect,
@@ -2020,6 +2071,8 @@ event.register(tes3.event.magicEffectsResolved, function()
 			id = effectID,
 			name = effectName,
 			description = effectDescription,
+			magnitudeType = tes3.findGMST(tes3.gmst.spercent).value,
+			magnitudeTypePlural = tes3.findGMST(tes3.gmst.spercent).value,
 			school = tes3.magicSchool.mysticism,
 			baseCost = effectCost,
 			speed = reflectEffect.speed,
@@ -2050,7 +2103,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			hitVFX = reflectEffect.hitVisualEffect.id,
 			areaSound = reflectEffect.areaSoundEffect.id,
 			areaVFX = reflectEffect.areaVisualEffect.id,
-			lighting = {x = reflectEffect.lightingRed, y = reflectEffect.lightingGreen, z = reflectEffect.lightingBlue},
+			lighting = {x = reflectEffect.lightingRed / 255, y = reflectEffect.lightingGreen / 255, z = reflectEffect.lightingBlue / 255},
 			size = reflectEffect.size,
 			sizeCap = reflectEffect.sizeCap,
 			onTick = nil,
@@ -2062,6 +2115,8 @@ event.register(tes3.event.magicEffectsResolved, function()
 			id = effectID,
 			name = effectName,
 			description = effectDescription,
+			magnitudeType = tes3.findGMST(tes3.gmst.sfeet).value,
+			magnitudeTypePlural = tes3.findGMST(tes3.gmst.sfeet).value,
 			school = tes3.magicSchool.mysticism,
 			baseCost = effectCost,
 			speed = detectEffect.speed,
@@ -2092,7 +2147,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			hitVFX = detectEffect.hitVisualEffect.id,
 			areaSound = detectEffect.areaSoundEffect.id,
 			areaVFX = detectEffect.areaVisualEffect.id,
-			lighting = {x = detectEffect.lightingRed, y = detectEffect.lightingGreen, z = detectEffect.lightingBlue},
+			lighting = {x = detectEffect.lightingRed / 255, y = detectEffect.lightingGreen / 255, z = detectEffect.lightingBlue / 255},
 			size = detectEffect.size,
 			sizeCap = detectEffect.sizeCap,
 			onTick = nil,
@@ -2176,7 +2231,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			hitVFX = burdenEffect.hitVisualEffect.id,
 			areaSound = burdenEffect.areaSoundEffect.id,
 			areaVFX = burdenEffect.areaVisualEffect.id,
-			lighting = {x = burdenEffect.lightingRed, y = burdenEffect.lightingGreen, z = burdenEffect.lightingBlue},
+			lighting = {x = burdenEffect.lightingRed / 255, y = burdenEffect.lightingGreen / 255, z = burdenEffect.lightingBlue / 255},
 			size = burdenEffect.size,
 			sizeCap = burdenEffect.sizeCap,
 			onTick = nil,
@@ -2218,7 +2273,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			hitVFX = reflectEffect.hitVisualEffect.id,
 			areaSound = reflectEffect.areaSoundEffect.id,
 			areaVFX = reflectEffect.areaVisualEffect.id,
-			lighting = {x = reflectEffect.lightingRed, y = reflectEffect.lightingGreen, z = reflectEffect.lightingBlue},
+			lighting = {x = reflectEffect.lightingRed / 255, y = reflectEffect.lightingGreen / 255, z = reflectEffect.lightingBlue / 255},
 			size = reflectEffect.size,
 			sizeCap = reflectEffect.sizeCap,
 			onTick = nil,
@@ -2260,7 +2315,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			hitVFX = restoreEffect.hitVisualEffect.id,
 			areaSound = restoreEffect.areaSoundEffect.id,
 			areaVFX = restoreEffect.areaVisualEffect.id,
-			lighting = {x = restoreEffect.lightingRed, y = restoreEffect.lightingGreen, z = restoreEffect.lightingBlue},
+			lighting = {x = restoreEffect.lightingRed / 255, y = restoreEffect.lightingGreen / 255, z = restoreEffect.lightingBlue / 255},
 			size = restoreEffect.size,
 			sizeCap = restoreEffect.sizeCap,
 			onTick = armorResartusEffect,
@@ -2302,7 +2357,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			hitVFX = restoreEffect.hitVisualEffect.id,
 			areaSound = restoreEffect.areaSoundEffect.id,
 			areaVFX = restoreEffect.areaVisualEffect.id,
-			lighting = {x = restoreEffect.lightingRed, y = restoreEffect.lightingGreen, z = restoreEffect.lightingBlue},
+			lighting = {x = restoreEffect.lightingRed / 255, y = restoreEffect.lightingGreen / 255, z = restoreEffect.lightingBlue / 255},
 			size = restoreEffect.size,
 			sizeCap = restoreEffect.sizeCap,
 			onTick = weaponResartusEffect,
@@ -2344,7 +2399,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			hitVFX = summonDremoraEffect.hitVisualEffect.id,
 			areaSound = summonDremoraEffect.areaSoundEffect.id,
 			areaVFX = summonDremoraEffect.areaVisualEffect.id,
-			lighting = {x = summonDremoraEffect.lightingRed, y = summonDremoraEffect.lightingGreen, z = summonDremoraEffect.lightingBlue},
+			lighting = {x = summonDremoraEffect.lightingRed / 255, y = summonDremoraEffect.lightingGreen / 255, z = summonDremoraEffect.lightingBlue / 255},
 			size = summonDremoraEffect.size,
 			sizeCap = summonDremoraEffect.sizeCap,
 			onTick = function(eventData)
@@ -2398,7 +2453,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			hitVFX = summonDremoraEffect.hitVisualEffect.id,
 			areaSound = summonDremoraEffect.areaSoundEffect.id,
 			areaVFX = summonDremoraEffect.areaVisualEffect.id,
-			lighting = {x = summonDremoraEffect.lightingRed, y = summonDremoraEffect.lightingGreen, z = summonDremoraEffect.lightingBlue},
+			lighting = {x = summonDremoraEffect.lightingRed / 255, y = summonDremoraEffect.lightingGreen / 255, z = summonDremoraEffect.lightingBlue / 255},
 			size = summonDremoraEffect.size,
 			sizeCap = summonDremoraEffect.sizeCap,
 			onTick = function(eventData)
@@ -2442,7 +2497,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			hitVFX = blindEffect.hitVisualEffect.id,
 			areaSound = blindEffect.areaSoundEffect.id,
 			areaVFX = blindEffect.areaVisualEffect.id,
-			lighting = {x = blindEffect.lightingRed, y = blindEffect.lightingGreen, z = blindEffect.lightingBlue},
+			lighting = {x = blindEffect.lightingRed / 255, y = blindEffect.lightingGreen / 255, z = blindEffect.lightingBlue / 255},
 			size = blindEffect.size,
 			sizeCap = blindEffect.sizeCap,
 			onTick = distractCreatureEffect,
@@ -2484,7 +2539,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			hitVFX = blindEffect.hitVisualEffect.id,
 			areaSound = blindEffect.areaSoundEffect.id,
 			areaVFX = blindEffect.areaVisualEffect.id,
-			lighting = {x = blindEffect.lightingRed, y = blindEffect.lightingGreen, z = blindEffect.lightingBlue},
+			lighting = {x = blindEffect.lightingRed / 255, y = blindEffect.lightingGreen / 255, z = blindEffect.lightingBlue / 255},
 			size = blindEffect.size,
 			sizeCap = blindEffect.sizeCap,
 			onTick = distractHumanoidEffect,
@@ -2526,7 +2581,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			hitVFX = shockEffect.hitVisualEffect.id,
 			areaSound = shockEffect.areaSoundEffect.id,
 			areaVFX = shockEffect.areaVisualEffect.id,
-			lighting = {x = shockEffect.lightingRed, y = shockEffect.lightingGreen, z = shockEffect.lightingBlue},
+			lighting = {x = shockEffect.lightingRed / 255, y = shockEffect.lightingGreen / 255, z = shockEffect.lightingBlue / 255},
 			size = shockEffect.size,
 			sizeCap = shockEffect.sizeCap,
 			onTick = gazeOfVelothEffect,
@@ -2538,6 +2593,8 @@ event.register(tes3.event.magicEffectsResolved, function()
 			id = effectID,
 			name = effectName,
 			description = effectDescription,
+			magnitudeType = tes3.findGMST(tes3.gmst.sfeet).value,
+			magnitudeTypePlural = tes3.findGMST(tes3.gmst.sfeet).value,
 			school = tes3.magicSchool.mysticism,
 			baseCost = effectCost,
 			speed = detectEffect.speed,
@@ -2568,7 +2625,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			hitVFX = detectEffect.hitVisualEffect.id,
 			areaSound = detectEffect.areaSoundEffect.id,
 			areaVFX = detectEffect.areaVisualEffect.id,
-			lighting = {x = detectEffect.lightingRed, y = detectEffect.lightingGreen, z = detectEffect.lightingBlue},
+			lighting = {x = detectEffect.lightingRed / 255, y = detectEffect.lightingGreen / 255, z = detectEffect.lightingBlue / 255},
 			size = detectEffect.size,
 			sizeCap = detectEffect.sizeCap,
 			onTick = nil,

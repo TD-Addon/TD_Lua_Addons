@@ -234,8 +234,8 @@ local region_weather_chances = {
 local region_storm_origins = {
 	-- Armun ashstorms
 	{ "Armun Ashlands Region", -132386.328, -200454.234 },	-- Should eventually be set to the large volcano west of Armun once it is made
-	{ "Velothi Mountains Region", -132386.328, -200454.234 },	-- These extra regions are necessary for the same reason as the weather transition condition; leaving AA during an ashstorm without them would immediately set the origin to be Red Mountain
-	{ "Othreleth Woods Region", -132386.328, -200454.234, -29, -38 },
+	{ "Velothi Mountains Region", -132386.328, -200454.234 },	-- Should be changed to Kartur Dale's ID in WBM
+	{ "Othreleth Woods Region", -132386.328, -200454.234, -29, -38 },	-- These extra regions are necessary for the same reason as the weather transition condition; leaving AA during an ashstorm without them would immediately set the origin to be Red Mountain
 	{ "Aanthirin Region", -132386.328, -200454.234 },
 	{ "Roth Roryn Region", -132386.328, -200454.234 },
 

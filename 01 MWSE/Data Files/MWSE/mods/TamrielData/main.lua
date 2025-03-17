@@ -88,6 +88,7 @@ local almsivi_intervention_regions = {
 	{ "Grazelands Region", nil, nil, nil, nil },
 	{ "Grey Meadows Region", nil, nil, nil, nil },
 	{ "Julan-Shar Region", nil, nil, nil, nil },
+	{ "Kragen Moor Region", nil, nil, nil, nil },
 	{ "Lan Orethan Region", nil, nil, nil, nil },
 	{ "Mephalan Vales Region", nil, nil, nil, nil },
 	{ "Molag Mar Region", nil, nil, nil, nil },
@@ -518,7 +519,7 @@ local function fixVampireHeadAssignment(e)
 		end
 	end
 
-	if e.index == tes3.activeBodyPart.hair then
+	if e.index == tes3.activeBodyPart.hair then	-- Check for being an NPC too?
 		if not e.object or e.object.objectType ~= tes3.objectType.armor then
 			if e.reference.mobile then
 				if e.reference.mobile.object then
@@ -538,7 +539,8 @@ end
 ---@param e combatStartedEventData
 local function vampireHeadCombatStarted(e)
 	if e.actor.objectType == tes3.objectType.mobileNPC and e.actor.reference.bodyPartManager then
-		if e.actor.reference.bodyPartManager:getActiveBodyPart(0, 0).bodyPart.id == "T_B_Imp_UNI_HeadHerriusPC" then
+		local head = e.actor.reference.bodyPartManager:getActiveBodyPart(tes3.activeBodyPartLayer.base, tes3.activeBodyPart.head)
+		if head.bodyPart and head.bodyPart.id == "T_B_Imp_UNI_HeadHerriusPC" then
 			e.actor.reference:updateEquipment()		-- Will trigger fixVampireHeadAssignment via the bodyPartAssigned event
 		end
 	end
@@ -675,6 +677,12 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.miscSpells == true then
+		tes3.getObject("T_B_GazeVeloth_Skeleton_01").partType = tes3.activeBodyPartLayer.base		-- I don't want these body parts to be associated with a race, so I set them to be base layer here rather than in the CS
+		tes3.getObject("T_B_GazeVeloth_SkeletonArg_01").partType = tes3.activeBodyPartLayer.base
+		tes3.getObject("T_B_GazeVeloth_SkeletonKha_01").partType = tes3.activeBodyPartLayer.base
+		tes3.getObject("T_B_GazeVeloth_SkeletonOrc_01").partType = tes3.activeBodyPartLayer.base
+		event.register(tes3.event.bodyPartAssigned, magic.gazeOfVelothBodyPartAssigned, { unregisterOnLoad = true })
+
 		timer.start{duration = 1, iterations = -1, type = timer.simulate, callback = magic.distractedReturnTick}
 		event.register(tes3.event.referenceActivated, magic.onDistractedReferenceActivated, { unregisterOnLoad = true })
 		event.register(tes3.event.referenceDeactivated, magic.onDistractedReferenceDeactivated, { unregisterOnLoad = true })
