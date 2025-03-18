@@ -691,8 +691,7 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.activate, magic.corruptionBlockActivation, { unregisterOnLoad = true })
 		event.register(tes3.event.mobileActivated, magic.corruptionSummoned, { unregisterOnLoad = true })
 		
-		--event.register(tes3.event.magicEffectRemoved, magic.wabbajackRemovedEffect, { unregisterOnLoad = true })
-		--event.register(tes3.event.spellTick, magic.wabbajackAppliedEffect, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.wabbajackTransRemovedEffect, { unregisterOnLoad = true })
 
 		timer.start{duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectEnemyTick}
 		event.register(tes3.event.magicCasted, magic.detectEnemyTick, { unregisterOnLoad = true })
