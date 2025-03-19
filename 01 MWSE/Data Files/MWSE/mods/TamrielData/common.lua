@@ -4,16 +4,6 @@ this.i18n = mwse.loadTranslations("TamrielData")
 
 this.gh_config = include("graphicHerbalism.config")
 
--- Util functions
---	function table.contains(table, element)
---		for _,v in pairs(table) do
---		  if v == element then
---			return true
---		  end
---		end
---		return false
---	end
-
 ---@param cell tes3cell
 ---@param cellVisitTable table<tes3cell, boolean>|nil
 ---@return tes3cell?
@@ -50,9 +40,7 @@ function this.initQueue()
 
     function q:pull()
         local e = self.stack[1]
-
         table.remove(self.stack, 1)
-
         return e
     end
 
@@ -63,39 +51,80 @@ function this.initQueue()
     return q
 end
 
+-- This function is currently designed around distances for path grid nodes and deviates from how a priority queue would normally be set up; that should probably be changed if something else ever needs it.
+function this.initPriorityQueue()
+    local pq = {}
+
+    pq.stack = {}
+    pq.allNodes = {}
+
+    function pq:push(e)
+        table.insert(self.stack, e)
+        table.insert(self.allNodes, e)
+    end
+
+    function pq:pull()
+        local minDistance = math.huge
+        local index = 1
+
+        for i = 1, #self.stack, 1 do
+            if self.stack[i][2] < minDistance then
+                minDistance = self.stack[i][2]
+                index = i
+            end
+        end
+
+        local e = self.stack[index]
+        table.remove(self.stack, index)
+
+        return e
+    end
+
+    function pq:count()
+        return #self.stack
+    end
+
+    return pq
+end
+
 ---@param ref tes3reference
----@return tes3pathGridNode
-function this.getInitialNode(ref)
+---@return tes3pathGridNode[]
+function this.getClosestNodes(ref)
     local distance = 0
-    local bestDistance = 2147483647
-    local initialNode
+    local firstDistance = math.huge
+    local secondDistance = math.huge
+    local thirdDistance = math.huge
+    local closestNodes = { }
 
     for _,node in pairs(ref.cell.pathGrid.nodes) do
         distance = ref.position:distance(node.position)
-        --mwse.log("Node")
-        --mwse.log(node.position.x)
-        --mwse.log(node.position.y)
-        --mwse.log(node.position.z)
-        --mwse.log(distance)
 
-        if distance < bestDistance then -- Infuriatingly, the closest node is not necessarily the first node that an actor with a travel package will go to and I am not sure how to actually get that node
-            bestDistance = distance
-            initialNode = node
+        if distance < firstDistance then
+            thirdDistance = secondDistance
+            secondDistance = firstDistance
+            firstDistance = distance
+            closestNodes[3] = closestNodes[2]
+            closestNodes[2] = closestNodes[1]
+            closestNodes[1] = node
+        elseif distance < secondDistance then
+            thirdDistance = secondDistance
+            secondDistance = distance
+            closestNodes[3] = closestNodes[2]
+            closestNodes[2] = node
+        elseif distance < thirdDistance then
+            thirdDistance = distance
+            closestNodes[3] = node
         end
     end
-    
-    --mwse.log("Initial Node")
-    --mwse.log(initialNode.position.x)
-    --mwse.log(initialNode.position.y)
-    --mwse.log(initialNode.position.z)
-    --mwse.log(bestDistance)
 
-    return initialNode
+    return closestNodes
 end
 
+-- Finds the shortest path by the number of nodes between two given nodes of a path grid using a BFS.
 ---@param firstNode tes3pathGridNode
 ---@param finalNode tes3pathGridNode
-function this.pathGridSearch(firstNode, finalNode)
+---@return tes3pathGridNode[]|boolean
+function this.pathGridBFS(firstNode, finalNode)
     local visited = {}
     local queue = this.initQueue()
 	
@@ -117,6 +146,54 @@ function this.pathGridSearch(firstNode, finalNode)
 
                     table.insert(new, connectedNode)
                     queue:push(new)
+                end
+            end
+        end
+    end
+
+    return false
+end
+
+-- Finds the shortest path by distance between two given nodes of a path grid using a particularly unpleasant implementation of Dijkstra's algorithm. While the function's structure might look similar to pathGridBFS's, the implementation are quite different.
+---@param firstNode tes3pathGridNode
+---@param finalNode tes3pathGridNode
+---@return tes3pathGridNode[]|boolean
+function this.pathGridDijkstra(firstNode, finalNode)
+    local queue = this.initPriorityQueue()
+    for _,node in pairs(firstNode.grid.nodes) do
+        if node == firstNode then queue:push({ node, 0, nil })
+        else queue:push({ node, math.huge, nil }) end
+    end
+
+    while queue:count() > 0 do
+        local currentNode = queue:pull()
+
+        if currentNode[1] == finalNode then 
+            local path = {}
+
+            repeat
+                table.insert(path, 1, currentNode[1])
+                for _,queueNode in pairs(queue.allNodes) do    -- This is an inefficient setup, but something like it has to exist, right?
+                    if queueNode[1] == currentNode[3] then
+                        currentNode = queueNode
+                        break
+                    end
+                end
+            until not currentNode[3]
+
+            table.insert(path, 1, currentNode[1])   -- Adds the first node to the path
+
+            return path
+        end
+
+        for _,connectedNode in pairs(currentNode[1].connectedNodes) do
+            local alternate = currentNode[2] + currentNode[1].position:distance(connectedNode.position)
+            for _,queueNode in pairs(queue.stack) do    -- This is also an inefficient setup
+                if queueNode[1] == connectedNode then
+                    if alternate < queueNode[2] then
+                        queueNode[2] = alternate
+                        queueNode[3] = currentNode[1]
+                    end
                 end
             end
         end

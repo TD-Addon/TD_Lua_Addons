@@ -384,6 +384,7 @@ end
 
 local function createHatObjects()
 	for armor in tes3.iterateObjects(tes3.objectType.armor) do
+		---@cast armor tes3armor
 		if armor.slot == tes3.armorSlot.helmet and not armor.isClosedHelmet then	-- Closed helmets are not going to be hats by definition
 			if armor.sourceMod == "Tamriel_Data.esm" or armor.sourceMod == "TR_Mainland.esm" or armor.sourceMod == "Cyr_Main.esm" or armor.sourceMod == "Sky_Main.esm"	then -- Only affect TD hats or unique versions from PTR
 				if armor.id:find("Hat") or armor.name:find("Hat") or armor.icon:lower():find("hat") then	-- Check whether these conditions are actually worth having
@@ -585,6 +586,7 @@ end
 
 ---@param cell tes3cell
 ---@param regionTable table
+---@return boolean
 local function isInterventionCell(cell, regionTable)
 	for k,v in pairs(regionTable) do
 		local regionID, xLeft, xRight, yBottom, yTop = unpack(v, 1, 5)
@@ -692,6 +694,10 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.mobileActivated, magic.corruptionSummoned, { unregisterOnLoad = true })
 		
 		event.register(tes3.event.magicEffectRemoved, magic.wabbajackTransRemovedEffect, { unregisterOnLoad = true })
+
+		timer.start{duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectInvisibilityTick}
+		event.register(tes3.event.magicCasted, magic.detectInvisibilityTick, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.detectInvisibilityTick, { unregisterOnLoad = true })
 
 		timer.start{duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectEnemyTick}
 		event.register(tes3.event.magicCasted, magic.detectEnemyTick, { unregisterOnLoad = true })

@@ -3,8 +3,6 @@ local this = {}
 local common = require("tamrielData.common")
 local config = require("tamrielData.config")
 
-local wabbajackLock = false
-
 local northMarkerCos = 0
 local northMarkerSin = 0
 local mapWidth = 0
@@ -84,6 +82,7 @@ if config.miscSpells == true then
 	tes3.claimSpellEffectId("T_destruction_GazeOfVeloth", 2138)
 	tes3.claimSpellEffectId("T_mysticism_DetEnemy", 2139)
 	tes3.claimSpellEffectId("T_alteration_WabbajackTrans", 2140)
+	tes3.claimSpellEffectId("T_mysticism_DetInvisibility", 2141)
 end
 
 -- The effect costs for most summons were initially calculated by mort using a formula (dependent on a creature's health and soul) that is now lost and were then adjusted as seemed reasonable.
@@ -153,6 +152,7 @@ local td_misc_effects = {
 	{ tes3.effect.T_destruction_GazeOfVeloth, common.i18n("magic.miscGazeOfVeloth"), 80, "td\\s\\td_s_gaze_veloth.tga", common.i18n("magic.miscGazeOfVelothDesc")},
 	{ tes3.effect.T_mysticism_DetEnemy, common.i18n("magic.miscDetectEnemy"), 2.25, "td\\s\\td_s_det_enemy.tga", common.i18n("magic.miscDetectEnemyDesc")},
 	{ tes3.effect.T_alteration_WabbajackTrans, common.i18n("magic.miscWabbajack"), 0, "td\\s\\td_s_wabbajack.tga", common.i18n("magic.miscWabbajackDesc")},
+	{ tes3.effect.T_mysticism_DetInvisibility, common.i18n("magic.miscDetectInvisibility"), 3, "td\\s\\td_s_det_enemy.tga", common.i18n("magic.miscDetectInvisibilityDesc")},
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -476,8 +476,8 @@ function this.editItems(table)
 end
 
 ---@param actor tes3mobileNPC
----@param table table
----@return table
+---@param table table< table< string, tes3.spellType, string|nil, number, tes3.effect, tes3.effectRange, number, number, number, number > >
+---@return table< table< string, tes3.effect > >
 local function checkActorSpells(actor, table)
 	local customSpells = { }
 	local customSpellIndex = 1
@@ -492,7 +492,7 @@ local function checkActorSpells(actor, table)
 end
 
 ---@param session tes3combatSession
----@param spells table
+---@param spells table< table< string, tes3.effect > >
 local function equipActorSpell(session, spells)
 	for _,v in pairs(spells) do
 		if #session.mobile:getActiveMagicEffects({ effect = v[2] }) == 0 then
@@ -735,44 +735,57 @@ local function distractEffect(e)
 	if not activePackage or activePackage.type < 1 then
 		local distance
 		local playerFinalDistance
-		local playerThirdDistance
 		local destination
 
 		local bestDistance = 0
 		local bestPlayerFinalDistance = 0
-		local bestPlayerThirdDistance = 0
 		local bestDestination
 		
 		distractSavePackage(target, activePackage)
 		if target.cell.isInterior then
-			local initialNode = common.getInitialNode(target)
 			local nodeArr = target.cell.pathGrid.nodes
-			if initialNode then		-- Just in case
-				for _,node in pairs(nodeArr) do
-					if math.abs(node.position.z - target.position.z) < 384 then		-- This is meant to stop actors from walking up/down several flights of stairs, which I think would feel unrealistic
-						distance = target.position:distance(node.position)
-						if distance <= range then
-							local path = common.pathGridSearch(initialNode, node)
-							if path then	-- If no path exists, then the destination should not be valid
-								--mwse.log("Path")
-								--mwse.log(#path)
-								playerFinalDistance = tes3.player.position:distance(node.position)
+			local threeClosestNodes = common.getClosestNodes(target)	-- I sure hope that looking at the three closest nodes is capable of consistently getting which one the actor will move to first
+			
+			for _,node in pairs(nodeArr) do
+				if math.abs(node.position.z - target.position.z) < 384 then		-- This is meant to stop actors from walking up/down several flights of stairs, which I think would feel unrealistic
+					distance = target.position:distance(node.position)
+					if distance <= range then
+						local pathCheck = common.pathGridBFS(threeClosestNodes[1], node)	-- pathGridBFS is used here to check whether a path actually exists because it is quicker than pathGridDijkstra
+						if pathCheck then	-- If no path exists, then it is not possible to reach this destination
+							playerFinalDistance = tes3.player.position:distance(node.position)
 
-								--if path[3] then
-								--	playerThirdDistance = tes3.player.position:distance(path[3].position)
-								--	mwse.log(path[3].position.x)
-								--	mwse.log(path[3].position.y)
-								--	mwse.log(path[3].position.z)
-								--	mwse.log(playerThirdDistance)
-								--end
+							--mwse.log("Final Node:")
+							--mwse.log(node.position)
+							--local shortestPathDistance = math.huge
+							--local shortestPath = {}
+							--for k,v in ipairs(threeClosestNodes) do
+							--	--mwse.log("Initial Node: " .. k)
+							--	if node ~= threeClosestNodes[1] and node ~= threeClosestNodes[2] and node ~= threeClosestNodes[3] then
+							--		---@cast v tes3pathGridNode
+							--		--mwse.log("pathGridDijkstra")
+							--		local path = common.pathGridDijkstra(v, node)
+							--		local pathDistance = 0
+							--		local previousNode
+--
+							--		for _,calculatedNode in ipairs(path) do
+							--			---@cast calculatedNode tes3pathGridNode
+							--			--mwse.log(calculatedNode.position)
+							--			if previousNode then pathDistance = pathDistance + calculatedNode.position:distance(previousNode.position) end
+							--			previousNode = calculatedNode
+							--		end
+							--		--mwse.log("Distance: " .. distance)
+--
+							--		if pathDistance < shortestPathDistance then
+							--			shortestPath = path
+							--			shortestPathDistance = pathDistance
+							--		end
+							--	end
+							--end
 
-								if distance >= bestDistance and playerFinalDistance > bestPlayerFinalDistance then	-- and (not path[3] or playerThirdDistance >= bestPlayerThirdDistance) -- Is there a better way to arrange these condition checks?
-									bestDistance = distance
-									bestPlayerFinalDistance = playerFinalDistance
-									bestDestination = node.position
-
-									--if path[3] then bestPlayerThirdDistance = playerThirdDistance end
-								end
+							if distance >= bestDistance and playerFinalDistance > bestPlayerFinalDistance then	-- and (not path[3] or playerThirdDistance >= bestPlayerThirdDistance) -- Is there a better way to arrange these condition checks?
+								bestDistance = distance
+								bestPlayerFinalDistance = playerFinalDistance
+								bestDestination = node.position
 							end
 						end
 					end
@@ -989,7 +1002,7 @@ local function calculateMapValues(mapPane, multiPane)
 			interiorMultiOriginY = newInteriorMultiOriginY
 		end
 	else
-		-- It seems as though this is not being updated exactly when it should be; exterior markers will move across cells as the player moves around.
+		-- It seems as though this is not being updated exactly when it should be; exterior markers will briefly move across cells as the player moves around.
 		local mapLayout = mapPane:findChild("MenuMap_map_layout")
 		local mapCellProperty = mapCell:getPropertyObject("MenuMap_cell")
 		local multiCellProperty = multiCell:getPropertyObject("MenuMap_cell")
@@ -1030,6 +1043,64 @@ local function calcExteriorPos(position)
 end
 
 ---@param pane tes3uiElement
+local function deleteInvisibilityDetections(pane)
+	for _,child in pairs (pane.children) do
+		if child.name == "detInv" then child:destroy() end
+	end
+end
+
+---@param pane tes3uiElement
+---@param x number
+---@param y number
+local function createInvisibilityDetections(pane, x, y)
+	local detection = pane:createImage({ id = "detInv", path = "textures\\td\\td_detect_invisibility_icon.dds" })
+	detection.positionX = x
+	detection.positionY = y
+	detection.absolutePosAlignX = -32668
+	detection.absolutePosAlignY = -32668
+	detection.width = 3
+	detection.height = 3
+end
+
+--- @param e magicEffectRemovedEventData
+function this.detectInvisibilityTick(e)
+	if e.reference and e.reference ~= tes3.player then return end	-- I would just use a filter, but that triggers a warning for some reason
+
+	local mapMenu = tes3ui.findMenu("MenuMap")
+	local multiMenu = tes3ui.findMenu("MenuMulti")
+	local mapPane, multiPane
+
+	if mapMenu then mapPane = mapMenu:findChild("MenuMap_pane") end
+	if multiMenu then multiPane = multiMenu:findChild("MenuMap_pane") end
+
+	if mapPane then deleteInvisibilityDetections(mapPane) end
+	if multiPane then deleteInvisibilityDetections(multiPane) end
+
+	local detectInvisibilityEffects = tes3.player.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetInvisibility })
+	if #detectInvisibilityEffects > 0 then
+		if mapMenu and multiMenu then
+			calculateMapValues(mapPane, multiPane)
+	
+			local maxMagnitude = 0
+			for _,v in pairs(detectInvisibilityEffects) do
+				if v.magnitude > maxMagnitude then maxMagnitude = v.magnitude end
+			end
+	
+			for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = maxMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua 
+				if actor.actorType == tes3.actorType.npc then
+					local mapX, mapY, multiX, multiY
+					if tes3.player.cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(actor.position)
+					else mapX, mapY, multiX, multiY = calcExteriorPos(actor.position) end
+	
+					createInvisibilityDetections(mapPane, mapX, mapY)
+					createInvisibilityDetections(multiPane, multiX, multiY)
+				end
+			end
+		end
+	end
+end
+
+---@param pane tes3uiElement
 local function deleteEnemyDetections(pane)
 	for _,child in pairs (pane.children) do
 		if child.name == "detEnm" then child:destroy() end
@@ -1060,16 +1131,16 @@ function this.detectEnemyTick(e)
 	if mapMenu then mapPane = mapMenu:findChild("MenuMap_pane") end
 	if multiMenu then multiPane = multiMenu:findChild("MenuMap_pane") end
 
-	if mapMenu and multiMenu then
-		calculateMapValues(mapPane, multiPane)
-	
-		deleteEnemyDetections(mapPane)
-		deleteEnemyDetections(multiPane)
-	
-		local detectHumanoidEffects = tes3.player.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetEnemy })
-		if #detectHumanoidEffects > 0 then
+	if mapPane then deleteEnemyDetections(mapPane) end
+	if multiPane then deleteEnemyDetections(multiPane) end
+
+	local detectEnemyEffects = tes3.player.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetEnemy })
+	if #detectEnemyEffects > 0 then
+		if mapMenu and multiMenu then
+			calculateMapValues(mapPane, multiPane)
+			
 			local maxMagnitude = 0
-			for _,v in pairs(detectHumanoidEffects) do
+			for _,v in pairs(detectEnemyEffects) do
 				if v.magnitude > maxMagnitude then maxMagnitude = v.magnitude end
 			end
 	
@@ -1087,7 +1158,7 @@ function this.detectEnemyTick(e)
 					disposition = actor.reference.object.disposition
 				end
 
-				if isHostile or (actor.fight > 70 and disposition < (actor.fight - 70) * 5) then	-- There doesn't seem to be a nice way for getting whether an actor will attack at some distance, so I am doing the best that I can with this calculation
+				if isHostile or (actor.fight > 70 and disposition < (actor.fight - 70) * 5) then
 					local mapX, mapY, multiX, multiY
 					if tes3.player.cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(actor.position)
 					else mapX, mapY, multiX, multiY = calcExteriorPos(actor.position) end
@@ -1131,14 +1202,14 @@ function this.detectHumanoidTick(e)
 	if mapMenu then mapPane = mapMenu:findChild("MenuMap_pane") end
 	if multiMenu then multiPane = multiMenu:findChild("MenuMap_pane") end
 
-	if mapMenu and multiMenu then
-		calculateMapValues(mapPane, multiPane)
+	if mapPane then deleteHumanoidDetections(mapPane) end
+	if multiPane then deleteHumanoidDetections(multiPane) end
 	
-		deleteHumanoidDetections(mapPane)
-		deleteHumanoidDetections(multiPane)
-	
-		local detectHumanoidEffects = tes3.player.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetHuman })
-		if #detectHumanoidEffects > 0 then
+	local detectHumanoidEffects = tes3.player.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetHuman })
+	if #detectHumanoidEffects > 0 then
+		if mapPane and multiPane then
+			calculateMapValues(mapPane, multiPane)	-- Move this into a separate tick function so that it only runs once, rather than for each detection effect?
+			
 			local maxMagnitude = 0
 			for _,v in pairs(detectHumanoidEffects) do
 				if v.magnitude > maxMagnitude then maxMagnitude = v.magnitude end
@@ -1193,7 +1264,7 @@ function this.insightEffect(e)
 
 				local leveledItemTable = { }
 				local maxValue = 0
-				local minValue = 2147483647
+				local minValue = math.huge
 				local valueTemp = 0
 				local tableIndex = 1
 
@@ -1810,7 +1881,7 @@ function this.passwallEffect(e)
 							elseif hitReference.baseObject.objectType == tes3.objectType.activator then
 								if hitReference.baseObject.boundingBox.max:heightDifference(hitReference.baseObject.boundingBox.min) >= 192 then
 									local root = target.object
-									while root.parent do	-- Gets root node of the targetted mesh
+									while root.parent do	-- Gets root node of the targeted mesh
 										root = root.parent
 									end
 									
@@ -1818,7 +1889,7 @@ function this.passwallEffect(e)
 										local bestPosition = passwallCalculate(wallPosition, forward, right, up, unitRange)
 
 										if bestPosition then
-											tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
+											tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }
 											local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
 											tes3.mobilePlayer.position = bestPosition
 										end
@@ -1833,13 +1904,13 @@ function this.passwallEffect(e)
 									local bestPosition = passwallCalculate(wallPosition, forward, right, up, unitRange)
 									if bestPosition then
 										if hitReference.lockNode then tes3.triggerCrime({ type = tes3.crimeType.trespass }) end
-										tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
+										tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }
 										local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
 										tes3.mobilePlayer.position = bestPosition
 									end
 								elseif hitReference.destination and hitReference.destination.cell.isInterior then
 									if hitReference.lockNode then tes3.triggerCrime({ type = tes3.crimeType.trespass }) end
-									tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
+									tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }
 									local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
 									tes3.positionCell({ cell = hitReference.destination.cell, position = hitReference.destination.marker.position, orientation = hitReference.destination.marker.orientation, teleportCompanions = false })
 								else
