@@ -88,8 +88,28 @@ function this.initPriorityQueue()
 end
 
 ---@param ref tes3reference
+---@return tes3pathGridNode
+function this.getClosestNode(ref)
+    local distance = 0
+    local bestDistance = math.huge
+    local initialNode
+
+    for _,node in pairs(ref.cell.pathGrid.nodes) do
+        distance = ref.position:distance(node.position)
+
+        if distance < bestDistance then
+            bestDistance = distance
+            initialNode = node
+        end
+    end
+
+    return initialNode
+end
+
+---@param ref tes3reference
+---@param maxDistance number|nil
 ---@return tes3pathGridNode[]
-function this.getClosestNodes(ref)
+function this.getClosestNodes(ref, maxDistance)
     local distance = 0
     local firstDistance = math.huge
     local secondDistance = math.huge
@@ -99,21 +119,23 @@ function this.getClosestNodes(ref)
     for _,node in pairs(ref.cell.pathGrid.nodes) do
         distance = ref.position:distance(node.position)
 
-        if distance < firstDistance then
-            thirdDistance = secondDistance
-            secondDistance = firstDistance
-            firstDistance = distance
-            closestNodes[3] = closestNodes[2]
-            closestNodes[2] = closestNodes[1]
-            closestNodes[1] = node
-        elseif distance < secondDistance then
-            thirdDistance = secondDistance
-            secondDistance = distance
-            closestNodes[3] = closestNodes[2]
-            closestNodes[2] = node
-        elseif distance < thirdDistance then
-            thirdDistance = distance
-            closestNodes[3] = node
+        if not maxDistance or distance <= maxDistance then
+            if distance < firstDistance then
+                thirdDistance = secondDistance
+                secondDistance = firstDistance
+                firstDistance = distance
+                closestNodes[3] = closestNodes[2]
+                closestNodes[2] = closestNodes[1]
+                closestNodes[1] = node
+            elseif distance < secondDistance then
+                thirdDistance = secondDistance
+                secondDistance = distance
+                closestNodes[3] = closestNodes[2]
+                closestNodes[2] = node
+            elseif distance < thirdDistance then
+                thirdDistance = distance
+                closestNodes[3] = node
+            end
         end
     end
 
@@ -154,7 +176,7 @@ function this.pathGridBFS(firstNode, finalNode)
     return false
 end
 
--- Finds the shortest path by distance between two given nodes of a path grid using a particularly unpleasant implementation of Dijkstra's algorithm. While the function's structure might look similar to pathGridBFS's, the implementation are quite different.
+-- Finds the shortest path by distance between two given nodes of a path grid using a particularly unpleasant implementation of Dijkstra's algorithm. While the function's structure might look similar to pathGridBFS's, the implementation is quite different.
 ---@param firstNode tes3pathGridNode
 ---@param finalNode tes3pathGridNode
 ---@return tes3pathGridNode[]|boolean

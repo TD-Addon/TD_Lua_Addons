@@ -698,6 +698,8 @@ event.register(tes3.event.loaded, function()
 		timer.start{duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectInvisibilityTick}
 		event.register(tes3.event.magicCasted, magic.detectInvisibilityTick, { unregisterOnLoad = true })
 		event.register(tes3.event.magicEffectRemoved, magic.detectInvisibilityTick, { unregisterOnLoad = true })
+		event.register(tes3.event.calcHitChance, magic.detectInvisibilityHitChance, { filter = tes3.player.baseObject, unregisterOnLoad = true })
+		--event.register(tes3.event.enterFrame, magic.detectInvisibilityOpacity, { unregisterOnLoad = true })
 
 		timer.start{duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectEnemyTick}
 		event.register(tes3.event.magicCasted, magic.detectEnemyTick, { unregisterOnLoad = true })
@@ -802,7 +804,7 @@ event.register(tes3.event.loaded, function()
 		TD_ButterflyMothTooltip[3] = tes3ui.registerID("TD_ButterflyMothTooltip_Effect_3")
 		TD_ButterflyMothTooltip[4] = tes3ui.registerID("TD_ButterflyMothTooltip_Effect_4")
 
-		event.register(tes3.event.uiObjectTooltip, butterflyMothTooltip, { priority=200, unregisterOnLoad = true })
+		event.register(tes3.event.uiObjectTooltip, butterflyMothTooltip, { priority = 200, unregisterOnLoad = true })
 	end
 
 	if config.changeMorrowindFactionNames == true then
