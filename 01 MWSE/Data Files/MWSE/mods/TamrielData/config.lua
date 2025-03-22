@@ -7,6 +7,7 @@ local defaultConfig = {
 	miscSpells = true,
 	overwriteMagickaExpanded = true,
 	provincialReputation = true,
+	provincialFactionUI = true,
 	weatherChanges = true,
 	hats = true,
 	creatureBehaviors = true,
@@ -16,7 +17,6 @@ local defaultConfig = {
 	improveItemSounds = true,
 	adjustTravelPrices = true,
 	butterflyMothTooltip = common.gh_config and common.gh_config.showTooltips,
-	changeMorrowindFactionNames = tes3.getLanguage() == "eng",
 	limitIntervention = false
 }
 

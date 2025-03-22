@@ -152,7 +152,7 @@ local td_misc_effects = {
 	{ tes3.effect.T_destruction_GazeOfVeloth, common.i18n("magic.miscGazeOfVeloth"), 80, "td\\s\\td_s_gaze_veloth.tga", common.i18n("magic.miscGazeOfVelothDesc")},
 	{ tes3.effect.T_mysticism_DetEnemy, common.i18n("magic.miscDetectEnemy"), 2.25, "td\\s\\td_s_det_enemy.tga", common.i18n("magic.miscDetectEnemyDesc")},
 	{ tes3.effect.T_alteration_WabbajackTrans, common.i18n("magic.miscWabbajack"), 0, "td\\s\\td_s_wabbajack.tga", common.i18n("magic.miscWabbajackDesc")},
-	{ tes3.effect.T_mysticism_DetInvisibility, common.i18n("magic.miscDetectInvisibility"), 3, "td\\s\\td_s_det_enemy.tga", common.i18n("magic.miscDetectInvisibilityDesc")},
+	{ tes3.effect.T_mysticism_DetInvisibility, common.i18n("magic.miscDetectInvisibility"), 3, "td\\s\\td_s_det_invisibility.tga", common.i18n("magic.miscDetectInvisibilityDesc")},		-- Not sure about the cost on this one. 3 just seems like a lot for such a niche effect, even though it nicely fits the pattern set by the other detect effects.
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -352,6 +352,8 @@ local distractedVoiceLines = {
 }
 
 local distractedReferences = {}	-- Should probably decide on a consistent naming scheme for tables
+
+local invisibleReferences = {}
 
 -- race id, skeleton body part id
 local raceSkeletonBodyParts = {
@@ -1094,44 +1096,114 @@ local function detectInvisibilityValid(ref)
 	return false
 end
 
--- This doesn't actually do anything right now, since the function that Null suggested using to change the opacity of actors does not appear to exist.
+---@param e mobileActivatedEventData
+function this.onInvisibleMobileActivated(e)
+	if detectInvisibilityValid(e.reference) then	-- This kind of approach should be reliable until someone makes an addon that allows for the AI to use chameleon and invisibility effects.
+		local chameleonEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.chameleon })		-- Might as well get these values here
+		local chameleonMagnitude = 0
+		local detectedChameleonMagnitude = 0
+		if #chameleonEffects > 0 then
+			for _,v in pairs(chameleonEffects) do
+				chameleonMagnitude = chameleonMagnitude + v.magnitude
+			end
+
+			if chameleonMagnitude > 100 then chameleonMagnitude = 100 end
+			
+			chameleonMagnitude = chameleonMagnitude / 100
+
+			detectedChameleonMagnitude = chameleonMagnitude - .5
+			if detectedChameleonMagnitude < 0 then detectedChameleonMagnitude = 0 end
+		end
+
+		local invisibilityMagnitude = 0
+		if #e.mobile:getActiveMagicEffects({ effect = tes3.effect.invisibility }) > 0 then
+			invisibilityMagnitude = 1
+		end
+
+		invisibleReferences[e.reference] = { chameleon = chameleonMagnitude, detectedChameleon = detectedChameleonMagnitude, invisibility = invisibilityMagnitude }
+	end
+end
+
+---@param e mobileDeactivatedEventData
+function this.onInvisibleMobileDeactivated(e)
+	invisibleReferences[e.reference] = nil
+end
+
+---@param e spellTickEventData
+function this.invisibilityAppliedEffect(e)
+	if e.target and e.target ~= tes3.player and (e.effect.id == tes3.effect.chameleon or e.effect.id == tes3.effect.invisibility) and not invisibleReferences[e.target] then	-- Could this miss another effect being applied to an actor that is already "invisible"? Yes, but I don't really care at the moment.
+		this.onInvisibleMobileActivated({ claim = false, mobile = e.target.mobile, reference = e.target })
+	end
+end
+
+---@param e magicEffectRemovedEventData
+function this.invisibilityRemovedEffect(e)
+	if e.target and e.target ~= tes3.player and e.effect.id == tes3.effect.chameleon or e.effect.id == tes3.effect.invisibility then
+		if detectInvisibilityValid(e.reference) then															-- The actor might (but probably won't) still have other acceptable effects
+			local chameleonEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.chameleon })
+			local chameleonMagnitude = 0
+			local detectedChameleonMagnitude = 0
+			if #chameleonEffects > 0 then
+				for _,v in pairs(chameleonEffects) do
+					chameleonMagnitude = chameleonMagnitude + v.magnitude
+				end
+
+				if chameleonMagnitude > 100 then chameleonMagnitude = 100 end
+
+				chameleonMagnitude = chameleonMagnitude / 100
+
+				detectedChameleonMagnitude = chameleonMagnitude - .5
+				if detectedChameleonMagnitude < 0 then detectedChameleonMagnitude = 0 end
+			end
+
+			local invisibilityMagnitude = 0
+			if #e.mobile:getActiveMagicEffects({ effect = tes3.effect.invisibility }) > 0 then
+				invisibilityMagnitude = 1
+			end
+
+			invisibleReferences[e.reference] = { chameleon = chameleonMagnitude, detectedChameleon = detectedChameleonMagnitude, invisibility = invisibilityMagnitude }
+		else
+			invisibleReferences[e.reference] = nil
+		end
+	end
+end
+
 --- @param e enterFrameEventData
 function this.detectInvisibilityOpacity(e)
 	if e.menuMode then return end
 
-	local detectInvisibilityEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetInvisibility })
-	if #detectInvisibilityEffects > 0 then
-		local detectMagnitude = 0
-		for _,v in pairs(detectInvisibilityEffects) do
-			if v.magnitude > detectMagnitude then detectMagnitude = detectMagnitude + v.magnitude end
+	for actor,magnitudes in pairs(invisibleReferences) do		-- Should the other parts of Detect Invisibility rely on invisibleReferences too?
+		local detectInvisibilityEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetInvisibility })
+		local undetectable = false
+		if #detectInvisibilityEffects > 0 then
+			local detectMagnitude = 0
+			for _,v in pairs(detectInvisibilityEffects) do
+				if v.magnitude > detectMagnitude then detectMagnitude = detectMagnitude + v.magnitude end
+			end
+
+			if tes3.player.position:distance(actor.position) <= detectMagnitude * 22.1 then
+				local opacity = (1 - .75 * magnitudes.detectedChameleon) * (1 - magnitudes.invisibility / 2)
+				if opacity < .5 then opacity = .5 end
+			
+				actor.mobile.animationController.opacity = opacity
+				actor.data.tamrielData = actor.data.tamrielData or {}
+				actor.data.tamrielData.invisibilityDetected = true
+			else
+				undetectable = true
+			end
+		else
+			undetectable = true
 		end
 
-		for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = detectMagnitude * 22.1 })) do
-			if detectInvisibilityValid(actor.reference) then
-				local chameleonEffects = actor:getActiveMagicEffects({ effect = tes3.effect.chameleon })
-				local chameleonMagnitude = 0
-				if #chameleonEffects > 0 then
-					for _,v in pairs(chameleonEffects) do
-						chameleonMagnitude = chameleonMagnitude + v.magnitude
-					end
-	
-					if chameleonMagnitude > 100 then chameleonMagnitude = 100 end
-					
-					chameleonMagnitude = chameleonMagnitude / 100
-
-					chameleonMagnitude = chameleonMagnitude - .5
-					if chameleonMagnitude < 0 then chameleonMagnitude = 0 end
-				end
-	
-				local invisibilityEffects = actor:getActiveMagicEffects({ effect = tes3.effect.invisibility })
-				local invisibilityMagnitude = 0
-				if #invisibilityEffects > 0 then
-					invisibilityMagnitude = .5
-				end
-
-				local opacity = (1 - .75 * chameleonMagnitude) * (1 - invisibilityMagnitude)
-				if opacity < .5 then opacity = .5 end
+		
+		if undetectable and actor.data.tamrielData and actor.data.tamrielData.invisibilityDetected then
+			local opacity = (1 - .75 * magnitudes.chameleon) * (1 - magnitudes.invisibility)
+			if opacity < 0 then opacity = 0
+			elseif opacity >= 1 then opacity = 0.99999		-- A value of 1 is naturally not supported by the engine, so it is set to 0.99999 until MWSE's developers fix that bug
 			end
+
+			actor.mobile.animationController.opacity = opacity
+			actor.data.tamrielData.invisibilityDetected = false
 		end
 	end
 end
@@ -1147,7 +1219,7 @@ function this.detectInvisibilityHitChance(e)
 			if v.magnitude > detectMagnitude then detectMagnitude = detectMagnitude + v.magnitude end
 		end
 
-		if e.target and e.targetMobile and e.attacker.position:distance(e.target.position) <= detectMagnitude * 22.1 then
+		if e.target and e.targetMobile and e.attacker.position:distance(e.target.position) <= detectMagnitude * 22.1 and not table.contains(tes3.player.mobile.friendlyActors, e.targetMobile) then
 			if detectInvisibilityValid(e.target) then
 				local chameleonEffects = e.targetMobile:getActiveMagicEffects({ effect = tes3.effect.chameleon })
 				local chameleonMagnitude = 0
@@ -1529,7 +1601,7 @@ local function wabbajackEffect(e)
 		
 		local transformCreature = tes3.getObject(wabbajackCreatures[math.random(#wabbajackCreatures)])
 
-		local transformedTarget = tes3.createReference({ object = transformCreature, position = target.position, orientation = target.orientation, cell = target.cell })
+		local transformedTarget = tes3.createReference({ object = transformCreature, position = target.position, orientation = target.orientation, cell = target.cell })	-- Could this setup and the WabbajackTrans effect actually be done through a summon like the Corruption effect does?
 		transformedTarget.data.tamrielData = transformedTarget.data.tamrielData or {}
 		transformedTarget.data.tamrielData.wabbajack = {}
 		transformedTarget.data.tamrielData.wabbajack.duration = duration

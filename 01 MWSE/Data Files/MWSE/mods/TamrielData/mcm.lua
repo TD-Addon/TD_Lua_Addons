@@ -95,6 +95,14 @@ local function registerModConfig()
         },
     }
     toggles:createOnOffButton{
+        label = common.i18n("mcm.provincialFactionsUI"),
+        description = common.i18n("mcm.provincialFactionsUIDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "provincialFactionUI",
+            table = config,
+        },
+    }
+    toggles:createOnOffButton{
         label = common.i18n("mcm.weatherChangesLabel"),
         description = common.i18n("mcm.weatherChangesDescription"),
         variable = mwse.mcm.createTableVariable{
@@ -163,14 +171,6 @@ local function registerModConfig()
         description = common.i18n("mcm.butterflyMothTooltipDescription"),
         variable = mwse.mcm.createTableVariable{
             id = "butterflyMothTooltip",
-            table = config,
-        },
-    }
-    toggles:createOnOffButton{
-        label = common.i18n("mcm.factionNamesLabel"),
-        description = common.i18n("mcm.factionNamesDescription"),
-        variable = mwse.mcm.createTableVariable{
-            id = "changeMorrowindFactionNames",
             table = config,
         },
     }

@@ -6,6 +6,7 @@
 local common = require("tamrielData.common")
 local config = require("tamrielData.config")
 local behavior = require("TamrielData.behavior")
+local factions = require("tamrielData.factions")
 local magic = require("tamrielData.magic")
 local reputation = require("tamrielData.reputation")
 local weather = require("tamrielData.weather")
@@ -699,7 +700,11 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.magicCasted, magic.detectInvisibilityTick, { unregisterOnLoad = true })
 		event.register(tes3.event.magicEffectRemoved, magic.detectInvisibilityTick, { unregisterOnLoad = true })
 		event.register(tes3.event.calcHitChance, magic.detectInvisibilityHitChance, { filter = tes3.player.baseObject, unregisterOnLoad = true })
-		--event.register(tes3.event.enterFrame, magic.detectInvisibilityOpacity, { unregisterOnLoad = true })
+		event.register(tes3.event.enterFrame, magic.detectInvisibilityOpacity, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.invisibilityRemovedEffect, { unregisterOnLoad = true })
+		event.register(tes3.event.spellTick, magic.invisibilityAppliedEffect, { unregisterOnLoad = true })
+		event.register(tes3.event.mobileActivated, magic.onInvisibleMobileActivated, { unregisterOnLoad = true })
+		event.register(tes3.event.mobileDeactivated, magic.onInvisibleMobileDeactivated, { unregisterOnLoad = true })
 
 		timer.start{duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectEnemyTick}
 		event.register(tes3.event.magicCasted, magic.detectEnemyTick, { unregisterOnLoad = true })
@@ -735,6 +740,11 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.uiRefreshed, reputation.uiRefreshedCallback, { filter = "MenuStat_scroll_pane", unregisterOnLoad = true })
 		event.register(tes3.event.menuEnter, function(e) tes3ui.updateStatsPane() end, { unregisterOnLoad = true })
 	end
+
+	if config.provincialFactionUI == true then
+		event.register(tes3.event.uiRefreshed, factions.uiRefreshedCallback, { priority = 5, filter = "MenuStat_scroll_pane", unregisterOnLoad = true })	-- Priority is set so that UI Expansion affects the tooltips and Tidy Charsheet moves the labels over to the left
+		event.register(tes3.event.menuEnter, function(e) tes3ui.updateStatsPane() end, { unregisterOnLoad = true })
+	end
 	
 	if config.weatherChanges == true then
 		weather.changeRegionWeatherChances()
@@ -764,7 +774,7 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.activate, behavior.onNestLoot, { priority = 250, unregisterOnLoad = true })	-- The priority is set so that the function is guranteed to work with GH even if the nests are removed from the blacklist
 		event.register(tes3.event.combatStarted, behavior.onGroupAttacked, { unregisterOnLoad = true })
 
-		timer.start{duration = 5, iterations = -1, type = timer.simulate, callback = behavior.creatureDetectionTick}
+		timer.start{duration = 5, iterations = -1, type = timer.simulate, callback = behavior.creatureDetectionTick}	-- Morrowind's AI is (supposedly) updated every 5 seconds, which is why that value is used here.
 		event.register(tes3.event.mobileActivated, behavior.onMobileActivated, { unregisterOnLoad = true })
 		event.register(tes3.event.mobileDeactivated, behavior.onMobileDeactivated, { unregisterOnLoad = true })
 	end
@@ -805,14 +815,6 @@ event.register(tes3.event.loaded, function()
 		TD_ButterflyMothTooltip[4] = tes3ui.registerID("TD_ButterflyMothTooltip_Effect_4")
 
 		event.register(tes3.event.uiObjectTooltip, butterflyMothTooltip, { priority = 200, unregisterOnLoad = true })
-	end
-
-	if config.changeMorrowindFactionNames == true then
-		tes3.getFaction("Fighters Guild").name = common.i18n("main.morrowindFightersGuild")
-		tes3.getFaction("Mages Guild").name = common.i18n("main.morrowindMagesGuild")
-		tes3.getFaction("Thieves Guild").name = common.i18n("main.morrowindThievesGuild")
-		tes3.getFaction("Imperial Legion").name = common.i18n("main.morrowindImperialLegion")
-		tes3.getFaction("Dark Brotherhood").name = common.i18n("main.morrowindDarkBrotherhood")
 	end
 	
 end)
