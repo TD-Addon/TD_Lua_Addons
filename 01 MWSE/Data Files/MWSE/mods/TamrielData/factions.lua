@@ -30,6 +30,32 @@ local provinceTable = {
     }
 }
 
+local vanillaFactionTable = {	-- Tamriel_Data modifies some of the vanilla factions, making it the sourceMod for them as far as MWSE is concerned and necessitating the use of this table
+	"Ashlanders",
+	"Blades",
+	"Camonna Tong",
+	"Census and Excise",
+	"Clan Aundae",
+	"Clan Berne",
+	"Clan Quarra",
+	"Dark Brotherhood",
+	"East Empire Company",
+	"Fighters Guild",
+	"Hands of Almalexia",
+	"Hlaalu",
+	"Imperial Cult",
+	"Imperial Legion",
+	"Mages Guild",
+	"Morag Tong",
+	"Redoran",
+	"Royal Guard",
+	"Talos Cult",
+	"Telvanni",
+	"Temple",
+	"Thieves Guild",
+	"Twin Lamps"
+}
+
 -- Create new faction section with header, province categories, and new entries whenever something updates the Stat Menu and forces rebuild
 --- @param e uiRefreshedEventData
 function this.uiRefreshedCallback(e)
@@ -105,7 +131,7 @@ function this.uiRefreshedCallback(e)
 		local provinceHasFaction = false
         for _,faction in ipairs(playerFactions) do
             ---@cast faction tes3faction
-            if faction.id:find(province.id) or (province.id == "Mw" and faction.sourceMod ~= "Tamriel_Data.esm") then   -- All factions that are not from TD are assumed to fall under Morrowind
+            if faction.id:find(province.id) or (province.id == "Mw" and (table.contains(vanillaFactionTable, faction.id) or faction.sourceMod ~= "Tamriel_Data.esm")) then   -- All factions that are not from TD are assumed to fall under Morrowind
 				provinceHasFaction = true
 
 				local modifiedName = faction.name:gsub(province.name .. " ", "")
