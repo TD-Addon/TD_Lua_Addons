@@ -9,12 +9,6 @@ return {
 	["main.rangeAlmsivi"] = "The power of Almsivi does not extend to these lands.",
 	["main.rangeKyne"] = "The power of Kyne does not extend to these lands.",
 
-	["main.morrowindFightersGuild"] = "Morrowind Fighters Guild",
-	["main.morrowindMagesGuild"] = "Morrowind Mages Guild",
-	["main.morrowindThievesGuild"] = "Morrowind Thieves Guild",
-	["main.morrowindImperialLegion"] = "Morrowind Imperial Legion",
-	["main.morrowindDarkBrotherhood"] = "Morrowind Dark Brotherhood",
-
 	-- Magic Text
 	["magic.summonDevourer"] = "Summon Devourer",
 	["magic.summonDevourerDesc"] = "This effect summons a devourer from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight.",

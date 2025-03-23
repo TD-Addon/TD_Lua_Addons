@@ -1,9 +1,8 @@
 return {
 	-- Main Text
-	["main.mwseDate"] = "[Ressources communes de Tamriel] MWSE n'est pas à jour ! Veuillez faire tourner MWSE-Update.exe pour pouvoir faire fonctionner ce mod.",
-
 	["main.imgaShoes"] = "Les Imgas ne peuvent porter de chaussures.",
 	["main.imgaHelm"] = "Les Imgas mâles ne peuvent porter de casque.",
+	["main.imgaHat"] = "Les Imgas mâles ne peuvent porter de chapeau.",
 	["main.tsaesciShoes"] = "Les Tsaescis ne peuvent porter de chaussures.",
     ["main.tsaesciPants"] = "Les Tsaescis ne peuvent porter de pantalon.", 
 
@@ -95,9 +94,21 @@ return {
 	["magic.miscInsight"] = "Perspicacité",
 	["magic.miscInsightDesc"] = "Cet effet influe légèrement sur le destin en augmentant les chances de découvrir des objets de valeur.",
 	["magic.miscArmorResartus"] = "Armure raccommodée",
-    ["magic.miscArmorResartusDesc"] = "Cet effet répare et recharge l'armure enchantée équipée par le lanceur. La puissant de l'effet correspond au nombre d'unités de condition et de charge restaurées, qui sont distribuées entre chacun des pièces d'armure enchantées du lanceur.",
+    ["magic.miscArmorResartusDesc"] = "Cet effet répare et recharge l'armure enchantée équipée par le lanceur. La puissance de l'effet correspond au nombre d'unités de condition et de charge restaurées, qui sont distribuées entre chacun des pièces d'armure enchantées du lanceur.",
     ["magic.miscWeaponResartus"] = "Arme raccommodée",
-    ["magic.miscWeaponResartusDesc"] = "Cet effet répare et recharge l'arme enchantée équipée par le lanceur. La puissant de l'effet correspond au nombre d'unités de condition et de charge restaurées.", 
+    ["magic.miscWeaponResartusDesc"] = "Cet effet répare et recharge l'arme enchantée équipée par le lanceur. La puissance de l'effet correspond au nombre d'unités de condition et de charge restaurées.",
+	["magic.miscCorruption"] = "Corruption",
+	["magic.miscCorruptionDesc"] = "Cet effet crée un double ténébreux de la cible qui aidera le lanceur au combat.",
+	["magic.miscDistractCreature"] = "Distraction des créatures",
+	["magic.miscDistractCreatureDesc"] = "Cet effet incite une créature à s'éloigner de sa position actuelle tout en tentant de garder ses distances par rapport au lanceur. La puissance de l'effet correspond à la distance maximale à laquelle la cible peut s'éloigner de sa position, et l'effet ne peut être lancé à nouveau sur la cible tant qu'il est actif. Cet effet échouera si la cible a conscience de la présence du lanceur. Quand l'effet prend fin, la cibl commence à rejoindre sa position initiale et ne peut être distraite à nouveau jusqu'à ce qu'elle l'atteigne.",
+	["magic.miscDistractHumanoid"] = "Distraction des humanoïdes",
+	["magic.miscDistractHumanoidDesc"] = "Cet effet incite un humanoïde à s'éloigner de sa position actuelle tout en tentant de garder ses distances par rapport au lanceur. La puissance de l'effet correspond à la distance maximale à laquelle la cible peut s'éloigner de sa position, et l'effet ne peut être lancé à nouveau sur la cible tant qu'il est actif. Cet effet échouera si la cible a conscience de la présence du lanceur. Quand l'effet prend fin, la cible commence à rejoindre sa position initiale et ne peut être distraite à nouveau jusqu'à ce qu'elle l'atteigne.",
+	["magic.miscGazeOfVeloth"] = "Regard de Véloth",
+	["magic.miscGazeOfVelothDesc"] = "Soyez témoin du regard de Véloth !",
+	["magic.miscDetectEnemy"] = "Détection des ennemis",
+	["magic.miscDetectEnemyDesc"] = "Cet effet permet de détecter n'importe quelle entité hostile ; elles apparaissent sous forme de symboles sur la carte. La puissance de l'effet détermine la portée à laquelle le lanceur peut détecter des entités hostiles (en pieds).",
+	["magic.miscDetectInvisibility"] = "Détection d'invisibilité",
+	["magic.miscDetectInvisibilityDesc"] = "Cet effet permet de détecter n'importe quelle entité affectée par un effet d'invisibilité ou de caméléon ; elles apparaissent sous forme de symboles sur la carte. La puissance de l'effet détermine la portée à laquelle le lanceur peut détecter des entités dissimulées (en pieds). Les effets d'invisibilité et de caméléon des entités détectées sont également affaiblis.",	
 
 	["magic.wabbajackFailure"] = "%s est trop puissant pour que Wabbajack l'affecte !",
 	["magic.banishFailure"] = "Ce sort est trop faible pour bannir : %s !",
@@ -117,6 +128,9 @@ return {
 	["magic.itemPotionInsightS"] = "Pot. Perspicacité standard",
 	["magic.itemPotionInsightQ"] = "Pot. Perspicacité de qualité",
 	["magic.itemPotionInsightE"] = "Pot. Perspicacité de choix",
+	["magic.itemPotionDetectHumanoid"] = "Potion Détecte-humanoïdes",
+	["magic.itemPotionDetectEnemy"] = "Potion Détecte-ennemis",	-- Vanilla's Detect potions have inconsistent names, so this feels OK?
+	["magic.itemPotionDetectInvisibility"] = "Potion Détecte-invisibilité",
 
 	["magic.itemScSummonDremoraArcher"] = "Parch. de proie de Mérunès",
 	["magic.itemScSummonDremoraCaster"] = "Parch. de convention du Rasoir",
@@ -131,6 +145,9 @@ return {
 	["reputation.PadomaicIsles"] = "dans les îles padomaïques",
 	["reputation.HighRock"] = "en Hauteroche",
 	["reputation.Hammerfell"] = "en Lenclume",
+	
+	-- Faction Text
+	["faction.title"] = "Factions",		-- Yes, it is just "Faction" in vanilla, but that really does not make sense
 
 	-- MCM Text
 	["mcm.name"] = "Ressources communes de Tamriel",
@@ -156,7 +173,7 @@ return {
 	["mcm.interventionSpellsDescription"] = "Ajout de nouveaux sorts d'Intervention pour différents panthéons et dieux de Tamriel, comme la déesse nordique Kyne.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 	
 	["mcm.miscSpellsLabel"] = "Ajout de nouveaux sorts divers",
-	["mcm.miscSpellsDescription"] = "Ajoute de nouveaux sorts qui ne rentrent pas dans les catégories précédentes.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+	["mcm.miscSpellsDescription"] = "Ajoute de nouveaux sorts qui ne rentrent pas dans les catégories précédentes, comme Bannissement de Daedra, Réflexion de dégâts, Distraction des humanoïdes, et Wabbajack.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 
 	["mcm.magickaExpandedLabel"] = "Remplacer les effets de Magie étendue",
 	["mcm.magickaExpandedDescription"] = "Remplace certains effets magiques de Magie étendue avec ceux implémentés par Ressources communes de Tamriel pour être consistant, comme Bannissement de Daedra et Appel de vermaï." ..
@@ -165,12 +182,20 @@ return {
 	["mcm.provincialReputationLabel"] = "Système de réputation provinciale",
 	["mcm.provincialReputationDescription"] = "Modifie l'interface pour afficher la réputation du joueur dans différentes régions de Tamriel au lieu d'utiliser une unique valeur globale. Les chances du joueur de parvenir à admirer, intimider ou insulter quelqu'un sont également influencées par ces valeurs." ..
 											"\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+											
+	["mcm.provincialFactionsUI"] = "Interface de factions provinciales",
+	["mcm.provincialFactionsUIDescription"] = "Modifie l'interface pour que les factions dont le joueur fait partie soient organisées par province.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 
 	["mcm.weatherChangesLabel"] = "Modifications de la météo",
-	["mcm.weatherChangesDescription"] = "Implémente de nouvelles météos dans certaines régions, comme des chutes de spores dans les Bois d'Othréleth, des tempêtes de sable dans la région de Shipal-Shin, et des tempête tropicales dans la mer d'Abecéanne. De plus, cette option procède à des ajustements mineurs de la météo dans d'autres régions, comme le fait que les tempêtes de cendres sur le continent de Morrowind ne proviennent plus systématiquement du mont Ecarlate.\nCette option risque d'entrer en conflit avec les mods MWSE qui touchent à la météo, comme Watch the Skies.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+	["mcm.weatherChangesDescription"] = "Implémente de nouvelles météos dans certaines régions, comme des chutes de spores dans les Bois d'Othréleth, des tempêtes de sable dans la région de Shipal-Shin, et des tempête tropicales dans la mer d'Abecéanne. De plus, cette option procède à des ajustements mineurs de la météo dans d'autres régions, comme le fait que les tempêtes de cendres sur le continent de Morrowind ne proviennent plus systématiquement du mont Ecarlate."..
+											"\nCette option risque d'entrer en conflit avec les mods MWSE qui touchent à la météo, comme Watch the Skies.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+											
+	["mcm.hatsLabel"] = "Les chapeaux sont des vêtements",
+	["mcm.hatsDescription"] = "Les chapeaux de Ressources communes de Tamriel fonctionneront comme des vêtements et non plus des pièces d'armure."..
+											"\nCette option risque d'entrer en conflit avec les mods MWSE qui ajoutent de nouveaux types de vêtements.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 	
 	["mcm.creatureBehaviorsLabel"] = "Amélioration des comportements des créatures",
-    ["mcm.creatureBehaviorsDescription"] = "Fait en sorte que les créatures se comportent d'une façon plus intéressante et moins restreinte par les limitation du moteur de jeu. Par exemple, les coureurs stridents ne se relèveront plus maladroitement à la fin de chaque boucle d'animation."..
+    ["mcm.creatureBehaviorsDescription"] = "Fait en sorte que les créatures se comportent d'une façon plus intéressante et moins restreinte par les limitations du moteur de jeu. Par exemple, les tanthas dans l'oues de Cyrodil attaqueront le joueur quand un de leurs nids est pillé."..
                                         "\nRequiert un rechargement.\n\nPar défaut : activé\n\n", 
 	
 	["mcm.animationFixLabel"] = "Corriger les animations du joueur pour les nouvelles races",
@@ -190,7 +215,10 @@ return {
 	["mcm.travelPricesLabel"] = "Ajustement des prix des voyages",
 	["mcm.travelPricesDescription"] = "Modifie le coût des voyages vers les destinations ajoutées par les mods de provinces dans les cas où ceux calculés par le jeu sont déraisonnables, comme les prix des voyages entre les réseaux de guides de guilde de la guilde des Mages.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 	
+	["mcm.butterflyMothTooltipLabel"] = "Infobulle des ingrédients pour les papillons et les phalènes",
+	["mcm.butterflyMothTooltipDescription"] = "Affiche les effets alchimiques, le poids et la valeur eds ingrédients qui peuvent être récoltés sur les papillons et les phalènes quand vous les regardez, comme le permet Récolte réaliste quand vous regardez des conteneurs organiques récoltables.\nRequiert un rechargement.\n\nPar défaut : activé, si Récolte réaliste est installé et que sa fonctionnalité pour afficher les infobulles des ingrédients est active\n\n",
+	
 	["mcm.interventionRangeLabel"] = "Limiter la portée des sorts d'Intervention",
 	["mcm.interventionRangeDescription"] = "Restreint la portée jusqu'à laquelle les sorts d'Intervention fonctionnent, vous empêchant de les utiliser pour vous téléporter d'un bout à l'autre de Tamriel." ..
-											"\nCette option pourrait entrer en conflit avec d'autres mods pour MWSE qui touchent aux sorts d'Intervention, ou avec les mods qui implémentent de nouvelles régions autres que Tamriel_Data.\nRequiert un rechargement.\n\nPar défaut : désactivé\n\n",
+											"\nCette option pourrait entrer en conflit avec d'autres mods pour MWSE qui touchent aux sorts d'Intervention, ou avec les mods qui implémentent de nouvelles régions autres que Ressources communes de Tamriel.\nRequiert un rechargement.\n\nPar défaut : désactivé\n\n",
 }
