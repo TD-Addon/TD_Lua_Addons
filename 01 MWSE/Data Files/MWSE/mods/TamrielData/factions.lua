@@ -94,29 +94,22 @@ function this.uiRefreshedCallback(e)
 	if not topDivider then return end
 
 	local factionProperties = {}
-
-	local hasMessage = true
-	local factionLabel = factionParent:findChild("MenuStat_faction_layout")
+	local factionLabel
+--factionProperties[factionLabel.text]
+	factionLabel = factionParent:findChild("MenuStat_faction_layout")
 	while factionLabel do
-		if factionLabel:getPropertyObject("MenuStat_message") then
-			table.insert(factionProperties, { help = factionLabel:getPropertyCallback("help"), id = factionLabel:getPropertyProperty("id"), MenuStat_skills_flag = factionLabel:getPropertyInt("MenuStat_skills_flag"), MenuStat_message = factionLabel:getPropertyObject("MenuStat_message") })
-		else
-			hasMessage = false
-		end
+		table.insert(factionProperties, { help = factionLabel:getPropertyCallback("help"), id = factionLabel:getPropertyProperty("id"), MenuStat_skills_flag = factionLabel:getPropertyInt("MenuStat_skills_flag"), MenuStat_message = factionLabel:getPropertyObject("MenuStat_message") })
 		factionLabel:destroy()
 		factionLabel = factionParent:findChild("MenuStat_faction_layout")
 	end
 
-	local statPane
-	if not hasMessage and factionParent.name ~= "PartScrollPane_pane" then						-- This is a convoluted solution to deal with the fact that Tidy Charsheet doesn't actually copy over all of the properties. At least it doesn't delete the original labels either.
-		statPane = factionParent.parent.parent:findChild("PartScrollPane_pane")
-		if statPane then
-			local factionLabel = statPane:findChild("MenuStat_faction_layout")
-			while factionLabel do
-				table.insert(factionProperties, { help = factionLabel:getPropertyCallback("help"), id = factionLabel:getPropertyProperty("id"), MenuStat_skills_flag = factionLabel:getPropertyInt("MenuStat_skills_flag"), MenuStat_message = factionLabel:getPropertyObject("MenuStat_message") })
-				factionLabel:destroy()
-				factionLabel = statPane:findChild("MenuStat_faction_layout")
-			end
+	local statPane = factionParent.parent.parent:findChild("PartScrollPane_pane") -- This is a convoluted solution to deal with the fact that Tidy Charsheet doesn't actually copy over all of the properties. At least it doesn't delete the original labels either.
+	if statPane then
+		factionLabel = statPane:findChild("MenuStat_faction_layout")
+		while factionLabel do
+			table.insert(factionProperties, { help = factionLabel:getPropertyCallback("help"), id = factionLabel:getPropertyProperty("id"), MenuStat_skills_flag = factionLabel:getPropertyInt("MenuStat_skills_flag"), MenuStat_message = factionLabel:getPropertyObject("MenuStat_message") })
+			factionLabel:destroy()
+			factionLabel = statPane:findChild("MenuStat_faction_layout")
 		end
 	end
 
@@ -139,7 +132,7 @@ function this.uiRefreshedCallback(e)
                 factionLabel = factionParent:createLabel({ id = "MenuStat_faction_layout", text = modifiedName })
                 factionLabel.borderLeft = 20
 
-				for _,properties in ipairs(factionProperties) do
+				for _,properties in pairs(factionProperties) do
 					if properties.MenuStat_message == faction then
 						if properties.help then factionLabel:setPropertyCallback("help", properties.help) end
 						if properties.id then factionLabel:setPropertyProperty("id", properties.id) end
