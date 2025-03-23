@@ -262,6 +262,7 @@ local td_enchantments = {
 	{ "T_Use_SummonGuardian60", tes3.effect.T_summon_Guardian, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Const_VelothsPauld_R", tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 1, 30, 30 },
 	{ "T_Com_Potion_Eyes", tes3.effect.detectAnimal, tes3.effectRange.self, 0, 60, 50, 50, tes3.effect.T_mysticism_DetHuman, tes3.effectRange.self, 0, 60, 50, 50 , tes3.effect.detectEnchantment, tes3.effectRange.self, 0, 60, 50, 50 , tes3.effect.detectKey, tes3.effectRange.self, 0, 60, 50, 50, tes3.effect.nightEye, tes3.effectRange.self, 0, 60, 50, 50   },	-- This is actually a potion, but putting it here is the most convenient approach
+	{ "T_Strike_StaffVeloth", tes3.effect.T_destruction_GazeOfVeloth, tes3.effectRange.touch, 0, 1, 1, 1 },
 }
 
 -- ingredient id, 1st effect id, 1st effect attribute id, 1st effect skill id, 2nd effect id, ...
