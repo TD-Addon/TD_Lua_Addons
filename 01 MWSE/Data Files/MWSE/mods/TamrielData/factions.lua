@@ -95,7 +95,6 @@ function this.uiRefreshedCallback(e)
 
 	local factionProperties = {}
 	local factionLabel
---factionProperties[factionLabel.text]
 	factionLabel = factionParent:findChild("MenuStat_faction_layout")
 	while factionLabel do
 		table.insert(factionProperties, { help = factionLabel:getPropertyCallback("help"), id = factionLabel:getPropertyProperty("id"), MenuStat_skills_flag = factionLabel:getPropertyInt("MenuStat_skills_flag"), MenuStat_message = factionLabel:getPropertyObject("MenuStat_message") })

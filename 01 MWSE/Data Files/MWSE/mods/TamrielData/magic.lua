@@ -261,6 +261,7 @@ local td_enchantments = {
 	{ "T_Use_SkullOfCorruption", tes3.effect.T_conjuration_Corruption, tes3.effectRange.target, 0, 0, 1, 1 },	-- Why oh why is this ID not Uni?
 	{ "T_Use_SummonGuardian60", tes3.effect.T_summon_Guardian, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Const_VelothsPauld_R", tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 1, 30, 30 },
+	{ "T_Com_Potion_Eyes", tes3.effect.detectAnimal, tes3.effectRange.self, 0, 60, 50, 50, tes3.effect.T_mysticism_DetHuman, tes3.effectRange.self, 0, 60, 50, 50 , tes3.effect.detectEnchantment, tes3.effectRange.self, 0, 60, 50, 50 , tes3.effect.detectKey, tes3.effectRange.self, 0, 60, 50, 50, tes3.effect.nightEye, tes3.effectRange.self, 0, 60, 50, 50   },	-- This is actually a potion, but putting it here is the most convenient approach
 }
 
 -- ingredient id, 1st effect id, 1st effect attribute id, 1st effect skill id, 2nd effect id, ...
@@ -301,9 +302,26 @@ local td_ingredients = {
 								 tes3.effect.drainAttribute, tes3.attribute.speed, 0,
 								 tes3.effect.resistMagicka, -1, -1,
 								 tes3.effect.T_mysticism_Insight, -1, -1 },
-	--{ "T_IngMine_Agate_01", tes3.effect.reflect, -1, -1,
-	--						tes3.effect.T_alteration_RadShield, -1, -1,			-- I keep going back and forth on this
-	--						tes3.effect.silence, -1, -1 }
+	{ "T_IngMine_Amethyst_01", tes3.effect.T_mysticism_DetInvisibility, -1, -1,
+								 tes3.effect.drainFatigue, -1, -1,
+								 tes3.effect.CureCommonDisease, -1, -1,
+								 tes3.effect.restoreAttribute, tes3.attribute.willpower, 0 },
+	{ "T_IngMine_AmethystDae_01", tes3.effect.T_mysticism_DetInvisibility, -1, -1,
+									tes3.effect.drainFatigue, -1, -1,
+									tes3.effect.CureCommonDisease, -1, -1,
+									tes3.effect.restoreAttribute, tes3.attribute.willpower, 0 },
+	{ "T_IngFood_TGuarHide", tes3.effect.drainMagicka, -1, -1,
+								tes3.effect.fortifyAttribute, tes3.attribute.strength, 0,
+								tes3.effect.restoreAttribute, tes3.attribute.speed, 0,
+								tes3.effect.T_mysticism_DetInvisibility, -1, -1 },
+	{ "T_IngCrea_ThresherClaw_01", tes3.effect.fortifyAttribute, tes3.attribute.strength, 0,
+									tes3.effect.resistFire, -1, -1,
+									tes3.effect.weaknesstoFrost, -1, -1,
+									tes3.effect.T_mysticism_DetEnemy, -1, -1 },
+	{ "T_IngFlor_TempleDome_01", tes3.effect.blind, -1, -1,
+								tes3.effect.burden, -1, -1,
+								tes3.effect.T_mysticism_DetInvisibility, -1, -1,
+								tes3.effect.shield, -1, -1 },
 }
 
 -- item id, item name, effect id
@@ -317,7 +335,10 @@ local td_potions = {
 	{ "T_Com_Potion_Insight_C", common.i18n("magic.itemPotionInsightC"), tes3.effect.T_mysticism_Insight },
 	{ "T_Com_Potion_Insight_S", common.i18n("magic.itemPotionInsightS"), tes3.effect.T_mysticism_Insight },
 	{ "T_Com_Potion_Insight_Q", common.i18n("magic.itemPotionInsightQ"), tes3.effect.T_mysticism_Insight },
-	{ "T_Com_Potion_Insight_E", common.i18n("magic.itemPotionInsightE"), tes3.effect.T_mysticism_Insight }
+	{ "T_Com_Potion_Insight_E", common.i18n("magic.itemPotionInsightE"), tes3.effect.T_mysticism_Insight },
+	{ "T_Com_Potion_Detect_Humanoid_S", common.i18n("magic.itemPotionDetectHumanoid"), tes3.effect.T_mysticism_DetHuman },
+	{ "T_Com_Potion_Detect_Enemy_S", common.i18n("magic.itemPotionDetectEnemy"), tes3.effect.T_mysticism_DetEnemy },
+	{ "T_Com_Potion_Detect_Invisib_S", common.i18n("magic.itemPotionDetectInvisibility"), tes3.effect.T_mysticism_DetInvisibility },
 }
 
 -- item id, item name, value
@@ -461,7 +482,7 @@ function this.replacePotions(table)
 	for _,v in pairs(table) do
 		local potion = tes3.getObject(v[1])
 		if potion then
-			potion.name = v[2]
+			if v[2] then potion.name = v[2] end
 			potion.effects[1].id = v[3]
 		end
 	end
@@ -532,6 +553,13 @@ function this.useCustomSpell(e)
 	--end
 end
 
+---@param e addTempSoundEventData
+function this.gazeOfVelothBlockActorSound(e)
+	if e.reference.data.tamrielData and e.reference.data.tamrielData.gazeOfVeloth then
+		if e.isVoiceover then return false end
+	end
+end
+
 ---@param e bodyPartAssignedEventData
 function this.gazeOfVelothBodyPartAssigned(e)
 	if e.reference.data.tamrielData and e.reference.data.tamrielData.gazeOfVelothSkeleton then
@@ -565,13 +593,16 @@ local function gazeOfVelothEffect(e)
 	end
 
 	if target.mobile.health.base <= 250 then
+		target.data.tamrielData = target.data.tamrielData or {}
+		target.data.tamrielData.gazeOfVeloth = true
+		tes3.removeSound({ sound = nil, reference = target })	-- Stop long-winded voice lines from playing when the target is stripped of their flesh
+		tes3.playSound({ sound = tes3.getMagicEffect(tes3.effect.damageHealth).hitSoundEffect, reference = target })	-- The hit sound is stopped by the line above though, so this plays it again
 		target.mobile:kill()
 		tes3.triggerCrime({ type = tes3.crimeType.killing, victim = target.mobile })
 		tes3.incrementKillCount({ actor = target.baseObject })
 
 		for _,v in pairs(raceSkeletonBodyParts) do
 			if target.baseObject.race.id == v[1] then
-				target.data.tamrielData = target.data.tamrielData or {}
 				target.data.tamrielData.gazeOfVelothSkeleton = true
 				target:updateEquipment()
 				
@@ -2305,7 +2336,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 		local restoreEffect = tes3.getMagicEffect(tes3.effect.fortifyHealth)	-- The fortify VFX feels more appropriate for the resartus effects, but perhaps it should still be restoration?
 		local summonDremoraEffect = tes3.getMagicEffect(tes3.effect.summonDremora)
 		local blindEffect = tes3.getMagicEffect(tes3.effect.blind)
-		local shockEffect = tes3.getMagicEffect(tes3.effect.shockDamage)
+		local damageHealthEffect = tes3.getMagicEffect(tes3.effect.damageHealth)
 
 		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[1])	-- Passwall
 		tes3.addMagicEffect{
@@ -2878,37 +2909,37 @@ event.register(tes3.event.magicEffectsResolved, function()
 			description = effectDescription,
 			school = tes3.magicSchool.destruction,
 			baseCost = effectCost,
-			speed = shockEffect.speed,
+			speed = damageHealthEffect.speed,
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = true,
 			canCastSelf = false,
 			canCastTarget = true,
 			canCastTouch = true,
-			casterLinked = shockEffect.casterLinked,
-			hasContinuousVFX = shockEffect.hasContinuousVFX,
+			casterLinked = damageHealthEffect.casterLinked,
+			hasContinuousVFX = damageHealthEffect.hasContinuousVFX,
 			hasNoDuration = true,
 			hasNoMagnitude = true,
-			illegalDaedra = shockEffect.illegalDaedra,
+			illegalDaedra = damageHealthEffect.illegalDaedra,
 			isHarmful = true,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = true,
-			usesNegativeLighting = shockEffect.usesNegativeLighting,
+			usesNegativeLighting = damageHealthEffect.usesNegativeLighting,
 			icon = iconPath,
-			particleTexture = shockEffect.particleTexture,
-			castSound = shockEffect.castSoundEffect.id,
-			castVFX = shockEffect.castVisualEffect.id,
-			boltSound = shockEffect.boltSoundEffect.id,
-			boltVFX = shockEffect.boltVisualEffect.id,
-			hitSound = shockEffect.hitSoundEffect.id,
-			hitVFX = shockEffect.hitVisualEffect.id,
-			areaSound = shockEffect.areaSoundEffect.id,
-			areaVFX = shockEffect.areaVisualEffect.id,
-			lighting = {x = shockEffect.lightingRed / 255, y = shockEffect.lightingGreen / 255, z = shockEffect.lightingBlue / 255},
-			size = shockEffect.size,
-			sizeCap = shockEffect.sizeCap,
+			particleTexture = damageHealthEffect.particleTexture,
+			castSound = damageHealthEffect.castSoundEffect.id,
+			castVFX = damageHealthEffect.castVisualEffect.id,
+			boltSound = damageHealthEffect.boltSoundEffect.id,
+			boltVFX = damageHealthEffect.boltVisualEffect.id,
+			hitSound = damageHealthEffect.hitSoundEffect.id,
+			hitVFX = damageHealthEffect.hitVisualEffect.id,
+			areaSound = damageHealthEffect.areaSoundEffect.id,
+			areaVFX = damageHealthEffect.areaVisualEffect.id,
+			lighting = {x = damageHealthEffect.lightingRed / 255, y = damageHealthEffect.lightingGreen / 255, z = damageHealthEffect.lightingBlue / 255},
+			size = damageHealthEffect.size,
+			sizeCap = damageHealthEffect.sizeCap,
 			onTick = gazeOfVelothEffect,
 			onCollision = nil
 		}

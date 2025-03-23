@@ -106,15 +106,16 @@ return {
 	["magic.miscCorruption"] = "Corruption",
 	["magic.miscCorruptionDesc"] = "This effect creates a shadowy counterpart of the target that will aid the caster in combat.",
 	["magic.miscDistractCreature"] = "Distract Creature",
-	["magic.miscDistractCreatureDesc"] = "This effect compels a creature to wander away from their current position while attempting to keep their distance from the caster. The effect's magnitude is the maximum distance that the target can travel and the effect cannot be casted again on the target while it is active. When the effect ends, the target begins to return to their original location and cannot be distracted again until they do.",
+	["magic.miscDistractCreatureDesc"] = "This effect compels a creature to wander away from their current position while attempting to keep their distance from the caster. The effect's magnitude is the maximum distance that the target can travel and the effect cannot be casted again on the target while it is active. Using this effect will fail if the target is aware of the caster's presence. When the effect ends, the target begins to return to their original location and cannot be distracted again until they do.",
 	["magic.miscDistractHumanoid"] = "Distract Humanoid",
-	["magic.miscDistractHumanoidDesc"] = "This effect compels a humanoid to wander away from their current position while attempting to keep their distance from the caster. The effect's magnitude is the maximum distance that the target can travel and the effect cannot be casted again on the target while it is active. Using this effect can be considered a minor crime and will fail if the target is aware of the caster's presence. When the effect ends, the target begins to return to their original location and cannot be distracted again until they do.",
+	["magic.miscDistractHumanoidDesc"] = "This effect compels a humanoid to wander away from their current position while attempting to keep their distance from the caster. The effect's magnitude is the maximum distance that the target can travel and the effect cannot be casted again on the target while it is active. Using this effect will fail if the target is aware of the caster's presence. When the effect ends, the target begins to return to their original location and cannot be distracted again until they do.",
 	["magic.miscGazeOfVeloth"] = "Gaze of Veloth",
-	["magic.miscGazeOfVelothDesc"] = "Witness the Face of Veloth.",
+	["magic.miscGazeOfVelothDesc"] = "Witness the Face of Veloth!",
 	["magic.miscDetectEnemy"] = "Detect Enemy",
-	["magic.miscDetectEnemyDesc"] = "The caster of this effect can detect any hostile entity; they appear on the map as symbols. The effect's magnitude is the range in feet from the caster that enemies are detected.",
+	["magic.miscDetectEnemyDesc"] = "The caster of this effect can detect any entity animated by a spirit; they appear on the map as symbols. This effect includes all hostile beings. The effect's magnitude is the range in feet from the caster that enemies are detected.",
+	["magic.miscDetectInvisibility"] = "Detect Invisibility",
+	["magic.miscDetectInvisibilityDesc"] = "The caster of this effect can detect any entity animated by a spirit; they appear on the map as symbols. This effect includes all beings affected by chameleon or invisbility effects. The effect's magnitude is the range in feet from the caster that hidden beings are detected. The chameleon and invisibility effects on detected entities are also weakened.",
 	
-
 	["magic.wabbajackFailure"] = "%s is too strong to be Wabbajacked!",
 	["magic.banishFailure"] = "This spell is too weak to banish %s!",
 	["magic.passwallWard"] = "You cannot pass through to there.",
@@ -133,6 +134,9 @@ return {
 	["magic.itemPotionInsightS"] = "Standard Potion of Insight",
 	["magic.itemPotionInsightQ"] = "Quality Potion of Insight",
 	["magic.itemPotionInsightE"] = "Exclusive Potion of Insight",
+	["magic.itemPotionDetectHumanoid"] = "Potion of Detect Humanoid",
+	["magic.itemPotionDetectEnemy"] = "Potion of Detect Enemies",	-- Vanilla's Detect potions have inconsistent names, so this feels OK?
+	["magic.itemPotionDetectInvisibility"] = "Potion of Detect Invisibility",
 
 	["magic.itemScSummonDremoraArcher"] = "Scroll of Mehrunes' Quarry",
 	["magic.itemScSummonDremoraCaster"] = "Scroll of the Razor Compact",
@@ -147,6 +151,9 @@ return {
 	["reputation.PadomaicIsles"] = "Padomaic Isles",
 	["reputation.HighRock"] = "High Rock",
 	["reputation.Hammerfell"] = "Hammerfell",
+
+	-- Faction Text
+	["faction.title"] = "Factions",		-- Yes, it is just "Faction" in vanilla, but that really does not make sense
 
 	-- MCM Text
 	["mcm.name"] = "Tamriel Data",
@@ -172,7 +179,7 @@ return {
 	["mcm.interventionSpellsDescription"] = "Adds new intervention spells for different pantheons and gods of Tamriel, such as the Nordic goddess Kyne.\nRequires reload.\n\nDefault: On\n\n",
 
 	["mcm.miscSpellsLabel"] = "Add New Miscellaneous Spells",
-	["mcm.miscSpellsDescription"] = "Adds new spells that do not fit into the categories above.\nRequires reload.\n\nDefault: On\n\n",
+	["mcm.miscSpellsDescription"] = "Adds new spells that do not fit into the categories above, such as Banish Daedra, Reflect Damage, Distract Humanoid, and Wabbajack.\nRequires reload.\n\nDefault: On\n\n",
 
 	["mcm.magickaExpandedLabel"] = "Overwrite Magicka Expanded Effects",
 	["mcm.magickaExpandedDescription"] = "Replaces some magic effects from Magicka Expanded with ones that are also implemented by Tamriel Data for the sake of consistency, such as Banish Daedra and Summon Vermai." ..
@@ -181,6 +188,9 @@ return {
 	["mcm.provincialReputationLabel"] = "Provincial Reputation System",
 	["mcm.provincialReputationDescription"] = "Modifies the GUI to display the player's reputation in different parts of Tamriel rather than just a single global value. The player's chances of successfully admiring, intimidating, or taunting someone are also affected by these values." ..
 											"\nRequires reload.\n\nDefault: On\n\n",
+
+	["mcm.provincialFactionsUI"] = "Provincial Factions UI",
+	["mcm.provincialFactionsUIDescription"] = "Modifies the GUI so that joined factions are organized by province. This also removes the province names from the faction names in the UI.\nRequires reload.\n\nDefault: On\n\n",
 
 	["mcm.weatherChangesLabel"] = "Change Weathers",
 	["mcm.weatherChangesDescription"] = "Adds new weathers to some regions, such as sporefall in the Othreleth Woods, sandstorms in Shipal-Shin, and tropical storms in and around the Abecean Sea. Also makes minor adjustments to the weather in other regions, such as ashstorms in parts of Morrowind's mainland not originating from Red Mountain."..
@@ -213,9 +223,6 @@ return {
 	
 	["mcm.butterflyMothTooltipLabel"] = "Ingredient Tooltip for Butterflies and Moths",
 	["mcm.butterflyMothTooltipDescription"] = "Shows the effects, weight, and value of ingredients that can be harvested from butterflies and moths when looking at them, much like the Graphic Herbalism feature that does so for harvestable containers.\nRequires reload.\n\nDefault: On, if Graphic Herbalism is installed and its feature for showing ingredient tooltips is active\n\n",
-
-	["mcm.factionNamesLabel"] = "Change Names of Morrowind Factions",
-	["mcm.factionNamesDescription"] = "Prefaces the names of factions in Morrowind (such as the Imperial Legion, the Fighters Guild, etc.) with \"Morrowind\" so that they follow Tamriel Data's naming scheme for factions.\nRequires reload.\n\nDefault: On, if the game's language is English\n\n",
 
 	["mcm.interventionRangeLabel"] = "Limit Intervention Spell Range",
 	["mcm.interventionRangeDescription"] = "Restricts the range at which some intervention spells work, preventing them from being used to teleport across the entirety of Tamriel." ..
