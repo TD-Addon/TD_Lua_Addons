@@ -83,6 +83,7 @@ if config.miscSpells == true then
 	tes3.claimSpellEffectId("T_mysticism_DetEnemy", 2139)
 	tes3.claimSpellEffectId("T_alteration_WabbajackTrans", 2140)
 	tes3.claimSpellEffectId("T_mysticism_DetInvisibility", 2141)
+	tes3.claimSpellEffectId("T_mysticism_Blink", 2142)
 end
 
 -- The effect costs for most summons were initially calculated by mort using a formula (dependent on a creature's health and soul) that is now lost and were then adjusted as seemed reasonable.
@@ -153,6 +154,7 @@ local td_misc_effects = {
 	{ tes3.effect.T_mysticism_DetEnemy, common.i18n("magic.miscDetectEnemy"), 2.25, "td\\s\\td_s_det_enemy.tga", common.i18n("magic.miscDetectEnemyDesc")},
 	{ tes3.effect.T_alteration_WabbajackTrans, common.i18n("magic.miscWabbajack"), 0, "td\\s\\td_s_wabbajack.tga", common.i18n("magic.miscWabbajackDesc")},
 	{ tes3.effect.T_mysticism_DetInvisibility, common.i18n("magic.miscDetectInvisibility"), 3, "td\\s\\td_s_det_invisibility.tga", common.i18n("magic.miscDetectInvisibilityDesc")},		-- Not sure about the cost on this one. 3 just seems like a lot for such a niche effect, even though it nicely fits the pattern set by the other detect effects.
+	{ tes3.effect.T_mysticism_Blink, common.i18n("magic.miscBlink"), 10, "td\\s\\td_s_blink.tga", common.i18n("magic.miscBlinkDesc")},
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -222,6 +224,7 @@ local td_misc_spells = {
 	{ "T_Com_Mys_DetectEnemy", tes3.spellType.spell, common.i18n("magic.miscDetectEnemy"), 57, tes3.effect.T_mysticism_DetEnemy, tes3.effectRange.self, 0, 5, 50, 150 },
 	{ "T_Dae_Alt_UNI_WabbajackTrans", tes3.spellType.spell, common.i18n("magic.miscWabbajack"), 0, tes3.effect.T_alteration_WabbajackTrans, tes3.effectRange.touch, 0, 16, 1, 1 },
 	{ "T_Com_Mys_DetectInvisibility", tes3.spellType.spell, common.i18n("magic.miscDetectInvisibility"), 76, tes3.effect.T_mysticism_DetInvisibility, tes3.effectRange.self, 0, 5, 50, 150 },
+	{ "T_Com_Mys_Blink", tes3.spellType.spell, common.i18n("magic.miscBlink"), 25, tes3.effect.T_mysticism_Blink, tes3.effectRange.self, 0, 0, 50, 50 },
 }
 
 -- enchantment id, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -568,6 +571,40 @@ function this.useCustomSpell(e)
 		end
 		]]
 	--end
+end
+
+---@param e tes3magicEffectTickEventData
+local function blinkEffect(e)
+	if (not e:trigger()) then
+		return
+	end
+
+	if tes3.worldController.flagTeleportingDisabled then
+		tes3ui.showNotifyMenu(tes3.findGMST(tes3.gmst.sTeleportDisabled).value)
+		return
+	end
+	
+	local castPosition = tes3.mobilePlayer.position + tes3vector3.new(0, 0, 0.7 * tes3.mobilePlayer.height)	-- Position of where spells are casted
+	local forward = tes3.worldController.armCamera.cameraData.camera.worldDirection:normalized()
+
+	local range = e.effectInstance.magnitude * 22.1
+
+	local target = tes3.rayTest{
+		position = castPosition,
+		direction = forward,
+		maxDistance = range,
+		ignore = { tes3.player },
+	}
+
+	if target then
+		range = target.distance - (tes3.mobilePlayer.boundSize2D.y / 2) - 16		-- The 16 is added just to put a bit more space between the player and the target
+	end
+
+	if range > 0 then
+		tes3.mobilePlayer.position = tes3.mobilePlayer.position + forward * range	-- This is a pretty simple implementation all around, but it seems to work reasonably well. Some adjustments might be necessary though.
+	end
+
+	e.effectInstance.state = tes3.spellState.retired
 end
 
 ---@param e addTempSoundEventData
@@ -2127,7 +2164,7 @@ function this.passwallEffect(e)
 							break
 						else
 							local type = detection.reference.baseObject.objectType
-							if type == tes3.objectType.static or type == tes3.objectType.activator then		
+							if type == tes3.objectType.static or type == tes3.objectType.activator then		-- Should this only be done for activators? That is how I originally had the effect set up.
 								if hasAlphaBlend(tes3.loadMesh(detection.reference.baseObject.mesh)) then	-- This mesh is passed rather than the rayTest's object because the latter is part of 
 									alphaDistance = detection.distance
 									break
@@ -2156,7 +2193,7 @@ function this.passwallEffect(e)
 			local hitReference, wallPosition = target and target.reference, target and target.intersection
 
 			if hitReference then
-				if hitReference.baseObject.objectType == tes3.objectType.static then
+				if hitReference.baseObject.objectType == tes3.objectType.static or hitReference.baseObject.objectType == tes3.objectType.activator  then
 					if hitReference.baseObject.boundingBox.max:heightDifference(hitReference.baseObject.boundingBox.min) >= 192 then		-- Check how tall the targeted object is; this is Passwall, not Passtable
 						local bestPosition, bestDistance = passwallCalculate(wallPosition, forward, right, up, range)
 
@@ -2170,29 +2207,6 @@ function this.passwallEffect(e)
 							end
 
 							tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
-							local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
-							tes3.mobilePlayer.position = bestPosition
-						end
-					end
-				elseif hitReference.baseObject.objectType == tes3.objectType.activator then
-					if hitReference.baseObject.boundingBox.max:heightDifference(hitReference.baseObject.boundingBox.min) >= 192 then
-						local root = target.object
-						while root.parent do	-- Gets root node of the targeted mesh
-							root = root.parent
-						end
-
-						local bestPosition, bestDistance = passwallCalculate(wallPosition, forward, right, up, range)
-
-						if bestPosition then
-							if bestDistance >= alphaDistance then
-								tes3ui.showNotifyMenu(common.i18n("magic.passwallAlpha"))
-								return
-							elseif bestDistance >= wardDistance then
-								tes3ui.showNotifyMenu(common.i18n("magic.passwallWard"))
-								return
-							end
-
-							tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }
 							local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
 							tes3.mobilePlayer.position = bestPosition
 						end
@@ -3131,6 +3145,50 @@ event.register(tes3.event.magicEffectsResolved, function()
 			size = detectEffect.size,
 			sizeCap = detectEffect.sizeCap,
 			onTick = nil,
+			onCollision = nil
+		}
+
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[18])		-- Blink
+		tes3.addMagicEffect{
+			id = effectID,
+			name = effectName,
+			description = effectDescription,
+			magnitudeType = tes3.findGMST(tes3.gmst.sfeet).value,
+			magnitudeTypePlural = tes3.findGMST(tes3.gmst.sfeet).value,
+			school = tes3.magicSchool.mysticism,
+			baseCost = effectCost,
+			speed = detectEffect.speed,
+			allowEnchanting = true,
+			allowSpellmaking = true,
+			appliesOnce = true,
+			canCastSelf = true,
+			canCastTarget = false,
+			canCastTouch = false,
+			casterLinked = detectEffect.casterLinked,
+			hasContinuousVFX = detectEffect.hasContinuousVFX,
+			hasNoDuration = true,
+			hasNoMagnitude = false,
+			illegalDaedra = detectEffect.illegalDaedra,
+			isHarmful = false,
+			nonRecastable = false,
+			targetsAttributes = false,
+			targetsSkills = false,
+			unreflectable = false,
+			usesNegativeLighting = detectEffect.usesNegativeLighting,
+			icon = iconPath,
+			particleTexture = detectEffect.particleTexture,
+			castSound = detectEffect.castSoundEffect.id,
+			castVFX = detectEffect.castVisualEffect.id,
+			boltSound = detectEffect.boltSoundEffect.id,
+			boltVFX = detectEffect.boltVisualEffect.id,
+			hitSound = detectEffect.hitSoundEffect.id,
+			hitVFX = detectEffect.hitVisualEffect.id,
+			areaSound = detectEffect.areaSoundEffect.id,
+			areaVFX = detectEffect.areaVisualEffect.id,
+			lighting = {x = detectEffect.lightingRed / 255, y = detectEffect.lightingGreen / 255, z = detectEffect.lightingBlue / 255},
+			size = detectEffect.size,
+			sizeCap = detectEffect.sizeCap,
+			onTick = blinkEffect,
 			onCollision = nil
 		}
 	end

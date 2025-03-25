@@ -74,7 +74,7 @@ return {
 	["magic.boundPauldrons"] = "Bound Pauldrons",
 	["magic.boundPauldronsDesc"] = "The spell effect conjures a lesser Daedra bound in the form of magical, wondrously light Daedric pauldrons. The pauldrons appear automatically equipped on the caster, displacing any currently equipped shoulder armor to inventory. When the effect ends, the pauldrons disappear, and any previously equipped shoulder armor is automatically re-equipped.",
 	["magic.boundThrowingKnives"] = "Bound Throwing Knives",
-	["magic.boundThrowingKnivesDesc"] = "The spell effect conjures a lesser Daedra bound in the form of magical, wondrously light Daedric throwing knives. The throwing knives appear automatically equipped on the caster, displacing any currently equipped weapon to inventory.  When the effect ends, the throwing knives disappear, and any previously equipped weapon is automatically re-equipped.",
+	["magic.boundThrowingKnivesDesc"] = "The spell effect conjures a lesser Daedra bound in the form of magical, wondrously light Daedric throwing knives. The throwing knives appear automatically equipped on the caster, displacing any currently equipped weapon to inventory. When the effect ends, the throwing knives disappear, and any previously equipped weapon is automatically re-equipped.",
 
 	["magic.interventionKyne"] = "Kyne's Intervention",
 	["magic.interventionKyneDesc"] = "The subject of this effect is transported instantaneously to the nearest temple or sacred place of the Nordic goddess Kyne.",
@@ -109,6 +109,8 @@ return {
 	["magic.miscDetectEnemyDesc"] = "The caster of this effect can detect any entity animated by a spirit; they appear on the map as symbols. This effect includes all hostile beings. The effect's magnitude is the range in feet from the caster that enemies are detected.",
 	["magic.miscDetectInvisibility"] = "Detect Invisibility",
 	["magic.miscDetectInvisibilityDesc"] = "The caster of this effect can detect any entity animated by a spirit; they appear on the map as symbols. This effect includes all beings affected by chameleon or invisbility effects. The effect's magnitude is the range in feet from the caster that hidden beings are detected. The chameleon and invisibility effects on detected entities are also weakened.",
+	["magic.miscBlink"] = "Blink",
+	["magic.miscBlinkDesc"] = "This effect teleports the caster in whatever direction they are looking in. The effect's magnitude is the maximum distance that the caster can move.",
 	
 	["magic.wabbajackFailure"] = "%s is too strong to be Wabbajacked!",
 	["magic.banishFailure"] = "This spell is too weak to banish %s!",
