@@ -800,11 +800,6 @@ event.register(tes3.event.loaded, function()
 	if config.adjustTravelPrices == true then
 		event.register(tes3.event.calcTravelPrice, adjustTravelPrices, { unregisterOnLoad = true })
 	end
-	
-	if config.limitIntervention == true then
-		event.register(tes3.event.magicCasted, limitInterventionMessage, { unregisterOnLoad = true })
-		event.register(tes3.event.spellTick, limitIntervention, { unregisterOnLoad = true })
-	end
 
 	if config.butterflyMothTooltip == true then
 		TD_ButterflyMothTooltip.parent = tes3ui.registerID("TD_ButterflyMothTooltip_Parent")
@@ -816,6 +811,11 @@ event.register(tes3.event.loaded, function()
 		TD_ButterflyMothTooltip[4] = tes3ui.registerID("TD_ButterflyMothTooltip_Effect_4")
 
 		event.register(tes3.event.uiObjectTooltip, butterflyMothTooltip, { priority = 200, unregisterOnLoad = true })
+	end
+	
+	if config.limitIntervention == true then
+		event.register(tes3.event.magicCasted, limitInterventionMessage, { unregisterOnLoad = true })
+		event.register(tes3.event.spellTick, limitIntervention, { unregisterOnLoad = true })
 	end
 	
 end)

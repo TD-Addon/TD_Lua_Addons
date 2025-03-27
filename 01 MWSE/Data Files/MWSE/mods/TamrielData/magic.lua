@@ -396,7 +396,7 @@ local distractedReferences = {}	-- Should probably decide on a consistent naming
 
 local invisibleReferences = {}
 
--- race id, skeleton body part id
+-- race id, skeleton base body part id, skeleton "clothing" body part id
 local raceSkeletonBodyParts = {
 	{ "Argonian", "T_B_GazeVeloth_SkeletonArg_01", "T_C_GazeVeloth_SkeletonArg_01" },	-- Use the other Argonian skeletons too depending on the hair mesh of the target?
 	{ "Breton", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
@@ -1976,14 +1976,16 @@ end
 ---@return boolean|nil
 local function hasAlphaBlend(node)
 	for _,child in pairs(node.children) do
-		if child.alphaProperty then
-			if (child.alphaProperty.propertyFlags % 2) ~= 0 then
-				return true
+		if child then	-- This condition really shouldn't be necessary, but apparently it is
+			if child.alphaProperty then
+				if (child.alphaProperty.propertyFlags % 2) ~= 0 then
+					return true
+				end
 			end
-		end
-
-		if child.children then
-			return hasAlphaBlend(child)
+	
+			if child.children then
+				return hasAlphaBlend(child)
+			end
 		end
 	end
 end
@@ -2003,14 +2005,13 @@ local function passwallCalculate(wallPosition, forward, right, up, range)
 	local rayTestOffset = 19
 
 	local rightCoord = (right * 160)
-	local upCoord = (up * 130)			-- Should this account for player height, which affects castPosition and wallPosition?
-	local upOffset = (up * 25)			-- Not having an offset can allow the player to teleport to the floor above for some sets
+	local upCoord = (up * 105)			-- Should this account for player height, which affects castPosition and wallPosition?
 
 	local startPosition = wallPosition + (forward * forwardOffset)
 	local endPosition = wallPosition + (forward * (range + forwardOffset))
 
-	local point1 = startPosition - rightCoord - upCoord + upOffset
-	local point2 = endPosition + rightCoord + upCoord - upOffset
+	local point1 = startPosition - rightCoord - upCoord
+	local point2 = endPosition + rightCoord + upCoord
 
 	local bestDistance = range
 	local bestPosition = nil
@@ -2151,7 +2152,7 @@ function this.passwallEffect(e)
 				position = castPosition,
 				direction = forward,
 				findAll = true,
-				maxDistance = 128 + range,
+				maxDistance = 196 + range,
 				ignore = { tes3.player },
 				observeAppCullFlag  = false,
 			}
@@ -2164,11 +2165,9 @@ function this.passwallEffect(e)
 							break
 						else
 							local type = detection.reference.baseObject.objectType
-							if type == tes3.objectType.static or type == tes3.objectType.activator then		-- Should this only be done for activators? That is how I originally had the effect set up.
-								if hasAlphaBlend(tes3.loadMesh(detection.reference.baseObject.mesh)) then	-- This mesh is passed rather than the rayTest's object because the latter is part of 
-									alphaDistance = detection.distance
-									break
-								end
+							if type == tes3.objectType.activator and hasAlphaBlend(tes3.loadMesh(detection.reference.baseObject.mesh)) then	-- This mesh is passed rather than the rayTest's object because the latter is part of 
+								alphaDistance = detection.distance
+								break
 							end
 						end
 					end
@@ -2186,16 +2185,16 @@ function this.passwallEffect(e)
 			local target = tes3.rayTest{
 				position = castPosition,
 				direction = forward,
-				maxDistance = 128,
+				maxDistance = 196,		-- The normal activation range
 				ignore = { tes3.player },
 			}
 
 			local hitReference, wallPosition = target and target.reference, target and target.intersection
 
 			if hitReference then
-				if hitReference.baseObject.objectType == tes3.objectType.static or hitReference.baseObject.objectType == tes3.objectType.activator  then
+				if hitReference.baseObject.objectType == tes3.objectType.static or hitReference.baseObject.objectType == tes3.objectType.activator then
 					if hitReference.baseObject.boundingBox.max:heightDifference(hitReference.baseObject.boundingBox.min) >= 192 then		-- Check how tall the targeted object is; this is Passwall, not Passtable
-						local bestPosition, bestDistance = passwallCalculate(wallPosition, forward, right, up, range)
+						local bestPosition, bestDistance = passwallCalculate(wallPosition + (forward * 16) - (up * 48), forward, right, up, range)		-- (forward * 16) is used to hopefully prevent teleporting inside the target; (up * 64) is used to make the effect work better with stairways down that are right behind doors and to limit the player's ability to teleport up stairs
 
 						if bestPosition then
 							if bestDistance >= alphaDistance then	-- These conditions will notify the player if the closest node was through or inside an unacceptable mesh
@@ -2215,7 +2214,7 @@ function this.passwallEffect(e)
 						hitReference.baseObject.name:lower():find("stone gate") or hitReference.baseObject.name:lower():find("old iron gate")) and
 						not (hitReference.baseObject.name:lower():find("trap") or hitReference.baseObject.name:lower():find("cell") or hitReference.baseObject.name:lower():find("tent")) then
 					if not hitReference.destination then
-						local bestPosition, bestDistance = passwallCalculate(wallPosition, forward, right, up, range)
+						local bestPosition, bestDistance = passwallCalculate(wallPosition + (forward * 16) - (up * 48), forward, right, up, range)
 						if bestPosition then
 							if bestDistance >= alphaDistance then
 								tes3ui.showNotifyMenu(common.i18n("magic.passwallAlpha"))
