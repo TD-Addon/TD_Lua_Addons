@@ -267,6 +267,7 @@ local td_enchantments = {
 	{ "T_Use_SummonGuardian60", tes3.effect.T_summon_Guardian, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Const_VelothsPauld_R", tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 1, 30, 30 },
 	{ "T_Strike_StaffVeloth", tes3.effect.T_destruction_GazeOfVeloth, tes3.effectRange.touch, 0, 1, 1, 1 },
+	{ "T_Const_Spell_Bifurcation", tes3.effect.T_restoration_FortifyCasting, tes3.effectRange.self, 0, 1, 20, 20 },
 }
 
 -- ingredient id, 1st effect id, 1st effect attribute id, 1st effect skill id, 2nd effect id, ...
