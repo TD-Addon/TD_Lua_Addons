@@ -65,7 +65,21 @@ function this.uiRefreshedCallback(e)
 
     -- Find vanilla MenuStat_misc_layout that holds the vanilla "Faction" label and destroy it
     local vanillaFactionTitle = statMenu:findChild("MenuStat_faction_title")
+
+	if not vanillaFactionTitle or not vanillaFactionTitle.visible then return end	-- Since Tidy Charsheet just makes the labels in the right scrollpane invisible, this checks for whether it actually has the right faction title. Otherwise, the new title will be on the right unless a faction has been joined
 	local factionParent = vanillaFactionTitle.parent
+
+	local topDivider
+
+	for i = #factionParent.children - 1, 1, -1 do
+		if factionParent.children[i].name == "MenuStat_divider" then
+			if factionParent.children[i + 1].name == "MenuStat_faction_title" then
+				topDivider = factionParent.children[i]	-- The labels and titles are placed after top divider because it works for both vanilla and Tidy Charsheet
+				break
+			end
+		end
+	end
+
     vanillaFactionTitle:destroy()
 
 	-- This is some code that I experimented with that just hides the faction labels instead of deleting them like the while loop below does, in case we want to stop doing that at some point
@@ -79,17 +93,6 @@ function this.uiRefreshedCallback(e)
 	--		break
 	--	end
 	--end
-
-	local topDivider
-
-	for i = #factionParent.children - 1, 1, -1 do
-		if factionParent.children[i].name == "MenuStat_divider" then
-			if factionParent.children[i + 1].name == "MenuStat_faction_layout" then
-				topDivider = factionParent.children[i]	-- The labels and titles are placed after top divider because it works for both vanilla and Tidy Charsheet
-				break
-			end
-		end
-	end
 
 	if not topDivider then return end
 

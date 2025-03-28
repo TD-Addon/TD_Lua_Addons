@@ -84,6 +84,7 @@ if config.miscSpells == true then
 	tes3.claimSpellEffectId("T_alteration_WabbajackTrans", 2140)
 	tes3.claimSpellEffectId("T_mysticism_DetInvisibility", 2141)
 	tes3.claimSpellEffectId("T_mysticism_Blink", 2142)
+	tes3.claimSpellEffectId("T_restoration_FortifyCasting", 2143)
 end
 
 -- The effect costs for most summons were initially calculated by mort using a formula (dependent on a creature's health and soul) that is now lost and were then adjusted as seemed reasonable.
@@ -155,6 +156,7 @@ local td_misc_effects = {
 	{ tes3.effect.T_alteration_WabbajackTrans, common.i18n("magic.miscWabbajack"), 0, "td\\s\\td_s_wabbajack.tga", common.i18n("magic.miscWabbajackDesc")},
 	{ tes3.effect.T_mysticism_DetInvisibility, common.i18n("magic.miscDetectInvisibility"), 3, "td\\s\\td_s_det_invisibility.tga", common.i18n("magic.miscDetectInvisibilityDesc")},		-- Not sure about the cost on this one. 3 just seems like a lot for such a niche effect, even though it nicely fits the pattern set by the other detect effects.
 	{ tes3.effect.T_mysticism_Blink, common.i18n("magic.miscBlink"), 10, "td\\s\\td_s_blink.tga", common.i18n("magic.miscBlinkDesc")},
+	{ tes3.effect.T_restoration_FortifyCasting, common.i18n("magic.miscFortifyCasting"), 1, "td\\s\\td_s_ftfy_cast.tga", common.i18n("magic.miscFortifyCastingDesc")},
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -264,7 +266,6 @@ local td_enchantments = {
 	{ "T_Use_SkullOfCorruption", tes3.effect.T_conjuration_Corruption, tes3.effectRange.target, 0, 0, 1, 1 },	-- Why oh why is this ID not Uni?
 	{ "T_Use_SummonGuardian60", tes3.effect.T_summon_Guardian, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Const_VelothsPauld_R", tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 1, 30, 30 },
-	{ "T_Com_Potion_Eyes", tes3.effect.detectAnimal, tes3.effectRange.self, 0, 60, 50, 50, tes3.effect.T_mysticism_DetHuman, tes3.effectRange.self, 0, 60, 50, 50 , tes3.effect.detectEnchantment, tes3.effectRange.self, 0, 60, 50, 50 , tes3.effect.detectKey, tes3.effectRange.self, 0, 60, 50, 50, tes3.effect.nightEye, tes3.effectRange.self, 0, 60, 50, 50   },	-- This is actually a potion, but putting it here is the most convenient approach
 	{ "T_Strike_StaffVeloth", tes3.effect.T_destruction_GazeOfVeloth, tes3.effectRange.touch, 0, 1, 1, 1 },
 }
 
@@ -344,7 +345,7 @@ local td_ingredients = {
 								  tes3.effect.damageAttribute, tes3.attribute.endurance, 0, },
 }
 
--- item id, item name, effect id
+-- item id, item name, 1st effect id, 1st duration, 1st magnitude, ...
 local td_potions = {
 	{ "T_Com_Potion_ReflectDamage_B", common.i18n("magic.itemPotionReflectDamageB"), tes3.effect.T_mysticism_ReflectDmg },
 	{ "T_Com_Potion_ReflectDamage_C", common.i18n("magic.itemPotionReflectDamageC"), tes3.effect.T_mysticism_ReflectDmg },
@@ -359,6 +360,12 @@ local td_potions = {
 	{ "T_Com_Potion_Detect_Humanoid_S", common.i18n("magic.itemPotionDetectHumanoid"), tes3.effect.T_mysticism_DetHuman },
 	{ "T_Com_Potion_Detect_Enemy_S", common.i18n("magic.itemPotionDetectEnemy"), tes3.effect.T_mysticism_DetEnemy },
 	{ "T_Com_Potion_Detect_Invisib_S", common.i18n("magic.itemPotionDetectInvisibility"), tes3.effect.T_mysticism_DetInvisibility },
+	{ "T_Com_Potion_Eyes", nil, tes3.effect.detectAnimal, 60, 50, tes3.effect.T_mysticism_DetHuman, 60, 50, tes3.effect.detectEnchantment, 60, 50, tes3.effect.detectKey, 60, 50, tes3.effect.nightEye, 60, 50 },
+	{ "T_Com_Potion_FortifyCasting_B", nil, tes3.effect.T_restoration_FortifyCasting, 8, 5 },
+	{ "T_Com_Potion_FortifyCasting_C", nil, tes3.effect.T_restoration_FortifyCasting, 15, 8 },
+	{ "T_Com_Potion_FortifyCasting_S", nil, tes3.effect.T_restoration_FortifyCasting, 30, 10 },
+	{ "T_Com_Potion_FortifyCasting_Q", nil, tes3.effect.T_restoration_FortifyCasting, 45, 15 },
+	{ "T_Com_Potion_FortifyCasting_E", nil, tes3.effect.T_restoration_FortifyCasting, 60, 20 },
 }
 
 -- item id, item name, value
@@ -503,7 +510,20 @@ function this.replacePotions(table)
 		local potion = tes3.getObject(v[1])
 		if potion then
 			if v[2] then potion.name = v[2] end
-			potion.effects[1].id = v[3]
+			for i = 1, 8, 1 do
+				local effect = potion.effects[i]
+				if v[3 + (i - 1) * 3] then
+					effect.id = v[3 + (i - 1) * 3]
+					effect.duration = v[4 + (i - 1) * 3]
+					effect.min = v[5 + (i - 1) * 3]
+					effect.max = v[5 + (i - 1) * 3]
+				else
+					effect.id = -1
+					effect.duration = -1
+					effect.min = -1
+					effect.max = -1
+				end
+			end
 		end
 	end
 end
@@ -571,6 +591,137 @@ function this.useCustomSpell(e)
 		end
 		]]
 	--end
+end
+
+---@param e uiPreEventEventData
+local function fortifyCastingMultiFillbar(e)
+	local multiMenu = e.source
+	if not multiMenu then
+		return
+	end
+
+	local fortifyCastingEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_restoration_FortifyCasting })	-- This limits findChild calls, but is that actually more efficient?
+	if #fortifyCastingEffects > 0 then
+		local magicLayout = multiMenu:findChild("MenuMulti_bottom_row_left"):findChild("MenuMulti_icons"):findChild("MenuMulti_magic_layout")
+		if not magicLayout then
+			return
+		end
+
+		local colorBar = magicLayout:findChild("PartFillbar_colorbar_ptr")
+		local magicIcon = magicLayout:findChild("MenuMulti_magic_icon")
+		if not colorBar or not magicIcon then
+			return
+		end
+
+		local magnitude = 0
+		for _,v in pairs(fortifyCastingEffects) do
+			magnitude = magnitude + v.magnitude
+		end
+
+		local spell = magicIcon:getPropertyObject("MagicMenu_Spell")
+		if not spell then return end
+		---@cast spell tes3spell
+		local castChance
+
+		if spell.magickaCost > tes3.mobilePlayer.magicka.current then
+			castChance = 0
+		else
+			castChance = spell:calculateCastChance({ caster = tes3.player, checkMagicka = false })
+			castChance = castChance + magnitude
+		end
+
+		local width = math.clamp(castChance / 100, .001, 1)
+		colorBar.widthProportional = width
+	end
+end
+
+---@param e uiActivatedEventData
+function this.onMenuMultiActivated(e)
+	e.element:registerAfter(tes3.uiEvent.preUpdate, fortifyCastingMultiFillbar)
+end
+
+---@param e uiPreEventEventData
+local function fortifyCastingMenuPercents(e)
+	local magicMenu = e.source
+	if not magicMenu then
+		return
+	end
+
+	local spellLayout = magicMenu:findChild("MagicMenu_spell_layout")
+	if not spellLayout then
+		return
+	end
+
+	--local spellCosts = spellLayout:findChild("MagicMenu_spell_costs")
+	local spellPercents = spellLayout:findChild("MagicMenu_spell_percents")
+	if not spellPercents then
+		return
+	end
+
+	local fortifyCastingEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_restoration_FortifyCasting })
+	if #fortifyCastingEffects > 0 then
+		local magnitude = 0
+		for _,v in pairs(fortifyCastingEffects) do
+			magnitude = magnitude + v.magnitude
+		end
+
+		for i,percent in ipairs(spellPercents.children) do
+			if percent.text == "/100" then
+			elseif percent.text == "/0" then
+				local spell = percent:getPropertyObject("MagicMenu_Spell")
+				---@cast spell tes3spell
+				local castChance
+				
+				if spell.magickaCost > tes3.mobilePlayer.magicka.current then	-- Mods such as Casting Reduce that change the GUI and magicka consumed don't actually change the spell objects themselves. tonumber(spellCosts.children[i].text) could be used to get the rounded magicka cost, but I'm not sure whether the edge cases from that are worth accepting.
+					castChance = 0
+				else
+					castChance = spell:calculateCastChance({ caster = tes3.player, checkMagicka = false })
+					castChance = castChance + magnitude
+				end
+
+				if castChance > 0.5 then
+					castChance = math.round(castChance)
+
+					if castChance >= 100 then
+						percent.text = "/100"
+						percent.autoWidth = true
+						--percent.width = 28
+					else
+						percent.text = "/" .. castChance
+						percent.autoWidth = true
+					end
+				end
+			else
+				local percentNum = tonumber(percent.text:sub(2))
+				percentNum = percentNum + magnitude
+
+				if percentNum > 100 then
+					percentNum = 100	-- Just in case
+				end
+
+				percent.text = "/" .. percentNum
+				percent.autoWidth = true
+			end
+		end
+	end
+end
+
+---@param e uiActivatedEventData
+function this.onMenuMagicActivated(e)
+	e.element:registerAfter(tes3.uiEvent.preUpdate, fortifyCastingMenuPercents)
+end
+
+---@param e spellCastEventData
+function this.fortifyCastingOnSpellCast(e)
+	local fortifyCastingEffects = e.caster.mobile:getActiveMagicEffects({ effect = tes3.effect.T_restoration_FortifyCasting })
+	if #fortifyCastingEffects > 0 then
+		local magnitude = 0
+		for _,v in pairs(fortifyCastingEffects) do
+			magnitude = magnitude + v.magnitude
+		end
+
+		e.castChance = e.castChance + magnitude
+	end
 end
 
 ---@param e tes3magicEffectTickEventData
@@ -2410,6 +2561,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 		local summonDremoraEffect = tes3.getMagicEffect(tes3.effect.summonDremora)
 		local blindEffect = tes3.getMagicEffect(tes3.effect.blind)
 		local damageHealthEffect = tes3.getMagicEffect(tes3.effect.damageHealth)
+		local fortifyAttackEffect = tes3.getMagicEffect(tes3.effect.fortifyAttack)
 
 		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[1])	-- Passwall
 		tes3.addMagicEffect{
@@ -3190,6 +3342,48 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onTick = blinkEffect,
 			onCollision = nil
 		}
+
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[19])		-- Fortify Casting
+		tes3.addMagicEffect{
+			id = effectID,
+			name = effectName,
+			description = effectDescription,
+			school = tes3.magicSchool.restoration,
+			baseCost = effectCost,
+			speed = fortifyAttackEffect.speed,
+			allowEnchanting = true,
+			allowSpellmaking = true,
+			appliesOnce = true,
+			canCastSelf = true,
+			canCastTarget = false,
+			canCastTouch = false,
+			casterLinked = fortifyAttackEffect.casterLinked,
+			hasContinuousVFX = fortifyAttackEffect.hasContinuousVFX,
+			hasNoDuration = false,
+			hasNoMagnitude = false,
+			illegalDaedra = fortifyAttackEffect.illegalDaedra,
+			isHarmful = false,
+			nonRecastable = false,
+			targetsAttributes = false,
+			targetsSkills = false,
+			unreflectable = false,
+			usesNegativeLighting = fortifyAttackEffect.usesNegativeLighting,
+			icon = iconPath,
+			particleTexture = fortifyAttackEffect.particleTexture,
+			castSound = fortifyAttackEffect.castSoundEffect.id,
+			castVFX = fortifyAttackEffect.castVisualEffect.id,
+			boltSound = fortifyAttackEffect.boltSoundEffect.id,
+			boltVFX = fortifyAttackEffect.boltVisualEffect.id,
+			hitSound = fortifyAttackEffect.hitSoundEffect.id,
+			hitVFX = fortifyAttackEffect.hitVisualEffect.id,
+			areaSound = fortifyAttackEffect.areaSoundEffect.id,
+			areaVFX = fortifyAttackEffect.areaVisualEffect.id,
+			lighting = {x = fortifyAttackEffect.lightingRed / 255, y = fortifyAttackEffect.lightingGreen / 255, z = fortifyAttackEffect.lightingBlue / 255},
+			size = fortifyAttackEffect.size,
+			sizeCap = fortifyAttackEffect.sizeCap,
+			onTick = nil,
+			onCollision = nil
+		}
 	end
 end)
 
@@ -3209,6 +3403,12 @@ event.register(tes3.event.load, function()
 
 	if config.miscSpells == true then
 		this.replaceSpells(td_misc_spells)
+
+		event.unregister(tes3.event.uiActivated, this.onMenuMagicActivated, { filter = "MenuMagic" })	-- unregisterOnLoad isn't an option here of course
+		event.register(tes3.event.uiActivated, this.onMenuMagicActivated, { filter = "MenuMagic" })	-- This needs to be done before the loaded event is triggered
+
+		event.unregister(tes3.event.uiActivated, this.onMenuMultiActivated, { filter = "MenuMulti" })
+		event.register(tes3.event.uiActivated, this.onMenuMultiActivated, { filter = "MenuMulti" })
 	end
 
 	if config.summoningSpells == true and config.boundSpells == true and config.interventionSpells == true and config.miscSpells == true then
@@ -3219,8 +3419,6 @@ event.register(tes3.event.load, function()
 
 		tes3.getObject("T_Dae_UNI_Wabbajack").enchantment = tes3.getObject("T_Use_WabbajackUni")	-- Crashes game when registered to the loaded event with the wabbajack enchantment equipped, so it is here instead
 	end
-	
-	--tes3.updateMagicGUI( { reference = tes3.player } ) -- Not needed unless this function is registered to the loaded event
 end)
 
 return this

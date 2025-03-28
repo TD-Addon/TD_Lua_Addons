@@ -111,7 +111,9 @@ return {
 	["magic.miscDetectInvisibilityDesc"] = "The caster of this effect can detect any entity animated by a spirit; they appear on the map as symbols. This effect includes all beings affected by chameleon or invisbility effects. The effect's magnitude is the range in feet from the caster that hidden beings are detected. The chameleon and invisibility effects on detected entities are also weakened.",
 	["magic.miscBlink"] = "Blink",
 	["magic.miscBlinkDesc"] = "This effect teleports the caster in whatever direction they are looking in. The effect's magnitude is the maximum distance that the caster can move.",
-	
+	["magic.miscFortifyCasting"] = "Fortify Casting",
+	["magic.miscFortifyCastingDesc"] = "This effect raises the subject's chance of successfully casting a spell.",
+
 	["magic.wabbajackFailure"] = "%s is too strong to be Wabbajacked!",
 	["magic.banishFailure"] = "This spell is too weak to banish %s!",
 	["magic.passwallWard"] = "You cannot pass through to there.",
