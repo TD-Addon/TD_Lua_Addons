@@ -108,7 +108,11 @@ return {
 	["magic.miscDetectEnemy"] = "Détection des ennemis",
 	["magic.miscDetectEnemyDesc"] = "Cet effet permet de détecter n'importe quelle entité hostile ; elles apparaissent sous forme de symboles sur la carte. La puissance de l'effet détermine la portée à laquelle le lanceur peut détecter des entités hostiles (en pieds).",
 	["magic.miscDetectInvisibility"] = "Détection d'invisibilité",
-	["magic.miscDetectInvisibilityDesc"] = "Cet effet permet de détecter n'importe quelle entité affectée par un effet d'invisibilité ou de caméléon ; elles apparaissent sous forme de symboles sur la carte. La puissance de l'effet détermine la portée à laquelle le lanceur peut détecter des entités dissimulées (en pieds). Les effets d'invisibilité et de caméléon des entités détectées sont également affaiblis.",	
+	["magic.miscDetectInvisibilityDesc"] = "Cet effet permet de détecter n'importe quelle entité affectée par un effet d'invisibilité ou de caméléon ; elles apparaissent sous forme de symboles sur la carte. La puissance de l'effet détermine la portée à laquelle le lanceur peut détecter des entités dissimulées (en pieds). Les effets d'invisibilité et de caméléon des entités détectées sont également affaiblis.",
+	["magic.miscBlink"] = "Transfert",
+	["magic.miscBlinkDesc"] = "Cet effet téléporte le lanceur dans la direction vers laquelle il regarde. La puissance de l'effet correspond à la distance maximale qui peut être parcourue.",
+	["magic.miscFortifyCasting"] = "Sorts fortifiés",
+	["magic.miscFortifyCastingDesc"] = "Cet effet augmente la chance du sujet de parvenir à lancer un sort.",
 
 	["magic.wabbajackFailure"] = "%s est trop puissant pour que Wabbajack l'affecte !",
 	["magic.banishFailure"] = "Ce sort est trop faible pour bannir : %s !",
