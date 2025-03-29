@@ -653,7 +653,6 @@ local function fortifyCastingMenuPercents(e)
 		return
 	end
 
-	--local spellCosts = spellLayout:findChild("MagicMenu_spell_costs")
 	local spellPercents = spellLayout:findChild("MagicMenu_spell_percents")
 	if not spellPercents then
 		return
@@ -667,13 +666,12 @@ local function fortifyCastingMenuPercents(e)
 		end
 
 		for i,percent in ipairs(spellPercents.children) do
-			if percent.text == "/100" then
-			elseif percent.text == "/0" then
+			if percent.text ~= "/100" then
 				local spell = percent:getPropertyObject("MagicMenu_Spell")
 				---@cast spell tes3spell
 				local castChance
 				
-				if spell.magickaCost > tes3.mobilePlayer.magicka.current then	-- Mods such as Casting Reduce that change the GUI and magicka consumed don't actually change the spell objects themselves. tonumber(spellCosts.children[i].text) could be used to get the rounded magicka cost, but I'm not sure whether the edge cases from that are worth accepting.
+				if spell.magickaCost > tes3.mobilePlayer.magicka.current then
 					castChance = 0
 				else
 					castChance = spell:calculateCastChance({ caster = tes3.player, checkMagicka = false })
@@ -692,16 +690,6 @@ local function fortifyCastingMenuPercents(e)
 						percent.autoWidth = true
 					end
 				end
-			else
-				local percentNum = tonumber(percent.text:sub(2))
-				percentNum = percentNum + magnitude
-
-				if percentNum > 100 then
-					percentNum = 100	-- Just in case
-				end
-
-				percent.text = "/" .. percentNum
-				percent.autoWidth = true
 			end
 		end
 	end
