@@ -1,4 +1,8 @@
-if not require("scripts.TamrielData.utils.version_check").isFunctionalitySupported("restrictEquipment") then
+local settings = require("scripts.TamrielData.utils.settings")
+
+if not require("scripts.TamrielData.utils.version_check").isFunctionalitySupported(
+        "restrictEquipment",
+        settings.Settings_TamrielData_page01Main_group01Main_restrictEquipment()) then
     return
 end
 
@@ -13,6 +17,10 @@ local BOOTS_MESSAGE = core.getGMST('sNotifyMessage14')
 local SHOES_MESSAGE = core.getGMST('sNotifyMessage15')
 
 local function T_UnequipImga(equipType)
+    if not settings.Settings_TamrielData_page01Main_group01Main_restrictEquipment() then
+        return
+    end
+
     -- Get current equipment, give actor the new equipment set
     local equipped = types.Actor.equipment(self)
 

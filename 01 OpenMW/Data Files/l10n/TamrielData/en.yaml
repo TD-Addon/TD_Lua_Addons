@@ -1,9 +1,12 @@
-TamrielData_config_modName: "Tamriel Data"
-TamrielData_config_mainPage_Description: ""
+Settings_TamrielData_page01Main_Description: "Tamriel Data OpenMW Lua addon configuration. OpenMW 0.49+ required."
+Settings_TamrielData_page01Main_group01Main: "Main"
+Settings_TamrielData_page01Main_group01Main_restrictEquipment: "Restrict Equipment for Tamriel Data Races"
+Settings_TamrielData_page01Main_group01Main_restrictEquipment_Description: "Prevents races added by Tamriel Data from wearing certain kinds of equipment when doing so would be physically implausible or technically problematic.\nAffected races and equipment:\n- Stops male Imga from equipping helmets and all Imga from equipping footwear."
 
-TamrielData_config_luaApiTooLow1: "functionality disabled, because it requires OpenMW 0.49+ with Lua API_REVISION "
-TamrielData_config_luaApiTooLow2: " or higher (you have "
-TamrielData_config_luaApiTooLow3: "). Consider updating OpenMW or turn the option off in Options > Scripts > Tamriel Data."
-TamrielData_config_unknownFunctionality: "Unknown functionality"
+TamrielData_main_modName: "Tamriel Data"
+TamrielData_main_luaApiTooLow1: "functionality disabled, because it requires OpenMW 0.49+ with Lua API_REVISION "
+TamrielData_main_luaApiTooLow2: " or higher (you have "
+TamrielData_main_luaApiTooLow3: "). Consider updating OpenMW or turn the option off in Options > Scripts > Tamriel Data."
+TamrielData_main_unknownFunctionality: "Unknown functionality"
 
 TamrielData_main_imgaHelm: "Male Imga cannot wear helmets."
