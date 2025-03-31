@@ -1,13 +1,15 @@
 local I = require('openmw.interfaces')
 local storage = require('openmw.storage')
+local feature_data = require("scripts.TamrielData.utils.feature_data")
 
 local l10nKey = 'TamrielData'
 local settingsPageKey = "Settings_TamrielData_page01Main"
 
-local S = {}
+local S = { isFeatureEnabled = {} }
 
-local function boolSetting(settingKey, default, storageForThisSetting)
-    S[settingKey] = function() return storageForThisSetting:get(settingKey) end
+local function featureToggleSetting(featureName, default, storageForThisSetting)
+    local settingKey = feature_data.get(featureName).settingsKey
+    S.isFeatureEnabled[featureName] = function() return storageForThisSetting:get(settingKey) end
     return {
         key = settingKey,
         renderer = 'checkbox',
@@ -33,10 +35,7 @@ I.Settings.registerGroup({
     name = 'Settings_TamrielData_page01Main_group01Main',
     permanentStorage = true,
     settings = {
-        boolSetting(
-            'Settings_TamrielData_page01Main_group01Main_restrictEquipment',
-            true,
-            group01MainPlayerStorage),
+        featureToggleSetting("restrictEquipment", true, group01MainPlayerStorage),
     },
 })
 

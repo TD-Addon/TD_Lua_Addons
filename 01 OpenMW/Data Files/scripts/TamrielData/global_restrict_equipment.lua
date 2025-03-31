@@ -1,4 +1,4 @@
-if not require("scripts.TamrielData.utils.version_check").isFunctionalitySupported("restrictEquipment") then
+if not require("scripts.TamrielData.utils.version_check").isFeatureSupported("restrictEquipment") then
     return
 end
 
