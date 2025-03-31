@@ -7,6 +7,7 @@ local types = require('openmw.types')
 local I = require('openmw.interfaces')
 local self = require("openmw.self")
 local ui = require("openmw.ui")
+local l10n = core.l10n("TamrielData")
 
 local BOOTS_MESSAGE = core.getGMST('sNotifyMessage14')
 local SHOES_MESSAGE = core.getGMST('sNotifyMessage15')
@@ -20,7 +21,7 @@ local function T_UnequipImga(equipType)
         ui.showMessage(BOOTS_MESSAGE)
     elseif equipType == types.Armor.TYPE.Helmet then
         equipped[types.NPC.EQUIPMENT_SLOT.Helmet] = nil
-        ui.showMessage('Male Imga cannot wear helmets.')
+        ui.showMessage(l10n("TamrielData_main_imgaHelm"))
     elseif equipType == types.Clothing.TYPE.Shoes then
         equipped[types.NPC.EQUIPMENT_SLOT.Boots] = nil
         ui.showMessage(SHOES_MESSAGE)
@@ -29,7 +30,7 @@ local function T_UnequipImga(equipType)
     types.Actor.setEquipment(self, equipped)
 
     -- Refresh UI since otherwise the player would see the item equipped on the paperdoll
-    local currentMode =  I.UI.getMode()
+    local currentMode = I.UI.getMode()
     I.UI.setMode()
     I.UI.setMode(currentMode)
 end

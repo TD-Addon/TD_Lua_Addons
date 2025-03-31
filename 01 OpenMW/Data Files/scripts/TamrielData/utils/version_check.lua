@@ -1,4 +1,5 @@
 local core = require('openmw.core')
+local l10n = core.l10n("TamrielData")
 
 local V = { versionSupport = {} }
 
@@ -6,16 +7,21 @@ V.versionSupport["restrictEquipment"] = { API_REVISION = 44 }
 
 function V.isFunctionalitySupported(functionalityName)
     if not V.versionSupport[functionalityName] then
-        error(string.format("[Tamriel Data] Unknown functionality \"%s\"", functionalityName))
+        error(table.concat({
+            string.format("[%s][%s]: ", l10n("TamrielData_config_modName"), functionalityName),
+            l10n("TamrielData_config_unknownFunctionality")
+        }))
     end
     local requiredLuaApi = V.versionSupport[functionalityName].API_REVISION
     if (not core.API_REVISION) or (core.API_REVISION < requiredLuaApi) then
-        print(string.format(
-            "[Tamriel Data][%s]: functionality disabled, because it requires OpenMW 0.49+ with Lua API_REVISION %s or higher (you have %s). Consider updating OpenMW or turn the option off in Options > Scripts > Tamriel Data",
-            functionalityName,
+        print(table.concat({
+            string.format("[%s][%s]: ", l10n("TamrielData_config_modName"), functionalityName),
+            l10n("TamrielData_config_luaApiTooLow1"),
             requiredLuaApi,
-            core.API_REVISION
-        ))
+            l10n("TamrielData_config_luaApiTooLow2"),
+            core.API_REVISION,
+            l10n("TamrielData_config_luaApiTooLow3")
+        }))
         return false
     end
     return true
