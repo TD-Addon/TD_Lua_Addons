@@ -1,3 +1,7 @@
+if not require("scripts.TamrielData.utils.version_check").isFunctionalitySupported("restrictEquipment") then
+    return
+end
+
 local types = require('openmw.types')
 local I = require('openmw.interfaces')
 
