@@ -5,8 +5,6 @@ local feature_data = require("scripts.TamrielData.utils.feature_data")
 local version_check = require("scripts.TamrielData.utils.version_check")
 local settings = require("scripts.TamrielData.utils.settings")
 
-local displayedWarnings = false
-
 local function listEnabledButUnsupportedFeatures()
     local featureNames = feature_data.getFeatureNames()
     local result = {}
@@ -21,8 +19,6 @@ end
 local VW = {}
 
 function VW.detectOpenMwVersionMismatchAndLogWarnings()
-    if displayedWarnings then return end
-
     if core.contentFiles and not core.contentFiles.has("Tamriel_Data.esm") then
         error(string.format("[%s]: %s", l10n("TamrielData_main_modName"), l10n("TamrielData_main_noEsmLoaded")))
     end
@@ -40,7 +36,6 @@ function VW.detectOpenMwVersionMismatchAndLogWarnings()
             }))
         end
         ui.showMessage(string.format("%s: %s", l10n("TamrielData_main_modName"), l10n("TamrielData_main_publicVersionMismatchWarning")))
-        displayedWarnings = true
     end
 end
 

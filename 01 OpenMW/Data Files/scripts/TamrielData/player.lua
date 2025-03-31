@@ -1,5 +1,5 @@
-local version_warning = require("scripts.TamrielData.version_warning")
-local restrict_equipment = require("scripts.TamrielData.restrict_equipment")
+local version_warning = require("scripts.TamrielData.player_version_warning")
+local restrict_equipment = require("scripts.TamrielData.player_restrict_equipment")
 
 return {
     engineHandlers = {
