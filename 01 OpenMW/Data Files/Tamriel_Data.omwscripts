@@ -1,2 +1,4 @@
 GLOBAL: scripts/TamrielData/global_restrict_equipment.lua
+GLOBAL: scripts/TamrielData/global_magic.lua
+GLOBAL: scripts/TamrielData/global_magic_passwall.lua
 PLAYER: scripts/TamrielData/player.lua

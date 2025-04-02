@@ -2,6 +2,9 @@ Settings_TamrielData_page01Main_Description: "Tamriel Data OpenMW Lua addon conf
 Settings_TamrielData_page01Main_group01Main: "Main"
 Settings_TamrielData_page01Main_group01Main_restrictEquipment: "Restrict Equipment for Tamriel Data Races"
 Settings_TamrielData_page01Main_group01Main_restrictEquipment_Description: "Prevents races added by Tamriel Data from wearing certain kinds of equipment when doing so would be physically implausible or technically problematic.\nAffected races and equipment:\n- Stops male Imga from equipping helmets and all Imga from equipping footwear."
+Settings_TamrielData_page01Main_group02Magic: "Magic"
+Settings_TamrielData_page01Main_group02Magic_miscSpells: "Add New Miscellaneous Spells"
+Settings_TamrielData_page01Main_group02Magic_miscSpells_Description: "Adds new spells that do not fit into usual categories."
 
 TamrielData_main_modName: "Tamriel Data"
 TamrielData_main_luaApiTooLow1: "Feature disabled, because it requires OpenMW 0.49+ with Lua API_REVISION "
@@ -12,3 +15,9 @@ TamrielData_main_noEsmLoaded: "Tamriel_Data.esm is not loaded! Make sure you hav
 TamrielData_main_publicVersionMismatchWarning: "Incompatible OpenMW version detected. Press F10 for more information."
 
 TamrielData_main_imgaHelm: "Male Imga cannot wear helmets."
+
+TamrielData_magic_passwallWard: "You cannot pass through to there."
+TamrielData_magic_passwallAlpha: "You cannot pass through that."
+TamrielData_magic_passwallExterior: "You must be in a confined space."
+TamrielData_magic_passwallDoorExterior: "You must remain in a confined space."
+TamrielData_magic_passwallUnderwater: "You cannot be underwater."

@@ -39,4 +39,17 @@ I.Settings.registerGroup({
     },
 })
 
+local group02StorageId = "Settings_TamrielData_page01Main_group02Magic"
+local group02MainPlayerStorage = storage.playerSection(group02StorageId)
+I.Settings.registerGroup({
+    key = group02StorageId,
+    page = settingsPageKey,
+    l10n = l10nKey,
+    name = 'Settings_TamrielData_page01Main_group02Magic',
+    permanentStorage = true,
+    settings = {
+        featureToggleSetting("miscSpells", true, group02MainPlayerStorage),
+    },
+})
+
 return S
