@@ -113,6 +113,8 @@ return {
 	["magic.miscBlinkDesc"] = "Cet effet téléporte le lanceur dans la direction vers laquelle il regarde. La puissance de l'effet correspond à la distance maximale qui peut être parcourue.",
 	["magic.miscFortifyCasting"] = "Sorts fortifiés",
 	["magic.miscFortifyCastingDesc"] = "Cet effet augmente la chance du sujet de parvenir à lancer un sort.",
+	["magic.miscPrismaticLight"] = "Lumière prismatique",
+	["magic.miscPrismaticLightDesc"] = "Cet effet crée un projectile de lumière prismatique. Quand il touche une cible, le projectile illumine la zone pour la durée de l'effet. Le projectile de lumière n'inflige aucun dégât.",
 
 	["magic.wabbajackFailure"] = "%s est trop puissant pour que Wabbajack l'affecte !",
 	["magic.banishFailure"] = "Ce sort est trop faible pour bannir : %s !",

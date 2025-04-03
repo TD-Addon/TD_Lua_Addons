@@ -255,6 +255,7 @@ local td_enchantments = {
 	{ "T_Once_AylDaedricHerald1", tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 30, 1, 1 },
 	{ "T_Once_AylDaedricHerald2", tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 30, 1, 1 },
 	{ "T_Once_AylLoreArmor1", tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 20, 20 },
+	--{ "T_Once_AylCavernsTruth", tes3.effect.T_illusion_PrismaticLight, tes3.effectRange.self, 0, 90, 15, 15 },
 	{ "T_Once_KynesIntervention", tes3.effect.T_intervention_Kyne, tes3.effectRange.self, 0, 1, 1, 1 },
 	{ "T_Once_QuelledGeas", tes3.effect.T_mysticism_BanishDae, tes3.effectRange.touch, 0, 1, 10, 15 },
 	{ "T_Once_LordMhasFortress", tes3.effect.boundBoots, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.T_bound_Greaves, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.boundCuirass, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.T_bound_Pauldrons, tes3.effectRange.self, 0, 90, 1, 1,
@@ -299,6 +300,14 @@ local td_ingredients = {
 								   tes3.effect.restoreMagicka, -1, -1,
 								   tes3.effect.T_mysticism_Insight, -1, -1,
 								   tes3.effect.fortifyMaximumMagicka, -1, -1 },
+	{ "T_IngMine_PearlPink_01", tes3.effect.drainAttribute, tes3.attribute.strength, 0,
+								tes3.effect.waterBreathing, -1, -1,
+								tes3.effect.T_restoration_FortifyCasting, -1, -1,
+								tes3.effect.restoreHealth, -1, -1 },
+	{ "T_IngMine_PearlPinkDae_01", tes3.effect.drainAttribute, tes3.attribute.strength, 0,
+								   tes3.effect.waterBreathing, -1, -1,
+								   tes3.effect.T_restoration_FortifyCasting, -1, -1,
+								   tes3.effect.restoreHealth, -1, -1 },
 	{ "T_IngMine_DiamondRed_01", tes3.effect.drainAttribute, tes3.attribute.endurance, 0,
 								 tes3.effect.invisibility, -1, -1,
 								 tes3.effect.T_mysticism_ReflectDmg, -1, -1,
@@ -347,6 +356,72 @@ local td_ingredients = {
 								  tes3.effect.nightEye, -1, -1,
 								  tes3.effect.T_mysticism_DetEnemy, -1, -1,
 								  tes3.effect.damageAttribute, tes3.attribute.endurance, 0, },
+	{ "T_IngCrea_MothWingCyr_02", tes3.effect.drainAttribute, tes3.attribute.willpower, 0,
+								  tes3.effect.T_mysticism_DetHuman, -1, -1,
+								  tes3.effect.fortifyMagicka, -1, -1,
+								  tes3.effect.resistMagicka, -1, -1 },
+	{ "T_IngCrea_MothWingSky_3", tes3.effect.fortifyAttribute, tes3.attribute.agility, 0,
+								 tes3.effect.drainAttribute, tes3.attribute.strength, 0,
+								 tes3.effect.T_mysticism_Blink, -1, -1 },
+	{ "T_IngFood_MeatDolphin_01", tes3.effect.jump, -1, -1,
+								  tes3.effect.swiftSwim, -1, -1,
+								  tes3.effect.sanctuary, -1, -1,
+								  tes3.effect.T_mysticism_DetInvisibility, -1, -1 },
+	{ "T_IngFlor_Indulcet_01", tes3.effect.fortifyAttribute, tes3.attribute.personality, -1,
+							   tes3.effect.T_mysticism_DetInvisibility, -1, -1,
+							   tes3.effect.sanctuary, -1, -1,
+							   tes3.effect.damageAttribute, tes3.attribute.agility, 0 },
+	{ "T_IngFlor_FlaxFlower_01", tes3.effect.fortifyFatigue, -1, -1,
+								 tes3.effect.T_mysticism_DetInvisibility, -1, -1,
+								 tes3.effect.weaknesstoFire, -1, -1,
+								 tes3.effect.frostShield, -1, -1 },
+	{ "T_IngFlor_FlaxFlower_02", tes3.effect.fortifyFatigue, -1, -1,
+								 tes3.effect.T_mysticism_DetEnemy, -1, -1,
+								 tes3.effect.weaknesstoFire, -1, -1,
+								 tes3.effect.fireShield, -1, -1 },
+	{ "T_IngFlor_FlaxFlower_03", tes3.effect.fortifyFatigue, -1, -1,
+								 tes3.effect.T_mysticism_DetHuman, -1, -1,
+								 tes3.effect.weaknesstoFire, -1, -1,
+								 tes3.effect.dispel, -1, -1 },
+	{ "T_IngFlor_ArrowrootFlower_01", tes3.effect.restoreAttribute, tes3.attribute.agility, 0,
+									  tes3.effect.damageAttribute, tes3.attribute.luck, 0,
+								 	  tes3.effect.T_mysticism_DetEnemy, -1, -1,
+								 	  tes3.effect.nightEye, -1, -1 },
+	{ "T_IngFlor_Spiddal_01", tes3.effect.damageHealth, -1, -1,
+							  tes3.effect.damageMagicka, -1, -1,
+							  tes3.effect.fireDamage, -1, -1,
+							  tes3.effect.T_mysticism_DetEnemy, -1, -1 },
+	{ "T_IngFlor_Peony_01", tes3.effect.restoreAttribute, tes3.attribute.strength, -1,
+							tes3.effect.damageHealth, -1, -1,
+							tes3.effect.damageAttribute, tes3.attribute.speed, -1,
+							tes3.effect.T_mysticism_DetHuman, -1, -1, },
+	{ "T_IngSpice_Curcuma_01", tes3.effect.T_mysticism_ReflectDmg, -1, -1,
+							   tes3.effect.weaknesstoFire, -1, -1,
+							   tes3.effect.damageAttribute, tes3.attribute.strength, -1,
+							   tes3.effect.resistParalysis, -1, -1, },
+	{ "T_IngCrea_CetaceanMelon", tes3.effect.detectAnimal, -1, -1,
+							   	 tes3.effect.sound, -1, -1,
+							   	 tes3.effect.damageAttribute, tes3.attribute.personality, -1,
+							   	 tes3.effect.T_mysticism_ReflectDmg, -1, -1, },
+	{ "T_IngFlor_Siyat_01", tes3.effect.T_mysticism_Insight, -1, -1,
+							tes3.effect.resistParalysis, -1, -1,
+							tes3.effect.damageMagicka, -1, -1,
+							tes3.effect.dispel, -1, -1, },
+	{ "T_IngCrea_HagravenFeathers_01", tes3.effect.damageMagicka, -1, -1,
+									   tes3.effect.fortifyAttack, -1, -1,
+									   tes3.effect.weaknesstoShock, -1, -1,
+									   tes3.effect.T_restoration_FortifyCasting, -1, -1, },
+	{ "T_IngSpice_Cinnamon_01", tes3.effect.fireDamage, -1, -1,
+								tes3.effect.T_restoration_FortifyCasting, -1, -1,
+								tes3.effect.damageFatigue, -1, -1 },
+	{ "T_IngMine_Spellstone_01", tes3.effect.T_restoration_FortifyCasting, -1, -1,
+								 tes3.effect.spellAbsorption, -1, -1,
+								 tes3.effect.restoreMagicka, -1, -1,
+								 tes3.effect.telekinesis, -1, -1, },
+	{ "T_IngSpice_Pepper_01", tes3.effect.drainAttribute, tes3.attribute.personality, -1,
+							  tes3.effect.resistMagicka, -1, -1,
+							  tes3.effect.fireDamage, -1, -1,
+							  tes3.effect.T_mysticism_Insight, -1, -1, },
 }
 
 -- item id, item name, 1st effect id, 1st duration, 1st magnitude, ...
@@ -659,8 +734,13 @@ end
 
 ---@param e referenceActivatedEventData
 function this.onPrismaticLightReferenceActivated(e)
-	local prismaticLightEffects = e.reference.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_PrismaticLight })
-	prismaticReferences[e.reference] = true
+	if e.reference.mobile then
+		local prismaticLightEffects = e.reference.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_PrismaticLight })
+
+		if #prismaticLightEffects > 0 then	-- Just replace this with a check for prismaticLightHue?
+			prismaticReferences[e.reference] = true
+		end
+	end
 end
 
 ---@param e referenceActivatedEventData
