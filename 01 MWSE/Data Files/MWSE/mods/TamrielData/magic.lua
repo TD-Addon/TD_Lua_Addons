@@ -85,6 +85,7 @@ if config.miscSpells == true then
 	tes3.claimSpellEffectId("T_mysticism_DetInvisibility", 2141)
 	tes3.claimSpellEffectId("T_mysticism_Blink", 2142)
 	tes3.claimSpellEffectId("T_restoration_FortifyCasting", 2143)
+	tes3.claimSpellEffectId("T_illusion_PrismaticLight", 2144)
 end
 
 -- The effect costs for most summons were initially calculated by mort using a formula (dependent on a creature's health and soul) that is now lost and were then adjusted as seemed reasonable.
@@ -157,6 +158,7 @@ local td_misc_effects = {
 	{ tes3.effect.T_mysticism_DetInvisibility, common.i18n("magic.miscDetectInvisibility"), 3, "td\\s\\td_s_det_invisibility.tga", common.i18n("magic.miscDetectInvisibilityDesc")},		-- Not sure about the cost on this one. 3 just seems like a lot for such a niche effect, even though it nicely fits the pattern set by the other detect effects.
 	{ tes3.effect.T_mysticism_Blink, common.i18n("magic.miscBlink"), 10, "td\\s\\td_s_blink.tga", common.i18n("magic.miscBlinkDesc")},
 	{ tes3.effect.T_restoration_FortifyCasting, common.i18n("magic.miscFortifyCasting"), 1, "td\\s\\td_s_ftfy_cast.tga", common.i18n("magic.miscFortifyCastingDesc")},
+	{ tes3.effect.T_illusion_PrismaticLight, common.i18n("magic.miscPrismaticLight"), 0.4, "td\\s\\td_s_dist_cre.tga", common.i18n("magic.miscPrismaticLightDesc")},
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -215,7 +217,7 @@ local td_misc_spells = {
 	{ "T_Com_Mys_ReflectDamage", tes3.spellType.spell, common.i18n("magic.miscReflectDamage"), 76, tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 5, 10, 20 },
 	{ "T_Com_Mys_DetectHumanoid", tes3.spellType.spell, common.i18n("magic.miscDetectHumanoid"), 38, tes3.effect.T_mysticism_DetHuman, tes3.effectRange.self, 0, 5, 50, 150 },
 	{ "T_Ayl_Alt_RadiantShield", tes3.spellType.spell, common.i18n("magic.miscRadiantShield"), 75, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 10, 10 },
-	{ "T_Cr_Alt_AuroranShield", tes3.spellType.ability, nil, nil, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 20, 20 },
+	{ "T_Cr_Alt_AuroranShield", tes3.spellType.ability, nil, nil, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 0, 20, 20 },
 	{ "T_Cr_Alt_AylSorcKLightShield", tes3.spellType.spell, common.i18n("magic.miscRadiantShield"), 10, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 12, 10, 10, tes3.effect.light, tes3.effectRange.self, 0, 12, 20, 20 },
 	{ "T_Com_Mys_Insight", tes3.spellType.spell, common.i18n("magic.miscInsight"), 76, tes3.effect.T_mysticism_Insight, tes3.effectRange.self, 0, 10, 15, 15 },
 	{ "T_Com_Res_ArmorResartus", tes3.spellType.spell, common.i18n("magic.miscArmorResartus"), 90, tes3.effect.T_restoration_ArmorResartus, tes3.effectRange.self, 0, 0, 20, 40 },
@@ -227,6 +229,7 @@ local td_misc_spells = {
 	{ "T_Dae_Alt_UNI_WabbajackTrans", tes3.spellType.spell, common.i18n("magic.miscWabbajack"), 0, tes3.effect.T_alteration_WabbajackTrans, tes3.effectRange.touch, 0, 16, 1, 1 },
 	{ "T_Com_Mys_DetectInvisibility", tes3.spellType.spell, common.i18n("magic.miscDetectInvisibility"), 76, tes3.effect.T_mysticism_DetInvisibility, tes3.effectRange.self, 0, 5, 50, 150 },
 	{ "T_Com_Mys_Blink", tes3.spellType.spell, common.i18n("magic.miscBlink"), 25, tes3.effect.T_mysticism_Blink, tes3.effectRange.self, 0, 0, 50, 50 },
+	--{ "T_Cr_Ab_AuroranLight", tes3.spellType.ability, nil, nil, tes3.effect.T_illusion_PrismaticLight, tes3.effectRange.self, 0, 0, 20, 20 },
 }
 
 -- enchantment id, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -300,7 +303,7 @@ local td_ingredients = {
 								 tes3.effect.invisibility, -1, -1,
 								 tes3.effect.T_mysticism_ReflectDmg, -1, -1,
 								 tes3.effect.resistFire, -1, -1 },
-	{ "T_IngCrea_PrismaticDust_01", tes3.effect.light, -1, -1,
+	{ "T_IngCrea_PrismaticDust_01", tes3.effect.light, -1, -1,	-- Change to Prismatic Light once MWSE has been changed as needed
 									tes3.effect.T_alteration_RadShield, -1, -1,
 									tes3.effect.blind, -1, -1,
 									tes3.effect.restoreMagicka, -1, -1 },
@@ -399,6 +402,8 @@ local distractedVoiceLines = {
 	{ "Wood Elf", false, { "vo\\w\\m\\Idl_WM009.mp3" }, { "vo\\w\\m\\Idl_WM006.mp3", "vo\\w\\m\\Idl_WM007.mp3" } },
 	{ "Wood Elf", true, { "vo\\w\\f\\Idl_WF006.mp3", "vo\\w\\f\\Idl_WF009.mp3" }, { "vo\\w\\f\\Idl_WF003.mp3", "vo\\w\\f\\Idl_WF007.mp3" } },
 }
+
+local prismaticReferences = {}
 
 local distractedReferences = {}	-- Should probably decide on a consistent naming scheme for tables
 
@@ -639,6 +644,88 @@ end
 ---@param e uiActivatedEventData
 function this.onMenuMultiActivated(e)
 	e.element:registerAfter(tes3.uiEvent.preUpdate, fortifyCastingMultiFillbar)
+end
+
+function this.prismaticLightTick()
+	for ref in pairs(prismaticReferences) do
+		---@cast ref tes3reference
+		local lightNode = ref:getAttachedDynamicLight()
+		lightNode.light.diffuse = common.hsvToRGB(ref.data.tamrielData.prismaticLightHue, .3, 1)
+
+		ref.data.tamrielData.prismaticLightHue = ref.data.tamrielData.prismaticLightHue + 1
+		if ref.data.tamrielData.prismaticLightHue > 359 then ref.data.tamrielData.prismaticLightHue = 0 end
+	end
+end
+
+---@param e referenceActivatedEventData
+function this.onPrismaticLightReferenceActivated(e)
+	local prismaticLightEffects = e.reference.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_PrismaticLight })
+	prismaticReferences[e.reference] = true
+end
+
+---@param e referenceActivatedEventData
+function this.onPrismaticLightReferenceDeactivated(e)
+	prismaticReferences[e.reference] = nil
+end
+
+---@param e magicEffectRemovedEventData
+function this.prismaticLightRemovedEffect(e)
+	if e.effect.id == tes3.effect.T_illusion_PrismaticLight then
+		local target = e.effectInstance.target
+		prismaticReferences[target] = nil
+
+		local lightNode = target:getOrCreateAttachedDynamicLight()
+
+		if lightNode.light.name == "prismaticLightAttachment" then	-- If this is not true, then some other MWSE addon has replaced the light and it should not be touched
+			local prismaticLightEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_PrismaticLight })
+
+			if #prismaticLightEffects > 1 then	-- 1 is checked rather than 0 because the (final) effect being removed will still be counted here
+				local totalMagnitude = 0
+				
+				for _,v in pairs(prismaticLightEffects) do
+					totalMagnitude = totalMagnitude + v.effectInstance.effectiveMagnitude
+				end
+
+				totalMagnitude = totalMagnitude - e.effectInstance.effectiveMagnitude	-- The radius is rounded to the nearest whole number, so doing these calculations ensures that it will be correct afterwards
+
+				lightNode.light:setRadius(totalMagnitude * 22.1)
+			else
+				target.data.tamrielData.prismaticLightHue = nil
+				target:deleteDynamicLightAttachment(true)
+			end
+		end
+	end
+end
+
+---@param e tes3magicEffectTickEventData
+local function prismaticLightEffect(e)
+	if (not e:trigger()) then
+		return
+	end
+	
+	local target = e.effectInstance.target
+	prismaticReferences[target] = true
+
+	local lightNode = target:getOrCreateAttachedDynamicLight()
+
+	if lightNode.light.name == "prismaticLightAttachment" then
+		local prismaticLightEffects = target.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_PrismaticLight })
+		local totalMagnitude = 0
+				
+		for _,v in pairs(prismaticLightEffects) do
+			totalMagnitude = totalMagnitude + v.effectInstance.effectiveMagnitude
+		end
+
+		lightNode.light:setRadius(totalMagnitude * 22.1)
+	else
+		mwse.log("Light Created")
+		lightNode.light.name = "prismaticLightAttachment"
+		target.data.tamrielData = target.data.tamrielData or {}
+		target.data.tamrielData.prismaticLightHue = 60
+		lightNode.light.diffuse = common.hsvToRGB(target.data.tamrielData.prismaticLightHue, .3, 1)
+		lightNode.light:setRadius(e.effectInstance.effectiveMagnitude * 22.1)
+		lightNode.light.translation = lightNode.light.translation + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height)
+	end
 end
 
 ---@param e uiPreEventEventData
@@ -2064,8 +2151,10 @@ local function banishDaedraEffect(e)
 	
 	if magnitude >= (targetLevel / 2) + ((targetLevel / 2) * target.mobile.health.normalized) then
 		for _,v in pairs(target.baseObject.inventory.items) do
-			if v.object.objectType ~= tes3.objectType.leveledItem then	-- Also manually check some of the leveled lists to remove non-unique items that were put on the creature without being a leveled item?
-				table.insert(uniqueItems, v.object)
+			if v.object.objectType ~= tes3.objectType.leveledItem then
+				if v.object.id ~= "ingred_daedras_heart_01" and v.object.id ~= "ingred_daedra_skin_01" and v.object.id ~= "ingred_scamp_skin_01" and v.object.id ~= "T_IngCrea_DridreaSilk_01" and v.object.id ~= "T_IngCrea_PrismaticDust_01" then	-- Sometimes ingredients are added without being part of a list, so here they are
+					table.insert(uniqueItems, v.object)
+				end
 			end
 		end
 
@@ -2551,6 +2640,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 		local blindEffect = tes3.getMagicEffect(tes3.effect.blind)
 		local damageHealthEffect = tes3.getMagicEffect(tes3.effect.damageHealth)
 		local fortifyAttackEffect = tes3.getMagicEffect(tes3.effect.fortifyAttack)
+		local lightEffect = tes3.getMagicEffect(tes3.effect.light)
 
 		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[1])	-- Passwall
 		tes3.addMagicEffect{
@@ -3371,6 +3461,48 @@ event.register(tes3.event.magicEffectsResolved, function()
 			size = fortifyAttackEffect.size,
 			sizeCap = fortifyAttackEffect.sizeCap,
 			onTick = nil,
+			onCollision = nil
+		}
+
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[20])		-- Prismatic Light
+		tes3.addMagicEffect{
+			id = effectID,
+			name = effectName,
+			description = effectDescription,
+			school = tes3.magicSchool.illusion,
+			baseCost = effectCost,
+			speed = lightEffect.speed,
+			allowEnchanting = lightEffect.allowEnchanting,
+			allowSpellmaking = lightEffect.allowSpellmaking,
+			appliesOnce = lightEffect.appliesOnce,
+			canCastSelf = lightEffect.canCastSelf,
+			canCastTarget = lightEffect.canCastTarget,
+			canCastTouch = lightEffect.canCastTouch,
+			casterLinked = lightEffect.casterLinked,
+			hasContinuousVFX = lightEffect.hasContinuousVFX,
+			hasNoDuration = lightEffect.hasNoDuration,
+			hasNoMagnitude = lightEffect.hasNoMagnitude,
+			illegalDaedra = lightEffect.illegalDaedra,
+			isHarmful = lightEffect.isHarmful,
+			nonRecastable = lightEffect.nonRecastable,
+			targetsAttributes = lightEffect.targetsAttributes,
+			targetsSkills = lightEffect.targetsSkills,
+			unreflectable = lightEffect.unreflectable,
+			usesNegativeLighting = lightEffect.usesNegativeLighting,
+			icon = iconPath,
+			particleTexture = lightEffect.particleTexture,
+			castSound = lightEffect.castSoundEffect.id,
+			castVFX = lightEffect.castVisualEffect.id,
+			boltSound = lightEffect.boltSoundEffect.id,
+			boltVFX = lightEffect.boltVisualEffect.id,
+			hitSound = lightEffect.hitSoundEffect.id,
+			hitVFX = lightEffect.hitVisualEffect.id,
+			areaSound = lightEffect.areaSoundEffect.id,
+			areaVFX = lightEffect.areaVisualEffect.id,
+			lighting = {x = lightEffect.lightingRed / 255, y = lightEffect.lightingGreen / 255, z = lightEffect.lightingBlue / 255},
+			size = lightEffect.size,
+			sizeCap = lightEffect.sizeCap,
+			onTick = prismaticLightEffect,
 			onCollision = nil
 		}
 	end
