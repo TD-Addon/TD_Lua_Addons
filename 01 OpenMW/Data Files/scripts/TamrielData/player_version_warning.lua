@@ -26,14 +26,11 @@ function VW.detectOpenMwVersionMismatchAndLogWarnings()
     local wrongFeatures = listEnabledButUnsupportedFeatures()
     if #wrongFeatures > 0 then
         for _, name in pairs(wrongFeatures) do
-            print(table.concat({
-                string.format("[%s][%s]: ", l10n("TamrielData_main_modName"), name),
-                l10n("TamrielData_main_luaApiTooLow1"),
-                feature_data.get(name).requiredLuaApi,
-                l10n("TamrielData_main_luaApiTooLow2"),
-                core.API_REVISION,
-                l10n("TamrielData_main_luaApiTooLow3")
-            }))
+            print(string.format(
+                "[%s][%s]: %s",
+                l10n("TamrielData_main_modName"),
+                name,
+                l10n("TamrielData_main_luaApiTooLow", { requiredRevision = feature_data.get(name).requiredLuaApi, currentRevision = core.API_REVISION })))
         end
         ui.showMessage(string.format("%s: %s", l10n("TamrielData_main_modName"), l10n("TamrielData_main_publicVersionMismatchWarning")))
     end
