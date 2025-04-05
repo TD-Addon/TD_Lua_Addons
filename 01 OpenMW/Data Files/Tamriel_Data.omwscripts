@@ -1,2 +1,2 @@
-GLOBAL: scripts/TamrielData/global.lua
+GLOBAL: scripts/TamrielData/global_restrict_equipment.lua
 PLAYER: scripts/TamrielData/player.lua
