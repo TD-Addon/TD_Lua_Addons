@@ -32,7 +32,7 @@ local function handleSpellWithPlayerEvent(spell, player)
     end
 end
 
--- Check for active spells on the player every 0.01 second and react if a Lua spell is found
+-- Check for active spells on the player every 0.X seconds and react if a Lua spell is found
 local stopFn = time.runRepeatedly(function()
         local player = world.players[1]
         if player ~= nil then
@@ -41,7 +41,7 @@ local stopFn = time.runRepeatedly(function()
             end
         end
     end,
-    0.01 * time.second)
+    0.03 * time.second)
 
 -- Once the spell's player script reports that it finished handling, mark it here also
 local function onSpellHandlingFinished(data)
