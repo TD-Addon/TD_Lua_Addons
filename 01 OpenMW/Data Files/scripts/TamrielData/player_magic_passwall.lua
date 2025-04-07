@@ -14,6 +14,7 @@ local settings = require("scripts.TamrielData.utils.settings")
 
 local FT_TO_UNITS = 22.1
 local maxSpellDistance = 25 * FT_TO_UNITS -- 25ft is a default Passwall spell range in the MWSE version
+local passwallSpellId = "T_Com_Mys_UNI_Passwall"
 
 local function getActivationVector()
     -- Camera direction cast on a XY plane
@@ -305,15 +306,19 @@ local function gatherAllRayHitsAndLimitingPosition(raycastingInputData, firstRay
     return intermediateRayHits, limitingPosition
 end
 
+local function finishHandlingPasswall()
+    core.sendGlobalEvent("T_magic_spellHandlingFinished", { spellId = passwallSpellId })
+end
+
 local PSW = {}
 
 function PSW.onCastPasswall()
     if not settings.isFeatureEnabled["miscSpells"]() then
-        return
+        return finishHandlingPasswall()
     end
 
     for _, spell in pairs(types.Actor.activeSpells(self)) do
-        if spell.id == string.lower("T_Com_Mys_UNI_Passwall") then
+        if spell.id == string.lower(passwallSpellId) then
             types.Actor.activeSpells(self):remove(spell.activeSpellId)
         end
     end
@@ -321,13 +326,13 @@ function PSW.onCastPasswall()
     print("==== MYDEBUG cast passwall start")
     if self.cell.isExterior then
         ui.showMessage(l10n("TamrielData_magic_passwallExterior"))
-        return
+        return finishHandlingPasswall()
     elseif types.Actor.isSwimming(self) then
         ui.showMessage(l10n("TamrielData_magic_passwallUnderwater"))
-        return
+        return finishHandlingPasswall()
     elseif not types.Player.isTeleportingEnabled(self) then
         ui.showMessage(core.getGMST("sTeleportDisabled"))
-        return
+        return finishHandlingPasswall()
     end
 
     local raycastingInputData = getRaycastingInputData()
@@ -343,14 +348,14 @@ function PSW.onCastPasswall()
 
     if not firstRaycastHit.hitObject or isRayHitOnBlocker(firstRaycastHit) then
          ui.showMessage("nothing hit")  --debug TODO get rid of or hide
-        return
+        return finishHandlingPasswall()
     end
 
     local targetObject = firstRaycastHit.hitObject
 
     if not (types.Static.objectIsInstance(targetObject) or types.Activator.objectIsInstance(targetObject) or types.Door.objectIsInstance(targetObject)) then
         ui.showMessage("needs to hit an activator or static or internal door") --debug
-        return
+        return finishHandlingPasswall()
     end
 
     local hitObjectHalfHeight = targetObject:getBoundingBox().halfSize.z
@@ -359,11 +364,11 @@ function PSW.onCastPasswall()
         print("object ", targetObject.recordId, " too low to pass through:", hitObjectHalfHeight)
         ui.showMessage("object too low to pass through:", hitObjectHalfHeight)  --debug
         --TODO add a sound on Passwall failing to find a target
-        return
+        return finishHandlingPasswall()
     end
 
     if handleAsDoor(targetObject) then
-        return
+        return finishHandlingPasswall()
     end
 
     local intermediateRayHits, limitingPosition = gatherAllRayHitsAndLimitingPosition(raycastingInputData, firstRaycastHit)
@@ -406,6 +411,7 @@ function PSW.onCastPasswall()
     if finalTeleportPosition then
         startTeleporting(finalTeleportPosition, self.cell.name, self.rotation, targetObject)
     end
+    finishHandlingPasswall()
 end
 
 return PSW
