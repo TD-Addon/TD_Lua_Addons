@@ -167,6 +167,14 @@ local function registerModConfig()
         },
     }
     toggles:createOnOffButton{
+        label = common.i18n("mcm.khajiitFormCharacterCreationLabel"),
+        description = common.i18n("mcm.khajiitFormCharacterCreationDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "khajiitFormCharCreation",
+            table = config,
+        },
+    }
+    toggles:createOnOffButton{
         label = common.i18n("mcm.butterflyMothTooltipLabel"),
         description = common.i18n("mcm.butterflyMothTooltipDescription"),
         variable = mwse.mcm.createTableVariable{
