@@ -59,6 +59,7 @@ if config.boundSpells == true then
 	tes3.claimSpellEffectId("T_bound_RazorResdayn", 2115)
 	tes3.claimSpellEffectId("T_bound_Pauldrons", 2116)
 	--tes3.claimSpellEffectId("T_bound_ThrowingKnives", 2118)
+	tes3.claimSpellEffectId("T_bound_Greatsword", 2145)
 end
 
 if config.interventionSpells == true then
@@ -129,6 +130,7 @@ local td_bound_effects = {
 	{ tes3.effect.T_bound_HammerResdayn, "", "T_Com_Bound_Warhammer_01", "", 2, "td\\s\\td_s_bnd_res_ham.dds", ""},
 	{ tes3.effect.T_bound_RazorResdayn, "", "bound_dagger", "", 2, "td\\s\\td_s_bnd_red_razor.dds", ""},
 	{ tes3.effect.T_bound_Pauldrons, common.i18n("magic.boundPauldrons"), "T_Com_Bound_PauldronL_01", "T_Com_Bound_PauldronR_01", 2, "td\\s\\td_s_bnd_pldrn.dds", common.i18n("magic.boundPauldronsDesc")},
+	{ tes3.effect.T_bound_Greatsword, common.i18n("magic.boundGreatsword"), "T_Com_Bound_Greatsword_01", "", 2, "td\\s\\td_s_bnd_clymr.dds", common.i18n("magic.boundGreatswordDesc")},
 	--{ tes3.effect.T_bound_ThrowingKnives, common.i18n("magic.boundThrowingKnives"), "T_Com_Bound_ThrowingKnife_01", "", 2, "td\\s\\td_s_bnd_knives.dds", common.i18n("magic.boundThrowingKnivesDesc")},
 }
 
@@ -158,120 +160,144 @@ local td_misc_effects = {
 	{ tes3.effect.T_mysticism_DetInvisibility, common.i18n("magic.miscDetectInvisibility"), 3, "td\\s\\td_s_det_invisibility.tga", common.i18n("magic.miscDetectInvisibilityDesc")},		-- Not sure about the cost on this one. 3 just seems like a lot for such a niche effect, even though it nicely fits the pattern set by the other detect effects.
 	{ tes3.effect.T_mysticism_Blink, common.i18n("magic.miscBlink"), 10, "td\\s\\td_s_blink.tga", common.i18n("magic.miscBlinkDesc")},
 	{ tes3.effect.T_restoration_FortifyCasting, common.i18n("magic.miscFortifyCasting"), 1, "td\\s\\td_s_ftfy_cast.tga", common.i18n("magic.miscFortifyCastingDesc")},
-	{ tes3.effect.T_illusion_PrismaticLight, common.i18n("magic.miscPrismaticLight"), 0.4, "td\\s\\td_s_dist_cre.tga", common.i18n("magic.miscPrismaticLightDesc")},
+	{ tes3.effect.T_illusion_PrismaticLight, common.i18n("magic.miscPrismaticLight"), 0.4, "td\\s\\td_s_p_light.tga", common.i18n("magic.miscPrismaticLightDesc")},
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
 local td_summon_spells = {
-	{ "T_Com_Cnj_SummonDevourer", tes3.spellType.spell, common.i18n("magic.summonDevourer"), 156, tes3.effect.T_summon_Devourer, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonDremoraArcher", tes3.spellType.spell, common.i18n("magic.summonDremoraArcher"), 98, tes3.effect.T_summon_DremArch, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonDremoraCaster", tes3.spellType.spell, common.i18n("magic.summonDremoraCaster"), 93, tes3.effect.T_summon_DremCast, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonGuardian", tes3.spellType.spell, common.i18n("magic.summonGuardian"), 155, tes3.effect.T_summon_Guardian, tes3.effectRange.self, 0, 45, 1, 1 },
-	{ "T_Com_Cnj_SummonLesserClannfear", tes3.spellType.spell, common.i18n("magic.summonLesserClannfear"), 57, tes3.effect.T_summon_LesserClfr, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonOgrim", tes3.spellType.spell, common.i18n("magic.summonOgrim"), 99, tes3.effect.T_summon_Ogrim, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonSeducer", tes3.spellType.spell, common.i18n("magic.summonSeducer"), 156, tes3.effect.T_summon_Seducer, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonSeducerDark", tes3.spellType.spell, common.i18n("magic.summonSeducerDark"), 169, tes3.effect.T_summon_SeducerDark, tes3.effectRange.self, 0, 45, 1, 1 },
-	{ "T_Com_Cnj_SummonVermai", tes3.spellType.spell, common.i18n("magic.summonVermai"), 88, tes3.effect.T_summon_Vermai, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonStormMonarch", tes3.spellType.spell, common.i18n("magic.summonStormMonarch"), 180, tes3.effect.T_summon_AtroStormMon, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Nor_Cnj_SummonIceWraith", tes3.spellType.spell, common.i18n("magic.summonIceWraith"), 105, tes3.effect.T_summon_IceWraith, 60, 1, 1 },
-	{ "T_Dwe_Cnj_Uni_SummonDweSpectre", tes3.spellType.spell, common.i18n("magic.summonDweSpectre"), 52, tes3.effect.T_summon_DweSpectre, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Dwe_Cnj_Uni_SummonSteamCent", tes3.spellType.spell, common.i18n("magic.summonSteamCent"), 88, tes3.effect.T_summon_SteamCent, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Dwe_Cnj_Uni_SummonSpiderCent", tes3.spellType.spell, common.i18n("magic.summonSpiderCent"), 45, tes3.effect.T_summon_SpiderCent, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Ayl_Cnj_SummonWelkyndSpirit", tes3.spellType.spell, common.i18n("magic.summonWelkyndSpirit"), 78, tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonAuroran", tes3.spellType.spell, common.i18n("magic.summonAuroran"), 132, tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonHerne", tes3.spellType.spell, common.i18n("magic.summonHerne"), 54, tes3.effect.T_summon_Herne, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonMorphoid", tes3.spellType.spell, common.i18n("magic.summonMorphoid"), 63, tes3.effect.T_summon_Morphoid, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Nor_Cnj_SummonDraugr", tes3.spellType.spell, common.i18n("magic.summonDraugr"), 78, tes3.effect.T_summon_Draugr, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Nor_Cnj_SummonSpriggan", tes3.spellType.spell, common.i18n("magic.summonSpriggan"), 144, tes3.effect.T_summon_Spriggan, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_De_Cnj_SummonGreaterBonelord", tes3.spellType.spell, common.i18n("magic.summonGreaterBonelord"), 160, tes3.effect.T_summon_BoneldGr, tes3.effectRange.self, 0, 45, 1, 1 },
-	{ "T_Cr_Cnj_AylSorcKSummon1", tes3.spellType.spell, nil, 40, tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 40, 1, 1 },
-	{ "T_Cr_Cnj_AylSorcKSummon3", tes3.spellType.spell, nil, 25, tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 40, 1, 1 },
-	{ "T_Cyr_Cnj_SummonGhost", tes3.spellType.spell, common.i18n("magic.summonGhost"), 21, tes3.effect.T_summon_Ghost, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Cyr_Cnj_SummonWraith", tes3.spellType.spell, common.i18n("magic.summonWraith"), 147, tes3.effect.T_summon_Wraith, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Cyr_Cnj_SummonBarrowguard", tes3.spellType.spell, common.i18n("magic.summonBarrowguard"), 33, tes3.effect.T_summon_Barrowguard, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Cyr_Cnj_SummonMinoBarrowguard", tes3.spellType.spell, common.i18n("magic.summonMinoBarrowguard"), 171, tes3.effect.T_summon_MinoBarrowguard, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonSkeletonChamp", tes3.spellType.spell, common.i18n("magic.summonSkeletonChampion"), 96, tes3.effect.T_summon_SkeletonChampion, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonFrostMonarch", tes3.spellType.spell, common.i18n("magic.summonFrostMonarch"), 141, tes3.effect.T_summon_AtroFrostMon, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonDevourer", tes3.spellType.spell, common.i18n("magic.summonDevourer"), 156, { tes3.effect.T_summon_Devourer }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonDremoraArcher", tes3.spellType.spell, common.i18n("magic.summonDremoraArcher"), 98, { tes3.effect.T_summon_DremArch }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonDremoraCaster", tes3.spellType.spell, common.i18n("magic.summonDremoraCaster"), 93, { tes3.effect.T_summon_DremCast }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonGuardian", tes3.spellType.spell, common.i18n("magic.summonGuardian"), 155, { tes3.effect.T_summon_Guardian }, tes3.effectRange.self, 0, 45, 1, 1 },
+	{ "T_Com_Cnj_SummonLesserClannfear", tes3.spellType.spell, common.i18n("magic.summonLesserClannfear"), 57, { tes3.effect.T_summon_LesserClfr }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonOgrim", tes3.spellType.spell, common.i18n("magic.summonOgrim"), 99, { tes3.effect.T_summon_Ogrim }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonSeducer", tes3.spellType.spell, common.i18n("magic.summonSeducer"), 156, { tes3.effect.T_summon_Seducer }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonSeducerDark", tes3.spellType.spell, common.i18n("magic.summonSeducerDark"), 169, { tes3.effect.T_summon_SeducerDark }, tes3.effectRange.self, 0, 45, 1, 1 },
+	{ "T_Com_Cnj_SummonVermai", tes3.spellType.spell, common.i18n("magic.summonVermai"), 88, { tes3.effect.T_summon_Vermai }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonStormMonarch", tes3.spellType.spell, common.i18n("magic.summonStormMonarch"), 180, { tes3.effect.T_summon_AtroStormMon }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Nor_Cnj_SummonIceWraith", tes3.spellType.spell, common.i18n("magic.summonIceWraith"), 105, { tes3.effect.T_summon_IceWraith }, tes3.effectRange.self, 60, 1, 1 },
+	{ "T_Dwe_Cnj_Uni_SummonDweSpectre", tes3.spellType.spell, common.i18n("magic.summonDweSpectre"), 52, { tes3.effect.T_summon_DweSpectre }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Dwe_Cnj_Uni_SummonSteamCent", tes3.spellType.spell, common.i18n("magic.summonSteamCent"), 88, { tes3.effect.T_summon_SteamCent }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Dwe_Cnj_Uni_SummonSpiderCent", tes3.spellType.spell, common.i18n("magic.summonSpiderCent"), 45, { tes3.effect.T_summon_SpiderCent }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Ayl_Cnj_SummonWelkyndSpirit", tes3.spellType.spell, common.i18n("magic.summonWelkyndSpirit"), 78, { tes3.effect.T_summon_WelkyndSpirit }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonAuroran", tes3.spellType.spell, common.i18n("magic.summonAuroran"), 132, { tes3.effect.T_summon_Auroran }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonHerne", tes3.spellType.spell, common.i18n("magic.summonHerne"), 54, { tes3.effect.T_summon_Herne }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonMorphoid", tes3.spellType.spell, common.i18n("magic.summonMorphoid"), 63, { tes3.effect.T_summon_Morphoid }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Nor_Cnj_SummonDraugr", tes3.spellType.spell, common.i18n("magic.summonDraugr"), 78, { tes3.effect.T_summon_Draugr }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Nor_Cnj_SummonSpriggan", tes3.spellType.spell, common.i18n("magic.summonSpriggan"), 144, { tes3.effect.T_summon_Spriggan }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_De_Cnj_SummonGreaterBonelord", tes3.spellType.spell, common.i18n("magic.summonGreaterBonelord"), 160, { tes3.effect.T_summon_BoneldGr }, tes3.effectRange.self, 0, 45, 1, 1 },
+	{ "T_Cr_Cnj_AylSorcKSummon1", tes3.spellType.spell, nil, 40, { tes3.effect.T_summon_Auroran }, tes3.effectRange.self, 0, 40, 1, 1 },
+	{ "T_Cr_Cnj_AylSorcKSummon3", tes3.spellType.spell, nil, 25, { tes3.effect.T_summon_WelkyndSpirit }, tes3.effectRange.self, 0, 40, 1, 1 },
+	{ "T_Cyr_Cnj_SummonGhost", tes3.spellType.spell, common.i18n("magic.summonGhost"), 21, { tes3.effect.T_summon_Ghost }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Cyr_Cnj_SummonWraith", tes3.spellType.spell, common.i18n("magic.summonWraith"), 147, { tes3.effect.T_summon_Wraith }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Cyr_Cnj_SummonBarrowguard", tes3.spellType.spell, common.i18n("magic.summonBarrowguard"), 33, { tes3.effect.T_summon_Barrowguard }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Cyr_Cnj_SummonMinoBarrowguard", tes3.spellType.spell, common.i18n("magic.summonMinoBarrowguard"), 171, { tes3.effect.T_summon_MinoBarrowguard }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonSkeletonChamp", tes3.spellType.spell, common.i18n("magic.summonSkeletonChampion"), 96, { tes3.effect.T_summon_SkeletonChampion }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonFrostMonarch", tes3.spellType.spell, common.i18n("magic.summonFrostMonarch"), 141, { tes3.effect.T_summon_AtroFrostMon }, tes3.effectRange.self, 0, 60, 1, 1 },
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
 local td_bound_spells = {
-	{ "T_Com_Cnj_BoundGreaves", tes3.spellType.spell, common.i18n("magic.boundGreaves"), 6, tes3.effect.T_bound_Greaves, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_BoundWarAxe", tes3.spellType.spell, common.i18n("magic.boundWarAxe"), 6, tes3.effect.T_bound_Waraxe, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_BoundWarhammer", tes3.spellType.spell, common.i18n("magic.boundWarhammer"), 6, tes3.effect.T_bound_Warhammer, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_De_Cnj_Uni_BoundHammerResdayn", tes3.spellType.spell, nil, 6, tes3.effect.T_bound_HammerResdayn, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_De_Cnj_Uni_BoundRazorOResdayn", tes3.spellType.spell, nil, 6, tes3.effect.T_bound_RazorResdayn, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_BoundPauldron", tes3.spellType.spell, common.i18n("magic.boundPauldrons"), 6, tes3.effect.T_bound_Pauldrons, tes3.effectRange.self, 0, 60, 1, 1 },
-	--{ "T_Com_Cnj_BoundThrowingKnives", tes3.spellType.spell, common.i18n("magic.boundThrowingKnives"), 6, tes3.effect.T_bound_ThrowingKnives, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_BoundGreaves", tes3.spellType.spell, common.i18n("magic.boundGreaves"), 6, { tes3.effect.T_bound_Greaves }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_BoundWarAxe", tes3.spellType.spell, common.i18n("magic.boundWarAxe"), 6, { tes3.effect.T_bound_Waraxe }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_BoundWarhammer", tes3.spellType.spell, common.i18n("magic.boundWarhammer"), 6, { tes3.effect.T_bound_Warhammer }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_De_Cnj_Uni_BoundHammerResdayn", tes3.spellType.spell, nil, 6, { tes3.effect.T_bound_HammerResdayn }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_De_Cnj_Uni_BoundRazorOResdayn", tes3.spellType.spell, nil, 6, { tes3.effect.T_bound_RazorResdayn }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_BoundPauldron", tes3.spellType.spell, common.i18n("magic.boundPauldrons"), 6, { tes3.effect.T_bound_Pauldrons }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_BoundGreatsword", tes3.spellType.spell, common.i18n("magic.boundGreatsword"), 6, { tes3.effect.T_bound_Greatsword }, tes3.effectRange.self, 0, 60, 1, 1 },
+	--{ "T_Com_Cnj_BoundThrowingKnives", tes3.spellType.spell, common.i18n("magic.boundThrowingKnives"), 6, { tes3.effect.T_bound_ThrowingKnives }, tes3.effectRange.self, 0, 60, 1, 1 },
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
 local td_intervention_spells = {
-	{ "T_Nor_Mys_KynesIntervention", tes3.spellType.spell, common.i18n("magic.interventionKyne"), 8, tes3.effect.T_intervention_Kyne, tes3.effectRange.self, 0, 0, 1, 1 },
+	{ "T_Nor_Mys_KynesIntervention", tes3.spellType.spell, common.i18n("magic.interventionKyne"), 8, { tes3.effect.T_intervention_Kyne }, tes3.effectRange.self, 0, 0, 1, 1 },
 }
 
--- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
+-- spell id, cast type, spell name, spell mana cost, (1st effect id, attribute id, skill id), 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
 local td_misc_spells = {
-	{ "T_Com_Mys_UNI_Passwall", tes3.spellType.spell, common.i18n("magic.miscPasswall"), 96, tes3.effect.T_alteration_Passwall, tes3.effectRange.touch, 25, 0, 0, 0 },
-	{ "T_Com_Mys_BanishDaedra", tes3.spellType.spell, common.i18n("magic.miscBanish"), 64, tes3.effect.T_mysticism_BanishDae, tes3.effectRange.touch, 0, 0, 10, 10 },
-	{ "T_Com_Mys_ReflectDamage", tes3.spellType.spell, common.i18n("magic.miscReflectDamage"), 76, tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 5, 10, 20 },
-	{ "T_Com_Mys_DetectHumanoid", tes3.spellType.spell, common.i18n("magic.miscDetectHumanoid"), 38, tes3.effect.T_mysticism_DetHuman, tes3.effectRange.self, 0, 5, 50, 150 },
-	{ "T_Ayl_Alt_RadiantShield", tes3.spellType.spell, common.i18n("magic.miscRadiantShield"), 75, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 10, 10 },
-	{ "T_Cr_Alt_AuroranShield", tes3.spellType.ability, nil, nil, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 0, 20, 20 },
-	{ "T_Cr_Alt_AylSorcKLightShield", tes3.spellType.spell, common.i18n("magic.miscRadiantShield"), 10, tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 12, 10, 10, tes3.effect.light, tes3.effectRange.self, 0, 12, 20, 20 },
-	{ "T_Com_Mys_Insight", tes3.spellType.spell, common.i18n("magic.miscInsight"), 76, tes3.effect.T_mysticism_Insight, tes3.effectRange.self, 0, 10, 15, 15 },
-	{ "T_Com_Res_ArmorResartus", tes3.spellType.spell, common.i18n("magic.miscArmorResartus"), 90, tes3.effect.T_restoration_ArmorResartus, tes3.effectRange.self, 0, 0, 20, 40 },
-	{ "T_Com_Res_WeaponResartus", tes3.spellType.spell, common.i18n("magic.miscWeaponResartus"), 90, tes3.effect.T_restoration_WeaponResartus, tes3.effectRange.self, 0, 0, 10, 20 },
-	{ "T_Dae_Cnj_UNI_CorruptionSummon", tes3.spellType.spell, common.i18n("magic.miscCorruption"), 0, tes3.effect.T_conjuration_CorruptionSummon, tes3.effectRange.self, 0, 30, 1, 1 },
-	{ "T_Com_Ilu_DistractCreature", tes3.spellType.spell, common.i18n("magic.miscDistractCreature"), 11, tes3.effect.T_illusion_DistractCreature, tes3.effectRange.target, 0, 15, 20, 20 },
-	{ "T_Com_Ilu_DistractHumanoid", tes3.spellType.spell, common.i18n("magic.miscDistractHumanoid"), 22, tes3.effect.T_illusion_DistractHumanoid, tes3.effectRange.target, 0, 15, 20, 20 },
-	{ "T_Com_Mys_DetectEnemy", tes3.spellType.spell, common.i18n("magic.miscDetectEnemy"), 57, tes3.effect.T_mysticism_DetEnemy, tes3.effectRange.self, 0, 5, 50, 150 },
-	{ "T_Dae_Alt_UNI_WabbajackTrans", tes3.spellType.spell, common.i18n("magic.miscWabbajack"), 0, tes3.effect.T_alteration_WabbajackTrans, tes3.effectRange.touch, 0, 16, 1, 1 },
-	{ "T_Com_Mys_DetectInvisibility", tes3.spellType.spell, common.i18n("magic.miscDetectInvisibility"), 76, tes3.effect.T_mysticism_DetInvisibility, tes3.effectRange.self, 0, 5, 50, 150 },
-	{ "T_Com_Mys_Blink", tes3.spellType.spell, common.i18n("magic.miscBlink"), 25, tes3.effect.T_mysticism_Blink, tes3.effectRange.self, 0, 0, 50, 50 },
-	--{ "T_Cr_Ab_AuroranLight", tes3.spellType.ability, nil, nil, tes3.effect.T_illusion_PrismaticLight, tes3.effectRange.self, 0, 0, 20, 20 },
+	{ "T_Com_Mys_UNI_Passwall", tes3.spellType.spell, common.i18n("magic.miscPasswall"), 96, { tes3.effect.T_alteration_Passwall }, tes3.effectRange.touch, 25, 0, 0, 0 },
+	{ "T_Com_Mys_BanishDaedra", tes3.spellType.spell, common.i18n("magic.miscBanish"), 64, { tes3.effect.T_mysticism_BanishDae }, tes3.effectRange.touch, 0, 0, 10, 10 },
+	{ "T_Com_Mys_ReflectDamage", tes3.spellType.spell, common.i18n("magic.miscReflectDamage"), 76, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 5, 10, 20 },
+	{ "T_Com_Mys_DetectHumanoid", tes3.spellType.spell, common.i18n("magic.miscDetectHumanoid"), 38, { tes3.effect.T_mysticism_DetHuman }, tes3.effectRange.self, 0, 5, 50, 150 },
+	{ "T_Ayl_Alt_RadiantShield", tes3.spellType.spell, common.i18n("magic.miscRadiantShield"), 75, { tes3.effect.T_alteration_RadShield }, tes3.effectRange.self, 0, 30, 10, 10 },
+	{ "T_Cr_Alt_AuroranShield", tes3.spellType.ability, nil, nil, { tes3.effect.T_alteration_RadShield }, tes3.effectRange.self, 0, 0, 20, 20 },
+	{ "T_Cr_Alt_AylSorcKLightShield", tes3.spellType.spell, common.i18n("magic.miscRadiantShield"), 10, { tes3.effect.T_alteration_RadShield }, tes3.effectRange.self, 0, 12, 10, 10, { tes3.effect.light }, tes3.effectRange.self, 0, 12, 20, 20 },
+	{ "T_Com_Mys_Insight", tes3.spellType.spell, common.i18n("magic.miscInsight"), 76, { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 10, 15, 15 },
+	{ "T_Com_Res_ArmorResartus", tes3.spellType.spell, common.i18n("magic.miscArmorResartus"), 90, { tes3.effect.T_restoration_ArmorResartus }, tes3.effectRange.self, 0, 0, 20, 40 },
+	{ "T_Com_Res_WeaponResartus", tes3.spellType.spell, common.i18n("magic.miscWeaponResartus"), 90, { tes3.effect.T_restoration_WeaponResartus }, tes3.effectRange.self, 0, 0, 10, 20 },
+	{ "T_Dae_Cnj_UNI_CorruptionSummon", tes3.spellType.spell, common.i18n("magic.miscCorruption"), 0, { tes3.effect.T_conjuration_CorruptionSummon }, tes3.effectRange.self, 0, 30, 1, 1 },
+	{ "T_Com_Ilu_DistractCreature", tes3.spellType.spell, common.i18n("magic.miscDistractCreature"), 11, { tes3.effect.T_illusion_DistractCreature }, tes3.effectRange.target, 0, 15, 20, 20 },
+	{ "T_Com_Ilu_DistractHumanoid", tes3.spellType.spell, common.i18n("magic.miscDistractHumanoid"), 22, { tes3.effect.T_illusion_DistractHumanoid }, tes3.effectRange.target, 0, 15, 20, 20 },
+	{ "T_Com_Mys_DetectEnemy", tes3.spellType.spell, common.i18n("magic.miscDetectEnemy"), 57, { tes3.effect.T_mysticism_DetEnemy }, tes3.effectRange.self, 0, 5, 50, 150 },
+	{ "T_Dae_Alt_UNI_WabbajackTrans", tes3.spellType.spell, common.i18n("magic.miscWabbajack"), 0, { tes3.effect.T_alteration_WabbajackTrans }, tes3.effectRange.touch, 0, 16, 1, 1 },
+	{ "T_Com_Mys_DetectInvisibility", tes3.spellType.spell, common.i18n("magic.miscDetectInvisibility"), 76, { tes3.effect.T_mysticism_DetInvisibility }, tes3.effectRange.self, 0, 5, 50, 150 },
+	{ "T_Com_Mys_Blink", tes3.spellType.spell, common.i18n("magic.miscBlink"), 25, { tes3.effect.T_mysticism_Blink }, tes3.effectRange.self, 0, 0, 50, 50 },
+	--{ "T_Cr_Ab_AuroranLight", tes3.spellType.ability, nil, nil, { tes3.effect.T_illusion_PrismaticLight }, tes3.effectRange.self, 0, 0, 20, 20 },
+	{ "T_UNI_SaintTelynBlessing", tes3.spellType.ability, nil, nil, { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 0, 10, 10 },
 }
 
--- enchantment id, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
+-- enchantment id, (1st effect id, attribute id, skill id), 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
 local td_enchantments = {
-	{ "T_Once_SummonDremoraArcher60", tes3.effect.T_summon_DremArch, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonDremoraCaster60", tes3.effect.T_summon_DremCast, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonGuardian60", tes3.effect.T_summon_Guardian, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonLesserClannfear60", tes3.effect.T_summon_LesserClfr, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonOgrim60", tes3.effect.T_summon_Ogrim, tes3.effectRange.self, 0, 60, 1, 1, nil },
-	{ "T_Once_SummonOgrim120", tes3.effect.T_summon_Ogrim, tes3.effectRange.self, 0, 120, 1, 1, nil },
-	{ "T_Once_SummonSeducer60", tes3.effect.T_summon_Seducer, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonSeducerDark60", tes3.effect.T_summon_SeducerDark, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonVermai60", tes3.effect.T_summon_Vermai, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonVermai120", tes3.effect.T_summon_Vermai, tes3.effectRange.self, 0, 120, 1, 1 },
-	{ "T_Once_SummonSkeletonChamp120", tes3.effect.T_summon_SkeletonChampion, tes3.effectRange.self, 0, 120, 1, 1 },
-	{ "T_Once_SummonFrostMonarch120", tes3.effect.T_summon_AtroFrostMon, tes3.effectRange.self, 0, 120, 1, 1 },
-	{ "T_Once_SummonStormMonarch60", tes3.effect.T_summon_AtroStormMon, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonWelkyndSpirit60", tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonAuroran60", tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonHerne60", tes3.effect.T_summon_Herne, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonMorphoid60", tes3.effect.T_summon_Morphoid, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonBonelordGr60", tes3.effect.T_summon_BoneldGr, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_AylDaedricHerald1", tes3.effect.T_summon_WelkyndSpirit, tes3.effectRange.self, 0, 30, 1, 1 },
-	{ "T_Once_AylDaedricHerald2", tes3.effect.T_summon_Auroran, tes3.effectRange.self, 0, 30, 1, 1 },
-	{ "T_Once_AylLoreArmor1", tes3.effect.T_alteration_RadShield, tes3.effectRange.self, 0, 30, 20, 20 },
-	--{ "T_Once_AylCavernsTruth", tes3.effect.T_illusion_PrismaticLight, tes3.effectRange.self, 0, 90, 15, 15 },
-	{ "T_Once_KynesIntervention", tes3.effect.T_intervention_Kyne, tes3.effectRange.self, 0, 1, 1, 1 },
-	{ "T_Once_QuelledGeas", tes3.effect.T_mysticism_BanishDae, tes3.effectRange.touch, 0, 1, 10, 15 },
-	{ "T_Once_LordMhasFortress", tes3.effect.boundBoots, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.T_bound_Greaves, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.boundCuirass, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.T_bound_Pauldrons, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.boundGloves, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.boundHelm, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.boundShield, tes3.effectRange.self, 0, 90, 1, 1, tes3.effect.T_bound_Warhammer, tes3.effectRange.self, 0, 90, 1, 1 },
-	{ "T_Once_SummonDremoraAll60", tes3.effect.summonDremora, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.T_summon_DremArch, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.T_summon_DremCast, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Const_Ring_Namira", tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 1, 30, 30, tes3.effect.reflect, tes3.effectRange.self, 0, 1, 30, 30 },
-	{ "T_Const_FindersCharm", tes3.effect.T_mysticism_Insight, tes3.effectRange.self, 0, 1, 10, 10, tes3.effect.detectEnchantment, tes3.effectRange.self, 0, 1, 120, 120, tes3.effect.detectKey, tes3.effectRange.self, 0, 1, 120, 120 },
-	{ "T_Const_Robe_Reprisal", tes3.effect.frostShield, tes3.effectRange.self, 0, 1, 50, 50, tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 1, 10, 10 },
-	{ "T_Const_Onimaru_en", tes3.effect.fortifyAttack, tes3.effectRange.self, 0, 1, 10, 10, tes3.effect.resistMagicka, tes3.effectRange.self, 0, 1, 20, 20, tes3.effect.resistNormalWeapons, tes3.effectRange.self, 0, 1, 20, 20, tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 1, 20, 20, tes3.effect.summonDremora, tes3.effectRange.self, 0, 1, 1, 1 },
-	{ "T_Const_NadiaInsight", tes3.effect.T_mysticism_Insight, tes3.effectRange.self, 0, 1, 30, 30 },
-	{ "T_Use_GuardianRIng", tes3.effect.boundHelm, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.boundCuirass, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.boundGloves, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.boundBoots, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.T_bound_Greaves, tes3.effectRange.self, 0, 60, 1, 1, tes3.effect.T_bound_Pauldrons, tes3.effectRange.self, 0, 60, 1, 1, },
-	{ "T_Use_WabbajackUni", tes3.effect.T_alteration_Wabbajack, tes3.effectRange.target, 0, 1, 1, 1 },
-	{ "T_Use_SkullOfCorruption", tes3.effect.T_conjuration_Corruption, tes3.effectRange.target, 0, 0, 1, 1 },	-- Why oh why is this ID not Uni?
-	{ "T_Use_SummonGuardian60", tes3.effect.T_summon_Guardian, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Const_VelothsPauld_R", tes3.effect.T_mysticism_ReflectDmg, tes3.effectRange.self, 0, 1, 30, 30 },
-	{ "T_Strike_StaffVeloth", tes3.effect.T_destruction_GazeOfVeloth, tes3.effectRange.touch, 0, 1, 1, 1 },
-	{ "T_Const_Spell_Bifurcation", tes3.effect.T_restoration_FortifyCasting, tes3.effectRange.self, 0, 1, 20, 20 },
+	{ "T_Once_SummonDremoraArcher60", { tes3.effect.T_summon_DremArch }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonDremoraCaster60", { tes3.effect.T_summon_DremCast }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonGuardian60", { tes3.effect.T_summon_Guardian }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonLesserClannfear60", { tes3.effect.T_summon_LesserClfr }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonOgrim60", { tes3.effect.T_summon_Ogrim }, tes3.effectRange.self, 0, 60, 1, 1, nil },
+	{ "T_Once_SummonOgrim120", { tes3.effect.T_summon_Ogrim }, tes3.effectRange.self, 0, 120, 1, 1, nil },
+	{ "T_Once_SummonSeducer60", { tes3.effect.T_summon_Seducer }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonSeducerDark60", { tes3.effect.T_summon_SeducerDark }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonVermai60", { tes3.effect.T_summon_Vermai }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonVermai120", { tes3.effect.T_summon_Vermai }, tes3.effectRange.self, 0, 120, 1, 1 },
+	{ "T_Once_SummonSkeletonChamp120", { tes3.effect.T_summon_SkeletonChampion }, tes3.effectRange.self, 0, 120, 1, 1 },
+	{ "T_Once_SummonFrostMonarch120", { tes3.effect.T_summon_AtroFrostMon }, tes3.effectRange.self, 0, 120, 1, 1 },
+	{ "T_Once_SummonStormMonarch60", { tes3.effect.T_summon_AtroStormMon }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonWelkyndSpirit60", { tes3.effect.T_summon_WelkyndSpirit }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonAuroran60", { tes3.effect.T_summon_Auroran }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonHerne60", { tes3.effect.T_summon_Herne }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonMorphoid60", { tes3.effect.T_summon_Morphoid }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonBonelordGr60", { tes3.effect.T_summon_BoneldGr }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_AylDaedricHerald1", { tes3.effect.T_summon_WelkyndSpirit }, tes3.effectRange.self, 0, 30, 1, 1 },
+	{ "T_Once_AylDaedricHerald2", { tes3.effect.T_summon_Auroran }, tes3.effectRange.self, 0, 30, 1, 1 },
+	{ "T_Once_AylLoreArmor1", { tes3.effect.T_alteration_RadShield }, tes3.effectRange.self, 0, 30, 20, 20 },
+	--{ "T_Once_AylCavernsTruth", { tes3.effect.T_illusion_PrismaticLight }, tes3.effectRange.self, 0, 90, 15, 15 },
+	{ "T_Once_KynesIntervention", { tes3.effect.T_intervention_Kyne }, tes3.effectRange.self, 0, 1, 1, 1 },
+	{ "T_Once_QuelledGeas", { tes3.effect.T_mysticism_BanishDae }, tes3.effectRange.touch, 0, 1, 10, 15 },
+	{ "T_Once_LordMhasFortress", { tes3.effect.boundBoots }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.T_bound_Greaves }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.boundCuirass }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.T_bound_Pauldrons }, tes3.effectRange.self, 0, 90, 1, 1,
+								{ tes3.effect.boundGloves }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.boundHelm }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.boundShield }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.T_bound_Warhammer }, tes3.effectRange.self, 0, 90, 1, 1 },
+	{ "T_Once_SummonDremoraAll60", { tes3.effect.summonDremora }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_summon_DremArch }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_summon_DremCast }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_DaedraBane", { tes3.effect.T_mysticism_BanishDae }, tes3.effectRange.touch, 0, 1, 10, 15 },
+	{ "T_Once_BlackSpirits", { tes3.effect.T_mysticism_BanishDae }, tes3.effectRange.target, 25, 1, 10, 40 },
+	{ "T_Once_Diversion", { tes3.effect.T_illusion_DistractHumanoid }, tes3.effectRange.target, 0, 30, 10, 30 },
+	{ "T_Once_Scent", { tes3.effect.T_illusion_DistractCreature }, tes3.effectRange.target, 0, 30, 10, 30 },
+	{ "T_Once_DarothrilDisorder", { tes3.effect.T_illusion_DistractCreature }, tes3.effectRange.target, 20, 20, 50, 50, { tes3.effect.T_illusion_DistractHumanoid }, tes3.effectRange.target, 20, 20, 50, 50 },
+	{ "T_Once_Revealing", { tes3.effect.T_mysticism_DetInvisibility }, tes3.effectRange.self, 0, 10, 40, 80, nil },
+	{ "T_Once_GramaryeMirror", { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 30, 20, 20, { tes3.effect.reflect }, tes3.effectRange.self, 0, 30, 20, 20 },
+	{ "T_Once_DeificChrisom", { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 60, 10, 30, { tes3.effect.spellAbsorption }, tes3.effectRange.self, 0, 60, 10, 30, { tes3.effect.sanctuary }, tes3.effectRange.self, 0, 60, 10, 30 },
+	{ "T_Once_Dashing", { tes3.effect.T_mysticism_Blink }, tes3.effectRange.self, 0, 0, 40, 40 },
+	{ "T_Once_AssassinRush", { tes3.effect.T_mysticism_Blink }, tes3.effectRange.self, 0, 0, 30, 30, { tes3.effect.fortifyAttack }, tes3.effectRange.self, 0, 60, 10, 20, { tes3.effect.fortifySkill, nil, tes3.skill.shortBlade }, tes3.effectRange.self, 0, 60, 10, 20 },
+	{ "T_Once_QorwynnMending", { tes3.effect.T_restoration_ArmorResartus }, tes3.effectRange.self, 0, 0, 30, 30, { tes3.effect.T_restoration_WeaponResartus }, tes3.effectRange.self, 0, 0, 30, 30 },
+	{ "T_Once_MoathAuthority", { tes3.effect.boundBoots }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.T_bound_Greaves }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.boundGloves }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.T_bound_Greatsword }, tes3.effectRange.self, 0, 90, 1, 1 },
+	{ "T_Once_AllSeeing", { tes3.effect.detectAnimal }, tes3.effectRange.self, 0, 300, 200, 200, { tes3.effect.T_mysticism_DetHuman }, tes3.effectRange.self, 0, 300, 200, 200, { tes3.effect.T_mysticism_DetEnemy }, tes3.effectRange.self, 0, 300, 200, 200,
+						{ tes3.effect.T_mysticism_DetInvisibility }, tes3.effectRange.self, 0, 300, 200, 200, { tes3.effect.detectEnchantment }, tes3.effectRange.self, 0, 300, 200, 200, { tes3.effect.detectKey }, tes3.effectRange.self, 0, 300, 200, 200 },
+	{ "T_Once_Firmament", { tes3.effect.fortifyAttack }, tes3.effectRange.self, 0, 120, 40, 40, { tes3.effect.T_restoration_FortifyCasting }, tes3.effectRange.self, 0, 120, 40, 40, { tes3.effect.fortifySkill, nil, tes3.skill.sneak }, tes3.effectRange.self, 0, 120, 40, 40 },
+	{ "T_Once_BoethiahService", { tes3.effect.summonHunger }, tes3.effectRange.self, 0, 120, 1, 1, { tes3.effect.T_summon_Devourer }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_FourArmsGoingUp", { tes3.effect.summonScamp }, tes3.effectRange.self, 0, 120, 1, 1, { tes3.effect.summonDremora }, tes3.effectRange.self, 0, 120, 1, 1, { tes3.effect.T_summon_Morphoid }, tes3.effectRange.self, 0, 120, 1, 1, { tes3.effect.T_summon_Herne }, tes3.effectRange.self, 0, 120, 1, 1 },
+	{ "T_Once_Anticipations", { tes3.effect.summonWingedTwilight }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_summon_SpiderDaedra }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.summonHunger }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_FourCorners", { tes3.effect.summonGoldenSaint }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.summonDremora }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_summon_Ogrim }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.summonDaedroth }, tes3.effectRange.self, 0, 60, 1, 1 },
+
+	{ "T_Const_Ring_Namira", { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 30, 30, { tes3.effect.reflect }, tes3.effectRange.self, 0, 1, 30, 30 },
+	{ "T_Const_FindersCharm", { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 1, 10, 10, { tes3.effect.detectEnchantment }, tes3.effectRange.self, 0, 1, 120, 120, { tes3.effect.detectKey }, tes3.effectRange.self, 0, 1, 120, 120 },
+	{ "T_Const_Robe_Reprisal", { tes3.effect.frostShield }, tes3.effectRange.self, 0, 1, 50, 50, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 10, 10 },
+	{ "T_Const_Onimaru_en", { tes3.effect.fortifyAttack }, tes3.effectRange.self, 0, 1, 10, 10, { tes3.effect.resistMagicka }, tes3.effectRange.self, 0, 1, 20, 20, { tes3.effect.resistNormalWeapons }, tes3.effectRange.self, 0, 1, 20, 20, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 20, 20, { tes3.effect.summonDremora }, tes3.effectRange.self, 0, 1, 1, 1 },
+	{ "T_Const_NadiaInsight", { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 1, 30, 30 },
+	{ "T_Use_GuardianRIng", { tes3.effect.boundBoots }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_bound_Greaves }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.boundCuirass }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_bound_Pauldrons }, tes3.effectRange.self, 0, 60, 1, 1,
+							{ tes3.effect.boundGloves }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.boundHelm }, tes3.effectRange.self, 0, 60, 1, 1, },
+	{ "T_Use_WabbajackUni", { tes3.effect.T_alteration_Wabbajack }, tes3.effectRange.target, 0, 1, 1, 1 },
+	{ "T_Use_SkullOfCorruption", { tes3.effect.T_conjuration_Corruption }, tes3.effectRange.target, 0, 0, 1, 1 },	-- Why oh why is this ID not Uni?
+	{ "T_Use_SummonGuardian60", { tes3.effect.T_summon_Guardian }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Const_VelothsPauld_R", { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 30, 30 },
+	{ "T_Strike_StaffVeloth", { tes3.effect.T_destruction_GazeOfVeloth }, tes3.effectRange.touch, 0, 1, 1, 1 },
+	{ "T_Const_Spell_Bifurcation", { tes3.effect.T_restoration_FortifyCasting }, tes3.effectRange.self, 0, 1, 20, 20 },
 }
 
 -- ingredient id, 1st effect id, 1st effect attribute id, 1st effect skill id, 2nd effect id, ...
@@ -360,9 +386,13 @@ local td_ingredients = {
 								  tes3.effect.T_mysticism_DetHuman, -1, -1,
 								  tes3.effect.fortifyMagicka, -1, -1,
 								  tes3.effect.resistMagicka, -1, -1 },
-	{ "T_IngCrea_MothWingSky_3", tes3.effect.fortifyAttribute, tes3.attribute.agility, 0,
+	{ "T_IngCrea_MothWingSky_03", tes3.effect.fortifyAttribute, tes3.attribute.agility, 0,
 								 tes3.effect.drainAttribute, tes3.attribute.strength, 0,
 								 tes3.effect.T_mysticism_Blink, -1, -1 },
+	{ "T_IngFood_MeatDolphin_01", tes3.effect.jump, -1, -1,
+								  tes3.effect.swiftSwim, -1, -1,
+								  tes3.effect.sanctuary, -1, -1,
+								  tes3.effect.T_mysticism_DetInvisibility, -1, -1 },
 	{ "T_IngFlor_Indulcet_01", tes3.effect.fortifyAttribute, tes3.attribute.personality, -1,
 							   tes3.effect.T_mysticism_DetInvisibility, -1, -1,
 							   tes3.effect.sanctuary, -1, -1,
@@ -418,6 +448,10 @@ local td_ingredients = {
 							  tes3.effect.resistMagicka, -1, -1,
 							  tes3.effect.fireDamage, -1, -1,
 							  tes3.effect.T_mysticism_Insight, -1, -1, },
+	--{ "T_IngMine_Agate_01", tes3.effect.reflect, -1, -1,
+	--						  tes3.effect.levitate, -1, -1,
+	--						  tes3.effect.T_illusion_PrismaticLight, -1, -1,
+	--						  tes3.effect.silence, -1, -1, },
 }
 
 -- item id, item name, 1st effect id, 1st duration, 1st magnitude, ...
@@ -531,8 +565,11 @@ function this.replaceSpells(table)
 				if not v[5 + (i - 1) * 6] then
 					break	-- This condition exists so that the tables don't have to have dozens of fields if they have less than 8 effects
 				end
+
 				local effect = overridden_spell.effects[i]
-				effect.id = v[5 + (i - 1) * 6]
+				effect.id = v[5 + (i - 1) * 6][1]
+				effect.attribute = v[5 + (i - 1) * 6][2]
+				effect.skill = v[5 + (i - 1) * 6][3]
 				effect.rangeType = v[6 + (i - 1) * 6]
 				effect.radius = v[7 + (i - 1) * 6]
 				effect.duration = v[8 + (i - 1) * 6]
@@ -550,10 +587,20 @@ function this.replaceEnchantments(table)
 		if overridden_enchantment then
 			for i = 1, 8, 1 do
 				if not v[2 + (i - 1) * 6] then
+					for j = i, 8, 1 do
+						local effect = overridden_enchantment.effects[i]
+						effect.id = -1
+						effect.attribute = -1
+						effect.skill = -1
+					end
+
 					break
 				end
+
 				local effect = overridden_enchantment.effects[i]
-				effect.id = v[2 + (i - 1) * 6]
+				effect.id = v[2 + (i - 1) * 6][1]
+				effect.attribute = v[2 + (i - 1) * 6][2]
+				effect.skill = v[2 + (i - 1) * 6][3]
 				effect.rangeType = v[3 + (i - 1) * 6]
 				effect.radius = v[4 + (i - 1) * 6]
 				effect.duration = v[5 + (i - 1) * 6]
@@ -573,6 +620,7 @@ function this.replaceIngredientEffects(table)
 				if not v[2 + (i - 1) * 3] then
 					break
 				end
+
 				ingredient.effects[i] = v[2 + (i - 1) * 3]
 				ingredient.effectAttributeIds[i] = v[3 + (i - 1) * 3]
 				ingredient.effectSkillIds[i] = v[4 + (i - 1) * 3]
@@ -900,7 +948,7 @@ local function blinkEffect(e)
 	}
 
 	if target then
-		range = target.distance - (tes3.mobilePlayer.boundSize2D.y / 2) - 16		-- The 16 is added just to put a bit more space between the player and the target
+		range = target.distance - (tes3.mobilePlayer.boundSize2D.y / 2) - 16		-- The 16 is there to put a bit more space between the player and the target
 	end
 
 	if range > 0 then
@@ -1373,6 +1421,11 @@ local function calculateMapValues(mapPane, multiPane)
 	local mapCell = mapPane:findChild("MenuMap_map_cell")
 	local multiCell = multiPane:findChild("MenuMap_map_cell")
 
+	mapWidth = mapCell.width
+	mapHeight = mapCell.height
+	multiWidth = multiCell.width
+	multiHeight = multiCell.height
+
 	if tes3.player.cell.isInterior then
 		local mapPlayerMarker = mapPane:findChild("MenuMap_local_player")
 		local multiPlayerMarker = multiPane.parent.parent:findChild("MenuMap_local_player")
@@ -1387,11 +1440,6 @@ local function calculateMapValues(mapPane, multiPane)
 
 		northMarkerCos = math.cos(northMarkerAngle)
 		northMarkerSin = math.sin(northMarkerAngle)
-		
-		mapWidth = mapCell.width
-		mapHeight = mapCell.height
-		multiWidth = multiCell.width
-		multiHeight = multiCell.height
 
 		local xShift = -tes3.player.position.x
 		local yShift = tes3.player.position.y
@@ -1671,9 +1719,9 @@ function this.detectInvisibilityTick(e)
 	if mapPane then deleteInvisibilityDetections(mapPane) end
 	if multiPane then deleteInvisibilityDetections(multiPane) end
 
-	local detectInvisibilityEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetInvisibility })
-	if #detectInvisibilityEffects > 0 then
-		if mapMenu and multiMenu then
+	if mapMenu and multiMenu then
+		local detectInvisibilityEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetInvisibility })
+		if #detectInvisibilityEffects > 0 then
 			calculateMapValues(mapPane, multiPane)
 
 			local totalMagnitude = 0
@@ -1729,9 +1777,9 @@ function this.detectEnemyTick(e)
 	if mapPane then deleteEnemyDetections(mapPane) end
 	if multiPane then deleteEnemyDetections(multiPane) end
 
-	local detectEnemyEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetEnemy })
-	if #detectEnemyEffects > 0 then
-		if mapMenu and multiMenu then
+	if mapMenu and multiMenu then
+		local detectEnemyEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetEnemy })
+		if #detectEnemyEffects > 0 then
 			calculateMapValues(mapPane, multiPane)
 
 			local totalMagnitude = 0
@@ -1753,7 +1801,7 @@ function this.detectEnemyTick(e)
 					disposition = actor.reference.object.disposition
 				end
 
-				if isHostile or (actor.fight > 70 and disposition < (actor.fight - 70) * 5) then
+				if (isHostile or (actor.fight > 70 and disposition < (actor.fight - 70) * 5)) and not table.contains(actor.friendlyActors, tes3.mobilePlayer) then	-- Checking the friendly actors is needed for the player's summons to not be detected (unless the player attacks them)
 					local mapX, mapY, multiX, multiY
 					if tes3.player.cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(actor.position)
 					else mapX, mapY, multiX, multiY = calcExteriorPos(actor.position) end
@@ -1800,9 +1848,9 @@ function this.detectHumanoidTick(e)
 	if mapPane then deleteHumanoidDetections(mapPane) end
 	if multiPane then deleteHumanoidDetections(multiPane) end
 
-	local detectHumanoidEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetHuman })
-	if #detectHumanoidEffects > 0 then
-		if mapPane and multiPane then
+	if mapPane and multiPane then
+		local detectHumanoidEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetHuman })
+		if #detectHumanoidEffects > 0 then
 			calculateMapValues(mapPane, multiPane)	-- Move this into a separate tick function so that it only runs once, rather than for each detection effect?
 
 			local totalMagnitude = 0
@@ -2851,8 +2899,8 @@ event.register(tes3.event.magicEffectsResolved, function()
 			id = effectID,
 			name = effectName,
 			description = effectDescription,
-			magnitudeType = tes3.findGMST(tes3.gmst.sfeet).value,
-			magnitudeTypePlural = tes3.findGMST(tes3.gmst.sfeet).value,
+			magnitudeType = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
+			magnitudeTypePlural = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			school = tes3.magicSchool.mysticism,
 			baseCost = effectCost,
 			speed = detectEffect.speed,
@@ -3329,8 +3377,8 @@ event.register(tes3.event.magicEffectsResolved, function()
 			id = effectID,
 			name = effectName,
 			description = effectDescription,
-			magnitudeType = tes3.findGMST(tes3.gmst.sfeet).value,
-			magnitudeTypePlural = tes3.findGMST(tes3.gmst.sfeet).value,
+			magnitudeType = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
+			magnitudeTypePlural = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			school = tes3.magicSchool.mysticism,
 			baseCost = effectCost,
 			speed = detectEffect.speed,
@@ -3415,8 +3463,8 @@ event.register(tes3.event.magicEffectsResolved, function()
 			id = effectID,
 			name = effectName,
 			description = effectDescription,
-			magnitudeType = tes3.findGMST(tes3.gmst.sfeet).value,
-			magnitudeTypePlural = tes3.findGMST(tes3.gmst.sfeet).value,
+			magnitudeType = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
+			magnitudeTypePlural = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			school = tes3.magicSchool.mysticism,
 			baseCost = effectCost,
 			speed = detectEffect.speed,
@@ -3459,8 +3507,8 @@ event.register(tes3.event.magicEffectsResolved, function()
 			id = effectID,
 			name = effectName,
 			description = effectDescription,
-			magnitudeType = tes3.findGMST(tes3.gmst.sfeet).value,
-			magnitudeTypePlural = tes3.findGMST(tes3.gmst.sfeet).value,
+			magnitudeType = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
+			magnitudeTypePlural = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			school = tes3.magicSchool.mysticism,
 			baseCost = effectCost,
 			speed = detectEffect.speed,

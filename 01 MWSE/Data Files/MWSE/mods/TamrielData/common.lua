@@ -176,7 +176,7 @@ function this.pathGridBFS(firstNode, finalNode)
     return false
 end
 
--- Finds the shortest path by distance between two given nodes of a path grid using a particularly unpleasant implementation of Dijkstra's algorithm. While the function's structure might look similar to pathGridBFS's, the implementation is quite different.
+-- Finds the shortest path by distance between two given nodes of a path grid using a particularly unpleasant implementation of Dijkstra's algorithm. While the function's structure might look similar to that of pathGridBFS, the implementation is quite different.
 ---@param firstNode tes3pathGridNode
 ---@param finalNode tes3pathGridNode
 ---@return tes3pathGridNode[]|boolean
