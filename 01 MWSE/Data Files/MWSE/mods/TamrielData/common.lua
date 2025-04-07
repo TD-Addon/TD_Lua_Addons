@@ -224,4 +224,29 @@ function this.pathGridDijkstra(firstNode, finalNode)
     return false
 end
 
+---@param hue number
+---@param saturation number
+---@param value number
+---@return niColor
+function this.hsvToRGB(hue, saturation, value)
+    local chroma = saturation * value
+    local minimum = value - chroma
+
+    local x = chroma * (1 - math.abs((hue / 60) % 2 - 1))
+
+    if hue < 60 then
+        return niColor.new(chroma + minimum, x + minimum, minimum)
+    elseif hue < 120 then
+        return niColor.new(x + minimum, chroma + minimum, minimum)
+    elseif hue < 180 then
+        return niColor.new(minimum, chroma + minimum, x + minimum)
+    elseif hue < 240 then
+        return niColor.new(minimum, x + minimum, chroma + minimum)
+    elseif hue < 300 then
+        return niColor.new(x + minimum, minimum, chroma + minimum)
+    else
+        return niColor.new(chroma + minimum, minimum, x + minimum)
+    end
+end
+
 return this

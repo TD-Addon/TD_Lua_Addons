@@ -414,80 +414,82 @@ end
 
 ---@param e equipEventData
 local function restrictEquip(e)
-	if e.reference.baseObject.objectType == tes3.objectType.npc and e.reference.mobile.object.race.id == "T_Val_Imga" then
-		if e.item.objectType == tes3.objectType.armor then
-			if e.item.slot == tes3.armorSlot.boots then
-				if e.reference.mobile == tes3.mobilePlayer then
-					tes3ui.showNotifyMenu(common.i18n("main.imgaShoes"))
+	if e.reference.baseObject.objectType == tes3.objectType.npc then
+		if e.reference.mobile.object.race.id == "T_Val_Imga" then
+			if e.item.objectType == tes3.objectType.armor then
+				if e.item.slot == tes3.armorSlot.boots then
+					if e.reference.mobile == tes3.mobilePlayer then
+						tes3ui.showNotifyMenu(common.i18n("main.imgaShoes"))
+					end
+					
+					return false
 				end
 				
-				return false
+				if e.item.slot == tes3.armorSlot.helmet then
+					if not e.reference.mobile.object.female == false then
+						if e.reference.mobile == tes3.mobilePlayer then
+							tes3ui.showNotifyMenu(common.i18n("main.imgaHelm"))
+						end
+						
+						return false
+					end
+				end
 			end
 			
-			if e.item.slot == tes3.armorSlot.helmet then
-				if e.reference.mobile.object.female == false then
+			if e.item.objectType == tes3.objectType.clothing then
+				if e.item.slot == tes3.clothingSlot.shoes then
 					if e.reference.mobile == tes3.mobilePlayer then
-						tes3ui.showNotifyMenu(common.i18n("main.imgaHelm"))
+						tes3ui.showNotifyMenu(common.i18n("main.imgaShoes"))
+					end
+					
+					return false
+				end
+				
+				if e.item.slot == tes3.clothingSlot.hat then
+					if not e.reference.mobile.object.female then
+						if e.reference.mobile == tes3.mobilePlayer then
+							tes3ui.showNotifyMenu(common.i18n("main.imgaHat"))
+						end
+						
+						return false
+					end
+				end
+			end
+		elseif e.reference.mobile.object.race.id == "T_Aka_Tsaesci" then
+			if e.item.objectType == tes3.objectType.armor then
+				if e.item.slot == tes3.armorSlot.boots then
+					if e.reference.mobile == tes3.mobilePlayer then
+						tes3ui.showNotifyMenu(common.i18n("main.tsaesciShoes"))
+					end
+					
+					return false
+				end
+				
+				if e.item.slot == tes3.armorSlot.greaves then
+					if e.reference.mobile == tes3.mobilePlayer then
+						tes3ui.showNotifyMenu(common.i18n("main.tsaesciPants"))
 					end
 					
 					return false
 				end
 			end
-		end
-		
-		if e.item.objectType == tes3.objectType.clothing then
-			if e.item.slot == tes3.clothingSlot.shoes then
-				if e.reference.mobile == tes3.mobilePlayer then
-					tes3ui.showNotifyMenu(common.i18n("main.imgaShoes"))
-				end
-				
-				return false
-			end
 			
-			if e.item.slot == tes3.clothingSlot.hat then
-				if e.reference.mobile.object.female == false then
+			if e.item.objectType == tes3.objectType.clothing then
+				if e.item.slot == tes3.clothingSlot.shoes then
 					if e.reference.mobile == tes3.mobilePlayer then
-						tes3ui.showNotifyMenu(common.i18n("main.imgaHat"))
+						tes3ui.showNotifyMenu(common.i18n("main.tsaesciShoes"))
+					end
+					
+					return false
+				end	
+				
+				if e.item.slot == tes3.clothingSlot.pants then
+					if e.reference.mobile == tes3.mobilePlayer then
+						tes3ui.showNotifyMenu(common.i18n("main.tsaesciPants"))
 					end
 					
 					return false
 				end
-			end
-		end
-	elseif e.reference.mobile.object.race.id == "T_Aka_Tsaesci" then
-		if e.item.objectType == tes3.objectType.armor then
-			if e.item.slot == tes3.armorSlot.boots then
-				if e.reference.mobile == tes3.mobilePlayer then
-					tes3ui.showNotifyMenu(common.i18n("main.tsaesciShoes"))
-				end
-				
-				return false
-			end
-			
-			if e.item.slot == tes3.armorSlot.greaves then
-				if e.reference.mobile == tes3.mobilePlayer then
-					tes3ui.showNotifyMenu(common.i18n("main.tsaesciPants"))
-				end
-				
-				return false
-			end
-		end
-		
-		if e.item.objectType == tes3.objectType.clothing then
-			if e.item.slot == tes3.clothingSlot.shoes then
-				if e.reference.mobile == tes3.mobilePlayer then
-					tes3ui.showNotifyMenu(common.i18n("main.tsaesciShoes"))
-				end
-				
-				return false
-			end	
-			
-			if e.item.slot == tes3.clothingSlot.pants then
-				if e.reference.mobile == tes3.mobilePlayer then
-					tes3ui.showNotifyMenu(common.i18n("main.tsaesciPants"))
-				end
-				
-				return false
 			end
 		end
 	end
@@ -680,6 +682,11 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.miscSpells == true then
+		timer.start{ duration = 0.0166667, iterations = -1, type = timer.simulate, callback = magic.prismaticLightTick }
+		event.register(tes3.event.referenceActivated, magic.onPrismaticLightReferenceActivated, { unregisterOnLoad = true })
+		event.register(tes3.event.referenceDeactivated, magic.onPrismaticLightReferenceDeactivated, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.prismaticLightRemovedEffect, { unregisterOnLoad = true })
+
 		event.register(tes3.event.spellCast, magic.fortifyCastingOnSpellCast, { unregisterOnLoad = true })
 
 		tes3.getObject("T_B_GazeVeloth_Skeleton_01").partType = tes3.activeBodyPartLayer.base		-- I don't want these body parts to be associated with a race, so I set them to be base layer here rather than in the CS
@@ -689,7 +696,7 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.addTempSound, magic.gazeOfVelothBlockActorSound, { unregisterOnLoad = true })
 		event.register(tes3.event.bodyPartAssigned, magic.gazeOfVelothBodyPartAssigned, { unregisterOnLoad = true })
 
-		timer.start{duration = 1, iterations = -1, type = timer.simulate, callback = magic.distractedReturnTick}
+		timer.start{ duration = 1, iterations = -1, type = timer.simulate, callback = magic.distractedReturnTick }
 		event.register(tes3.event.referenceActivated, magic.onDistractedReferenceActivated, { unregisterOnLoad = true })
 		event.register(tes3.event.referenceDeactivated, magic.onDistractedReferenceDeactivated, { unregisterOnLoad = true })
 		event.register(tes3.event.magicEffectRemoved, magic.distractRemovedEffect, { unregisterOnLoad = true })
@@ -697,9 +704,9 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.activate, magic.corruptionBlockActivation, { unregisterOnLoad = true })
 		event.register(tes3.event.mobileActivated, magic.corruptionSummoned, { unregisterOnLoad = true })
 		
-		event.register(tes3.event.magicEffectRemoved, magic.wabbajackTransRemovedEffect, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.wabbajackTransRemovedEffect, { unregisterOnLoad = true })	-- Rename this function and related ones to wabbajackHelper? wabbajackTrans isn't very obvious.
 
-		timer.start{duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectInvisibilityTick}
+		timer.start{ duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectInvisibilityTick }
 		event.register(tes3.event.magicCasted, magic.detectInvisibilityTick, { unregisterOnLoad = true })
 		event.register(tes3.event.magicEffectRemoved, magic.detectInvisibilityTick, { unregisterOnLoad = true })
 		event.register(tes3.event.calcHitChance, magic.detectInvisibilityHitChance, { filter = tes3.player.baseObject, unregisterOnLoad = true })
@@ -709,11 +716,11 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.mobileActivated, magic.onInvisibleMobileActivated, { unregisterOnLoad = true })
 		event.register(tes3.event.mobileDeactivated, magic.onInvisibleMobileDeactivated, { unregisterOnLoad = true })
 
-		timer.start{duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectEnemyTick}
+		timer.start{ duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectEnemyTick }
 		event.register(tes3.event.magicCasted, magic.detectEnemyTick, { unregisterOnLoad = true })
 		event.register(tes3.event.magicEffectRemoved, magic.detectEnemyTick, { unregisterOnLoad = true })
 
-		timer.start{duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectHumanoidTick}
+		timer.start{ duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectHumanoidTick }
 		event.register(tes3.event.magicCasted, magic.detectHumanoidTick, { unregisterOnLoad = true })
 		event.register(tes3.event.magicEffectRemoved, magic.detectHumanoidTick, { unregisterOnLoad = true })
 
@@ -777,7 +784,7 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.activate, behavior.onNestLoot, { priority = 250, unregisterOnLoad = true })	-- The priority is set so that the function is guranteed to work with GH even if the nests are removed from the blacklist
 		event.register(tes3.event.combatStarted, behavior.onGroupAttacked, { unregisterOnLoad = true })
 
-		timer.start{duration = 5, iterations = -1, type = timer.simulate, callback = behavior.creatureDetectionTick}	-- Morrowind's AI is (supposedly) updated every 5 seconds, which is why that value is used here.
+		timer.start{ duration = 5, iterations = -1, type = timer.simulate, callback = behavior.creatureDetectionTick }	-- Morrowind's AI is (supposedly) updated every 5 seconds, which is why that value is used here.
 		event.register(tes3.event.mobileActivated, behavior.onMobileActivated, { unregisterOnLoad = true })
 		event.register(tes3.event.mobileDeactivated, behavior.onMobileDeactivated, { unregisterOnLoad = true })
 	end
