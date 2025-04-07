@@ -43,6 +43,7 @@ local stopFn = time.runRepeatedly(function()
     end,
     0.01 * time.second)
 
+-- Once the spell's player script reports that it finished handling, mark it here also
 local function onSpellHandlingFinished(data)
     if not data.spellId then return end
     isSpellAlreadyBeingHandled[string.lower(data.spellId)] = false

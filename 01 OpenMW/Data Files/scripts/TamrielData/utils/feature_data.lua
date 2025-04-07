@@ -12,6 +12,10 @@ features["miscSpells"] = {
     requiredLuaApi = 71,
     settingsKey = "Settings_TamrielData_page01Main_group02Magic_miscSpells"
 }
+features["debugLogging"] = {
+    requiredLuaApi = 44,
+    settingsKey = "Settings_TamrielData_page01Main_group99Misc_debugLogging"
+}
 
 local F = {}
 

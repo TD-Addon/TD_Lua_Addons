@@ -11,6 +11,7 @@ local camera = require('openmw.camera')
 local util = require('openmw.util')
 local l10n = core.l10n("TamrielData")
 local settings = require("scripts.TamrielData.utils.settings")
+local debug = require("scripts.TamrielData.utils.debug_logging")
 
 local FT_TO_UNITS = 22.1
 local maxSpellDistance = 25 * FT_TO_UNITS -- 25ft is a default Passwall spell range in the MWSE version
@@ -23,12 +24,7 @@ local function getActivationVector()
 end
 
 local function getActivationDistance()
-    local activateDistance = core.getGMST("iMaxActivateDist") + 0.1
-    local telekinesis = types.Actor.activeEffects(self):getEffect(core.magic.EFFECT_TYPE.Telekinesis); --TODO if the MWSE version won't include telekinesis boost, remove this
-    if telekinesis then
-        activateDistance = activateDistance + (telekinesis.magnitude * FT_TO_UNITS);
-    end
-    return activateDistance
+    return core.getGMST("iMaxActivateDist") + 0.1
 end
 
 local function getRaycastingInputData()
@@ -93,14 +89,15 @@ local function handleAsDoor(object)
             end
             doorHandled = true
         elseif isDoorForbiddenFromPasswall(object) then
-            print("forbidden door - i.e. not passwall material", object.recordId) --debug
+            debug.log(
+                string.format("Door '%s' is forbidden from being passed by a Passwall spell", object.recordId),
+                passwallSpellId
+            )
             doorHandled = true
         end
     end
     return doorHandled
 end
-
-local counterOfChecks = 0--TODO delete
 
 local function isObjectReachable(from, targetObject)
     local to = targetObject:getBoundingBox().center
@@ -108,7 +105,6 @@ local function isObjectReachable(from, targetObject)
     if (from - to):length() > 1024 then -- Probably no need to look for further objects
         return false
     end
-    counterOfChecks = counterOfChecks + 1
 
     -- Find a walkable navmesh path to the object
     local status, path = nearby.findPath(
@@ -131,7 +127,6 @@ local function isObjectReachable(from, targetObject)
             util.vector3(to.x - path[#path].x, to.y - path[#path].y, to.z - path[#path].z):length() < veryClose
 
         local lastCheckResult = (lastRayCheck.hitObject and lastRayCheck.hitObject == targetObject) or isObjectVeryClose
-        print("Reachable object", targetObject.recordId, "at", to, ", but: lastCheckResult:", lastCheckResult, ", isObjectVeryClose:", isObjectVeryClose)
         return lastCheckResult
     end
 
@@ -159,6 +154,10 @@ local function isBlockedByIllegalActivator(object)
     for _, value in pairs(forbiddenModels) do
         if objectModelPath:find(value) then
             ui.showMessage(l10n("TamrielData_magic_passwallAlpha"))
+            debug.log(
+                string.format("Object '%s' (%s) is an illegal activator you can't pass through with Passwall.", object.recordId, objectModelPath),
+                passwallSpellId
+            )
             return true
         end
     end
@@ -210,8 +209,6 @@ local function isCalculatedPositionIntendedForThePlayer(position)
     end
     -- Look for any "useful" object that is reachable via navmesh from this position.
     -- If there is one, we could assume that the position was intended to be reachable by the player.
-
-
     local foundObject = findAReachableObjectFromPositionOutOf(position, nearby.doors, {})
     or findAReachableObjectFromPositionOutOf(position, nearby.actors, {types.Player})
     or findAReachableObjectFromPositionOutOf(position, nearby.activators, {})
@@ -230,8 +227,6 @@ local function calculatePasswallPosition(intermediateRayHits, limitingPosition, 
     local minDistance = 108 -- minDistance from the MWSE version
     local maxZDifference = 105 -- upCoord from the MWSE version
 
-    counterOfChecks = 0
-
     for i = 1, #intermediateRayHits do
         local thisRayHit = intermediateRayHits[i]
 
@@ -248,7 +243,6 @@ local function calculatePasswallPosition(intermediateRayHits, limitingPosition, 
         local potentialPosition = thisRayHit.hitPos + directionVector * rayTestOffset
 
         while distanceToNext >= rayTestOffset * 2 do
-            print("MYDEBUG! ","candidate between", i, "and", i+1, "out of", #intermediateRayHits, "because of distance", distanceToNext)
             local navMeshPosition = nearby.findNearestNavMeshPosition(
                 potentialPosition,
                 {
@@ -257,22 +251,16 @@ local function calculatePasswallPosition(intermediateRayHits, limitingPosition, 
                 }
             )
             if navMeshPosition == nil then
-                print("-found no navmesh close point to", potentialPosition)--debug
                 break
             end
 
-            -- TODO if telekinesis is to be used, add its distance maybe like this
-            -- local isPositionNotTooClose = (self.position - navMeshPosition):length() >= (minDistance + (self.position - intermediateRayHits[1].hitPos):length())
             local isPositionNotTooClose = (self.position - navMeshPosition):length() >= (minDistance)
-
             local isPositionNotTooHighOrLow = math.abs(self.position.z - navMeshPosition.z) < maxZDifference
             local isPositionInsideLimits = isPositionNotTooClose and isPositionNotTooHighOrLow
             local isIntendedForThePlayer = isCalculatedPositionIntendedForThePlayer(navMeshPosition)
             if isPositionInsideLimits and isIntendedForThePlayer then
-                print(">>>>>", navMeshPosition, "fits!")
                 return navMeshPosition
             else
-                print(">>>>> not viable because either isPositionNotTooClose:", isPositionNotTooClose, "or isPositionNotTooHighOrLow:", isPositionNotTooHighOrLow, "or isIntendedForThePlayer:", isIntendedForThePlayer)
                 potentialPosition = potentialPosition + directionVector * rayTestOffset
                 distanceToNext = (nextPosition - potentialPosition):length()
             end
@@ -306,7 +294,7 @@ local function gatherAllRayHitsAndLimitingPosition(raycastingInputData, firstRay
     return intermediateRayHits, limitingPosition
 end
 
-local function finishHandlingPasswall()
+local function finishPasswall()
     core.sendGlobalEvent("T_magic_spellHandlingFinished", { spellId = passwallSpellId })
 end
 
@@ -314,7 +302,7 @@ local PSW = {}
 
 function PSW.onCastPasswall()
     if not settings.isFeatureEnabled["miscSpells"]() then
-        return finishHandlingPasswall()
+        return finishPasswall()
     end
 
     for _, spell in pairs(types.Actor.activeSpells(self)) do
@@ -323,16 +311,27 @@ function PSW.onCastPasswall()
         end
     end
 
-    print("==== MYDEBUG cast passwall start")
+    debug.log(
+        string.format(
+            "START: pos:%s, cell:%s, rotation:%s, race:%s, isMale:%s",
+            self.position,
+            self.cell,
+            self.rotation,
+            types.NPC.record(self).race,
+            types.NPC.record(self).isMale
+        ),
+        passwallSpellId
+    )
+
     if self.cell.isExterior then
         ui.showMessage(l10n("TamrielData_magic_passwallExterior"))
-        return finishHandlingPasswall()
+        return finishPasswall()
     elseif types.Actor.isSwimming(self) then
         ui.showMessage(l10n("TamrielData_magic_passwallUnderwater"))
-        return finishHandlingPasswall()
+        return finishPasswall()
     elseif not types.Player.isTeleportingEnabled(self) then
         ui.showMessage(core.getGMST("sTeleportDisabled"))
-        return finishHandlingPasswall()
+        return finishPasswall()
     end
 
     local raycastingInputData = getRaycastingInputData()
@@ -347,28 +346,30 @@ function PSW.onCastPasswall()
         })
 
     if not firstRaycastHit.hitObject or isRayHitOnBlocker(firstRaycastHit) then
-         ui.showMessage("nothing hit")  --debug TODO get rid of or hide
-        return finishHandlingPasswall()
+        debug.log("No target detected on spell cast.", passwallSpellId)
+        return finishPasswall()
     end
 
     local targetObject = firstRaycastHit.hitObject
 
     if not (types.Static.objectIsInstance(targetObject) or types.Activator.objectIsInstance(targetObject) or types.Door.objectIsInstance(targetObject)) then
-        ui.showMessage("needs to hit an activator or static or internal door") --debug
-        return finishHandlingPasswall()
+        debug.log(
+            string.format("Object '%s' is not a legal spell target. You need to hit an activator or a static or a door.", targetObject.recordId),
+            passwallSpellId
+        )
+        return finishPasswall()
     end
 
     local hitObjectHalfHeight = targetObject:getBoundingBox().halfSize.z
     local minObstacleHeight = 93 -- MWSE version uses 96, but In_impsmall_d_hidden_01 needs these additional 3 points in OpenMW
     if hitObjectHalfHeight < minObstacleHeight then
-        print("object ", targetObject.recordId, " too low to pass through:", hitObjectHalfHeight)
-        ui.showMessage("object too low to pass through:", hitObjectHalfHeight)  --debug
+        debug.log(string.format("Object '%s' is too low to pass through.", targetObject.recordId), passwallSpellId)
         --TODO add a sound on Passwall failing to find a target
-        return finishHandlingPasswall()
+        return finishPasswall()
     end
 
     if handleAsDoor(targetObject) then
-        return finishHandlingPasswall()
+        return finishPasswall()
     end
 
     local intermediateRayHits, limitingPosition = gatherAllRayHitsAndLimitingPosition(raycastingInputData, firstRaycastHit)
@@ -377,41 +378,15 @@ function PSW.onCastPasswall()
 
     local finalTeleportPosition = calculatePasswallPosition(intermediateRayHits, limitingPosition, raycastingInputData.directionVector)
 
-    print("NUMBERED CHECKS:", counterOfChecks)
-
-    --------------------------
-    for i = 1, #intermediateRayHits do
-        local value = intermediateRayHits[i]
-        -- print("::", i, "obj:", value.hitObject.recordId)--, ", pos:", value.hitPos)
-
-        -- if i < #intermediateRayHits then
-        --     local distanceToNext = (intermediateRayHits[i+1].hitPos - value.hitPos):length()
-        --     print("---- distance to next", distanceToNext)
-        -- else
-        --     local distanceToNext = (limitingPosition - value.hitPos):length()
-        --     print("---- distance to limit", distanceToNext)
-        -- end
-
-
-    end
-    --------------------------
-
-
-    -- local pathFindingBoujndBox = types.Actor.getPathfindingAgentBounds(self)
-    -- for key, value in pairs(pathFindingBoujndBox) do
-    --     print(":::", key, value)
-    -- end
-
-
-    -- local finalTeleportPosition = calculatePasswallPosition(firstRaycastHit.hitPos)
-    -- print(targetObject, hitObjectHalfHeight, "targetPos:", finalTeleportPosition)
-
-    print("==== PASSWALL INFO before teleport: player pos:", self.position, ", cell:", self.cell, ", rotation:", self.rotation, ", race:", types.NPC.record(self).race, ", isMale:", types.NPC.record(self).isMale)
-
     if finalTeleportPosition then
         startTeleporting(finalTeleportPosition, self.cell.name, self.rotation, targetObject)
+    else
+        debug.log(
+            "No valid teleport position for Passwall found",
+            passwallSpellId
+        )
     end
-    finishHandlingPasswall()
+    finishPasswall()
 end
 
 return PSW
