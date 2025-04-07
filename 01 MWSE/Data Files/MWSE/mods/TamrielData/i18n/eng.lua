@@ -73,6 +73,8 @@ return {
 	["magic.boundWarhammerDesc"] = "The spell effect conjures a lesser Daedra bound in the form of a magical, wondrously light Daedric warhammer. The warhammer appears automatically equipped on the caster, displacing any currently equipped weapon to inventory. When the effect ends, the warhammer disappears, and any previously equipped weapon is automatically re-equipped.",
 	["magic.boundPauldrons"] = "Bound Pauldrons",
 	["magic.boundPauldronsDesc"] = "The spell effect conjures a lesser Daedra bound in the form of magical, wondrously light Daedric pauldrons. The pauldrons appear automatically equipped on the caster, displacing any currently equipped shoulder armor to inventory. When the effect ends, the pauldrons disappear, and any previously equipped shoulder armor is automatically re-equipped.",
+	["magic.boundGreatsword"] = "Bound Greatsword",
+	["magic.boundGreatswordDesc"] = "The spell effect conjures a lesser Daedra bound in the form of a magical, wondrously light Daedric greatsword. The greatsword appears automatically equipped on the caster, displacing any currently equipped weapon to inventory. When the effect ends, the greatsword disappears, and any previously equipped weapon is automatically re-equipped.",
 	["magic.boundThrowingKnives"] = "Bound Throwing Knives",
 	["magic.boundThrowingKnivesDesc"] = "The spell effect conjures a lesser Daedra bound in the form of magical, wondrously light Daedric throwing knives. The throwing knives appear automatically equipped on the caster, displacing any currently equipped weapon to inventory. When the effect ends, the throwing knives disappear, and any previously equipped weapon is automatically re-equipped.",
 
@@ -82,7 +84,7 @@ return {
 	["magic.miscPasswall"] = "Passwall",
 	["magic.miscPasswallDesc"] = "In an indoor area, this effect permits the caster to pass through a solid barrier to a vacant space behind it. The effect will fail if the destination beyond the traversed barrier is filled with water, is blocked by a forcefield, sigil gate, or ward, or lies above or below the caster.",
 	["magic.miscBanish"] = "Banish Daedra",
-	["magic.miscBanishDesc"] = "Banishes any daedra that the spell is cast upon, if the target is of sufficiently low level compared to the spell's magnitude. If the daedra is wounded, then it will be easier to banish. Banishing a daedra will transfer any of their important belongings to a sigil that is left behind.",
+	["magic.miscBanishDesc"] = "Banishes any daedra that the spell is cast upon, if the spell's magnitude is greater than or equal to the target's level. If the daedra is wounded, then it will be easier to banish. Banishing a daedra will transfer any of their important belongings to a sigil that is left behind.",
 	["magic.miscReflectDamage"] = "Reflect Damage",
 	["magic.miscReflectDamageDesc"] = "This effect allows the subject to reflect physical damage back at an attacker. The effect's magnitude is the percent damage that will be reflected for each attack. Any unreflected damage is dealt to the defender normally.",
 	["magic.miscDetectHumanoid"] = "Detect Humanoid",
@@ -108,7 +110,7 @@ return {
 	["magic.miscDetectEnemy"] = "Detect Enemy",
 	["magic.miscDetectEnemyDesc"] = "The caster of this effect can detect any entity animated by a spirit; they appear on the map as symbols. This effect includes all hostile beings. The effect's magnitude is the range in feet from the caster that enemies are detected.",
 	["magic.miscDetectInvisibility"] = "Detect Invisibility",
-	["magic.miscDetectInvisibilityDesc"] = "The caster of this effect can detect any entity animated by a spirit; they appear on the map as symbols. This effect includes all beings affected by chameleon or invisbility effects. The effect's magnitude is the range in feet from the caster that hidden beings are detected. The chameleon and invisibility effects on detected entities are also weakened.",
+	["magic.miscDetectInvisibilityDesc"] = "The caster of this effect can detect any entity animated by a spirit; they appear on the map as symbols. This effect includes all beings affected by chameleon or invisibility effects. The effect's magnitude is the range in feet from the caster that hidden beings are detected. The chameleon and invisibility effects on detected entities are also weakened.",
 	["magic.miscBlink"] = "Blink",
 	["magic.miscBlinkDesc"] = "This effect teleports the caster in whatever direction they are looking in. The effect's magnitude is the maximum distance that the caster can move.",
 	["magic.miscFortifyCasting"] = "Fortify Casting",
@@ -121,7 +123,7 @@ return {
 	["magic.passwallWard"] = "You cannot pass through to there.",
 	["magic.passwallAlpha"] = "You cannot pass through that.",
 	["magic.passwallExterior"] = "You must be in a confined space.",
-	["magic.passwallDoorExterior"] = "You must remain in a confined space.",
+	["magic.passwallDoorExterior"] = "You cannot leave a confined space.",
 	["magic.passwallUnderwater"] = "You cannot be underwater.",
 
 	["magic.itemPotionReflectDamageB"] = "Bargain Potion of Reflect Dmg",
@@ -139,7 +141,7 @@ return {
 	["magic.itemPotionDetectInvisibility"] = "Potion of Detect Invisibility",
 
 	["magic.itemScSummonDremoraArcher"] = "Scroll of Mehrunes' Quarry",
-	["magic.itemScSummonDremoraCaster"] = "Scroll of the Razor Compact",
+	["magic.itemScSummonDremoraCaster"] = "Scroll of The Razor Compact",
 	["magic.itemScKynesIntervention"] = "Scroll of Kyne's Intervention",
 
 	-- Reputation Text
@@ -221,6 +223,9 @@ return {
 	["mcm.travelPricesLabel"] = "Adjust Travel Prices",
 	["mcm.travelPricesDescription"] = "Changes the cost of traveling to destinations added by Tamriel Rebuilt and Project Tamriel when Morrowind's calculated prices are unreasonable, such as between Mages Guild networks.\nRequires reload.\n\nDefault: On\n\n",
 	
+	["mcm.khajiitFormCharacterCreationLabel"] = "Specify Khajiit Form during Character Creation",
+	["mcm.khajiitFormCharacterCreationDescription"] = "Names the Khajiit forms in the relevant character creation menus rather than just calling all of them \"Khajiit\". Another mod, such as All Races and Classes Unlocked, is needed to actually make these races available during character creation.\nRequires reload.\n\nDefault: On\n\n",
+
 	["mcm.butterflyMothTooltipLabel"] = "Ingredient Tooltip for Butterflies and Moths",
 	["mcm.butterflyMothTooltipDescription"] = "Shows the effects, weight, and value of ingredients that can be harvested from butterflies and moths when looking at them, much like the Graphic Herbalism feature that does so for harvestable containers.\nRequires reload.\n\nDefault: On, if Graphic Herbalism is installed and its feature for showing ingredient tooltips is active\n\n",
 

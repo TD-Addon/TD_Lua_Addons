@@ -245,6 +245,35 @@ local function initTableValues(data, defaults)
     end
 end
 
+--- @param e uiActivatedEventData
+local function changeRaceMenuKhajiitNames(e)
+    local raceMenu = tes3ui.findMenu("MenuRaceSex")
+
+    if not raceMenu then return end
+
+	local racePane = raceMenu:findChild("PartScrollPane_pane")
+
+    if not racePane then return end
+
+	for i,layout in ipairs(racePane.children) do
+		if layout.children[1] and layout.children[1].text == "Khajiit" then
+			local race = layout.children[1]:getPropertyObject("MenuRaceSex_ListNumber")
+			---@cast race tes3race
+			
+			if race.id:startswith("T_Els_") then
+				local formName = race.id:sub(7)
+				--layout.children[1].text = "Khajiit (" .. formName .. ")"
+				layout.children[1].text = formName
+			elseif race.id == "Khajiit" then
+				--layout.children[1].text = "Khajiit (Suthay-raht)"
+				layout.children[1].text = "Suthay-raht"	-- Unfortunately the vanilla pane is not wide enough to fully display this naming format, so I am just using the form names here
+			end
+		end
+	end
+
+	--racePane:sortChildren(function(a, b) return a.children[1].text <= b.children[1].text end)	-- I would rather use this only when keeping "Khajiit" in the names
+end
+
 -- The following function is based on one that G7 made for Graphic Herbalism
 ---@param e uiObjectTooltipEventData
 local function butterflyMothTooltip(e)
@@ -808,6 +837,10 @@ event.register(tes3.event.loaded, function()
 
 	if config.adjustTravelPrices == true then
 		event.register(tes3.event.calcTravelPrice, adjustTravelPrices, { unregisterOnLoad = true })
+	end
+
+	if config.khajiitFormCharCreation == true then
+		event.register(tes3.event.uiActivated, changeRaceMenuKhajiitNames, { filter = "MenuRaceSex", unregisterOnLoad = true })
 	end
 
 	if config.butterflyMothTooltip == true then
