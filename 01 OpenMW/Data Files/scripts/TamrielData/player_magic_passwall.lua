@@ -363,8 +363,7 @@ function PSW.onCastPasswall()
     local hitObjectHalfHeight = targetObject:getBoundingBox().halfSize.z
     local minObstacleHeight = 93 -- MWSE version uses 96, but In_impsmall_d_hidden_01 needs these additional 3 points in OpenMW
     if hitObjectHalfHeight < minObstacleHeight then
-        debug.log(string.format("Object '%s' is too low to pass through.", targetObject.recordId), passwallSpellId)
-        --TODO add a sound on Passwall failing to find a target
+        debug.log(string.format("Object '%s' height (%s) is too low for Passwall (need %s).", targetObject.recordId, hitObjectHalfHeight, minObstacleHeight), passwallSpellId)
         return finishPasswall()
     end
 
