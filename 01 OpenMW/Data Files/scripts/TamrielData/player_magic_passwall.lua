@@ -42,17 +42,6 @@ local function getRaycastingInputData()
     }
 end
 
-local function serializeObjectOwnership(targetObject)
-    if not targetObject.owner or not types.Lockable.isLocked(targetObject) then
-        return nil
-    end
-    return {
-        recordId = targetObject.owner.recordId,
-        factionId = targetObject.owner.factionId,
-        factionRank = targetObject.owner.factionRank
-    }
-end
-
 local function startTeleporting(newPosition, newCell, newRotation, targetObject)
     core.sendGlobalEvent("T_Passwall_teleportPlayer",
     {
@@ -60,7 +49,7 @@ local function startTeleporting(newPosition, newCell, newRotation, targetObject)
         position = newPosition,
         cell = newCell,
         rotation = newRotation,
-        targetObjectOwnership = serializeObjectOwnership(targetObject)
+        targetObject = targetObject
     })
 end
 

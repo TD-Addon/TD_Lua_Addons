@@ -8,22 +8,28 @@ local world = require('openmw.world')
 local crimes = require('openmw.interfaces').Crimes
 
 local function triggerCrimeIfTrespassing(data)
-    if not data.targetObjectOwnership then
+    if not data.targetObject or not data.targetObject.owner or not types.Lockable.isLocked(data.targetObject) then
         return
     end
 
+    if data.targetObject.globalVariable and world.mwscript.getGlobalVariables(data.player)[data.targetObject.globalVariable] ~= 0 then
+        return
+    end
+
+    local ownerData = data.targetObject.owner
+
     local isTrespassing =
-        data.targetObjectOwnership.recordId
+        ownerData.recordId
         or
-        (data.targetObjectOwnership.factionId and types.NPC.getFactionRank(data.player, data.targetObjectOwnership.factionId) == 0)
+        (ownerData.factionId and types.NPC.getFactionRank(data.player, ownerData.factionId) == 0)
         or
-        (data.targetObjectOwnership.factionId and types.NPC.getFactionRank(data.player, data.targetObjectOwnership.factionId) < data.targetObjectOwnership.factionRank)
+        (ownerData.factionId and types.NPC.getFactionRank(data.player, ownerData.factionId) < ownerData.factionRank)
 
     if isTrespassing then
         crimes.commitCrime(
             data.player,
             {
-                faction = data.targetObjectOwnership.factionId,
+                faction = ownerData.factionId,
                 type = types.Player.OFFENSE_TYPE.Trespassing
             }
         )
