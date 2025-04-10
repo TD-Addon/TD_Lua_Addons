@@ -8,13 +8,13 @@ local types = require('openmw.types')
 
 -- List of spells the global script should check for if they're active for the player
 local spellIdToGlobalPlayerEvent = {}
-spellIdToGlobalPlayerEvent["T_Com_Mys_UNI_Passwall"] = "T_Passwall_playerCast"
+spellIdToGlobalPlayerEvent["t_com_mys_uni_passwall"] = "T_Passwall_playerCast"
 
 
 local function makeInitialValuesOfSpellHandledStates()
     local result = {}
     for spellId, _ in pairs(spellIdToGlobalPlayerEvent) do
-        result[string.lower(spellId)] = false
+        result[spellId] = false
     end
     return result
 end
@@ -22,8 +22,8 @@ local isSpellAlreadyBeingHandled = makeInitialValuesOfSpellHandledStates()
 
 local function handleSpellWithPlayerEvent(spell, player)
     for expected_spell_id, spell_event in pairs(spellIdToGlobalPlayerEvent) do
-        if spell.id == string.lower(expected_spell_id) then
-            if not isSpellAlreadyBeingHandled[string.lower(spell.id)] then
+        if spell.id == expected_spell_id then
+            if not isSpellAlreadyBeingHandled[spell.id] then
                 player:sendEvent(spell_event, {})
                 isSpellAlreadyBeingHandled[spell.id] = true
             end
@@ -46,7 +46,7 @@ local stopFn = time.runRepeatedly(function()
 -- Once the spell's player script reports that it finished handling, mark it here also
 local function onSpellHandlingFinished(data)
     if not data.spellId then return end
-    isSpellAlreadyBeingHandled[string.lower(data.spellId)] = false
+    isSpellAlreadyBeingHandled[data.spellId] = false
 end
 
 return {

@@ -15,7 +15,7 @@ local debug = require("scripts.TamrielData.utils.debug_logging")
 
 local FT_TO_UNITS = 22.1
 local maxSpellDistance = 25 * FT_TO_UNITS -- 25ft is a default Passwall spell range in the MWSE version
-local passwallSpellId = "T_Com_Mys_UNI_Passwall"
+local passwallSpellId = "t_com_mys_uni_passwall"
 
 local function getActivationVector()
     -- Camera direction cast on a XY plane
@@ -54,8 +54,8 @@ local function startTeleporting(newPosition, newCell, newRotation, targetObject)
 end
 
 local function isDoorForbiddenFromPasswall(object)
-    local recordName = string.lower(types.Door.records[object.recordId].name)
-    local forbiddenDoorNames = { "trap", "cell", "tent", "grate", "bearskin", "mystical", "skyrender" }
+    local recordName = types.Door.records[object.recordId].name
+    local forbiddenDoorNames = { "Trap", "Cell", "Tent", "Grate", "Bearskin", "Mystical", "Skyrender" }
     for _, value in pairs(forbiddenDoorNames) do
         if recordName:find(value) then
             return true
@@ -123,7 +123,7 @@ local function isObjectReachable(from, targetObject)
 end
 
 local function isBlockedByWard(object)
-    local isWardPresent = string.lower(object.recordId):find("t_aid_passwallward_")
+    local isWardPresent = object.recordId:find("t_aid_passwallward_")
     if isWardPresent then
         ui.showMessage(l10n("TamrielData_magic_passwallWard"))
     end
@@ -135,16 +135,15 @@ local function isBlockedByIllegalActivator(object)
         return false
     end
     local objectRecord = types.Activator.records[object.recordId]
-    local objectModelPath = string.lower(objectRecord.model)
 
     local forbiddenModels = { "force", "gg_", "water", "blight", "_grille_", "field", "editormarker", "barrier",
         "_portcullis_", "bm_ice_wall", "_mist", "_web", "_cryst", "collision", "grate", "shield", "smoke",
         "Ex_colony_ouside_tend01", "akula", "act_sotha_green", "act_sotha_red", "lava", "bug", "clearbox" }
     for _, value in pairs(forbiddenModels) do
-        if objectModelPath:find(value) then
+        if objectRecord.model:find(value) then
             ui.showMessage(l10n("TamrielData_magic_passwallAlpha"))
             debug.log(
-                string.format("Object '%s' (%s) is an illegal activator you can't pass through with Passwall.", object.recordId, objectModelPath),
+                string.format("Object '%s' (%s) is an illegal activator you can't pass through with Passwall.", object.recordId, objectRecord.model),
                 passwallSpellId
             )
             return true
@@ -295,7 +294,7 @@ function PSW.onCastPasswall()
     end
 
     for _, spell in pairs(types.Actor.activeSpells(self)) do
-        if spell.id == string.lower(passwallSpellId) then
+        if spell.id == passwallSpellId then
             types.Actor.activeSpells(self):remove(spell.activeSpellId)
         end
     end
