@@ -68,10 +68,10 @@ local function handleAsDoor(object)
     local doorHandled = false
     if types.Door.objectIsInstance(object) then
         if types.Door.isTeleport(object) then
-            if types.Door.destCell(object).isExterior or types.Door.destCell(object).isQuasiExterior then
+            local destCell = types.Door.destCell(object)
+            if destCell.isExterior or destCell.isQuasiExterior then
                 ui.showMessage(l10n("TamrielData_magic_passwallDoorExterior"))
             else
-                local destCell = types.Door.destCell(object)
                 local destPos = types.Door.destPosition(object)
                 local destRotation = types.Door.destRotation(object)
                 startTeleporting(destPos, destCell.name, destRotation, object)
@@ -110,10 +110,14 @@ local function isObjectReachable(from, targetObject)
             { collisionType = nearby.COLLISION_TYPE.AnyPhysical + nearby.COLLISION_TYPE.VisualOnly })
 
         -- However, the raycast doesn't work on some objects, like items. Last chance check is just a distance one.
-        -- If points are very close, we could assume the player can go from one to another
+        -- If points are very close, we could assume the player can go from one to another.
+        -- For this check it seems that comparing the distance with the bottom of the targetObject yields best results.
         local veryClose = 11 -- an arbitrary value representing a close enough object that no wall is between
-        local isObjectVeryClose =
-            util.vector3(to.x - path[#path].x, to.y - path[#path].y, to.z - path[#path].z):length() < veryClose
+        local isObjectVeryClose = util.vector3(
+            to.x - path[#path].x,
+            to.y - path[#path].y,
+            to.z - path[#path].z - targetObject:getBoundingBox().halfSize.z
+        ):length() < veryClose
 
         local lastCheckResult = (lastRayCheck.hitObject and lastRayCheck.hitObject == targetObject) or isObjectVeryClose
         return lastCheckResult
@@ -264,13 +268,15 @@ local function gatherAllRayHitsAndLimitingPosition(raycastingInputData, firstRay
     local intermediateRayHits = {firstRaycastHit}
     local limitingPosition = firstRaycastHit.hitPos + raycastingInputData.directionVector * maxSpellDistance
 
+    local previousRaycastSourceObjects = {firstRaycastHit.hitObject}
     while remainingTeleportDistance > 0 do
         local prevHit = intermediateRayHits[#intermediateRayHits]
+        table.insert(previousRaycastSourceObjects, prevHit.hitObject)
         local thisRaycastEnd = prevHit.hitPos + raycastingInputData.directionVector * remainingTeleportDistance
         local thisHit = nearby.castRay(
             prevHit.hitPos,
             thisRaycastEnd,
-            { ignore = prevHit.hitObject })
+            { ignore = previousRaycastSourceObjects })
         if thisHit.hitObject then
             table.insert(intermediateRayHits, thisHit)
             remainingTeleportDistance = remainingTeleportDistance - (thisHit.hitPos - prevHit.hitPos):length()
@@ -348,14 +354,14 @@ function PSW.onCastPasswall()
         return finishPasswall()
     end
 
+    if handleAsDoor(targetObject) then
+        return finishPasswall()
+    end
+
     local hitObjectHalfHeight = targetObject:getBoundingBox().halfSize.z
     local minObstacleHeight = 93 -- MWSE version uses 96, but In_impsmall_d_hidden_01 needs these additional 3 points in OpenMW
     if hitObjectHalfHeight < minObstacleHeight then
         debug.log(string.format("Object '%s' height (%s) is too low for Passwall (need %s).", targetObject.recordId, hitObjectHalfHeight, minObstacleHeight), passwallSpellId)
-        return finishPasswall()
-    end
-
-    if handleAsDoor(targetObject) then
         return finishPasswall()
     end
 
