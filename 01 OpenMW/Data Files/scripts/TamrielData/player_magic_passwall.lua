@@ -54,6 +54,7 @@ end
 
 local function isDoorForbiddenFromPasswall(object)
     local recordName = types.Door.records[object.recordId].name
+    -- compared to other ids, uppercase letters matter for object names
     local forbiddenDoorNames = { "Trap", "Cell", "Tent", "Grate", "Bearskin", "Mystical", "Skyrender" }
     for _, value in pairs(forbiddenDoorNames) do
         if recordName:find(value) then
@@ -141,7 +142,7 @@ local function isBlockedByIllegalActivator(object)
 
     local forbiddenModels = { "force", "gg_", "water", "blight", "_grille_", "field", "editormarker", "barrier",
         "_portcullis_", "bm_ice_wall", "_mist", "_web", "_cryst", "collision", "grate", "shield", "smoke",
-        "Ex_colony_ouside_tend01", "akula", "act_sotha_green", "act_sotha_red", "lava", "bug", "clearbox" }
+        "ex_colony_ouside_tend01", "akula", "act_sotha_green", "act_sotha_red", "lava", "bug", "clearbox" }
     for _, value in pairs(forbiddenModels) do
         if objectRecord.model:find(value) then
             ui.showMessage(l10n("TamrielData_magic_passwallAlpha"))
@@ -285,12 +286,6 @@ end
 local PSW = {}
 
 function PSW.onCastPasswall()
-    for _, spell in pairs(types.Actor.activeSpells(self)) do
-        if spell.id == passwallSpellId then
-            types.Actor.activeSpells(self):remove(spell.activeSpellId)
-        end
-    end
-
     debug.log(
         string.format(
             "START: pos:%s, cell:%s, rotation:%s, race:%s, isMale:%s",
@@ -360,10 +355,7 @@ function PSW.onCastPasswall()
     if finalTeleportPosition then
         startTeleporting(finalTeleportPosition, self.cell.name, self.rotation, targetObject)
     else
-        debug.log(
-            "No valid teleport position for Passwall found",
-            passwallSpellId
-        )
+        debug.log("No valid teleport position for Passwall found", passwallSpellId)
     end
 end
 
