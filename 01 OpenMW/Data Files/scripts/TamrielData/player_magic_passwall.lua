@@ -10,7 +10,6 @@ local nearby = require('openmw.nearby')
 local camera = require('openmw.camera')
 local util = require('openmw.util')
 local l10n = core.l10n("TamrielData")
-local settings = require("scripts.TamrielData.utils.settings")
 local debug = require("scripts.TamrielData.utils.debug_logging")
 
 local FT_TO_UNITS = 22.1
@@ -156,43 +155,21 @@ local function isBlockedByIllegalActivator(object)
     return false
 end
 
-local function isObjectInstanceOfOneOfTheTypes(object, types)
-    for _, type in pairs(types) do
-        if type.objectIsInstance(object) then
-            return true
-        end
-    end
-    return false
-end
-
-local function findAReachableObjectFromPositionOutOf(startPosition, listOfObjects, exclusions)
-    for _, object in pairs(listOfObjects) do
-        if not isObjectInstanceOfOneOfTheTypes(object, exclusions) then
-            if isObjectReachable(startPosition, object) then
-                return object
-            end
-        end
-    end
-    return nil
-end
-
-local function findAReachableItemFromPosition(startPosition)
+local function isThereAReachableItemFromPosition(startPosition)
     -- If no other check passed until now, then perhaps there is nothing of interest except items in that area.
     -- In that case a reachable item hopefully is close by, so no need for far checks.
 
-    -- lights are excluded from checking, because their radius often bleeds through walls and floors, leading to false positives
-    local excludedItemTypes = {types.Light}
-
     for _, object in pairs(nearby.items) do
         if (startPosition - object:getBoundingBox().center):length() <= maxSpellDistance then
-            if not isObjectInstanceOfOneOfTheTypes(object, excludedItemTypes) then
+            -- lights are excluded from checking, because their radius often bleeds through walls and floors, leading to false positives
+            if not types.Light.objectIsInstance(object) then
                 if isObjectReachable(startPosition, object) then
-                    return object
+                    return true
                 end
             end
         end
     end
-    return nil
+    return false
 end
 
 local function isCalculatedPositionIntendedForThePlayer(position)
@@ -201,12 +178,29 @@ local function isCalculatedPositionIntendedForThePlayer(position)
     end
     -- Look for any "useful" object that is reachable via navmesh from this position.
     -- If there is one, we could assume that the position was intended to be reachable by the player.
-    local foundObject = findAReachableObjectFromPositionOutOf(position, nearby.doors, {})
-    or findAReachableObjectFromPositionOutOf(position, nearby.actors, {types.Player})
-    or findAReachableObjectFromPositionOutOf(position, nearby.activators, {})
-    or findAReachableObjectFromPositionOutOf(position, nearby.containers, {})
-    or findAReachableItemFromPosition(position)
-    return foundObject ~= nil
+    for _, object in ipairs(nearby.doors) do
+        if isObjectReachable(position, object) then
+            return true
+        end
+    end
+    for _, object in ipairs(nearby.actors) do
+        if not types.Player.objectIsInstance(object) then
+            if isObjectReachable(position, object) then
+                return true
+            end
+        end
+    end
+    for _, object in ipairs(nearby.activators) do
+        if isObjectReachable(position, object) then
+            return true
+        end
+    end
+    for _, object in ipairs(nearby.containers) do
+        if isObjectReachable(position, object) then
+            return true
+        end
+    end
+    return isThereAReachableItemFromPosition(position)
 end
 
 local function isRayHitOnBlocker(rayHit)
@@ -288,17 +282,9 @@ local function gatherAllRayHitsAndLimitingPosition(raycastingInputData, firstRay
     return intermediateRayHits, limitingPosition
 end
 
-local function finishPasswall()
-    core.sendGlobalEvent("T_magic_spellHandlingFinished", { spellId = passwallSpellId })
-end
-
 local PSW = {}
 
 function PSW.onCastPasswall()
-    if not settings.isFeatureEnabled["miscSpells"]() then
-        return finishPasswall()
-    end
-
     for _, spell in pairs(types.Actor.activeSpells(self)) do
         if spell.id == passwallSpellId then
             types.Actor.activeSpells(self):remove(spell.activeSpellId)
@@ -319,13 +305,13 @@ function PSW.onCastPasswall()
 
     if self.cell.isExterior then
         ui.showMessage(l10n("TamrielData_magic_passwallExterior"))
-        return finishPasswall()
+        return
     elseif types.Actor.isSwimming(self) then
         ui.showMessage(l10n("TamrielData_magic_passwallUnderwater"))
-        return finishPasswall()
+        return
     elseif not types.Player.isTeleportingEnabled(self) then
         ui.showMessage(core.getGMST("sTeleportDisabled"))
-        return finishPasswall()
+        return
     end
 
     local raycastingInputData = getRaycastingInputData()
@@ -341,7 +327,7 @@ function PSW.onCastPasswall()
 
     if not firstRaycastHit.hitObject or isRayHitOnBlocker(firstRaycastHit) then
         debug.log("No target detected on spell cast.", passwallSpellId)
-        return finishPasswall()
+        return
     end
 
     local targetObject = firstRaycastHit.hitObject
@@ -351,18 +337,18 @@ function PSW.onCastPasswall()
             string.format("Object '%s' is not a legal spell target. You need to hit an activator or a static or a door.", targetObject.recordId),
             passwallSpellId
         )
-        return finishPasswall()
+        return
     end
 
     if handleAsDoor(targetObject) then
-        return finishPasswall()
+        return
     end
 
     local hitObjectHalfHeight = targetObject:getBoundingBox().halfSize.z
     local minObstacleHeight = 93 -- MWSE version uses 96, but In_impsmall_d_hidden_01 needs these additional 3 points in OpenMW
     if hitObjectHalfHeight < minObstacleHeight then
         debug.log(string.format("Object '%s' height (%s) is too low for Passwall (need %s).", targetObject.recordId, hitObjectHalfHeight, minObstacleHeight), passwallSpellId)
-        return finishPasswall()
+        return
     end
 
     local intermediateRayHits, limitingPosition = gatherAllRayHitsAndLimitingPosition(raycastingInputData, firstRaycastHit)
@@ -379,7 +365,6 @@ function PSW.onCastPasswall()
             passwallSpellId
         )
     end
-    finishPasswall()
 end
 
 return PSW
