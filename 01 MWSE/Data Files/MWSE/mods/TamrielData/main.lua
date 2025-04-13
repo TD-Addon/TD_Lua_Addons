@@ -455,7 +455,7 @@ local function restrictEquip(e)
 				end
 				
 				if e.item.slot == tes3.armorSlot.helmet then
-					if not e.reference.mobile.object.female == false then
+					if not e.reference.mobile.object.female then
 						if e.reference.mobile == tes3.mobilePlayer then
 							tes3ui.showNotifyMenu(common.i18n("main.imgaHelm"))
 						end

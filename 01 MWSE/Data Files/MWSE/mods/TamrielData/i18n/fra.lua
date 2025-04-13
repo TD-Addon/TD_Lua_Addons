@@ -73,6 +73,8 @@ return {
 	["magic.boundWarhammerDesc"] = "Ce sort permet d'invoquer un Daedra inférieur lié sous la forme d'un marteau de guerre daedrique, magique et d'une exceptionnelle légèreté. Il apparaît dans la main du lanceur, remplaçant automatiquement celui dont ce dernier était équipé. Quand l'effet prend fin, l'arme disparaît, remplacée par celle dont le personnage était précédemment équipé.",
 	["magic.boundPauldrons"] = "Epaulières liées",
 	["magic.boundPauldronsDesc"] = "Ce sort permet d'invoquer un Daedra inférieur lié sous la forme d'une paire d'épaulières daedriques, magiques et d'une exceptionnelle légèreté. Elles apparaissent directement sur les épaules du lanceur, remplaçant automatiquement les épaulières dont ce dernier était équipé. Quand l'effet prend fin, les épaulières sont remplacées par celles dont le personnage était précédemment équipé.",
+	["magic.boundGreatsword"] = "Espadon lié",
+	["magic.boundGreatswordDesc"] = "Ce sort permet d'invoquer un Daedra inférieur lié sous la forme d'un espadon daedrique, magique et d'une exceptionnelle légèreté. Il apparaît dans la main du lanceur, remplaçant automatiquement celui dont ce dernier était équipé. Quand l'effet prend fin, l'arme disparaît, remplacée par celle dont le personnage était précédemment équipé.",
 	["magic.boundThrowingKnives"] = "Couteaux de lancer liés",
 	["magic.boundThrowingKnivesDesc"] = "Ce sort permet d'invoquer un Daedra inférieur lié sous la forme de couteaux de lancer daedriques, magiques et d'une exceptionnelle légèreté. Ils apparaissent directement dans la main du lanceur, remplaçant automatiquement ceux dont ce dernier était équipé. Quand l'effet prend fin, les armes disparaissent, remplacées par celle dont le personnage était précédemment équipé.",
 
@@ -121,7 +123,7 @@ return {
 	["magic.passWallWard"] = "Vous ne pouvez pas passer jusque-là.",
 	["magic.passWallAlpha"] = "Vous ne pouvez pas passer à travers ceci.",
 	["magic.passWallExterior"] = "Vous devez vous trouver dans un espace confiné.",
-	["magic.passWallDoorExterior"] = "Vous devez rester dans un espace confiné.",
+	["magic.passWallDoorExterior"] = "Vous dne pouvez pas quitter un espace confiné.",
 	["magic.passWallUnderwater"] = "Vous ne pouvez pas vous trouver sous l'eau.",
 	
 	["magic.itemPotionReflectDamageB"] = "Potion Réflexion dégâts bradée",
@@ -220,6 +222,9 @@ return {
 	
 	["mcm.travelPricesLabel"] = "Ajustement des prix des voyages",
 	["mcm.travelPricesDescription"] = "Modifie le coût des voyages vers les destinations ajoutées par les mods de provinces dans les cas où ceux calculés par le jeu sont déraisonnables, comme les prix des voyages entre les réseaux de guides de guilde de la guilde des Mages.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+	
+	["mcm.khajiitFormCharacterCreationLabel"] = "Spécifier la forme de Khajiit pendant la création du personnage",
+	["mcm.khajiitFormCharacterCreationDescription"] = "Nomme les formes de Khajiit dans les menus de création du personnage au lieu de toutes les appeler \"Khajiit\". Un mod tiers comme Races de Tamriel est requis pour que ces races soient disponibles à la création du personnage.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 	
 	["mcm.butterflyMothTooltipLabel"] = "Infobulle des ingrédients pour les papillons et les phalènes",
 	["mcm.butterflyMothTooltipDescription"] = "Affiche les effets alchimiques, le poids et la valeur eds ingrédients qui peuvent être récoltés sur les papillons et les phalènes quand vous les regardez, comme le permet Récolte réaliste quand vous regardez des conteneurs organiques récoltables.\nRequiert un rechargement.\n\nPar défaut : activé, si Récolte réaliste est installé et que sa fonctionnalité pour afficher les infobulles des ingrédients est active\n\n",

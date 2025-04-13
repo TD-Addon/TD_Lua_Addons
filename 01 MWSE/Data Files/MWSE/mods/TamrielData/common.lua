@@ -249,4 +249,31 @@ function this.hsvToRGB(hue, saturation, value)
     end
 end
 
+---@param node niNode
+---@param clip boolean
+---@param blend boolean
+---@return boolean|nil
+function this.hasAlpha(node, clip, blend)
+    clip = clip or true
+    blend = blend or true
+    
+	for _,child in pairs(node.children) do
+		if child then
+			if child.alphaProperty then
+                if clip and blend then
+                    return true
+                elseif not clip and (child.alphaProperty.propertyFlags % 2) ~= 0 then
+					return true
+                elseif not blend and (child.alphaProperty.propertyFlags % 2) == 0 then
+                    return true
+                end
+			end
+	
+			if child.children then
+				return this.hasAlpha(child, clip, blend)
+			end
+		end
+	end
+end
+
 return this

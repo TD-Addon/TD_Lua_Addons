@@ -64,6 +64,8 @@ return {
 	["magic.summonSkeletonChampionDesc"] = "This effect summons a skeleton champion from the Outer Realms. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Outer Realms. If summoned in town, the guards will attack you and the summoning on sight.",
 	["magic.summonFrostMonarch"] = "Summon Frost Monarch",
 	["magic.summonFrostMonarchDesc"] = "This effect summons a frost monarch from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight.",
+	["magic.summonSpiderDaedra"] = "Summon Spider Daedra",
+	["magic.summonSpiderDaedraDesc"] = "This effect summons a spider daedra from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight.",
 	
 	["magic.boundGreaves"] = "Bound Greaves",
 	["magic.boundGreavesDesc"] = "The spell effect conjures a lesser Daedra bound in the form of magical, wondrously light Daedric greaves. The greaves appear automatically equipped on the caster, displacing any currently equipped leg armor to inventory. When the effect ends, the greaves disappear, and any previously equipped leg armor is automatically re-equipped.",
@@ -160,7 +162,7 @@ return {
 	-- MCM Text
 	["mcm.name"] = "Tamriel Data",
 	["mcm.preferences"] = "Preferences",
-	["mcm.preferencesInfo"] = "Tamriel Data MWSE-Lua v2.0",
+	["mcm.preferencesInfo"] = "Tamriel Data MWSE-Lua v2.1",
 	["mcm.credits"] = "Credits:",
 	["mcm.Kynesifnar"] = "Kynesifnar - Scripting",
 	["mcm.mort"] = "mort - Scripting",

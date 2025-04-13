@@ -49,6 +49,7 @@ if config.summoningSpells == true then
 	tes3.claimSpellEffectId("T_summon_MinoBarrowguard", 2129)
 	tes3.claimSpellEffectId("T_summon_SkeletonChampion", 2130)
 	tes3.claimSpellEffectId("T_summon_AtroFrostMon", 2131)
+	tes3.claimSpellEffectId("T_summon_SpiderDaedra", 2146)
 end
 
 if config.boundSpells == true then
@@ -120,6 +121,7 @@ local td_summon_effects = {
 	{ tes3.effect.T_summon_MinoBarrowguard, common.i18n("magic.summonMinoBarrowguard"), "T_Cyr_Und_MinoBarrow_01", 57, "td\\s\\td_s_summ_mintur.dds", common.i18n("magic.summonMinoBarrowguardDesc")},
 	{ tes3.effect.T_summon_SkeletonChampion, common.i18n("magic.summonSkeletonChampion"), "T_Glb_Und_SkelCmpGls_01", 32, "td\\s\\td_s_sum_skele_c.dds", common.i18n("magic.summonSkeletonChampionDesc")},
 	{ tes3.effect.T_summon_AtroFrostMon, common.i18n("magic.summonFrostMonarch"), "T_Dae_Cre_MonarchFr_01", 47, "td\\s\\td_s_sum_fst_monch.dds", common.i18n("magic.summonFrostMonarchDesc")},
+	{ tes3.effect.T_summon_SpiderDaedra, common.i18n("magic.summonSpiderDaedra"), "", 47, "td\\s\\td_s_sum_fst_monch.dds", common.i18n("magic.summonSpiderDaedraDesc")},
 }
 
 -- effect id, effect name, item id, 2nd item ID, effect mana cost, icon, effect description
@@ -935,23 +937,47 @@ local function blinkEffect(e)
 		return
 	end
 	
-	local castPosition = tes3.mobilePlayer.position + tes3vector3.new(0, 0, 0.7 * tes3.mobilePlayer.height)	-- Position of where spells are casted
+	local castPosition = tes3.mobilePlayer.position + tes3vector3.new(0, 0, 1 * tes3.mobilePlayer.height)	-- Should 0.7 * height be used instead like with Passwall?
 	local forward = tes3.worldController.armCamera.cameraData.camera.worldDirection:normalized()
 
 	local range = e.effectInstance.magnitude * 22.1
 
-	local target = tes3.rayTest{
+	local targets = tes3.rayTest{
 		position = castPosition,
 		direction = forward,
 		maxDistance = range,
+		findAll = true,
 		ignore = { tes3.player },
 	}
 
-	if target then
-		range = target.distance - (tes3.mobilePlayer.boundSize2D.y / 2) - 16		-- The 16 is there to put a bit more space between the player and the target
+	if targets then		-- I would much rather just test the collision, but I can't do that
+		for _,target in ipairs(targets) do
+			local validTarget = true
+			if target.reference then
+				local mesh = tes3.loadMesh(target.reference.baseObject.mesh)
+				if mesh.extraData then
+					repeat
+						if (mesh.extraData.string:lower() == "nco" or mesh.extraData.string:lower() == "nc") then validTarget = false end
+					until not mesh.extraData.next
+				end
+			elseif target.object.name:startswith("Water ") then
+				validTarget = false
+			end
+	
+			if validTarget then
+				range = target.distance - (tes3.mobilePlayer.boundSize2D.y / 2) - 16		-- The 16 is there to put a bit more space between the player and the target
+				break
+			end
+		end
 	end
 
 	if range > 0 then
+		local destination = tes3.mobilePlayer.position + forward * range
+
+		if tes3.getPlayerCell().waterLevel and destination.z > tes3.getPlayerCell().waterLevel then 
+			tes3.mobilePlayer.isSwimming = false
+		end
+
 		tes3.mobilePlayer.position = tes3.mobilePlayer.position + forward * range	-- This is a pretty simple implementation all around, but it seems to work reasonably well. Some adjustments might be necessary though.
 	end
 
@@ -2325,24 +2351,6 @@ local function banishDaedraEffect(e)
 	e.effectInstance.state = tes3.spellState.retired
 end
 
----@param node niNode
----@return boolean|nil
-local function hasAlphaBlend(node)
-	for _,child in pairs(node.children) do
-		if child then	-- This condition really shouldn't be necessary, but apparently it is
-			if child.alphaProperty then
-				if (child.alphaProperty.propertyFlags % 2) ~= 0 then
-					return true
-				end
-			end
-	
-			if child.children then
-				return hasAlphaBlend(child)
-			end
-		end
-	end
-end
-
 ---@param wallPosition tes3vector3
 ---@param forward tes3vector3
 ---@param right tes3vector3
@@ -2518,7 +2526,7 @@ function this.passwallEffect(e)
 							break
 						else
 							local type = detection.reference.baseObject.objectType
-							if type == tes3.objectType.activator and hasAlphaBlend(tes3.loadMesh(detection.reference.baseObject.mesh)) then	-- This mesh is passed rather than the rayTest's object because the latter is part of 
+							if type == tes3.objectType.activator and common.hasAlpha(tes3.loadMesh(detection.reference.baseObject.mesh), false, true) then	-- This mesh is passed rather than the rayTest's object because the latter is part of 
 								alphaDistance = detection.distance
 								break
 							end
