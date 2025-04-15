@@ -121,7 +121,7 @@ local td_summon_effects = {
 	{ tes3.effect.T_summon_MinoBarrowguard, common.i18n("magic.summonMinoBarrowguard"), "T_Cyr_Und_MinoBarrow_01", 57, "td\\s\\td_s_summ_mintur.dds", common.i18n("magic.summonMinoBarrowguardDesc")},
 	{ tes3.effect.T_summon_SkeletonChampion, common.i18n("magic.summonSkeletonChampion"), "T_Glb_Und_SkelCmpGls_01", 32, "td\\s\\td_s_sum_skele_c.dds", common.i18n("magic.summonSkeletonChampionDesc")},
 	{ tes3.effect.T_summon_AtroFrostMon, common.i18n("magic.summonFrostMonarch"), "T_Dae_Cre_MonarchFr_01", 47, "td\\s\\td_s_sum_fst_monch.dds", common.i18n("magic.summonFrostMonarchDesc")},
-	{ tes3.effect.T_summon_SpiderDaedra, common.i18n("magic.summonSpiderDaedra"), "", 47, "td\\s\\td_s_sum_fst_monch.dds", common.i18n("magic.summonSpiderDaedraDesc")},
+	{ tes3.effect.T_summon_SpiderDaedra, common.i18n("magic.summonSpiderDaedra"), "", 47, "td\\s\\td_s_sum_spidr_dae.dds", common.i18n("magic.summonSpiderDaedraDesc")},
 }
 
 -- effect id, effect name, item id, 2nd item ID, effect mana cost, icon, effect description
@@ -196,6 +196,7 @@ local td_summon_spells = {
 	{ "T_Cyr_Cnj_SummonMinoBarrowguard", tes3.spellType.spell, common.i18n("magic.summonMinoBarrowguard"), 171, { tes3.effect.T_summon_MinoBarrowguard }, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Com_Cnj_SummonSkeletonChamp", tes3.spellType.spell, common.i18n("magic.summonSkeletonChampion"), 96, { tes3.effect.T_summon_SkeletonChampion }, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Com_Cnj_SummonFrostMonarch", tes3.spellType.spell, common.i18n("magic.summonFrostMonarch"), 141, { tes3.effect.T_summon_AtroFrostMon }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonSpiderDaedra", tes3.spellType.spell, common.i18n("magic.summonSpiderDaedra"), 141, { tes3.effect.T_summon_SpiderDaedra }, tes3.effectRange.self, 0, 60, 1, 1 },
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -530,12 +531,12 @@ local raceSkeletonBodyParts = {
 	{ "Wood Elf", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
 	{ "T_Cnq_ChimeriQuey", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
 	{ "T_Cnq_Keptu", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
-	{ "T_Els_Cathay", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },	-- The plantigrade Khajiit should get their own skeletons
+	{ "T_Els_Cathay", "T_B_GazeVeloth_SkeletonKha_02", "T_C_GazeVeloth_SkeletonKha_02" },
 	{ "T_Els_Cathay-raht", "T_B_GazeVeloth_SkeletonKha_01", "T_C_GazeVeloth_SkeletonKha_01" },
 	{ "T_Els_Dagi-raht", "T_B_GazeVeloth_SkeletonKha_01", "T_C_GazeVeloth_SkeletonKha_01" },
 	{ "T_Els_Ohmes", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
 	{ "T_Els_Ohmes-raht", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
-	{ "T_Els_Suthay", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
+	{ "T_Els_Suthay", "T_B_GazeVeloth_SkeletonKha_02", "T_C_GazeVeloth_SkeletonKha_02" },
 	{ "T_Hr_Riverfolk", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
 	{ "T_Mw_Malahk_Orc", "T_B_GazeVeloth_SkeletonOrc_01", "T_C_GazeVeloth_SkeletonOrc_01" },
 	{ "T_Pya_SeaElf", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
@@ -937,12 +938,12 @@ local function blinkEffect(e)
 		return
 	end
 	
-	local castPosition = tes3.mobilePlayer.position + tes3vector3.new(0, 0, 1 * tes3.mobilePlayer.height)	-- Should 0.7 * height be used instead like with Passwall?
+	local castPosition = tes3.mobilePlayer.position + tes3vector3.new(0, 0, tes3.mobilePlayer.cameraHeight)	-- Should 0.7 * height be used instead like with Passwall? Or rather, should Passwall use cameraHeight?
 	local forward = tes3.worldController.armCamera.cameraData.camera.worldDirection:normalized()
 
 	local range = e.effectInstance.magnitude * 22.1
 
-	local targets = tes3.rayTest{
+	local obstacles = tes3.rayTest{
 		position = castPosition,
 		direction = forward,
 		maxDistance = range,
@@ -950,22 +951,22 @@ local function blinkEffect(e)
 		ignore = { tes3.player },
 	}
 
-	if targets then		-- I would much rather just test the collision, but I can't do that
-		for _,target in ipairs(targets) do
-			local validTarget = true
-			if target.reference then
-				local mesh = tes3.loadMesh(target.reference.baseObject.mesh)
+	if obstacles then		-- I would much rather just test the collision, but I can't do that
+		for _,obstacle in ipairs(obstacles) do
+			local validObstacle = true
+			if obstacle.reference then
+				local mesh = tes3.loadMesh(obstacle.reference.baseObject.mesh)
 				if mesh.extraData then
 					repeat
-						if (mesh.extraData.string:lower() == "nco" or mesh.extraData.string:lower() == "nc") then validTarget = false end
+						if (mesh.extraData.string:lower() == "nco" or mesh.extraData.string:lower() == "nc") then validObstacle = false end
 					until not mesh.extraData.next
 				end
-			elseif target.object.name:startswith("Water ") then
-				validTarget = false
+			elseif obstacle.object.name and obstacle.object.name:startswith("Water ") then
+				validObstacle = false
 			end
 	
-			if validTarget then
-				range = target.distance - (tes3.mobilePlayer.boundSize2D.y / 2) - 16		-- The 16 is there to put a bit more space between the player and the target
+			if validObstacle then
+				range = obstacle.distance - (tes3.mobilePlayer.boundSize2D.y / 2) - 16		-- The 16 is there to put a bit more space between the player and the target
 				break
 			end
 		end
@@ -974,11 +975,20 @@ local function blinkEffect(e)
 	if range > 0 then
 		local destination = tes3.mobilePlayer.position + forward * range
 
-		if tes3.getPlayerCell().waterLevel and destination.z > tes3.getPlayerCell().waterLevel then 
-			tes3.mobilePlayer.isSwimming = false
+		tes3.mobilePlayer.isSwimming = false	-- If the player is swimming, then they need to stop swimming in order to leave the water; a condition for this shouldn't be needed since they were either not swimming to begin with or will immediately begin swimming again if still underwater
+
+		local heightCheck = tes3.rayTest{
+			position = destination + tes3vector3.new(0, 0, tes3.mobilePlayer.height),
+			direction = tes3vector3.new(0, 0, -1),
+			maxDistance = tes3.mobilePlayer.height,
+			ignore = { tes3.player },
+		}
+
+		if heightCheck and heightCheck.distance then
+			destination = destination + tes3vector3.new(0, 0, tes3.mobilePlayer.height - heightCheck.distance)	-- This should prevent the player from clipping through objects below them
 		end
 
-		tes3.mobilePlayer.position = tes3.mobilePlayer.position + forward * range	-- This is a pretty simple implementation all around, but it seems to work reasonably well. Some adjustments might be necessary though.
+		tes3.mobilePlayer.position = destination
 	end
 
 	e.effectInstance.state = tes3.spellState.retired
@@ -1022,6 +1032,8 @@ local function gazeOfVelothEffect(e)
 		e.effectInstance.state = tes3.spellState.retired
 		return
 	end
+
+	target.mobile:startCombat(tes3.mobilePlayer)
 
 	if target.mobile.health.base <= 250 then
 		target.data.tamrielData = target.data.tamrielData or {}
@@ -1999,7 +2011,7 @@ function this.wabbajackTransRemovedEffect(e)
 				local transformedFatigue = target.mobile.fatigue.normalized
 				local transformedMagicka = target.mobile.magicka.normalized
 
-				local vfx = tes3.createVisualEffect({ object = "VFX_AlterationHit", lifespan = 2, reference = ref })
+				local vfx = tes3.createVisualEffect({ object = "T_VFX_Wabbajack", lifespan = 1.5, reference = ref })
 				tes3.playSound{ sound = "alteration hit", reference = ref }
 
 				tes3.positionCell({ reference = ref, position = target.position, orientation = target.orientation, cell = target.cell })
@@ -2015,7 +2027,7 @@ function this.wabbajackTransRemovedEffect(e)
 					ref.mobile.magicka.current = ref.mobile.magicka.base * transformedMagicka
 				end
 
-				ref.data.tamrielData.wabbajack = false
+				ref.data.tamrielData.wabbajacked = false
 
 				return
 			end
@@ -2039,53 +2051,62 @@ local function wabbajackEffect(e)
 	end
 
 	local target = e.effectInstance.target
-	if target.isDead or (target.data.tamrielData and target.data.tamrielData.wabbajack) or (target.mobile.actorType == tes3.actorType.creature and not target.baseObject.walks and not target.baseObject.biped) then
+	if target.isDead or (target.data.tamrielData and target.data.tamrielData.wabbajacked) or (target.mobile.actorType == tes3.actorType.creature and not target.baseObject.walks and not target.baseObject.biped) then
 		e.effectInstance.state = tes3.spellState.retired
 		return
 	end
-
-	target.data.tamrielData = target.data.tamrielData or {}
-	target.data.tamrielData.wabbajack = true	-- Prevents this function from running twice with the condition above
 	
 	if target.object.level < 30 then
-		local maxDuration = 16
-		local minDuration = 4
+		if not target.data.tamrielData or not target.data.tamrielData.wabbajack then
+			target.data.tamrielData = target.data.tamrielData or {}
+			target.data.tamrielData.wabbajacked = true	-- Prevents this from running twice with the retirement condition above
 
-		local effectiveLevel = 0
-		if target.object.level > 5 then
-			effectiveLevel = target.object.level - 5	-- The effect lasts for maxDuration for creatures of level 5 and below
+			local maxDuration = 16
+			local minDuration = 4
+	
+			local effectiveLevel = 0
+			if target.object.level > 5 then
+				effectiveLevel = target.object.level - 5	-- The effect lasts for maxDuration for creatures of level 5 and below
+			end
+			
+			local duration = maxDuration - ((maxDuration - minDuration) * (effectiveLevel / 24))
+	
+			local targetHealth = target.mobile.health.normalized
+			local targetFatigue = target.mobile.fatigue.normalized
+			local targetMagicka = target.mobile.magicka.normalized
+			
+			local transformCreature = tes3.getObject(wabbajackCreatures[math.random(#wabbajackCreatures)])
+	
+			local transformedTarget = tes3.createReference({ object = transformCreature, position = target.position, orientation = target.orientation, cell = target.cell })	-- Could this setup and the WabbajackTrans effect actually be done through a summon like the Corruption effect does?
+			transformedTarget.data.tamrielData = transformedTarget.data.tamrielData or {}
+			transformedTarget.data.tamrielData.wabbajack = {}
+			transformedTarget.data.tamrielData.wabbajack.duration = duration
+			transformedTarget.data.tamrielData.wabbajack.targetID = target.id
+			transformedTarget.data.tamrielData.wabbajack.targetName = target.object.name
+			transformedTarget.mobile.fight = 0
+			transformedTarget.object.name = target.object.name
+
+	
+			local vfx = tes3.createVisualEffect({ object = "T_VFX_Wabbajack", lifespan = 1.5, reference = transformedTarget })
+			tes3.playSound{ sound = "alteration hit", reference = transformedTarget }
+	
+			tes3.cast({ reference = e.sourceInstance.caster, spell = "T_Dae_Alt_UNI_WabbajackTrans", alwaysSucceeds = true, bypassResistances = true, instant = true, target = transformedTarget })
+			tes3.positionCell({ reference = target, position = { 0, 0, -53.187 }, cell = "T_Wabbajack" })	-- All sorts of problems can arise from disabling a target within the effect event
+	
+			local transformedHealth = transformedTarget.mobile.health.base * targetHealth
+			if transformedHealth <= 1 then transformedHealth = 2 end 	-- Ensures that an actor with low base health won't die if the target had a high base health and was badly wounded
+			transformedTarget.mobile.health.current = transformedHealth
+			transformedTarget.mobile.fatigue.current = transformedTarget.mobile.fatigue.base * targetFatigue
+			transformedTarget.mobile.magicka.current = transformedTarget.mobile.magicka.base * targetMagicka
+	
+			transformedTarget.mobile:startCombat(e.sourceInstance.caster.mobile)
+			e.sourceInstance.caster.mobile:startCombat(transformedTarget.mobile)	-- Is this actually needed?
+		else
+			tes3.playSound{ sound = "Spell Failure Alteration", reference = target }
+			if target.data.tamrielData and target.data.tamrielData.wabbajack and target.data.tamrielData.wabbajack.targetName then tes3ui.showNotifyMenu(common.i18n("magic.wabbajackAlready", { target.data.tamrielData.wabbajack.targetName })) end
 		end
-		
-		local duration = maxDuration - ((maxDuration - minDuration) * (effectiveLevel / 24))
-
-		local targetHealth = target.mobile.health.normalized
-		local targetFatigue = target.mobile.fatigue.normalized
-		local targetMagicka = target.mobile.magicka.normalized
-		
-		local transformCreature = tes3.getObject(wabbajackCreatures[math.random(#wabbajackCreatures)])
-
-		local transformedTarget = tes3.createReference({ object = transformCreature, position = target.position, orientation = target.orientation, cell = target.cell })	-- Could this setup and the WabbajackTrans effect actually be done through a summon like the Corruption effect does?
-		transformedTarget.data.tamrielData = transformedTarget.data.tamrielData or {}
-		transformedTarget.data.tamrielData.wabbajack = {}
-		transformedTarget.data.tamrielData.wabbajack.duration = duration
-		transformedTarget.data.tamrielData.wabbajack.targetID = target.id
-		transformedTarget.mobile.fight = 0
-
-		local vfx = tes3.createVisualEffect({ object = "VFX_AlterationHit", lifespan = 2, reference = transformedTarget })
-		tes3.playSound{ sound = "alteration hit", reference = transformedTarget }
-
-		tes3.cast({ reference = e.sourceInstance.caster, spell = "T_Dae_Alt_UNI_WabbajackTrans", alwaysSucceeds = true, bypassResistances = true, instant = true, target = transformedTarget })
-		tes3.positionCell({ reference = target, position = { 0, 0, -53.187 }, cell = "T_Wabbajack" })	-- All sorts of problems can arise from disabling a target within the effect event
-
-		local transformedHealth = transformedTarget.mobile.health.base * targetHealth
-		if transformedHealth <= 1 then transformedHealth = 2 end 	-- Ensures that a creature with low base health won't die if the target had a high base health and was badly wounded
-		transformedTarget.mobile.health.current = transformedHealth
-		transformedTarget.mobile.fatigue.current = transformedTarget.mobile.fatigue.base * targetFatigue
-		transformedTarget.mobile.magicka.current = transformedTarget.mobile.magicka.base * targetMagicka
-
-		transformedTarget.mobile:startCombat(e.sourceInstance.caster.mobile)
-		e.sourceInstance.caster.mobile:startCombat(transformedTarget.mobile)	-- Is this actually needed?
 	else
+		tes3.playSound{ sound = "Spell Failure Alteration", reference = target }
 		tes3ui.showNotifyMenu(common.i18n("magic.wabbajackFailure", { target.object.name }))
 	end
 
@@ -2277,7 +2298,7 @@ function this.deleteBanishDaedraContainer(e)
 			end
 		end
 
-		e.reference:delete() 
+		e.reference:delete()
 	end
 end
 
@@ -2365,7 +2386,7 @@ local function passwallCalculate(wallPosition, forward, right, up, range)
 	local forwardOffset = 0
 	local rayTestOffset = 19
 
-	local rightCoord = (right * 160)
+	local rightCoord = (right * 200)
 	local upCoord = (up * 105)			-- Should this account for player height, which affects castPosition and wallPosition?
 
 	local startPosition = wallPosition + (forward * forwardOffset)
@@ -3019,10 +3040,10 @@ event.register(tes3.event.magicEffectsResolved, function()
 			castVFX = burdenEffect.castVisualEffect.id,
 			boltSound = burdenEffect.boltSoundEffect.id,
 			boltVFX = burdenEffect.boltVisualEffect.id,
-			hitSound = burdenEffect.hitSoundEffect.id,
-			hitVFX = burdenEffect.hitVisualEffect.id,
-			areaSound = burdenEffect.areaSoundEffect.id,
-			areaVFX = burdenEffect.areaVisualEffect.id,
+			hitSound = "T_SndObj_Silence",
+			hitVFX = "T_VFX_Empty",
+			areaSound = "T_SndObj_Silence",
+			areaVFX = "T_VFX_Empty",
 			lighting = {x = burdenEffect.lightingRed / 255, y = burdenEffect.lightingGreen / 255, z = burdenEffect.lightingBlue / 255},
 			size = burdenEffect.size,
 			sizeCap = burdenEffect.sizeCap,
@@ -3346,8 +3367,8 @@ event.register(tes3.event.magicEffectsResolved, function()
 			school = tes3.magicSchool.destruction,
 			baseCost = effectCost,
 			speed = damageHealthEffect.speed,
-			allowEnchanting = true,
-			allowSpellmaking = true,
+			allowEnchanting = false,
+			allowSpellmaking = false,
 			appliesOnce = true,
 			canCastSelf = false,
 			canCastTarget = true,
@@ -3543,8 +3564,8 @@ event.register(tes3.event.magicEffectsResolved, function()
 			castVFX = detectEffect.castVisualEffect.id,
 			boltSound = detectEffect.boltSoundEffect.id,
 			boltVFX = detectEffect.boltVisualEffect.id,
-			hitSound = detectEffect.hitSoundEffect.id,
-			hitVFX = detectEffect.hitVisualEffect.id,
+			hitSound = "T_SndObj_BlinkHit",
+			hitVFX = "T_VFX_Empty",
 			areaSound = detectEffect.areaSoundEffect.id,
 			areaVFX = detectEffect.areaVisualEffect.id,
 			lighting = {x = detectEffect.lightingRed / 255, y = detectEffect.lightingGreen / 255, z = detectEffect.lightingBlue / 255},

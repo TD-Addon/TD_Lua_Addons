@@ -121,6 +121,7 @@ return {
 	["magic.miscPrismaticLightDesc"] = "This effect creates a projectile of prismatic light. Upon striking a target, the projectile illuminates the area for the duration of the effect. The light projectile does not cause any damage.",
 	
 	["magic.wabbajackFailure"] = "%s is too strong to be Wabbajacked!",
+	["magic.wabbajackAlready"] = "%s is already Wabbajacked!",
 	["magic.banishFailure"] = "This spell is too weak to banish %s!",
 	["magic.passwallWard"] = "You cannot pass through to there.",
 	["magic.passwallAlpha"] = "You cannot pass through that.",
