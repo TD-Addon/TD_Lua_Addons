@@ -23,7 +23,7 @@ local function triggerCrimeIfTrespassing(data)
         or
         (ownerData.factionId and types.NPC.getFactionRank(data.player, ownerData.factionId) == 0)
         or
-        (ownerData.factionId and types.NPC.getFactionRank(data.player, ownerData.factionId) < ownerData.factionRank)
+        (ownerData.factionId and types.NPC.getFactionRank(data.player, ownerData.factionId) < (ownerData.factionRank or 1))
 
     if isTrespassing then
         crimes.commitCrime(
@@ -37,11 +37,7 @@ local function triggerCrimeIfTrespassing(data)
 end
 
 local function teleportPlayer(data)
-    local teleportOptions = { onGround = true }
-    if data.rotation then
-        teleportOptions.rotation = data.rotation
-    end
-    data.player:teleport(data.cell, data.position, teleportOptions)
+    data.player:teleport(data.cell, data.position, { onGround = true, rotation = data.rotation })
 
     triggerCrimeIfTrespassing(data)
 

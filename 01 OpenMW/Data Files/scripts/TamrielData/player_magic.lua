@@ -3,17 +3,17 @@ local self = require('openmw.self')
 local settings = require("scripts.TamrielData.utils.settings")
 local magic_passwall = require("scripts.TamrielData.player_magic_passwall")
 
-local checkFrequency = 30 -- No need to check for magic that often
-local checkCounter = checkFrequency
+local checkFrequency = 0.5 -- No need to check for magic that often
+local checkCounter = 0.0
 
 local PM = {}
 
-function PM.checkForAnyActiveSpells()
-    checkCounter = checkCounter - 1
-    if checkCounter > 0 then
+function PM.checkForAnyActiveSpells(timeSinceLastCheck)
+    checkCounter = checkCounter + timeSinceLastCheck
+    if checkCounter < checkFrequency then
         return
     end
-    checkCounter = checkFrequency
+    checkCounter = 0
     for _, spell in pairs(types.Actor.activeSpells(self)) do
         if spell.id == "t_com_mys_uni_passwall" then
             if settings.isFeatureEnabled["miscSpells"]() then

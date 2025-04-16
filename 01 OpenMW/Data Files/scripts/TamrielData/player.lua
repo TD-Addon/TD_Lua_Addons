@@ -7,9 +7,9 @@ return {
         onActive = function ()
             version_warning.detectOpenMwVersionMismatchAndLogWarnings()
         end,
-        onUpdate = function ()
+        onUpdate = function (timeSinceLastUpdate)
             if magic ~= nil then
-                magic.checkForAnyActiveSpells()
+                magic.checkForAnyActiveSpells(timeSinceLastUpdate)
             end
         end
     },

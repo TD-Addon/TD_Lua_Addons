@@ -32,10 +32,11 @@ local function getRaycastingInputData()
     local playerBoundingBox = self:getBoundingBox()
 
     -- castPosition as in MWSE version
-    local castPosition = playerBoundingBox.center.z - playerBoundingBox.halfSize.z + (2 * playerBoundingBox.halfSize.z * 0.7)
+    local height = playerBoundingBox.halfSize.z * 2
+    local startPos = self.position + util.vector3(0, 0, height * 0.7)
 
     return {
-        startPos = util.vector3(playerBoundingBox.center.x, playerBoundingBox.center.y, castPosition),
+        startPos = startPos,
         directionVector = activationVector,
         activateDistance = activateDistance
     }
@@ -263,7 +264,7 @@ local function gatherAllRayHitsAndLimitingPosition(raycastingInputData, firstRay
     local intermediateRayHits = {firstRaycastHit}
     local limitingPosition = firstRaycastHit.hitPos + raycastingInputData.directionVector * maxSpellDistance
 
-    local previousRaycastSourceObjects = {firstRaycastHit.hitObject}
+    local previousRaycastSourceObjects = {}
     while remainingTeleportDistance > 0 do
         local prevHit = intermediateRayHits[#intermediateRayHits]
         table.insert(previousRaycastSourceObjects, prevHit.hitObject)
