@@ -140,7 +140,7 @@ return {
 	["magic.itemPotionInsightQ"] = "Duża mikstura intuicji",
 	["magic.itemPotionInsightE"] = "Dosk. mikstura intuicji",
 	["magic.itemPotionDetectHumanoid"] = "Mikstura wykrycia humanoidów",
-	["magic.itemPotionDetectEnemy"] = "Misktura wykrycia przeciwników",	-- Vanilla's Detect potions have inconsistent names, so this feels OK?
+	["magic.itemPotionDetectEnemy"] = "Mikstura wykrycia przeciwników",	-- Vanilla's Detect potions have inconsistent names, so this feels OK?
 	["magic.itemPotionDetectInvisibility"] = "Miks. wykrycia niewidzialności",
 
 	["magic.itemScSummonDremoraArcher"] = "Zwój Pastwy Mehrunesa",
@@ -227,10 +227,10 @@ return {
 	["mcm.travelPricesDescription"] = "Zmienia koszty podróży do miejsc docelowych dodanych przez Tamriel Rebuilt i Project Tamriel w przypadku, gdy ceny obliczone przez grę są nierozsądne, jak np w przypadku sieci teleportacyjnej Gildii Magów.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
 	
 	["mcm.khajiitFormCharacterCreationLabel"] = "Określ Formy Khajiitów Podczas Tworzenia Postaci",
-	["mcm.khajiitFormCharacterCreationDescription"] = "Nazywa formy Khajiitów w stosownych menu tworzenia postaci, zamias kolektywnej nazwy \"Khajiit\". Dodatkowy mod, taki jak All Races and Classes Unlocked jest wymagany, aby odblokować wspomniane rasy podczas tworzenia postaci.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
+	["mcm.khajiitFormCharacterCreationDescription"] = "Nazywa formy Khajiitów w stosownych menu tworzenia postaci, zamiast kolektywnej nazwy \"Khajiit\". Dodatkowy mod, taki jak All Races and Classes Unlocked jest wymagany, aby odblokować wspomniane rasy podczas tworzenia postaci.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
 
 	["mcm.butterflyMothTooltipLabel"] = "Podpowiedzi Składników Alchemicznych dla Motyli i Ciem",
-	["mcm.butterflyMothTooltipDescription"] = "Pokazuje efekty, wagę oraz koszt składników alchemicznych, które mogą zostać zebrane z motyli i ciem, podobnie jak funkcja modu Graphic Herbalism dla organicznych pojemników.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł, jeśli mod Graphic Herbalims jest zainstalowany oraz jego funkcja wyświetlania podpowiedzi składników alchemicznych jest aktywna\n\n",
+	["mcm.butterflyMothTooltipDescription"] = "Pokazuje efekty, wagę oraz koszt składników alchemicznych, które mogą zostać zebrane z motyli i ciem, podobnie jak funkcja modu Graphic Herbalism dla organicznych pojemników.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł, jeśli mod Graphic Herbalism jest zainstalowany oraz jego funkcja wyświetlania podpowiedzi składników alchemicznych jest aktywna\n\n",
 
 	["mcm.interventionRangeLabel"] = "Ograniczenia Zasięgu Zaklęć Interwencji",
 	["mcm.interventionRangeDescription"] = "Ogranicza zasięg działania niektórych zaklęć interwencji, uniemożliwiając ich użycie aby teleportować się na terenach całego Tamriel." ..
