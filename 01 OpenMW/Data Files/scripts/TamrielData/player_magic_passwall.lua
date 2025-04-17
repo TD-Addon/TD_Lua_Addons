@@ -14,6 +14,7 @@ local debug = require("scripts.TamrielData.utils.debug_logging")
 
 local FT_TO_UNITS = 22.1
 local maxSpellDistance = 25 * FT_TO_UNITS -- 25ft is a default Passwall spell range in the MWSE version
+local maxSpellDistanceSquared = maxSpellDistance * maxSpellDistance
 local passwallSpellId = "t_com_mys_uni_passwall"
 
 local function getActivationVector()
@@ -92,7 +93,7 @@ end
 local function isObjectReachable(from, targetObject)
     local to = targetObject:getBoundingBox().center
 
-    if (from - to):length() > 1024 then -- Probably no need to look for further objects
+    if (from - to):length2() > 1024 * 1024 then -- Probably no need to look for further objects
         return false
     end
 
@@ -113,12 +114,12 @@ local function isObjectReachable(from, targetObject)
         -- However, the raycast doesn't work on some objects, like items. Last chance check is just a distance one.
         -- If points are very close, we could assume the player can go from one to another.
         -- For this check it seems that comparing the distance with the bottom of the targetObject yields best results.
-        local veryClose = 11 -- an arbitrary value representing a close enough object that no wall is between
+        local veryClose = 11 * 11 -- an arbitrary value representing a close enough object that no wall is between
         local isObjectVeryClose = util.vector3(
             to.x - path[#path].x,
             to.y - path[#path].y,
             to.z - path[#path].z - targetObject:getBoundingBox().halfSize.z
-        ):length() < veryClose
+        ):length2() < veryClose
 
         local lastCheckResult = (lastRayCheck.hitObject and lastRayCheck.hitObject == targetObject) or isObjectVeryClose
         return lastCheckResult
@@ -162,7 +163,7 @@ local function isThereAReachableItemFromPosition(startPosition)
     -- In that case a reachable item hopefully is close by, so no need for far checks.
 
     for _, object in pairs(nearby.items) do
-        if (startPosition - object:getBoundingBox().center):length() <= maxSpellDistance then
+        if (startPosition - object:getBoundingBox().center):length2() <= maxSpellDistanceSquared then
             -- lights are excluded from checking, because their radius often bleeds through walls and floors, leading to false positives
             if not types.Light.objectIsInstance(object) then
                 if isObjectReachable(startPosition, object) then
@@ -212,7 +213,7 @@ end
 
 local function calculatePasswallPosition(intermediateRayHits, limitingPosition, directionVector)
     local rayTestOffset = 19 -- We could say that a 2*19 square is enough to fit the player in
-    local minDistance = 108 -- minDistance from the MWSE version
+    local minDistanceSquared = 108 * 108 -- minDistance from the MWSE version but squared
     local maxZDifference = 105 -- upCoord from the MWSE version
 
     for i = 1, #intermediateRayHits do
@@ -242,7 +243,7 @@ local function calculatePasswallPosition(intermediateRayHits, limitingPosition, 
                 break
             end
 
-            local isPositionNotTooClose = (self.position - navMeshPosition):length() >= (minDistance)
+            local isPositionNotTooClose = (self.position - navMeshPosition):length2() >= minDistanceSquared
             local isPositionNotTooHighOrLow = math.abs(self.position.z - navMeshPosition.z) < maxZDifference
             local isPositionInsideLimits = isPositionNotTooClose and isPositionNotTooHighOrLow
             local isIntendedForThePlayer = isCalculatedPositionIntendedForThePlayer(navMeshPosition)
