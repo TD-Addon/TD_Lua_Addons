@@ -90,7 +90,7 @@ return {
 	["magic.miscReflectDamage"] = "Odbicie Obrażeń",
 	["magic.miscReflectDamageDesc"] = "Odbija fizyczne obrażenia w stronę atakującego. Stopień efektu określa procentową ilość odbitych obrażeń dla każdego ataku. Nieodbite obrażenia odniosą normalny skutek.",
 	["magic.miscDetectHumanoid"] = "Wykrycie Humanoida",
-	["magic.miscDetectHumanoidDesc"] = "Rzucający zaklęcie może wykrywać na odległość obecność istot niemechanicznych. Zostaną one oznaczone na mapie specjalnym symbolem. Efekt obejmuje wszystkie postacie, a jego poziom to promień (w stopach) obszaru, który zostanie magicznie przeszukany.",
+	["magic.miscDetectHumanoidDesc"] = "Rzucający zaklęcie może wykrywać na odległość obecność istot humanoidalnych. Zostaną one oznaczone na mapie specjalnym symbolem. Efekt obejmuje wszystkie postacie, a jego poziom to promień (w stopach) obszaru, który zostanie magicznie przeszukany.",
 	["magic.miscRadiantShield"] = "Tarcza Blasku",
 	["magic.miscRadiantShieldDesc"] = "Tworzy świetlistą osłonę dookoła celu. Stopień efektu dodawany jest do klasy pancerza. Odporność celu na szkodliwe efekty magiczne wzrasta. Dodatkowo, krótkotrwale oślepia przeciwników w zwarciu.",
 	["magic.miscWabbajack"] = "Łabadżak", -- Aly: yes, it's just directly transcribed to polish alphabet (that's what polish TESIV and TESV did), it's said exactly the same as english
@@ -106,7 +106,7 @@ return {
 	["magic.miscDistractCreature"] = "Rozproszenie Istoty",
 	["magic.miscDistractCreatureDesc"] = "Zmusza istotę do oddalenia się z obecnej pozycji, jednocześnie próbując zachować dystans od rzucającego zaklęcie. Stopień efektu określa maksymalną odległość (w stopach), jaką cel może przebyć. Jeśli cel jest już pod wpływem efektu, nie może być rzucony ponownie. Efekt zawiedzie, jeśli cel jest świadomy obecności rzucającego zaklęcie. Po zakończeniu trwania efektu, cel nie może zostać rozproszony, dopóki nie powróci do oryginalnej pozycji.",
 	["magic.miscDistractHumanoid"] = "Rozproszenie Humanoida", -- Aly: I'm not really sure about those two because "Dispel" was translated to polish as "Rozproszenie"; but at the same time translating this as "Rozproszenie Uwagi ..." is mouthful and looks bad; also, descriptions feel kinda wonky in polish for now tbh
-	["magic.miscDistractHumanoidDesc"] = "Zmusza istotę humanoidalną do oddalenia się z obecnej pozycji, jednocześnie próbując zachować dystans od rzucającego zaklęcie. Stopień efektu określa maksymalną odległość (w stopach), jaką cel może przebyć. Jeśli cel jest już pod wpływem efektu, nie może być rzucony ponownie. Efekt zawiedzie, jeśli cel jest świadomy obecności rzucającego zaklęcie. Po zakończeniu trwania efektu, cel nie może zostać rozproszony, dopóki nie powróci do oryginalnej pozycji.",
+	["magic.miscDistractHumanoidDesc"] = "Zmusza osobę do oddalenia się z obecnej pozycji, jednocześnie próbując zachować dystans od rzucającego zaklęcie. Stopień efektu określa maksymalną odległość (w stopach), jaką cel może przebyć. Jeśli cel jest już pod wpływem efektu, nie może być rzucony ponownie. Efekt zawiedzie, jeśli cel jest świadomy obecności rzucającego zaklęcie. Po zakończeniu trwania efektu, cel nie może zostać rozproszony, dopóki nie powróci do oryginalnej pozycji.",
 	["magic.miscGazeOfVeloth"] = "Wejrzenie Velotha",
 	["magic.miscGazeOfVelothDesc"] = "Doświadcz Oblicza Velotha!", -- Aly: ...
 	["magic.miscDetectEnemy"] = "Wykrycie Przeciwnika",
@@ -122,6 +122,12 @@ return {
 	
 	["magic.wabbajackFailure"] = "Cel: %s jest zbyt potężny, nie może być poddany efektowi Łabadżaka!", -- Aly: ok this was harder to figure out due to adjectives inheriting gender of subject so: "Alex is strong" -> "Alex jest silny" but "Anna is strong" -> "Anna jest silna"; in this case "cel (target)" not %s is the subject so no matter what gender %s is, string will remain the same
 	["magic.wabbajackAlready"] = "Cel: %s jest już pod wpływem efektu Łabadżaka!",
+	["magic.gazeOfVelothImmune"] = "%s przewyższa Oblicze Velotha!",
+	["magic.gazeOfVelothDagoth"] = "Dagoth Ur śmieje się z Oblicza Velotha!",
+	["magic.gazeOfVelothAsh"] = "%s nie posiada więzi z Obliczem Velotha!",
+	["magic.gazeOfVelothDaedra"] = "%s nie przejmuje się Obliczem Velotha!",
+	["magic.gazeOfVelothCreature"] = "%s nie jest w stanie pojąć Oblicza Velotha!",
+	["magic.gazeOfVelothOther"] = "%s jest niewzruszony wobec Oblicza Velotha!",
 	["magic.banishFailure"] = "Cel: %s nie może zostać wypędzony, zaklęcie jest zbyt słabe!",
 	["magic.passWallWard"] = "Nie możesz tam przeniknąć.",
 	["magic.passWallAlpha"] = "Nie możesz przez to przeniknąć.",
@@ -194,10 +200,10 @@ return {
 	["mcm.provincialReputationDescription"] = "Modyfikuje interfejs użytkownika, wyświetlając reputację gracza w poszczególnych częściach Tamriel zamiast pojedynczej ogólnej wartości. Wartości te wpływają również na szansę powodzenia w przypadku pochlebstwa, groźby czy znieważenia." ..
 											"\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
 
-	["mcm.provincialFactionsUI"] = "Interfejs Prowincjonalnych Frakcji",
+	["mcm.provincialFactionsUI"] = "Prowincjonalne Frakcje",
 	["mcm.provincialFactionsUIDescription"] = "Modyfikuje interfejs użytkownika, segregując frakcje dołączone przez gracza według prowincji. Ponadto usuwa nazwy prowincji z nazw frakcji w interfejsie.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
 
-	["mcm.weatherChangesLabel"] = "Zmiana Efektów Pogodowych",
+	["mcm.weatherChangesLabel"] = "Nowe Efekty Pogodowych",
 	["mcm.weatherChangesDescription"] = "Dodaje nowe efekty pogodowe w niektórych regionach, jak np. opad zarodników w Lasach Othreleth, burze piaskowe w Shipal-Shin czy tropikalne burze w okolicach Morza Abeceańskiego. Wprowadza także poprawki pogodowe w pozostałych regionach, jak np. popielne burze w częściach kontynentalnych Morrowind nie mające źródła na Czerwonej Górze."..
 										"\nMoże kolidować z innymi modami MWSE wpływającymi na efekty pogodowe, jak np. Watch the Skies.\nWymage ponownego uruchomienia gry.\n\nDomyślnie: Wł\n\n",
 
