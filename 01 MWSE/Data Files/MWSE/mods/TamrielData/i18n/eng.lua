@@ -106,7 +106,7 @@ return {
 	["magic.miscDistractCreature"] = "Distract Creature",
 	["magic.miscDistractCreatureDesc"] = "This effect compels a creature to wander away from their current position while attempting to keep their distance from the caster. The effect's magnitude is the maximum distance that the target can travel and the effect cannot be casted again on the target while it is active. Using this effect will fail if the target is aware of the caster's presence. When the effect ends, the target begins to return to their original location and cannot be distracted again until they do.",
 	["magic.miscDistractHumanoid"] = "Distract Humanoid",
-	["magic.miscDistractHumanoidDesc"] = "This effect compels a humanoid to wander away from their current position while attempting to keep their distance from the caster. The effect's magnitude is the maximum distance that the target can travel and the effect cannot be casted again on the target while it is active. Using this effect will fail if the target is aware of the caster's presence. When the effect ends, the target begins to return to their original location and cannot be distracted again until they do.",
+	["magic.miscDistractHumanoidDesc"] = "This effect compels a person to wander away from their current position while attempting to keep their distance from the caster. The effect's magnitude is the maximum distance that the target can travel and the effect cannot be casted again on the target while it is active. Using this effect will fail if the target is aware of the caster's presence. When the effect ends, the target begins to return to their original location and cannot be distracted again until they do.",
 	["magic.miscGazeOfVeloth"] = "Gaze of Veloth",
 	["magic.miscGazeOfVelothDesc"] = "Witness the Face of Veloth!",
 	["magic.miscDetectEnemy"] = "Detect Enemy",
@@ -122,6 +122,12 @@ return {
 	
 	["magic.wabbajackFailure"] = "%s is too strong to be Wabbajacked!",
 	["magic.wabbajackAlready"] = "%s is already Wabbajacked!",
+	["magic.gazeOfVelothImmune"] = "%s transcends the Face of Veloth!",
+	["magic.gazeOfVelothDagoth"] = "Dagoth Ur laughs at the Face of Veloth!",
+	["magic.gazeOfVelothAsh"] = "%s has no mortal link to the Face of Veloth!",
+	["magic.gazeOfVelothDaedra"] = "%s does not care about the Face of Veloth!",
+	["magic.gazeOfVelothCreature"] = "%s cannot comprehend the Face of Veloth!",
+	["magic.gazeOfVelothOther"] = "%s is unaffected by the Face of Veloth!",
 	["magic.banishFailure"] = "This spell is too weak to banish %s!",
 	["magic.passwallWard"] = "You cannot pass through to there.",
 	["magic.passwallAlpha"] = "You cannot pass through that.",
@@ -194,10 +200,10 @@ return {
 	["mcm.provincialReputationDescription"] = "Modifies the GUI to display the player's reputation in different parts of Tamriel rather than just a single global value. The player's chances of successfully admiring, intimidating, or taunting someone are also affected by these values." ..
 											"\nRequires reload.\n\nDefault: On\n\n",
 
-	["mcm.provincialFactionsUI"] = "Provincial Factions UI",
+	["mcm.provincialFactionsUI"] = "Provincial Factions",
 	["mcm.provincialFactionsUIDescription"] = "Modifies the GUI so that joined factions are organized by province. This also removes the province names from the faction names in the UI.\nRequires reload.\n\nDefault: On\n\n",
 
-	["mcm.weatherChangesLabel"] = "Change Weathers",
+	["mcm.weatherChangesLabel"] = "New Weathers",
 	["mcm.weatherChangesDescription"] = "Adds new weathers to some regions, such as sporefall in the Othreleth Woods, sandstorms in Shipal-Shin, and tropical storms in and around the Abecean Sea. Also makes minor adjustments to the weather in other regions, such as ashstorms in parts of Morrowind's mainland not originating from Red Mountain."..
 											"\nMay conflict with MWSE addons that affect weathers, such as Watch the Skies.\nRequires restart.\n\nDefault: On\n\n",
 

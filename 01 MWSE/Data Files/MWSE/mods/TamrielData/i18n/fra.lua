@@ -64,6 +64,8 @@ return {
 	["magic.summonSkeletonChampionDesc"] = "Cet effet permet d'invoquer un squelette champion des Royaumes extérieurs. Il apparaît à 2 mètres du lanceur et attaque toute entité hostile à son maître jusqu'à ce que le sort prenne fin ou qu'il soit tué. Quand il meurt ou que le sort prend fin, il disparaît et retourne dans les Royaumes extérieurs. En cas d'invocation en ville, les gardes vous attaqueront, vous et votre invocation.",
 	["magic.summonFrostMonarch"] = "Appel de monarque de givre",
 	["magic.summonFrostMonarchDesc"] = "Cet effet permet d'invoquer un monarque de givre des Royaumes extérieurs. Il apparaît à 2 mètres du lanceur et attaque toute entité hostile à son maître jusqu'à ce que le sort prenne fin ou qu'il soit tué. Quand il meurt ou que le sort prend fin, il disparaît et retourne dans les Royaumes extérieurs. En cas d'invocation en ville, les gardes vous attaqueront, vous et votre invocation.",
+	["magic.summonSpiderDaedra"] = "Appel d'araignée daedra",
+	["magic.summonSpiderDaedraDesc"] = "Cet effet permet d'invoquer un monarque de givre des Royaumes extérieurs. Il apparaît à 2 mètres du lanceur et attaque toute entité hostile à son maître jusqu'à ce que le sort prenne fin ou qu'il soit tué. Quand il meurt ou que le sort prend fin, il disparaît et retourne dans les Royaumes extérieurs. En cas d'invocation en ville, les gardes vous attaqueront, vous et votre invocation.",
 
 	["magic.boundGreaves"] = "Jambières liées",
 	["magic.boundGreavesDesc"] = "Ce sort permet d'invoquer un Daedra inférieur lié sous la forme d'une paire de jambières daedriques, magiques et d'une exceptionnelle légèreté. Elles apparaissent directement sur les jambes du lanceur, remplaçant automatiquement les jambières dont ce dernier était équipé. Quand l'effet prend fin, les jambières sont remplacées par celles dont le personnage était précédemment équipé.",
@@ -119,11 +121,12 @@ return {
 	["magic.miscPrismaticLightDesc"] = "Cet effet crée un projectile de lumière prismatique. Quand il touche une cible, le projectile illumine la zone pour la durée de l'effet. Le projectile de lumière n'inflige aucun dégât.",
 
 	["magic.wabbajackFailure"] = "%s est trop puissant pour que Wabbajack l'affecte !",
+	["magic.wabbajackAlready"] = "%s est déjà sous l'effet de Wabbajack !",
 	["magic.banishFailure"] = "Ce sort est trop faible pour bannir : %s !",
 	["magic.passWallWard"] = "Vous ne pouvez pas passer jusque-là.",
 	["magic.passWallAlpha"] = "Vous ne pouvez pas passer à travers ceci.",
 	["magic.passWallExterior"] = "Vous devez vous trouver dans un espace confiné.",
-	["magic.passWallDoorExterior"] = "Vous dne pouvez pas quitter un espace confiné.",
+	["magic.passWallDoorExterior"] = "Vous ne pouvez pas quitter un espace confiné.",
 	["magic.passWallUnderwater"] = "Vous ne pouvez pas vous trouver sous l'eau.",
 	
 	["magic.itemPotionReflectDamageB"] = "Potion Réflexion dégâts bradée",
@@ -160,7 +163,7 @@ return {
 	-- MCM Text
 	["mcm.name"] = "Ressources communes de Tamriel",
 	["mcm.preferences"] = "Préférences",
-	["mcm.preferencesInfo"] = "Ressources communes de Tamriel MWSE-Lua v2.0",
+	["mcm.preferencesInfo"] = "Ressources communes de Tamriel MWSE-Lua v2.1",
 	["mcm.credits"] = "Crédits :",
 	["mcm.Kynesifnar"] = "Kynesifnar - Scripting",
 	["mcm.mort"] = "mort - Scripting",

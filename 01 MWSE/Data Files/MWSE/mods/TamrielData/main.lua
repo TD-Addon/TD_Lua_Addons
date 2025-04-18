@@ -678,7 +678,7 @@ local function limitIntervention(e)
 	end
 end
 
--- Checks the player's race and replaces it with an animation file if one is needed. Should eventually be expanded for races such as Tsaesci, Minotaurs, etc.
+-- Checks the player's race and replaces it with an animation file if one is needed. Should be expanded more for races such Minotaurs
 local function fixPlayerAnimations()
 	if tes3.player.object.race.id == "T_Els_Ohmes-raht" or tes3.player.object.race.id == "T_Els_Suthay" then
 		if tes3.player.object.female == true then
@@ -740,7 +740,7 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.magicCasted, magic.detectInvisibilityTick, { unregisterOnLoad = true })
 		event.register(tes3.event.magicEffectRemoved, magic.detectInvisibilityTick, { unregisterOnLoad = true })
 		event.register(tes3.event.calcHitChance, magic.detectInvisibilityHitChance, { filter = tes3.player.baseObject, unregisterOnLoad = true })
-		event.register(tes3.event.enterFrame, magic.detectInvisibilityOpacity, { unregisterOnLoad = true })
+		event.register(tes3.event.simulate, magic.detectInvisibilityOpacity, { unregisterOnLoad = true })
 		event.register(tes3.event.magicEffectRemoved, magic.invisibilityRemovedEffect, { unregisterOnLoad = true })
 		event.register(tes3.event.spellTick, magic.invisibilityAppliedEffect, { unregisterOnLoad = true })
 		event.register(tes3.event.mobileActivated, magic.onInvisibleMobileActivated, { unregisterOnLoad = true })
