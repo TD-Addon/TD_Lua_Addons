@@ -15,6 +15,7 @@ local debug = require("scripts.TamrielData.utils.debug_logging")
 local FT_TO_UNITS = 22.1
 local maxSpellDistance = 25 * FT_TO_UNITS -- 25ft is a default Passwall spell range in the MWSE version
 local maxSpellDistanceSquared = maxSpellDistance * maxSpellDistance
+local veryCloseSquared = 11 * 11 -- an arbitrary value representing a close enough object that no wall is between
 local passwallSpellId = "t_com_mys_uni_passwall"
 
 local function getActivationVector()
@@ -105,23 +106,25 @@ local function isObjectReachable(from, targetObject)
 
     if status == nearby.FIND_PATH_STATUS.Success or status == nearby.FIND_PATH_STATUS.PartialPath then
         -- Even though a navmesh path is found, it still could have hopped through an obstacle,
-        -- so try a raycast - if it doesn't collide with anything else, we could assume the object is reachable
+        -- so try a raycast from path end to targetObject - if it doesn't collide with anything else,
+        -- we could assume the object is reachable
         local lastRayCheck = nearby.castRay(
             path[#path],
             to,
             { collisionType = nearby.COLLISION_TYPE.AnyPhysical + nearby.COLLISION_TYPE.VisualOnly })
 
-        -- However, the raycast doesn't work on some objects, like items. Last chance check is just a distance one.
-        -- If points are very close, we could assume the player can go from one to another.
-        -- For this check it seems that comparing the distance with the bottom of the targetObject yields best results.
-        local veryClose = 11 * 11 -- an arbitrary value representing a close enough object that no wall is between
-        local isObjectVeryClose = util.vector3(
-            to.x - path[#path].x,
-            to.y - path[#path].y,
-            to.z - path[#path].z - targetObject:getBoundingBox().halfSize.z
-        ):length2() < veryClose
+        local lastCheckResult = (lastRayCheck.hitObject and lastRayCheck.hitObject == targetObject)
+        if not lastCheckResult then
+            -- However, the raycast doesn't work on some objects, like items. Last chance check is just a distance one.
+            -- If path end and targetObject are very close, we could assume the player can go from one to another.
+            -- For this check it seems that comparing the distance with the bottom of the targetObject yields best results.
+            lastCheckResult = util.vector3(
+                to.x - path[#path].x,
+                to.y - path[#path].y,
+                to.z - path[#path].z - targetObject:getBoundingBox().halfSize.z
+            ):length2() < veryCloseSquared
+        end
 
-        local lastCheckResult = (lastRayCheck.hitObject and lastRayCheck.hitObject == targetObject) or isObjectVeryClose
         return lastCheckResult
     end
 
@@ -215,6 +218,7 @@ local function calculatePasswallPosition(intermediateRayHits, limitingPosition, 
     local rayTestOffset = 19 -- We could say that a 2*19 square is enough to fit the player in
     local minDistanceSquared = 108 * 108 -- minDistance from the MWSE version but squared
     local maxZDifference = 105 -- upCoord from the MWSE version
+    local maxDistanceAllowed = intermediateRayHits[1] and ((intermediateRayHits[1].hitPos - limitingPosition):length2() + (160*160)) -- triangle hypotenuse using rightCoord from MWSE version
 
     for i = 1, #intermediateRayHits do
         local thisRayHit = intermediateRayHits[i]
@@ -236,15 +240,31 @@ local function calculatePasswallPosition(intermediateRayHits, limitingPosition, 
                 potentialPosition,
                 {
                     includeFlags = nearby.NAVIGATOR_FLAGS.Walk,
-                    searchAreaHalfExtents = util.vector3(100, 100, maxZDifference*10) -- fewer calculations when passwalling around corners
+                    searchAreaHalfExtents = util.vector3(150, 150, maxZDifference*10), -- fewer calculations when passwalling around corners
+                    agentBounds = types.Actor.getPathfindingAgentBounds(self)
                 }
             )
             if navMeshPosition == nil then
                 break
             end
 
-            local isPositionNotTooClose = (self.position - navMeshPosition):length2() >= minDistanceSquared
             local isPositionNotTooHighOrLow = math.abs(self.position.z - navMeshPosition.z) < maxZDifference
+
+            local isPositionNotTooClose = false
+            if isPositionNotTooHighOrLow then
+                isPositionNotTooClose = (self.position - navMeshPosition):length2() >= minDistanceSquared
+            end
+
+            local isPositionNotTooFar = false
+            if isPositionNotTooClose then
+                isPositionNotTooFar = (intermediateRayHits[1].hitPos - navMeshPosition):length2() <= maxDistanceAllowed
+            end
+
+            local isIntendedForThePlayer = isPositionNotTooClose and isPositionNotTooHighOrLow and isPositionNotTooFar
+            if isIntendedForThePlayer then
+                isIntendedForThePlayer = isCalculatedPositionIntendedForThePlayer(navMeshPosition)
+            end
+            if isIntendedForThePlayer then
             local isPositionInsideLimits = isPositionNotTooClose and isPositionNotTooHighOrLow
             local isIntendedForThePlayer = isCalculatedPositionIntendedForThePlayer(navMeshPosition)
             if isPositionInsideLimits and isIntendedForThePlayer then
