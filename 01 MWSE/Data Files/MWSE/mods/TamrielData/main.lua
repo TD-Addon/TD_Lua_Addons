@@ -678,7 +678,7 @@ local function limitIntervention(e)
 	end
 end
 
--- Checks the player's race and replaces it with an animation file if one is needed. Should be expanded more for races such Minotaurs
+-- Checks the player's race and replaces it with an animation file if one is needed. Should be expanded more for races in the future (such Minotaurs)
 local function fixPlayerAnimations()
 	if tes3.player.object.race.id == "T_Els_Ohmes-raht" or tes3.player.object.race.id == "T_Els_Suthay" then
 		if tes3.player.object.female == true then

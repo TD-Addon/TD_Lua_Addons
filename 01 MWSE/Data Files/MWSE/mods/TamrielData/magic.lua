@@ -87,7 +87,7 @@ if config.miscSpells == true then
 	tes3.claimSpellEffectId("T_mysticism_DetInvisibility", 2141)
 	tes3.claimSpellEffectId("T_mysticism_Blink", 2142)
 	tes3.claimSpellEffectId("T_restoration_FortifyCasting", 2143)
-	tes3.claimSpellEffectId("T_illusion_PrismaticLight", 2144)
+	--tes3.claimSpellEffectId("T_illusion_PrismaticLight", 2144)
 end
 
 -- The effect costs for most summons were initially calculated by mort using a formula (dependent on a creature's health and soul) that is now lost and were then adjusted as seemed reasonable.
@@ -162,7 +162,7 @@ local td_misc_effects = {
 	{ tes3.effect.T_mysticism_DetInvisibility, common.i18n("magic.miscDetectInvisibility"), 3, "td\\s\\td_s_det_invisibility.tga", common.i18n("magic.miscDetectInvisibilityDesc")},		-- Not sure about the cost on this one. 3 just seems like a lot for such a niche effect, even though it nicely fits the pattern set by the other detect effects.
 	{ tes3.effect.T_mysticism_Blink, common.i18n("magic.miscBlink"), 10, "td\\s\\td_s_blink.tga", common.i18n("magic.miscBlinkDesc")},
 	{ tes3.effect.T_restoration_FortifyCasting, common.i18n("magic.miscFortifyCasting"), 1, "td\\s\\td_s_ftfy_cast.tga", common.i18n("magic.miscFortifyCastingDesc")},
-	{ tes3.effect.T_illusion_PrismaticLight, common.i18n("magic.miscPrismaticLight"), 0.4, "td\\s\\td_s_p_light.tga", common.i18n("magic.miscPrismaticLightDesc")},
+	--{ tes3.effect.T_illusion_PrismaticLight, common.i18n("magic.miscPrismaticLight"), 0.4, "td\\s\\td_s_p_light.tga", common.i18n("magic.miscPrismaticLightDesc")},
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -235,7 +235,7 @@ local td_misc_spells = {
 	{ "T_Dae_Alt_UNI_WabbajackTrans", tes3.spellType.spell, common.i18n("magic.miscWabbajack"), 0, { tes3.effect.T_alteration_WabbajackTrans }, tes3.effectRange.touch, 0, 16, 1, 1 },
 	{ "T_Com_Mys_DetectInvisibility", tes3.spellType.spell, common.i18n("magic.miscDetectInvisibility"), 76, { tes3.effect.T_mysticism_DetInvisibility }, tes3.effectRange.self, 0, 5, 50, 150 },
 	{ "T_Com_Mys_Blink", tes3.spellType.spell, common.i18n("magic.miscBlink"), 25, { tes3.effect.T_mysticism_Blink }, tes3.effectRange.self, 0, 0, 50, 50 },
-	--{ "T_Cr_Ab_AuroranLight", tes3.spellType.ability, nil, nil, { tes3.effect.T_illusion_PrismaticLight }, tes3.effectRange.self, 0, 0, 20, 20 },
+	--{ "T_Cr_Ab_AuroranLight", tes3.spellType.ability, nil, nil, { tes3.effect.T_illusion_PrismaticLight }, tes3.effectRange.self, 0, 0, 20, 20 },	-- There should be a separate, higher magnitude ability for the radiant Aurorans that will be affected instead
 	{ "T_UNI_SaintTelynBlessing", tes3.spellType.ability, nil, nil, { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 0, 10, 10 },
 }
 
@@ -3701,47 +3701,47 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[20])		-- Prismatic Light
-		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
-			school = tes3.magicSchool.illusion,
-			baseCost = effectCost,
-			speed = lightEffect.speed,
-			allowEnchanting = lightEffect.allowEnchanting,
-			allowSpellmaking = lightEffect.allowSpellmaking,
-			appliesOnce = lightEffect.appliesOnce,
-			canCastSelf = lightEffect.canCastSelf,
-			canCastTarget = lightEffect.canCastTarget,
-			canCastTouch = lightEffect.canCastTouch,
-			casterLinked = lightEffect.casterLinked,
-			hasContinuousVFX = lightEffect.hasContinuousVFX,
-			hasNoDuration = lightEffect.hasNoDuration,
-			hasNoMagnitude = lightEffect.hasNoMagnitude,
-			illegalDaedra = lightEffect.illegalDaedra,
-			isHarmful = lightEffect.isHarmful,
-			nonRecastable = lightEffect.nonRecastable,
-			targetsAttributes = lightEffect.targetsAttributes,
-			targetsSkills = lightEffect.targetsSkills,
-			unreflectable = lightEffect.unreflectable,
-			usesNegativeLighting = lightEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = lightEffect.particleTexture,
-			castSound = lightEffect.castSoundEffect.id,
-			castVFX = lightEffect.castVisualEffect.id,
-			boltSound = lightEffect.boltSoundEffect.id,
-			boltVFX = lightEffect.boltVisualEffect.id,
-			hitSound = lightEffect.hitSoundEffect.id,
-			hitVFX = lightEffect.hitVisualEffect.id,
-			areaSound = lightEffect.areaSoundEffect.id,
-			areaVFX = lightEffect.areaVisualEffect.id,
-			lighting = {x = lightEffect.lightingRed / 255, y = lightEffect.lightingGreen / 255, z = lightEffect.lightingBlue / 255},
-			size = lightEffect.size,
-			sizeCap = lightEffect.sizeCap,
-			onTick = prismaticLightEffect,
-			onCollision = nil
-		}
+		--effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[20])		-- Prismatic Light
+		--tes3.addMagicEffect{
+		--	id = effectID,
+		--	name = effectName,
+		--	description = effectDescription,
+		--	school = tes3.magicSchool.illusion,
+		--	baseCost = effectCost,
+		--	speed = lightEffect.speed,
+		--	allowEnchanting = lightEffect.allowEnchanting,
+		--	allowSpellmaking = lightEffect.allowSpellmaking,
+		--	appliesOnce = lightEffect.appliesOnce,
+		--	canCastSelf = lightEffect.canCastSelf,
+		--	canCastTarget = lightEffect.canCastTarget,
+		--	canCastTouch = lightEffect.canCastTouch,
+		--	casterLinked = lightEffect.casterLinked,
+		--	hasContinuousVFX = lightEffect.hasContinuousVFX,
+		--	hasNoDuration = lightEffect.hasNoDuration,
+		--	hasNoMagnitude = lightEffect.hasNoMagnitude,
+		--	illegalDaedra = lightEffect.illegalDaedra,
+		--	isHarmful = lightEffect.isHarmful,
+		--	nonRecastable = lightEffect.nonRecastable,
+		--	targetsAttributes = lightEffect.targetsAttributes,
+		--	targetsSkills = lightEffect.targetsSkills,
+		--	unreflectable = lightEffect.unreflectable,
+		--	usesNegativeLighting = lightEffect.usesNegativeLighting,
+		--	icon = iconPath,
+		--	particleTexture = lightEffect.particleTexture,
+		--	castSound = lightEffect.castSoundEffect.id,
+		--	castVFX = lightEffect.castVisualEffect.id,
+		--	boltSound = lightEffect.boltSoundEffect.id,
+		--	boltVFX = lightEffect.boltVisualEffect.id,
+		--	hitSound = lightEffect.hitSoundEffect.id,
+		--	hitVFX = lightEffect.hitVisualEffect.id,
+		--	areaSound = lightEffect.areaSoundEffect.id,
+		--	areaVFX = lightEffect.areaVisualEffect.id,
+		--	lighting = {x = lightEffect.lightingRed / 255, y = lightEffect.lightingGreen / 255, z = lightEffect.lightingBlue / 255},
+		--	size = lightEffect.size,
+		--	sizeCap = lightEffect.sizeCap,
+		--	onTick = prismaticLightEffect,
+		--	onCollision = nil
+		--}
 	end
 end)
 
