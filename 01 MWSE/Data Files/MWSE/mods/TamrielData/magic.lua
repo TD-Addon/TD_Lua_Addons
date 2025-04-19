@@ -87,7 +87,7 @@ if config.miscSpells == true then
 	tes3.claimSpellEffectId("T_mysticism_DetInvisibility", 2141)
 	tes3.claimSpellEffectId("T_mysticism_Blink", 2142)
 	tes3.claimSpellEffectId("T_restoration_FortifyCasting", 2143)
-	tes3.claimSpellEffectId("T_illusion_PrismaticLight", 2144)
+	--tes3.claimSpellEffectId("T_illusion_PrismaticLight", 2144)
 end
 
 -- The effect costs for most summons were initially calculated by mort using a formula (dependent on a creature's health and soul) that is now lost and were then adjusted as seemed reasonable.
@@ -121,7 +121,7 @@ local td_summon_effects = {
 	{ tes3.effect.T_summon_MinoBarrowguard, common.i18n("magic.summonMinoBarrowguard"), "T_Cyr_Und_MinoBarrow_01", 57, "td\\s\\td_s_summ_mintur.dds", common.i18n("magic.summonMinoBarrowguardDesc")},
 	{ tes3.effect.T_summon_SkeletonChampion, common.i18n("magic.summonSkeletonChampion"), "T_Glb_Und_SkelCmpGls_01", 32, "td\\s\\td_s_sum_skele_c.dds", common.i18n("magic.summonSkeletonChampionDesc")},
 	{ tes3.effect.T_summon_AtroFrostMon, common.i18n("magic.summonFrostMonarch"), "T_Dae_Cre_MonarchFr_01", 47, "td\\s\\td_s_sum_fst_monch.dds", common.i18n("magic.summonFrostMonarchDesc")},
-	{ tes3.effect.T_summon_SpiderDaedra, common.i18n("magic.summonSpiderDaedra"), "", 47, "td\\s\\td_s_sum_fst_monch.dds", common.i18n("magic.summonSpiderDaedraDesc")},
+	{ tes3.effect.T_summon_SpiderDaedra, common.i18n("magic.summonSpiderDaedra"), "", 47, "td\\s\\td_s_sum_spidr_dae.dds", common.i18n("magic.summonSpiderDaedraDesc")},
 }
 
 -- effect id, effect name, item id, 2nd item ID, effect mana cost, icon, effect description
@@ -162,7 +162,7 @@ local td_misc_effects = {
 	{ tes3.effect.T_mysticism_DetInvisibility, common.i18n("magic.miscDetectInvisibility"), 3, "td\\s\\td_s_det_invisibility.tga", common.i18n("magic.miscDetectInvisibilityDesc")},		-- Not sure about the cost on this one. 3 just seems like a lot for such a niche effect, even though it nicely fits the pattern set by the other detect effects.
 	{ tes3.effect.T_mysticism_Blink, common.i18n("magic.miscBlink"), 10, "td\\s\\td_s_blink.tga", common.i18n("magic.miscBlinkDesc")},
 	{ tes3.effect.T_restoration_FortifyCasting, common.i18n("magic.miscFortifyCasting"), 1, "td\\s\\td_s_ftfy_cast.tga", common.i18n("magic.miscFortifyCastingDesc")},
-	{ tes3.effect.T_illusion_PrismaticLight, common.i18n("magic.miscPrismaticLight"), 0.4, "td\\s\\td_s_p_light.tga", common.i18n("magic.miscPrismaticLightDesc")},
+	--{ tes3.effect.T_illusion_PrismaticLight, common.i18n("magic.miscPrismaticLight"), 0.4, "td\\s\\td_s_p_light.tga", common.i18n("magic.miscPrismaticLightDesc")},
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -196,6 +196,7 @@ local td_summon_spells = {
 	{ "T_Cyr_Cnj_SummonMinoBarrowguard", tes3.spellType.spell, common.i18n("magic.summonMinoBarrowguard"), 171, { tes3.effect.T_summon_MinoBarrowguard }, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Com_Cnj_SummonSkeletonChamp", tes3.spellType.spell, common.i18n("magic.summonSkeletonChampion"), 96, { tes3.effect.T_summon_SkeletonChampion }, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Com_Cnj_SummonFrostMonarch", tes3.spellType.spell, common.i18n("magic.summonFrostMonarch"), 141, { tes3.effect.T_summon_AtroFrostMon }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Com_Cnj_SummonSpiderDaedra", tes3.spellType.spell, common.i18n("magic.summonSpiderDaedra"), 141, { tes3.effect.T_summon_SpiderDaedra }, tes3.effectRange.self, 0, 60, 1, 1 },
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -234,72 +235,72 @@ local td_misc_spells = {
 	{ "T_Dae_Alt_UNI_WabbajackTrans", tes3.spellType.spell, common.i18n("magic.miscWabbajack"), 0, { tes3.effect.T_alteration_WabbajackTrans }, tes3.effectRange.touch, 0, 16, 1, 1 },
 	{ "T_Com_Mys_DetectInvisibility", tes3.spellType.spell, common.i18n("magic.miscDetectInvisibility"), 76, { tes3.effect.T_mysticism_DetInvisibility }, tes3.effectRange.self, 0, 5, 50, 150 },
 	{ "T_Com_Mys_Blink", tes3.spellType.spell, common.i18n("magic.miscBlink"), 25, { tes3.effect.T_mysticism_Blink }, tes3.effectRange.self, 0, 0, 50, 50 },
-	--{ "T_Cr_Ab_AuroranLight", tes3.spellType.ability, nil, nil, { tes3.effect.T_illusion_PrismaticLight }, tes3.effectRange.self, 0, 0, 20, 20 },
+	--{ "T_Cr_Ab_AuroranLight", tes3.spellType.ability, nil, nil, { tes3.effect.T_illusion_PrismaticLight }, tes3.effectRange.self, 0, 0, 20, 20 },	-- There should be a separate, higher magnitude ability for the radiant Aurorans that will be affected instead
 	{ "T_UNI_SaintTelynBlessing", tes3.spellType.ability, nil, nil, { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 0, 10, 10 },
 }
 
 -- enchantment id, (1st effect id, attribute id, skill id), 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
 local td_enchantments = {
-	{ "T_Once_SummonDremoraArcher60", { tes3.effect.T_summon_DremArch }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonDremoraCaster60", { tes3.effect.T_summon_DremCast }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonGuardian60", { tes3.effect.T_summon_Guardian }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonLesserClannfear60", { tes3.effect.T_summon_LesserClfr }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonOgrim60", { tes3.effect.T_summon_Ogrim }, tes3.effectRange.self, 0, 60, 1, 1, nil },
-	{ "T_Once_SummonOgrim120", { tes3.effect.T_summon_Ogrim }, tes3.effectRange.self, 0, 120, 1, 1, nil },
-	{ "T_Once_SummonSeducer60", { tes3.effect.T_summon_Seducer }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonSeducerDark60", { tes3.effect.T_summon_SeducerDark }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonVermai60", { tes3.effect.T_summon_Vermai }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonVermai120", { tes3.effect.T_summon_Vermai }, tes3.effectRange.self, 0, 120, 1, 1 },
-	{ "T_Once_SummonSkeletonChamp120", { tes3.effect.T_summon_SkeletonChampion }, tes3.effectRange.self, 0, 120, 1, 1 },
-	{ "T_Once_SummonFrostMonarch120", { tes3.effect.T_summon_AtroFrostMon }, tes3.effectRange.self, 0, 120, 1, 1 },
-	{ "T_Once_SummonStormMonarch60", { tes3.effect.T_summon_AtroStormMon }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonWelkyndSpirit60", { tes3.effect.T_summon_WelkyndSpirit }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonAuroran60", { tes3.effect.T_summon_Auroran }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonHerne60", { tes3.effect.T_summon_Herne }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonMorphoid60", { tes3.effect.T_summon_Morphoid }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonBonelordGr60", { tes3.effect.T_summon_BoneldGr }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_AylDaedricHerald1", { tes3.effect.T_summon_WelkyndSpirit }, tes3.effectRange.self, 0, 30, 1, 1 },
-	{ "T_Once_AylDaedricHerald2", { tes3.effect.T_summon_Auroran }, tes3.effectRange.self, 0, 30, 1, 1 },
-	{ "T_Once_AylLoreArmor1", { tes3.effect.T_alteration_RadShield }, tes3.effectRange.self, 0, 30, 20, 20 },
-	--{ "T_Once_AylCavernsTruth", { tes3.effect.T_illusion_PrismaticLight }, tes3.effectRange.self, 0, 90, 15, 15 },
-	{ "T_Once_KynesIntervention", { tes3.effect.T_intervention_Kyne }, tes3.effectRange.self, 0, 1, 1, 1 },
-	{ "T_Once_QuelledGeas", { tes3.effect.T_mysticism_BanishDae }, tes3.effectRange.touch, 0, 1, 10, 15 },
-	{ "T_Once_LordMhasFortress", { tes3.effect.boundBoots }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.T_bound_Greaves }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.boundCuirass }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.T_bound_Pauldrons }, tes3.effectRange.self, 0, 90, 1, 1,
+	{ "T_Once_SummonDremoraArcher60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_DremArch }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonDremoraCaster60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_DremCast }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonGuardian60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Guardian }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonLesserClannfear60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_LesserClfr }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonOgrim60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Ogrim }, tes3.effectRange.self, 0, 60, 1, 1, nil },
+	{ "T_Once_SummonOgrim120", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Ogrim }, tes3.effectRange.self, 0, 120, 1, 1, nil },
+	{ "T_Once_SummonSeducer60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Seducer }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonSeducerDark60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_SeducerDark }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonVermai60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Vermai }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonVermai120", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Vermai }, tes3.effectRange.self, 0, 120, 1, 1 },
+	{ "T_Once_SummonSkeletonChamp120", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_SkeletonChampion }, tes3.effectRange.self, 0, 120, 1, 1 },
+	{ "T_Once_SummonFrostMonarch120", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_AtroFrostMon }, tes3.effectRange.self, 0, 120, 1, 1 },
+	{ "T_Once_SummonStormMonarch60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_AtroStormMon }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonWelkyndSpirit60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_WelkyndSpirit }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonAuroran60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Auroran }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonHerne60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Herne }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonMorphoid60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Morphoid }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_SummonBonelordGr60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_BoneldGr }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_AylDaedricHerald1", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_WelkyndSpirit }, tes3.effectRange.self, 0, 30, 1, 1 },
+	{ "T_Once_AylDaedricHerald2", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Auroran }, tes3.effectRange.self, 0, 30, 1, 1 },
+	{ "T_Once_AylLoreArmor1", tes3.enchantmentType.castOnce, { tes3.effect.T_alteration_RadShield }, tes3.effectRange.self, 0, 30, 20, 20 },
+	--{ "T_Once_AylCavernsTruth", tes3.enchantmentType.castOnce, { tes3.effect.T_illusion_PrismaticLight }, tes3.effectRange.self, 0, 90, 15, 15 },
+	{ "T_Once_KynesIntervention", tes3.enchantmentType.castOnce, { tes3.effect.T_intervention_Kyne }, tes3.effectRange.self, 0, 1, 1, 1 },
+	{ "T_Once_QuelledGeas", tes3.enchantmentType.castOnce, { tes3.effect.T_mysticism_BanishDae }, tes3.effectRange.touch, 0, 1, 10, 15 },
+	{ "T_Once_LordMhasFortress", tes3.enchantmentType.castOnce, { tes3.effect.boundBoots }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.T_bound_Greaves }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.boundCuirass }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.T_bound_Pauldrons }, tes3.effectRange.self, 0, 90, 1, 1,
 								{ tes3.effect.boundGloves }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.boundHelm }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.boundShield }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.T_bound_Warhammer }, tes3.effectRange.self, 0, 90, 1, 1 },
-	{ "T_Once_SummonDremoraAll60", { tes3.effect.summonDremora }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_summon_DremArch }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_summon_DremCast }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_DaedraBane", { tes3.effect.T_mysticism_BanishDae }, tes3.effectRange.touch, 0, 1, 10, 15 },
-	{ "T_Once_BlackSpirits", { tes3.effect.T_mysticism_BanishDae }, tes3.effectRange.target, 25, 1, 10, 40 },
-	{ "T_Once_Diversion", { tes3.effect.T_illusion_DistractHumanoid }, tes3.effectRange.target, 0, 30, 10, 30 },
-	{ "T_Once_Scent", { tes3.effect.T_illusion_DistractCreature }, tes3.effectRange.target, 0, 30, 10, 30 },
-	{ "T_Once_DarothrilDisorder", { tes3.effect.T_illusion_DistractCreature }, tes3.effectRange.target, 20, 20, 50, 50, { tes3.effect.T_illusion_DistractHumanoid }, tes3.effectRange.target, 20, 20, 50, 50 },
-	{ "T_Once_Revealing", { tes3.effect.T_mysticism_DetInvisibility }, tes3.effectRange.self, 0, 10, 40, 80, nil },
-	{ "T_Once_GramaryeMirror", { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 30, 20, 20, { tes3.effect.reflect }, tes3.effectRange.self, 0, 30, 20, 20 },
-	{ "T_Once_DeificChrisom", { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 60, 10, 30, { tes3.effect.spellAbsorption }, tes3.effectRange.self, 0, 60, 10, 30, { tes3.effect.sanctuary }, tes3.effectRange.self, 0, 60, 10, 30 },
-	{ "T_Once_Dashing", { tes3.effect.T_mysticism_Blink }, tes3.effectRange.self, 0, 0, 40, 40 },
-	{ "T_Once_AssassinRush", { tes3.effect.T_mysticism_Blink }, tes3.effectRange.self, 0, 0, 30, 30, { tes3.effect.fortifyAttack }, tes3.effectRange.self, 0, 60, 10, 20, { tes3.effect.fortifySkill, nil, tes3.skill.shortBlade }, tes3.effectRange.self, 0, 60, 10, 20 },
-	{ "T_Once_QorwynnMending", { tes3.effect.T_restoration_ArmorResartus }, tes3.effectRange.self, 0, 0, 30, 30, { tes3.effect.T_restoration_WeaponResartus }, tes3.effectRange.self, 0, 0, 30, 30 },
-	{ "T_Once_MoathAuthority", { tes3.effect.boundBoots }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.T_bound_Greaves }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.boundGloves }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.T_bound_Greatsword }, tes3.effectRange.self, 0, 90, 1, 1 },
-	{ "T_Once_AllSeeing", { tes3.effect.detectAnimal }, tes3.effectRange.self, 0, 300, 200, 200, { tes3.effect.T_mysticism_DetHuman }, tes3.effectRange.self, 0, 300, 200, 200, { tes3.effect.T_mysticism_DetEnemy }, tes3.effectRange.self, 0, 300, 200, 200,
+	{ "T_Once_SummonDremoraAll60", tes3.enchantmentType.castOnce, { tes3.effect.summonDremora }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_summon_DremArch }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_summon_DremCast }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_DaedraBane", tes3.enchantmentType.castOnce, { tes3.effect.T_mysticism_BanishDae }, tes3.effectRange.touch, 0, 1, 10, 15 },
+	{ "T_Once_BlackSpirits", tes3.enchantmentType.castOnce, { tes3.effect.T_mysticism_BanishDae }, tes3.effectRange.target, 25, 1, 10, 40 },
+	{ "T_Once_Diversion", tes3.enchantmentType.castOnce, { tes3.effect.T_illusion_DistractHumanoid }, tes3.effectRange.target, 0, 30, 10, 30 },
+	{ "T_Once_Scent", tes3.enchantmentType.castOnce, { tes3.effect.T_illusion_DistractCreature }, tes3.effectRange.target, 0, 30, 10, 30 },
+	{ "T_Once_DarothrilDisorder", tes3.enchantmentType.castOnce, { tes3.effect.T_illusion_DistractCreature }, tes3.effectRange.target, 20, 20, 50, 50, { tes3.effect.T_illusion_DistractHumanoid }, tes3.effectRange.target, 20, 20, 50, 50 },
+	{ "T_Once_Revealing", tes3.enchantmentType.castOnce, { tes3.effect.T_mysticism_DetInvisibility }, tes3.effectRange.self, 0, 10, 40, 80, nil },
+	{ "T_Once_GramaryeMirror", tes3.enchantmentType.castOnce, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 30, 20, 20, { tes3.effect.reflect }, tes3.effectRange.self, 0, 30, 20, 20 },
+	{ "T_Once_DeificChrisom", tes3.enchantmentType.castOnce, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 60, 10, 30, { tes3.effect.spellAbsorption }, tes3.effectRange.self, 0, 60, 10, 30, { tes3.effect.sanctuary }, tes3.effectRange.self, 0, 60, 10, 30 },
+	{ "T_Once_Dashing", tes3.enchantmentType.castOnce, { tes3.effect.T_mysticism_Blink }, tes3.effectRange.self, 0, 0, 40, 40 },
+	{ "T_Once_AssassinRush", tes3.enchantmentType.castOnce, { tes3.effect.T_mysticism_Blink }, tes3.effectRange.self, 0, 0, 30, 30, { tes3.effect.fortifyAttack }, tes3.effectRange.self, 0, 60, 10, 20, { tes3.effect.fortifySkill, nil, tes3.skill.shortBlade }, tes3.effectRange.self, 0, 60, 10, 20 },
+	{ "T_Once_QorwynnMending", tes3.enchantmentType.castOnce, { tes3.effect.T_restoration_ArmorResartus }, tes3.effectRange.self, 0, 0, 30, 30, { tes3.effect.T_restoration_WeaponResartus }, tes3.effectRange.self, 0, 0, 30, 30 },
+	{ "T_Once_MoathAuthority", tes3.enchantmentType.castOnce, { tes3.effect.boundBoots }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.T_bound_Greaves }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.boundGloves }, tes3.effectRange.self, 0, 90, 1, 1, { tes3.effect.T_bound_Greatsword }, tes3.effectRange.self, 0, 90, 1, 1 },
+	{ "T_Once_AllSeeing", tes3.enchantmentType.castOnce, { tes3.effect.detectAnimal }, tes3.effectRange.self, 0, 300, 200, 200, { tes3.effect.T_mysticism_DetHuman }, tes3.effectRange.self, 0, 300, 200, 200, { tes3.effect.T_mysticism_DetEnemy }, tes3.effectRange.self, 0, 300, 200, 200,
 						{ tes3.effect.T_mysticism_DetInvisibility }, tes3.effectRange.self, 0, 300, 200, 200, { tes3.effect.detectEnchantment }, tes3.effectRange.self, 0, 300, 200, 200, { tes3.effect.detectKey }, tes3.effectRange.self, 0, 300, 200, 200 },
-	{ "T_Once_Firmament", { tes3.effect.fortifyAttack }, tes3.effectRange.self, 0, 120, 40, 40, { tes3.effect.T_restoration_FortifyCasting }, tes3.effectRange.self, 0, 120, 40, 40, { tes3.effect.fortifySkill, nil, tes3.skill.sneak }, tes3.effectRange.self, 0, 120, 40, 40 },
-	{ "T_Once_BoethiahService", { tes3.effect.summonHunger }, tes3.effectRange.self, 0, 120, 1, 1, { tes3.effect.T_summon_Devourer }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_FourArmsGoingUp", { tes3.effect.summonScamp }, tes3.effectRange.self, 0, 120, 1, 1, { tes3.effect.summonDremora }, tes3.effectRange.self, 0, 120, 1, 1, { tes3.effect.T_summon_Morphoid }, tes3.effectRange.self, 0, 120, 1, 1, { tes3.effect.T_summon_Herne }, tes3.effectRange.self, 0, 120, 1, 1 },
-	{ "T_Once_Anticipations", { tes3.effect.summonWingedTwilight }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_summon_SpiderDaedra }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.summonHunger }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_FourCorners", { tes3.effect.summonGoldenSaint }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.summonDremora }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_summon_Ogrim }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.summonDaedroth }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_Firmament", tes3.enchantmentType.castOnce, { tes3.effect.fortifyAttack }, tes3.effectRange.self, 0, 120, 40, 40, { tes3.effect.T_restoration_FortifyCasting }, tes3.effectRange.self, 0, 120, 40, 40, { tes3.effect.fortifySkill, nil, tes3.skill.sneak }, tes3.effectRange.self, 0, 120, 40, 40 },
+	{ "T_Once_BoethiahService", tes3.enchantmentType.castOnce, { tes3.effect.summonHunger }, tes3.effectRange.self, 0, 120, 1, 1, { tes3.effect.T_summon_Devourer }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_FourArmsGoingUp", tes3.enchantmentType.castOnce, { tes3.effect.summonScamp }, tes3.effectRange.self, 0, 120, 1, 1, { tes3.effect.summonDremora }, tes3.effectRange.self, 0, 120, 1, 1, { tes3.effect.T_summon_Morphoid }, tes3.effectRange.self, 0, 120, 1, 1, { tes3.effect.T_summon_Herne }, tes3.effectRange.self, 0, 120, 1, 1 },
+	{ "T_Once_Anticipations", tes3.enchantmentType.castOnce, { tes3.effect.summonWingedTwilight }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_summon_SpiderDaedra }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.summonHunger }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Once_FourCorners", tes3.enchantmentType.castOnce, { tes3.effect.summonGoldenSaint }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.summonDremora }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_summon_Ogrim }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.summonDaedroth }, tes3.effectRange.self, 0, 60, 1, 1 },
 
-	{ "T_Const_Ring_Namira", { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 30, 30, { tes3.effect.reflect }, tes3.effectRange.self, 0, 1, 30, 30 },
-	{ "T_Const_FindersCharm", { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 1, 10, 10, { tes3.effect.detectEnchantment }, tes3.effectRange.self, 0, 1, 120, 120, { tes3.effect.detectKey }, tes3.effectRange.self, 0, 1, 120, 120 },
-	{ "T_Const_Robe_Reprisal", { tes3.effect.frostShield }, tes3.effectRange.self, 0, 1, 50, 50, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 10, 10 },
-	{ "T_Const_Onimaru_en", { tes3.effect.fortifyAttack }, tes3.effectRange.self, 0, 1, 10, 10, { tes3.effect.resistMagicka }, tes3.effectRange.self, 0, 1, 20, 20, { tes3.effect.resistNormalWeapons }, tes3.effectRange.self, 0, 1, 20, 20, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 20, 20, { tes3.effect.summonDremora }, tes3.effectRange.self, 0, 1, 1, 1 },
-	{ "T_Const_NadiaInsight", { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 1, 30, 30 },
-	{ "T_Use_GuardianRIng", { tes3.effect.boundBoots }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_bound_Greaves }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.boundCuirass }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_bound_Pauldrons }, tes3.effectRange.self, 0, 60, 1, 1,
+	{ "T_Const_Ring_Namira", tes3.enchantmentType.constant, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 30, 30, { tes3.effect.reflect }, tes3.effectRange.self, 0, 1, 30, 30 },
+	{ "T_Const_FindersCharm", tes3.enchantmentType.constant, { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 1, 10, 10, { tes3.effect.detectEnchantment }, tes3.effectRange.self, 0, 1, 120, 120, { tes3.effect.detectKey }, tes3.effectRange.self, 0, 1, 120, 120 },
+	{ "T_Const_Robe_Reprisal", tes3.enchantmentType.constant, { tes3.effect.frostShield }, tes3.effectRange.self, 0, 1, 50, 50, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 10, 10 },
+	{ "T_Const_Onimaru_en", tes3.enchantmentType.constant, { tes3.effect.fortifyAttack }, tes3.effectRange.self, 0, 1, 10, 10, { tes3.effect.resistMagicka }, tes3.effectRange.self, 0, 1, 20, 20, { tes3.effect.resistNormalWeapons }, tes3.effectRange.self, 0, 1, 20, 20, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 20, 20, { tes3.effect.summonDremora }, tes3.effectRange.self, 0, 1, 1, 1 },
+	{ "T_Const_NadiaInsight", tes3.enchantmentType.constant, { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 1, 30, 30 },
+	{ "T_Use_GuardianRIng", tes3.enchantmentType.onUse, { tes3.effect.boundBoots }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_bound_Greaves }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.boundCuirass }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.T_bound_Pauldrons }, tes3.effectRange.self, 0, 60, 1, 1,
 							{ tes3.effect.boundGloves }, tes3.effectRange.self, 0, 60, 1, 1, { tes3.effect.boundHelm }, tes3.effectRange.self, 0, 60, 1, 1, },
-	{ "T_Use_WabbajackUni", { tes3.effect.T_alteration_Wabbajack }, tes3.effectRange.target, 0, 1, 1, 1 },
-	{ "T_Use_SkullOfCorruption", { tes3.effect.T_conjuration_Corruption }, tes3.effectRange.target, 0, 0, 1, 1 },	-- Why oh why is this ID not Uni?
-	{ "T_Use_SummonGuardian60", { tes3.effect.T_summon_Guardian }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Const_VelothsPauld_R", { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 30, 30 },
-	{ "T_Strike_StaffVeloth", { tes3.effect.T_destruction_GazeOfVeloth }, tes3.effectRange.touch, 0, 1, 1, 1 },
-	{ "T_Const_Spell_Bifurcation", { tes3.effect.T_restoration_FortifyCasting }, tes3.effectRange.self, 0, 1, 20, 20 },
+	{ "T_Use_WabbajackUni", tes3.enchantmentType.onUse, { tes3.effect.T_alteration_Wabbajack }, tes3.effectRange.target, 0, 1, 1, 1 },
+	{ "T_Use_SkullOfCorruption", tes3.enchantmentType.onUse, { tes3.effect.T_conjuration_Corruption }, tes3.effectRange.target, 0, 0, 1, 1 },	-- Why oh why is this ID not Uni?
+	{ "T_Use_SummonGuardian60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Guardian }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Const_VelothsPauld_R", tes3.enchantmentType.constant, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 30, 30 },
+	{ "T_Strike_StaffVeloth", tes3.enchantmentType.onUse, { tes3.effect.T_destruction_GazeOfVeloth }, tes3.effectRange.target, 0, 1, 1, 1 },
+	{ "T_Const_Spell_Bifurcation", tes3.enchantmentType.constant, { tes3.effect.T_restoration_FortifyCasting }, tes3.effectRange.self, 0, 1, 20, 20 },
 }
 
 -- ingredient id, 1st effect id, 1st effect attribute id, 1st effect skill id, 2nd effect id, ...
@@ -530,12 +531,12 @@ local raceSkeletonBodyParts = {
 	{ "Wood Elf", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
 	{ "T_Cnq_ChimeriQuey", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
 	{ "T_Cnq_Keptu", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
-	{ "T_Els_Cathay", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },	-- The plantigrade Khajiit should get their own skeletons
+	{ "T_Els_Cathay", "T_B_GazeVeloth_SkeletonKha_02", "T_C_GazeVeloth_SkeletonKha_02" },
 	{ "T_Els_Cathay-raht", "T_B_GazeVeloth_SkeletonKha_01", "T_C_GazeVeloth_SkeletonKha_01" },
 	{ "T_Els_Dagi-raht", "T_B_GazeVeloth_SkeletonKha_01", "T_C_GazeVeloth_SkeletonKha_01" },
 	{ "T_Els_Ohmes", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
 	{ "T_Els_Ohmes-raht", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
-	{ "T_Els_Suthay", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
+	{ "T_Els_Suthay", "T_B_GazeVeloth_SkeletonKha_02", "T_C_GazeVeloth_SkeletonKha_02" },
 	{ "T_Hr_Riverfolk", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
 	{ "T_Mw_Malahk_Orc", "T_B_GazeVeloth_SkeletonOrc_01", "T_C_GazeVeloth_SkeletonOrc_01" },
 	{ "T_Pya_SeaElf", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
@@ -553,6 +554,14 @@ local wabbajackCreatures = {
 	"T_Ham_Fau_Goat_01",
 	"Rat",
 	"golden saint"
+}
+
+-- actor name
+local gazeOfVelothImmuneActors = {
+	"Vivec",
+	"Almalexia",
+	"Divayth Fyr",
+	"Azra Nightwielder"
 }
 
 ---@param table table
@@ -586,9 +595,11 @@ end
 function this.replaceEnchantments(table)
 	for _,v in pairs(table) do
 		local overridden_enchantment = tes3.getObject(v[1])
+		---@cast overridden_enchantment tes3enchantment
 		if overridden_enchantment then
+			overridden_enchantment.castType = v[2]
 			for i = 1, 8, 1 do
-				if not v[2 + (i - 1) * 6] then
+				if not v[3 + (i - 1) * 6] then
 					for j = i, 8, 1 do
 						local effect = overridden_enchantment.effects[i]
 						effect.id = -1
@@ -600,14 +611,14 @@ function this.replaceEnchantments(table)
 				end
 
 				local effect = overridden_enchantment.effects[i]
-				effect.id = v[2 + (i - 1) * 6][1]
-				effect.attribute = v[2 + (i - 1) * 6][2]
-				effect.skill = v[2 + (i - 1) * 6][3]
-				effect.rangeType = v[3 + (i - 1) * 6]
-				effect.radius = v[4 + (i - 1) * 6]
-				effect.duration = v[5 + (i - 1) * 6]
-				effect.min = v[6 + (i - 1) * 6]
-				effect.max = v[7 + (i - 1) * 6]
+				effect.id = v[3 + (i - 1) * 6][1]
+				effect.attribute = v[3 + (i - 1) * 6][2]
+				effect.skill = v[3 + (i - 1) * 6][3]
+				effect.rangeType = v[4 + (i - 1) * 6]
+				effect.radius = v[5 + (i - 1) * 6]
+				effect.duration = v[6 + (i - 1) * 6]
+				effect.min = v[7 + (i - 1) * 6]
+				effect.max = v[8 + (i - 1) * 6]
 			end
 		end
 	end
@@ -720,53 +731,6 @@ function this.useCustomSpell(e)
 	--end
 end
 
----@param e uiPreEventEventData
-local function fortifyCastingMultiFillbar(e)
-	local multiMenu = e.source
-	if not multiMenu then
-		return
-	end
-
-	local fortifyCastingEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_restoration_FortifyCasting })	-- This limits findChild calls, but is that actually more efficient?
-	if #fortifyCastingEffects > 0 then
-		local magicLayout = multiMenu:findChild("MenuMulti_bottom_row_left"):findChild("MenuMulti_icons"):findChild("MenuMulti_magic_layout")
-		if not magicLayout then
-			return
-		end
-
-		local colorBar = magicLayout:findChild("PartFillbar_colorbar_ptr")
-		local magicIcon = magicLayout:findChild("MenuMulti_magic_icon")
-		if not colorBar or not magicIcon then
-			return
-		end
-
-		local magnitude = 0
-		for _,v in pairs(fortifyCastingEffects) do
-			magnitude = magnitude + v.magnitude
-		end
-
-		local spell = magicIcon:getPropertyObject("MagicMenu_Spell")
-		if not spell then return end
-		---@cast spell tes3spell
-		local castChance
-
-		if spell.magickaCost > tes3.mobilePlayer.magicka.current then
-			castChance = 0
-		else
-			castChance = spell:calculateCastChance({ caster = tes3.player, checkMagicka = false })
-			castChance = castChance + magnitude
-		end
-
-		local width = math.clamp(castChance / 100, .001, 1)
-		colorBar.widthProportional = width
-	end
-end
-
----@param e uiActivatedEventData
-function this.onMenuMultiActivated(e)
-	e.element:registerAfter(tes3.uiEvent.preUpdate, fortifyCastingMultiFillbar)
-end
-
 function this.prismaticLightTick()
 	for ref in pairs(prismaticReferences) do
 		---@cast ref tes3reference
@@ -844,7 +808,6 @@ local function prismaticLightEffect(e)
 
 		lightNode.light:setRadius(totalMagnitude * 22.1)
 	else
-		mwse.log("Light Created")
 		lightNode.light.name = "prismaticLightAttachment"
 		target.data.tamrielData = target.data.tamrielData or {}
 		target.data.tamrielData.prismaticLightHue = 60
@@ -855,21 +818,95 @@ local function prismaticLightEffect(e)
 end
 
 ---@param e uiPreEventEventData
+local function fortifyCastingMultiFillbar(e)
+	local multiMenu = e.source
+	if not multiMenu then
+		return
+	end
+
+	local fortifyCastingEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_restoration_FortifyCasting })	-- This limits findChild calls, but is that actually more efficient?
+	if #fortifyCastingEffects > 0 then
+		local magicLayout = multiMenu:findChild("MenuMulti_bottom_row_left"):findChild("MenuMulti_icons"):findChild("MenuMulti_magic_layout")
+		if not magicLayout then
+			return
+		end
+
+		local colorBar = magicLayout:findChild("PartFillbar_colorbar_ptr")
+		local magicIcon = magicLayout:findChild("MenuMulti_magic_icon")
+		if not colorBar or not magicIcon then
+			return
+		end
+
+		local magnitude = 0
+		for _,v in pairs(fortifyCastingEffects) do
+			magnitude = magnitude + v.magnitude
+		end
+
+		local spell = magicIcon:getPropertyObject("MagicMenu_Spell")
+		if not spell then return end
+		---@cast spell tes3spell
+		local castChance
+
+		if spell.magickaCost > tes3.mobilePlayer.magicka.current then
+			castChance = 0
+		else
+			castChance = spell:calculateCastChance({ caster = tes3.player, checkMagicka = false })
+			castChance = castChance + magnitude
+		end
+
+		local width = math.clamp(castChance / 100, .001, 1)
+		colorBar.widthProportional = width
+	end
+end
+
+---@param e uiActivatedEventData
+function this.onMenuMultiActivated(e)
+	e.element:registerAfter(tes3.uiEvent.preUpdate, fortifyCastingMultiFillbar)
+end
+
+---@param e uiPreEventEventData
+local function fortifyCastingSpellmakingMenuChance(e)
+	local spellmakingMenu = e.source
+	if not spellmakingMenu then return end
+
+	local fortifyCastingEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_restoration_FortifyCasting })
+	if #fortifyCastingEffects > 0 then
+		local magnitude = 0
+		for _,v in pairs(fortifyCastingEffects) do
+			magnitude = magnitude + v.magnitude
+		end
+
+		local spellChance = spellmakingMenu:findChild("MenuSpellmaking_SpellChance")
+		if not spellChance then return end
+		if not spellChance.text then return end
+
+		local effectProperty = spellChance:getPropertyFloat("MenuSpellmaking_Effect")
+
+		if effectProperty == 0 or effectProperty == 99999 then return end -- This is true if no effects have been added or if all of the previously selected effects have been removed, both of which should give a spellChance of 0
+
+		if effectProperty > 0 then		-- effectProperty appears to have 0.7 added to it when positive and 0.3 subtracted from it when negative, hence the condition and calculations here
+			spellChance.text = math.round(effectProperty - 0.7) + magnitude
+		else
+			spellChance.text = math.round(effectProperty + 0.3) + magnitude
+		end
+	end
+end
+
+---@param e uiActivatedEventData
+function this.onMenuSpellmakingActivated(e)
+	e.element:registerAfter(tes3.uiEvent.preUpdate, fortifyCastingSpellmakingMenuChance)
+end
+
+---@param e uiPreEventEventData
 local function fortifyCastingMenuPercents(e)
 	local magicMenu = e.source
-	if not magicMenu then
-		return
-	end
+	if not magicMenu then return end
 
 	local spellLayout = magicMenu:findChild("MagicMenu_spell_layout")
-	if not spellLayout then
-		return
-	end
+	if not spellLayout then return end
 
 	local spellPercents = spellLayout:findChild("MagicMenu_spell_percents")
-	if not spellPercents then
-		return
-	end
+	if not spellPercents then return end
 
 	local fortifyCastingEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_restoration_FortifyCasting })
 	if #fortifyCastingEffects > 0 then
@@ -936,49 +973,55 @@ local function blinkEffect(e)
 		tes3ui.showNotifyMenu(tes3.findGMST(tes3.gmst.sTeleportDisabled).value)
 		return
 	end
-	
-	local castPosition = tes3.mobilePlayer.position + tes3vector3.new(0, 0, 1 * tes3.mobilePlayer.height)	-- Should 0.7 * height be used instead like with Passwall?
-	local forward = tes3.worldController.armCamera.cameraData.camera.worldDirection:normalized()
 
 	local range = e.effectInstance.magnitude * 22.1
 
-	local targets = tes3.rayTest{
-		position = castPosition,
-		direction = forward,
+	local obstacles = tes3.rayTest{
+		position = tes3.getPlayerEyePosition(),
+		direction = tes3.getPlayerEyeVector(),
 		maxDistance = range,
 		findAll = true,
 		ignore = { tes3.player },
 	}
 
-	if targets then		-- I would much rather just test the collision, but I can't do that
-		for _,target in ipairs(targets) do
-			local validTarget = true
-			if target.reference then
-				local mesh = tes3.loadMesh(target.reference.baseObject.mesh)
+	if obstacles then		-- I would much rather just test the collision, but that doesn't seem to be possible
+		for _,obstacle in ipairs(obstacles) do
+			local validObstacle = true
+			if obstacle.reference then
+				local mesh = tes3.loadMesh(obstacle.reference.baseObject.mesh)
 				if mesh.extraData then
 					repeat
-						if (mesh.extraData.string:lower() == "nco" or mesh.extraData.string:lower() == "nc") then validTarget = false end
+						if mesh.extraData.string and (mesh.extraData.string:lower() == "nco" or mesh.extraData.string:lower() == "nc") then validObstacle = false end
 					until not mesh.extraData.next
 				end
-			elseif target.object.name:startswith("Water ") then
-				validTarget = false
+			elseif obstacle.object.name and obstacle.object.name:startswith("Water ") then
+				validObstacle = false
 			end
 	
-			if validTarget then
-				range = target.distance - (tes3.mobilePlayer.boundSize2D.y / 2) - 16		-- The 16 is there to put a bit more space between the player and the target
+			if validObstacle then
+				range = obstacle.distance - (tes3.mobilePlayer.boundSize2D.y / 2) - 16		-- The 16 is there to put a bit more space between the player and the target; there is probably a better way to do this by taking the angle of the camera into account
 				break
 			end
 		end
 	end
 
 	if range > 0 then
-		local destination = tes3.mobilePlayer.position + forward * range
+		local destination = tes3.mobilePlayer.position + tes3.getPlayerEyeVector() * range
 
-		if tes3.getPlayerCell().waterLevel and destination.z > tes3.getPlayerCell().waterLevel then 
-			tes3.mobilePlayer.isSwimming = false
+		tes3.mobilePlayer.isSwimming = false	-- If the player is swimming, then they need to stop swimming in order to leave the water; a condition for this shouldn't be needed since they were either not swimming to begin with or will immediately begin swimming again if still underwater
+
+		local heightCheck = tes3.rayTest{
+			position = destination + tes3vector3.new(0, 0, tes3.mobilePlayer.height),
+			direction = tes3vector3.new(0, 0, -1),
+			maxDistance = tes3.mobilePlayer.height,
+			ignore = { tes3.player },
+		}
+
+		if heightCheck and heightCheck.distance then
+			destination = destination + tes3vector3.new(0, 0, tes3.mobilePlayer.height - heightCheck.distance)	-- This should prevent the player from clipping through objects below them
 		end
 
-		tes3.mobilePlayer.position = tes3.mobilePlayer.position + forward * range	-- This is a pretty simple implementation all around, but it seems to work reasonably well. Some adjustments might be necessary though.
+		tes3.mobilePlayer.position = destination
 	end
 
 	e.effectInstance.state = tes3.spellState.retired
@@ -1018,36 +1061,75 @@ local function gazeOfVelothEffect(e)
 
 	local target = e.effectInstance.target
 
-	if not target or target.mobile.actorType ~= tes3.actorType.npc or target.mobile.isDead then	-- Projectiles have mobiles, does a check need to made in this and the distract effects for whether the required fields exist?
+	if not target or target.mobile.isDead or (target.data.tamrielData and target.data.tamrielData.wabbajack) then
 		e.effectInstance.state = tes3.spellState.retired
 		return
 	end
 
-	if target.mobile.health.base <= 250 then
-		target.data.tamrielData = target.data.tamrielData or {}
-		target.data.tamrielData.gazeOfVeloth = true
-		tes3.removeSound({ sound = nil, reference = target })	-- Stop long-winded voice lines from playing when the target is stripped of their flesh
-		tes3.playSound({ sound = tes3.getMagicEffect(tes3.effect.damageHealth).hitSoundEffect, reference = target })	-- The hit sound is stopped by the line above though, so this plays it again
-		target.mobile:kill()
-		tes3.triggerCrime({ type = tes3.crimeType.killing, victim = target.mobile })
-		tes3.incrementKillCount({ actor = target.baseObject })
+	local name = target.object.name
 
-		for _,v in pairs(raceSkeletonBodyParts) do
-			if target.baseObject.race.id == v[1] then
-				target.data.tamrielData.gazeOfVelothSkeleton = true
-				target:updateEquipment()
-				
+	if table.contains(gazeOfVelothImmuneActors, name) then
+		tes3ui.showNotifyMenu(common.i18n("magic.gazeOfVelothImmune", { name }))
+		e.effectInstance.state = tes3.spellState.retired
+		return
+	end
+
+	if target.mobile.actorType ~= tes3.actorType.npc then
+		if name == "Dagoth Ur" then
+			tes3ui.showNotifyMenu(common.i18n("magic.gazeOfVelothDagoth"))
+			e.effectInstance.state = tes3.spellState.retired
+			return
+		end
+
+		if target.baseObject.type == tes3.creatureType.humanoid then
+			if name:find("Ash ") or name:find("Dagoth") or name:find("Corprus") or name == "Ascended Sleeper" then
+				tes3ui.showNotifyMenu(common.i18n("magic.gazeOfVelothAsh", { name }))
 				e.effectInstance.state = tes3.spellState.retired
 				return
 			end
 		end
+		
+		if target.baseObject.type == tes3.creatureType.daedra then
+			tes3ui.showNotifyMenu(common.i18n("magic.gazeOfVelothDaedra", { name }))
+			e.effectInstance.state = tes3.spellState.retired
+			return
+		end
 
-		local container = tes3.createReference({ object = "T_Glb_GazeVeloth_Empty", position = target.position , orientation = target.orientation, cell = target.cell })	-- If this runs, then the target does not belong to a compatible race listed in raceSkeletonBodyParts
-		tes3.transferInventory({ from = target, to = container, limitCapacity = false })
-		tes3.positionCell({ reference = target, position = { 0, 0, -53.187 }, cell = "T_GazeOfVeloth" })	-- All sorts of problems can arise from disabling a target within the effect event
-	else
-		target.mobile:applyDamage({ damage = 100, playerAttack = true })
+		if target.baseObject.type == tes3.creatureType.normal or target.baseObject.type == tes3.creatureType.undead then
+			tes3ui.showNotifyMenu(common.i18n("magic.gazeOfVelothCreature", { name }))
+			e.effectInstance.state = tes3.spellState.retired
+			return
+		end
+
+		tes3ui.showNotifyMenu(common.i18n("magic.gazeOfVelothOther", { name }))
+		e.effectInstance.state = tes3.spellState.retired
+		return
 	end
+
+
+	target.data.tamrielData = target.data.tamrielData or {}
+	target.data.tamrielData.gazeOfVeloth = true
+	tes3.removeSound({ sound = nil, reference = target })	-- Stop long-winded voice lines from playing when the target is stripped of their flesh
+	tes3.playSound({ sound = tes3.getMagicEffect(tes3.effect.damageHealth).hitSoundEffect, reference = target })	-- The hit sound is stopped by the line above though, so this plays it again
+	target.mobile:kill()
+	tes3.incrementKillCount({ actor = target.baseObject })
+
+	if target.baseObject.faction then tes3.triggerCrime({ type = tes3.crimeType.killing, victim = target.baseObject.faction }) end	-- Ensures that the player will be expelled for attacking a faction member
+	tes3.triggerCrime({ type = tes3.crimeType.killing, victim = target.baseObject })
+
+	for _,v in pairs(raceSkeletonBodyParts) do
+		if target.baseObject.race.id == v[1] then
+			target.data.tamrielData.gazeOfVelothSkeleton = true
+			target:updateEquipment()
+			
+			e.effectInstance.state = tes3.spellState.retired
+			return
+		end
+	end
+
+	local container = tes3.createReference({ object = "T_Glb_GazeVeloth_Empty", position = target.position , orientation = target.orientation, cell = target.cell })	-- If this runs, then the target does not belong to a compatible race listed in raceSkeletonBodyParts
+	tes3.transferInventory({ from = target, to = container, limitCapacity = false })
+	tes3.positionCell({ reference = target, position = { 0, 0, -53.187 }, cell = "T_GazeOfVeloth" })	-- All sorts of problems can arise from disabling a target within the effect event
 	
 	e.effectInstance.state = tes3.spellState.retired
 end
@@ -1631,10 +1713,8 @@ function this.invisibilityRemovedEffect(e)
 	end
 end
 
---- @param e enterFrameEventData
+--- @param e simulateEventData
 function this.detectInvisibilityOpacity(e)
-	if e.menuMode then return end
-
 	for actor,magnitudes in pairs(invisibleReferences) do		-- Should the other parts of Detect Invisibility rely on invisibleReferences too?
 		local detectInvisibilityEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetInvisibility })
 		local undetectable = false
@@ -1999,11 +2079,10 @@ function this.wabbajackTransRemovedEffect(e)
 				local transformedFatigue = target.mobile.fatigue.normalized
 				local transformedMagicka = target.mobile.magicka.normalized
 
-				local vfx = tes3.createVisualEffect({ object = "VFX_AlterationHit", lifespan = 2, reference = ref })
+				local vfx = tes3.createVisualEffect({ object = "T_VFX_Wabbajack", lifespan = 1.5, reference = ref })
 				tes3.playSound{ sound = "alteration hit", reference = ref }
 
 				tes3.positionCell({ reference = ref, position = target.position, orientation = target.orientation, cell = target.cell })
-				target:disable()	-- Move to another cell and then delete once it is safe too?
 				
 				if target.mobile.isDead or target.mobile.health.current <= 1 then
 					ref.mobile:kill()
@@ -2015,7 +2094,8 @@ function this.wabbajackTransRemovedEffect(e)
 					ref.mobile.magicka.current = ref.mobile.magicka.base * transformedMagicka
 				end
 
-				ref.data.tamrielData.wabbajack = false
+				ref.data.tamrielData.wabbajacked = false
+				target:disable()	-- I would move the target to another cell, but that causes Morrowind to lock up, but disabling them after the rest of the function runs seems to work fine though
 
 				return
 			end
@@ -2039,53 +2119,60 @@ local function wabbajackEffect(e)
 	end
 
 	local target = e.effectInstance.target
-	if target.isDead or (target.data.tamrielData and target.data.tamrielData.wabbajack) or (target.mobile.actorType == tes3.actorType.creature and not target.baseObject.walks and not target.baseObject.biped) then
+	if target.isDead or (target.data.tamrielData and target.data.tamrielData.wabbajacked) or (target.mobile.actorType == tes3.actorType.creature and not target.baseObject.walks and not target.baseObject.biped) then
 		e.effectInstance.state = tes3.spellState.retired
 		return
 	end
-
-	target.data.tamrielData = target.data.tamrielData or {}
-	target.data.tamrielData.wabbajack = true	-- Prevents this function from running twice with the condition above
 	
 	if target.object.level < 30 then
-		local maxDuration = 16
-		local minDuration = 4
+		if not target.data.tamrielData or not target.data.tamrielData.wabbajack then
+			target.data.tamrielData = target.data.tamrielData or {}
+			target.data.tamrielData.wabbajacked = true	-- Prevents this from running twice with the retirement condition above
 
-		local effectiveLevel = 0
-		if target.object.level > 5 then
-			effectiveLevel = target.object.level - 5	-- The effect lasts for maxDuration for creatures of level 5 and below
+			local maxDuration = 16
+			local minDuration = 4
+	
+			local effectiveLevel = 0
+			if target.object.level > 5 then
+				effectiveLevel = target.object.level - 5	-- The effect lasts for maxDuration for creatures of level 5 and below
+			end
+			
+			local duration = maxDuration - ((maxDuration - minDuration) * (effectiveLevel / 24))
+	
+			local targetHealth = target.mobile.health.normalized
+			local targetFatigue = target.mobile.fatigue.normalized
+			local targetMagicka = target.mobile.magicka.normalized
+			
+			local transformCreature = tes3.getObject(wabbajackCreatures[math.random(#wabbajackCreatures)])
+	
+			local transformedTarget = tes3.createReference({ object = transformCreature, position = target.position, orientation = target.orientation, cell = target.cell })	-- Could this setup and the WabbajackTrans effect actually be done through a summon like the Corruption effect does?
+			transformedTarget.data.tamrielData = transformedTarget.data.tamrielData or {}
+			transformedTarget.data.tamrielData.wabbajack = {}
+			transformedTarget.data.tamrielData.wabbajack.duration = duration
+			transformedTarget.data.tamrielData.wabbajack.targetID = target.id
+			transformedTarget.data.tamrielData.wabbajack.targetName = target.object.name
+			transformedTarget.mobile.fight = 0	-- Without this guards will fight transformed NPCs
+	
+			local vfx = tes3.createVisualEffect({ object = "T_VFX_Wabbajack", lifespan = 1.5, reference = transformedTarget })
+			tes3.playSound{ sound = "alteration hit", reference = transformedTarget }
+	
+			tes3.cast({ reference = e.sourceInstance.caster, spell = "T_Dae_Alt_UNI_WabbajackTrans", alwaysSucceeds = true, bypassResistances = true, instant = true, target = transformedTarget })
+			tes3.positionCell({ reference = target, position = { 0, 0, -53.187 }, cell = "T_Wabbajack" })	-- All sorts of problems can arise from disabling a target within the effect event
+	
+			local transformedHealth = transformedTarget.mobile.health.base * targetHealth
+			if transformedHealth <= 1 then transformedHealth = 2 end 	-- Ensures that an actor with low base health won't die if the target had a high base health and was badly wounded
+			transformedTarget.mobile.health.current = transformedHealth
+			transformedTarget.mobile.fatigue.current = transformedTarget.mobile.fatigue.base * targetFatigue
+			transformedTarget.mobile.magicka.current = transformedTarget.mobile.magicka.base * targetMagicka
+	
+			transformedTarget.mobile:startCombat(e.sourceInstance.caster.mobile)
+			e.sourceInstance.caster.mobile:startCombat(transformedTarget.mobile)	-- Is this actually needed?
+		else
+			tes3.playSound{ sound = "Spell Failure Alteration", reference = target }
+			if target.data.tamrielData and target.data.tamrielData.wabbajack and target.data.tamrielData.wabbajack.targetName then tes3ui.showNotifyMenu(common.i18n("magic.wabbajackAlready", { target.data.tamrielData.wabbajack.targetName })) end
 		end
-		
-		local duration = maxDuration - ((maxDuration - minDuration) * (effectiveLevel / 24))
-
-		local targetHealth = target.mobile.health.normalized
-		local targetFatigue = target.mobile.fatigue.normalized
-		local targetMagicka = target.mobile.magicka.normalized
-		
-		local transformCreature = tes3.getObject(wabbajackCreatures[math.random(#wabbajackCreatures)])
-
-		local transformedTarget = tes3.createReference({ object = transformCreature, position = target.position, orientation = target.orientation, cell = target.cell })	-- Could this setup and the WabbajackTrans effect actually be done through a summon like the Corruption effect does?
-		transformedTarget.data.tamrielData = transformedTarget.data.tamrielData or {}
-		transformedTarget.data.tamrielData.wabbajack = {}
-		transformedTarget.data.tamrielData.wabbajack.duration = duration
-		transformedTarget.data.tamrielData.wabbajack.targetID = target.id
-		transformedTarget.mobile.fight = 0
-
-		local vfx = tes3.createVisualEffect({ object = "VFX_AlterationHit", lifespan = 2, reference = transformedTarget })
-		tes3.playSound{ sound = "alteration hit", reference = transformedTarget }
-
-		tes3.cast({ reference = e.sourceInstance.caster, spell = "T_Dae_Alt_UNI_WabbajackTrans", alwaysSucceeds = true, bypassResistances = true, instant = true, target = transformedTarget })
-		tes3.positionCell({ reference = target, position = { 0, 0, -53.187 }, cell = "T_Wabbajack" })	-- All sorts of problems can arise from disabling a target within the effect event
-
-		local transformedHealth = transformedTarget.mobile.health.base * targetHealth
-		if transformedHealth <= 1 then transformedHealth = 2 end 	-- Ensures that a creature with low base health won't die if the target had a high base health and was badly wounded
-		transformedTarget.mobile.health.current = transformedHealth
-		transformedTarget.mobile.fatigue.current = transformedTarget.mobile.fatigue.base * targetFatigue
-		transformedTarget.mobile.magicka.current = transformedTarget.mobile.magicka.base * targetMagicka
-
-		transformedTarget.mobile:startCombat(e.sourceInstance.caster.mobile)
-		e.sourceInstance.caster.mobile:startCombat(transformedTarget.mobile)	-- Is this actually needed?
 	else
+		tes3.playSound{ sound = "Spell Failure Alteration", reference = target }
 		tes3ui.showNotifyMenu(common.i18n("magic.wabbajackFailure", { target.object.name }))
 	end
 
@@ -2277,7 +2364,7 @@ function this.deleteBanishDaedraContainer(e)
 			end
 		end
 
-		e.reference:delete() 
+		e.reference:delete()
 	end
 end
 
@@ -2289,7 +2376,7 @@ local function banishDaedraEffect(e)
 	
 	local target = e.effectInstance.target
 
-	if target.object.type ~= tes3.creatureType.daedra or target.isDead or table.contains(target.mobile.friendlyActors, e.sourceInstance.caster.mobile) then
+	if target.object.type ~= tes3.creatureType.daedra or target.isDead or table.contains(target.mobile.friendlyActors, e.sourceInstance.caster.mobile) or (target.data.tamrielData and target.data.tamrielData.wabbajack) then
 		e.effectInstance.state = tes3.spellState.retired
 		return
 	end
@@ -2351,6 +2438,24 @@ local function banishDaedraEffect(e)
 	e.effectInstance.state = tes3.spellState.retired
 end
 
+---@param door tes3reference
+---@return boolean
+local function passWallDoorCrime(door)
+	local owner, requirement = tes3.getOwner({ reference = door })
+
+	if owner then
+		if owner.objectType == tes3.objectType.npc then
+			if requirement and requirement.value ~= 0 then return false end
+		elseif owner.objectType == tes3.objectType.faction then
+			if owner.playerRank >= requirement then	return false end -- I guess that the game doesn't check whether the player is expelledend
+		end
+
+		return true
+	end
+
+	return false
+end
+
 ---@param wallPosition tes3vector3
 ---@param forward tes3vector3
 ---@param right tes3vector3
@@ -2365,7 +2470,7 @@ local function passwallCalculate(wallPosition, forward, right, up, range)
 	local forwardOffset = 0
 	local rayTestOffset = 19
 
-	local rightCoord = (right * 160)
+	local rightCoord = (right * 200)
 	local upCoord = (up * 105)			-- Should this account for player height, which affects castPosition and wallPosition?
 
 	local startPosition = wallPosition + (forward * forwardOffset)
@@ -2585,13 +2690,13 @@ function this.passwallEffect(e)
 								return
 							end
 
-							if hitReference.lockNode then tes3.triggerCrime({ type = tes3.crimeType.trespass }) end
+							if passWallDoorCrime(hitReference) then tes3.triggerCrime({ type = tes3.crimeType.trespass }) end
 							tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }
 							local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
 							tes3.mobilePlayer.position = bestPosition
 						end
 					elseif hitReference.destination and hitReference.destination.cell.isInterior then
-						if hitReference.lockNode then tes3.triggerCrime({ type = tes3.crimeType.trespass }) end
+						if passWallDoorCrime(hitReference) then tes3.triggerCrime({ type = tes3.crimeType.trespass }) end
 						tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }
 						local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
 						tes3.positionCell({ cell = hitReference.destination.cell, position = hitReference.destination.marker.position, orientation = hitReference.destination.marker.orientation, teleportCompanions = false })
@@ -3019,10 +3124,10 @@ event.register(tes3.event.magicEffectsResolved, function()
 			castVFX = burdenEffect.castVisualEffect.id,
 			boltSound = burdenEffect.boltSoundEffect.id,
 			boltVFX = burdenEffect.boltVisualEffect.id,
-			hitSound = burdenEffect.hitSoundEffect.id,
-			hitVFX = burdenEffect.hitVisualEffect.id,
-			areaSound = burdenEffect.areaSoundEffect.id,
-			areaVFX = burdenEffect.areaVisualEffect.id,
+			hitSound = "T_SndObj_Silence",
+			hitVFX = "T_VFX_Empty",
+			areaSound = "T_SndObj_Silence",
+			areaVFX = "T_VFX_Empty",
 			lighting = {x = burdenEffect.lightingRed / 255, y = burdenEffect.lightingGreen / 255, z = burdenEffect.lightingBlue / 255},
 			size = burdenEffect.size,
 			sizeCap = burdenEffect.sizeCap,
@@ -3346,8 +3451,8 @@ event.register(tes3.event.magicEffectsResolved, function()
 			school = tes3.magicSchool.destruction,
 			baseCost = effectCost,
 			speed = damageHealthEffect.speed,
-			allowEnchanting = true,
-			allowSpellmaking = true,
+			allowEnchanting = false,
+			allowSpellmaking = false,
 			appliesOnce = true,
 			canCastSelf = false,
 			canCastTarget = true,
@@ -3543,8 +3648,8 @@ event.register(tes3.event.magicEffectsResolved, function()
 			castVFX = detectEffect.castVisualEffect.id,
 			boltSound = detectEffect.boltSoundEffect.id,
 			boltVFX = detectEffect.boltVisualEffect.id,
-			hitSound = detectEffect.hitSoundEffect.id,
-			hitVFX = detectEffect.hitVisualEffect.id,
+			hitSound = "T_SndObj_BlinkHit",
+			hitVFX = "T_VFX_Empty",
 			areaSound = detectEffect.areaSoundEffect.id,
 			areaVFX = detectEffect.areaVisualEffect.id,
 			lighting = {x = detectEffect.lightingRed / 255, y = detectEffect.lightingGreen / 255, z = detectEffect.lightingBlue / 255},
@@ -3596,47 +3701,47 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[20])		-- Prismatic Light
-		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
-			school = tes3.magicSchool.illusion,
-			baseCost = effectCost,
-			speed = lightEffect.speed,
-			allowEnchanting = lightEffect.allowEnchanting,
-			allowSpellmaking = lightEffect.allowSpellmaking,
-			appliesOnce = lightEffect.appliesOnce,
-			canCastSelf = lightEffect.canCastSelf,
-			canCastTarget = lightEffect.canCastTarget,
-			canCastTouch = lightEffect.canCastTouch,
-			casterLinked = lightEffect.casterLinked,
-			hasContinuousVFX = lightEffect.hasContinuousVFX,
-			hasNoDuration = lightEffect.hasNoDuration,
-			hasNoMagnitude = lightEffect.hasNoMagnitude,
-			illegalDaedra = lightEffect.illegalDaedra,
-			isHarmful = lightEffect.isHarmful,
-			nonRecastable = lightEffect.nonRecastable,
-			targetsAttributes = lightEffect.targetsAttributes,
-			targetsSkills = lightEffect.targetsSkills,
-			unreflectable = lightEffect.unreflectable,
-			usesNegativeLighting = lightEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = lightEffect.particleTexture,
-			castSound = lightEffect.castSoundEffect.id,
-			castVFX = lightEffect.castVisualEffect.id,
-			boltSound = lightEffect.boltSoundEffect.id,
-			boltVFX = lightEffect.boltVisualEffect.id,
-			hitSound = lightEffect.hitSoundEffect.id,
-			hitVFX = lightEffect.hitVisualEffect.id,
-			areaSound = lightEffect.areaSoundEffect.id,
-			areaVFX = lightEffect.areaVisualEffect.id,
-			lighting = {x = lightEffect.lightingRed / 255, y = lightEffect.lightingGreen / 255, z = lightEffect.lightingBlue / 255},
-			size = lightEffect.size,
-			sizeCap = lightEffect.sizeCap,
-			onTick = prismaticLightEffect,
-			onCollision = nil
-		}
+		--effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[20])		-- Prismatic Light
+		--tes3.addMagicEffect{
+		--	id = effectID,
+		--	name = effectName,
+		--	description = effectDescription,
+		--	school = tes3.magicSchool.illusion,
+		--	baseCost = effectCost,
+		--	speed = lightEffect.speed,
+		--	allowEnchanting = lightEffect.allowEnchanting,
+		--	allowSpellmaking = lightEffect.allowSpellmaking,
+		--	appliesOnce = lightEffect.appliesOnce,
+		--	canCastSelf = lightEffect.canCastSelf,
+		--	canCastTarget = lightEffect.canCastTarget,
+		--	canCastTouch = lightEffect.canCastTouch,
+		--	casterLinked = lightEffect.casterLinked,
+		--	hasContinuousVFX = lightEffect.hasContinuousVFX,
+		--	hasNoDuration = lightEffect.hasNoDuration,
+		--	hasNoMagnitude = lightEffect.hasNoMagnitude,
+		--	illegalDaedra = lightEffect.illegalDaedra,
+		--	isHarmful = lightEffect.isHarmful,
+		--	nonRecastable = lightEffect.nonRecastable,
+		--	targetsAttributes = lightEffect.targetsAttributes,
+		--	targetsSkills = lightEffect.targetsSkills,
+		--	unreflectable = lightEffect.unreflectable,
+		--	usesNegativeLighting = lightEffect.usesNegativeLighting,
+		--	icon = iconPath,
+		--	particleTexture = lightEffect.particleTexture,
+		--	castSound = lightEffect.castSoundEffect.id,
+		--	castVFX = lightEffect.castVisualEffect.id,
+		--	boltSound = lightEffect.boltSoundEffect.id,
+		--	boltVFX = lightEffect.boltVisualEffect.id,
+		--	hitSound = lightEffect.hitSoundEffect.id,
+		--	hitVFX = lightEffect.hitVisualEffect.id,
+		--	areaSound = lightEffect.areaSoundEffect.id,
+		--	areaVFX = lightEffect.areaVisualEffect.id,
+		--	lighting = {x = lightEffect.lightingRed / 255, y = lightEffect.lightingGreen / 255, z = lightEffect.lightingBlue / 255},
+		--	size = lightEffect.size,
+		--	sizeCap = lightEffect.sizeCap,
+		--	onTick = prismaticLightEffect,
+		--	onCollision = nil
+		--}
 	end
 end)
 
@@ -3659,6 +3764,9 @@ event.register(tes3.event.load, function()
 
 		event.unregister(tes3.event.uiActivated, this.onMenuMagicActivated, { filter = "MenuMagic" })	-- unregisterOnLoad isn't an option here of course
 		event.register(tes3.event.uiActivated, this.onMenuMagicActivated, { filter = "MenuMagic" })	-- This needs to be done before the loaded event is triggered
+
+		event.unregister(tes3.event.uiActivated, this.onMenuSpellmakingActivated, { filter = "MenuSpellmaking" })
+		event.register(tes3.event.uiActivated, this.onMenuSpellmakingActivated, { filter = "MenuSpellmaking" })
 
 		event.unregister(tes3.event.uiActivated, this.onMenuMultiActivated, { filter = "MenuMulti" })
 		event.register(tes3.event.uiActivated, this.onMenuMultiActivated, { filter = "MenuMulti" })

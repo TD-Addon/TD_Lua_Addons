@@ -678,7 +678,7 @@ local function limitIntervention(e)
 	end
 end
 
--- Checks the player's race and replaces it with an animation file if one is needed. Should eventually be expanded for races such as Tsaesci, Minotaurs, etc.
+-- Checks the player's race and replaces it with an animation file if one is needed. Should be expanded more for races in the future (such Minotaurs)
 local function fixPlayerAnimations()
 	if tes3.player.object.race.id == "T_Els_Ohmes-raht" or tes3.player.object.race.id == "T_Els_Suthay" then
 		if tes3.player.object.female == true then
@@ -718,9 +718,10 @@ event.register(tes3.event.loaded, function()
 
 		event.register(tes3.event.spellCast, magic.fortifyCastingOnSpellCast, { unregisterOnLoad = true })
 
-		tes3.getObject("T_B_GazeVeloth_Skeleton_01").partType = tes3.activeBodyPartLayer.base		-- I don't want these body parts to be associated with a race, so I set them to be base layer here rather than in the CS
+		tes3.getObject("T_B_GazeVeloth_Skeleton_01").partType = tes3.activeBodyPartLayer.base		-- I don't want these body parts to be associated with a race, so I set them to be base layer here rather than in the CS; the race name of the body part needs to be removed from the ESP that will be merged though
 		tes3.getObject("T_B_GazeVeloth_SkeletonArg_01").partType = tes3.activeBodyPartLayer.base
 		tes3.getObject("T_B_GazeVeloth_SkeletonKha_01").partType = tes3.activeBodyPartLayer.base
+		tes3.getObject("T_B_GazeVeloth_SkeletonKha_02").partType = tes3.activeBodyPartLayer.base
 		tes3.getObject("T_B_GazeVeloth_SkeletonOrc_01").partType = tes3.activeBodyPartLayer.base
 		event.register(tes3.event.addTempSound, magic.gazeOfVelothBlockActorSound, { unregisterOnLoad = true })
 		event.register(tes3.event.bodyPartAssigned, magic.gazeOfVelothBodyPartAssigned, { unregisterOnLoad = true })
@@ -739,7 +740,7 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.magicCasted, magic.detectInvisibilityTick, { unregisterOnLoad = true })
 		event.register(tes3.event.magicEffectRemoved, magic.detectInvisibilityTick, { unregisterOnLoad = true })
 		event.register(tes3.event.calcHitChance, magic.detectInvisibilityHitChance, { filter = tes3.player.baseObject, unregisterOnLoad = true })
-		event.register(tes3.event.enterFrame, magic.detectInvisibilityOpacity, { unregisterOnLoad = true })
+		event.register(tes3.event.simulate, magic.detectInvisibilityOpacity, { unregisterOnLoad = true })
 		event.register(tes3.event.magicEffectRemoved, magic.invisibilityRemovedEffect, { unregisterOnLoad = true })
 		event.register(tes3.event.spellTick, magic.invisibilityAppliedEffect, { unregisterOnLoad = true })
 		event.register(tes3.event.mobileActivated, magic.onInvisibleMobileActivated, { unregisterOnLoad = true })
