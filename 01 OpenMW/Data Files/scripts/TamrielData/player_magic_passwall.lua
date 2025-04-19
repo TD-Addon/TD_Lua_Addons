@@ -22,9 +22,9 @@ local function calculatePlayerHeight()
     local playerRaceHeights = types.NPC.races.record(playerRecord.race).height
     -- 134 is calculated backwards from MWSE version: castPosition -> player position z subtracted -> divided by 0.7
     if playerRecord.isMale then
-        return playerRaceHeights.male * 134 / self.scale
+        return playerRaceHeights.male * 134
     else
-        return playerRaceHeights.female * 134 / self.scale
+        return playerRaceHeights.female * 134
     end
 end
 local playerHeight = calculatePlayerHeight()
@@ -132,7 +132,6 @@ local function isObjectReachable(from, targetObject)
 
         return lastCheckResult
     end
-
     return false
 end
 
@@ -229,6 +228,7 @@ local function calculatePasswallPosition(intermediateRayHits, limitingPosition, 
             intermediateRayHits[1].hitPos.y - limitingPosition.y,
             0
         ):length2() + (160*160)) -- triangle hypotenuse^2 using rightCoord from MWSE version
+    local rayTestIterate = rayTestOffset * 2
 
     for i = 1, #intermediateRayHits do
         local thisRayHit = intermediateRayHits[i]
@@ -242,49 +242,53 @@ local function calculatePasswallPosition(intermediateRayHits, limitingPosition, 
             nextPosition = intermediateRayHits[i+1].hitPos
         end
 
-        local distanceToNext = (nextPosition - thisRayHit.hitPos):length()
-        local potentialPosition = thisRayHit.hitPos + directionVector * rayTestOffset
+        -- Starting from rayHit i till rayHit i+1 iterate by rayTestIterate
+        -- and do a findNearestNavMeshPosition with halfExtents sligthly bigger than rayTestIterate/2
+        -- which are getting bigger with every rayHit further from the player
+        local halfExtentForThisPart = rayTestIterate * 0.7 * i
 
-        while distanceToNext >= rayTestOffset * 2 do
+        local distanceToNext = (nextPosition - thisRayHit.hitPos):length()
+        local potentialPosition = thisRayHit.hitPos + directionVector * rayTestIterate
+
+        while distanceToNext >= rayTestIterate do
             local navMeshPosition = nearby.findNearestNavMeshPosition(
                 potentialPosition,
                 {
                     includeFlags = nearby.NAVIGATOR_FLAGS.Walk,
-                    searchAreaHalfExtents = util.vector3(150, 150, maxZDifference*10), -- fewer calculations when passwalling around corners
+                    searchAreaHalfExtents = util.vector3(halfExtentForThisPart, halfExtentForThisPart, maxZDifference * 10),
                     agentBounds = types.Actor.getPathfindingAgentBounds(self)
                 }
             )
-            if navMeshPosition == nil then
-                break
-            end
+            if navMeshPosition ~= nil then
 
-            local isPositionNotTooHighOrLow = math.abs(self.position.z - navMeshPosition.z) < maxZDifference
+                local isPositionNotTooHighOrLow = math.abs(self.position.z - navMeshPosition.z) < maxZDifference
 
-            local isPositionNotTooClose = false
-            if isPositionNotTooHighOrLow then
-                isPositionNotTooClose = (self.position - navMeshPosition):length2() >= minDistanceSquared
-            end
+                local isPositionNotTooClose = false
+                if isPositionNotTooHighOrLow then
+                    isPositionNotTooClose = (self.position - navMeshPosition):length2() >= minDistanceSquared
+                end
 
-            local isPositionNotTooFar = false
-            if isPositionNotTooClose then
-                isPositionNotTooFar = util.vector3(
-                    intermediateRayHits[1].hitPos.x - navMeshPosition.x,
-                    intermediateRayHits[1].hitPos.y - navMeshPosition.y,
-                    0
-                ):length2() <= maxDistanceAllowedSquared
-            end
+                local isPositionNotTooFar = false
+                if isPositionNotTooClose then
+                    isPositionNotTooFar = util.vector3(
+                        intermediateRayHits[1].hitPos.x - navMeshPosition.x,
+                        intermediateRayHits[1].hitPos.y - navMeshPosition.y,
+                        0
+                    ):length2() <= maxDistanceAllowedSquared
+                end
 
-            local isIntendedForThePlayer = isPositionNotTooClose and isPositionNotTooHighOrLow and isPositionNotTooFar
-            if isIntendedForThePlayer then
-                isIntendedForThePlayer = isCalculatedPositionIntendedForThePlayer(navMeshPosition)
-            end
-            if isIntendedForThePlayer then
-            local isPositionInsideLimits = isPositionNotTooClose and isPositionNotTooHighOrLow
-            local isIntendedForThePlayer = isCalculatedPositionIntendedForThePlayer(navMeshPosition)
-            if isPositionInsideLimits and isIntendedForThePlayer then
-                return navMeshPosition
+                local isIntendedForThePlayer = isPositionNotTooClose and isPositionNotTooHighOrLow and isPositionNotTooFar
+                if isIntendedForThePlayer then
+                    isIntendedForThePlayer = isCalculatedPositionIntendedForThePlayer(navMeshPosition)
+                end
+                if isIntendedForThePlayer then
+                    return navMeshPosition
+                else
+                    potentialPosition = potentialPosition + directionVector * rayTestIterate
+                    distanceToNext = (nextPosition - potentialPosition):length()
+                end
             else
-                potentialPosition = potentialPosition + directionVector * rayTestOffset
+                potentialPosition = potentialPosition + directionVector * rayTestIterate
                 distanceToNext = (nextPosition - potentialPosition):length()
             end
         end
