@@ -17,6 +17,17 @@ local maxSpellDistance = 25 * FT_TO_UNITS -- 25ft is a default Passwall spell ra
 local maxSpellDistanceSquared = maxSpellDistance * maxSpellDistance
 local veryCloseSquared = 11 * 11 -- an arbitrary value representing a close enough object that no wall is between
 local passwallSpellId = "t_com_mys_uni_passwall"
+local function calculatePlayerHeight()
+    local playerRecord = types.NPC.record(self)
+    local playerRaceHeights = types.NPC.races.record(playerRecord.race).height
+    -- 134 is calculated backwards from MWSE version: castPosition -> player position z subtracted -> divided by 0.7
+    if playerRecord.isMale then
+        return playerRaceHeights.male * 134 / self.scale
+    else
+        return playerRaceHeights.female * 134 / self.scale
+    end
+end
+local playerHeight = calculatePlayerHeight()
 
 local function getActivationVector()
     -- Camera direction cast on a XY plane
@@ -31,14 +42,8 @@ end
 local function getRaycastingInputData()
     local activationVector = getActivationVector()
     local activateDistance = getActivationDistance()
-    local playerBoundingBox = self:getBoundingBox()
-
-    -- castPosition as in MWSE version
-    local height = playerBoundingBox.halfSize.z * 2
-    local startPos = self.position + util.vector3(0, 0, height * 0.7)
-
     return {
-        startPos = startPos,
+        startPos = self.position + util.vector3(0, 0, playerHeight * 0.7), -- castPosition as in MWSE version
         directionVector = activationVector,
         activateDistance = activateDistance
     }
@@ -218,7 +223,12 @@ local function calculatePasswallPosition(intermediateRayHits, limitingPosition, 
     local rayTestOffset = 19 -- We could say that a 2*19 square is enough to fit the player in
     local minDistanceSquared = 108 * 108 -- minDistance from the MWSE version but squared
     local maxZDifference = 105 -- upCoord from the MWSE version
-    local maxDistanceAllowed = intermediateRayHits[1] and ((intermediateRayHits[1].hitPos - limitingPosition):length2() + (160*160)) -- triangle hypotenuse using rightCoord from MWSE version
+    local maxDistanceAllowedSquared = intermediateRayHits[1] and (
+        util.vector3(
+            intermediateRayHits[1].hitPos.x - limitingPosition.x,
+            intermediateRayHits[1].hitPos.y - limitingPosition.y,
+            0
+        ):length2() + (160*160)) -- triangle hypotenuse^2 using rightCoord from MWSE version
 
     for i = 1, #intermediateRayHits do
         local thisRayHit = intermediateRayHits[i]
@@ -257,7 +267,11 @@ local function calculatePasswallPosition(intermediateRayHits, limitingPosition, 
 
             local isPositionNotTooFar = false
             if isPositionNotTooClose then
-                isPositionNotTooFar = (intermediateRayHits[1].hitPos - navMeshPosition):length2() <= maxDistanceAllowed
+                isPositionNotTooFar = util.vector3(
+                    intermediateRayHits[1].hitPos.x - navMeshPosition.x,
+                    intermediateRayHits[1].hitPos.y - navMeshPosition.y,
+                    0
+                ):length2() <= maxDistanceAllowedSquared
             end
 
             local isIntendedForThePlayer = isPositionNotTooClose and isPositionNotTooHighOrLow and isPositionNotTooFar
@@ -289,10 +303,9 @@ local function gatherAllRayHitsAndLimitingPosition(raycastingInputData, firstRay
     while remainingTeleportDistance > 0 do
         local prevHit = intermediateRayHits[#intermediateRayHits]
         table.insert(previousRaycastSourceObjects, prevHit.hitObject)
-        local thisRaycastEnd = prevHit.hitPos + raycastingInputData.directionVector * remainingTeleportDistance
         local thisHit = nearby.castRay(
             prevHit.hitPos,
-            thisRaycastEnd,
+            limitingPosition,
             { ignore = previousRaycastSourceObjects })
         if thisHit.hitObject then
             table.insert(intermediateRayHits, thisHit)
