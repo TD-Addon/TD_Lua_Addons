@@ -3,6 +3,8 @@ if not require("scripts.TamrielData.utils.version_check").isFeatureSupported("mi
 end
 
 local self = require('openmw.self')
+local ambient = require('openmw.ambient')
+local async = require('openmw.async')
 local types = require('openmw.types')
 local ui = require('openmw.ui')
 local core = require('openmw.core')
@@ -72,6 +74,18 @@ local function isDoorForbiddenFromPasswall(object)
     return false
 end
 
+local function onPasswallFail()
+    async:newSimulationTimer(
+        0.2,
+        async:registerTimerCallback(
+            "T_Passwall_playSpellFailureSound",
+            function()
+                ambient.playSound("spell failure alteration")
+            end
+        )
+    )
+end
+
 local function handleAsDoor(object)
     local doorHandled = false
     if types.Door.objectIsInstance(object) then
@@ -79,6 +93,7 @@ local function handleAsDoor(object)
             local destCell = types.Door.destCell(object)
             if destCell.isExterior or destCell.isQuasiExterior then
                 ui.showMessage(l10n("TamrielData_magic_passwallDoorExterior"))
+                onPasswallFail()
             else
                 local destPos = types.Door.destPosition(object)
                 local destRotation = types.Door.destRotation(object)
@@ -90,6 +105,7 @@ local function handleAsDoor(object)
                 string.format("Door '%s' is forbidden from being passed by a Passwall spell", object.recordId),
                 passwallSpellId
             )
+            onPasswallFail()
             doorHandled = true
         end
     end
@@ -339,13 +355,13 @@ function PSW.onCastPasswall()
 
     if self.cell.isExterior then
         ui.showMessage(l10n("TamrielData_magic_passwallExterior"))
-        return
+        return onPasswallFail()
     elseif types.Actor.isSwimming(self) then
         ui.showMessage(l10n("TamrielData_magic_passwallUnderwater"))
-        return
+        return onPasswallFail()
     elseif not types.Player.isTeleportingEnabled(self) then
         ui.showMessage(core.getGMST("sTeleportDisabled"))
-        return
+        return onPasswallFail()
     end
 
     local raycastingInputData = getRaycastingInputData()
@@ -361,7 +377,7 @@ function PSW.onCastPasswall()
 
     if not firstRaycastHit.hitObject or isRayHitOnBlocker(firstRaycastHit) then
         debug.log("No target detected on spell cast.", passwallSpellId)
-        return
+        return onPasswallFail()
     end
 
     local targetObject = firstRaycastHit.hitObject
@@ -371,7 +387,7 @@ function PSW.onCastPasswall()
             string.format("Object '%s' is not a legal spell target. You need to hit an activator or a static or a door.", targetObject.recordId),
             passwallSpellId
         )
-        return
+        return onPasswallFail()
     end
 
     if handleAsDoor(targetObject) then
@@ -382,7 +398,7 @@ function PSW.onCastPasswall()
     local minObstacleHeight = 93 -- MWSE version uses 96, but In_impsmall_d_hidden_01 needs these additional 3 points in OpenMW
     if hitObjectHalfHeight < minObstacleHeight then
         debug.log(string.format("Object '%s' height (%s) is too low for Passwall (need %s).", targetObject.recordId, hitObjectHalfHeight, minObstacleHeight), passwallSpellId)
-        return
+        return onPasswallFail()
     end
 
     local intermediateRayHits, limitingPosition = gatherAllRayHitsAndLimitingPosition(raycastingInputData, firstRaycastHit)
@@ -395,6 +411,7 @@ function PSW.onCastPasswall()
         startTeleporting(finalTeleportPosition, self.cell.name, self.rotation, targetObject)
     else
         debug.log("No valid teleport position for Passwall found", passwallSpellId)
+        return onPasswallFail()
     end
 end
 
