@@ -19,6 +19,7 @@ local maxSpellDistance = 25 * FT_TO_UNITS -- 25ft is a default Passwall spell ra
 local maxSpellDistanceSquared = maxSpellDistance * maxSpellDistance
 local veryCloseSquared = 11 * 11 -- an arbitrary value representing a close enough object that no wall is between
 local passwallSpellId = "t_com_mys_uni_passwall"
+local passwallFailureSound = core.stats.Skill.records[core.magic.spells.records[passwallSpellId].effects[1].effect.school].school.failureSound
 
 local function calculatePlayerHeight()
     local playerRecord = types.NPC.record(self)
@@ -80,7 +81,7 @@ local function onPasswallFail()
         async:registerTimerCallback(
             "T_Passwall_playSpellFailureSound",
             function()
-                ambient.playSound("spell failure alteration")
+                ambient.playSound(passwallFailureSound)
             end
         )
     )
