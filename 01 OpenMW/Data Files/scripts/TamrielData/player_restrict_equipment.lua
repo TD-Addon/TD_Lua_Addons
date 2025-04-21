@@ -1,4 +1,5 @@
-if not require("scripts.TamrielData.utils.version_check").isFeatureSupported("restrictEquipment") then
+local version_check = require("scripts.TamrielData.utils.version_check")
+if not version_check.isFeatureSupported("restrictEquipment") then
     return
 end
 
@@ -8,15 +9,12 @@ local I = require('openmw.interfaces')
 local self = require("openmw.self")
 local ui = require("openmw.ui")
 local l10n = core.l10n("TamrielData")
-local settings = require("scripts.TamrielData.utils.settings")
 
 local BOOTS_MESSAGE = core.getGMST('sNotifyMessage14')
 local SHOES_MESSAGE = core.getGMST('sNotifyMessage15')
 
-local RE = {}
-
-function RE.T_UnequipImga(equipType)
-    if not settings.isFeatureEnabled["restrictEquipment"]() then
+local function unequipImga(equipType)
+    if not version_check.isFeatureEnabled("restrictEquipment") then
         return
     end
 
@@ -42,4 +40,8 @@ function RE.T_UnequipImga(equipType)
     I.UI.setMode(currentMode)
 end
 
-return RE
+return {
+    eventHandlers = {
+        T_UnequipImga = unequipImga,
+    }
+}
