@@ -17,8 +17,8 @@ function PM.checkForAnyActiveSpells(timeSinceLastCheck)
     for _, spell in pairs(types.Actor.activeSpells(self)) do
         if spell.id == "t_com_mys_uni_passwall" then
             if settings.isFeatureEnabled["miscSpells"]() then
-                types.Actor.activeSpells(self):remove(spell.activeSpellId)
                 if magic_passwall then
+                    types.Actor.activeSpells(self):remove(spell.activeSpellId)
                     magic_passwall.onCastPasswall()
                 end
             end
