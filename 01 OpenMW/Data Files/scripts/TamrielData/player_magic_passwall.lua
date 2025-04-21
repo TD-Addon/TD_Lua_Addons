@@ -63,7 +63,7 @@ end
 local function isDoorForbiddenFromPasswall(object)
     local recordName = types.Door.records[object.recordId].name
     -- compared to other ids, uppercase letters matter for object names
-    local forbiddenDoorNames = { "Trap", "Cell", "Tent", "Grate", "Bearskin", "Mystical", "Skyrender" }
+    local forbiddenDoorNames = { "Trap", "Cell", "Tent", "Grate", "Bearskin", "Mystical", "Skyrender", "Vault" }
     for _, value in pairs(forbiddenDoorNames) do
         if recordName:find(value) then
             return true
