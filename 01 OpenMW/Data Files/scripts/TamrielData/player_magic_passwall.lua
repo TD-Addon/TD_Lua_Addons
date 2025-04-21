@@ -17,6 +17,7 @@ local maxSpellDistance = 25 * FT_TO_UNITS -- 25ft is a default Passwall spell ra
 local maxSpellDistanceSquared = maxSpellDistance * maxSpellDistance
 local veryCloseSquared = 11 * 11 -- an arbitrary value representing a close enough object that no wall is between
 local passwallSpellId = "t_com_mys_uni_passwall"
+
 local function calculatePlayerHeight()
     local playerRecord = types.NPC.record(self)
     local playerRaceHeights = types.NPC.races.record(playerRecord.race).height
@@ -27,7 +28,6 @@ local function calculatePlayerHeight()
         return playerRaceHeights.female * 134
     end
 end
-local playerHeight = calculatePlayerHeight()
 
 local function getActivationVector()
     -- Camera direction cast on a XY plane
@@ -43,7 +43,7 @@ local function getRaycastingInputData()
     local activationVector = getActivationVector()
     local activateDistance = getActivationDistance()
     return {
-        startPos = self.position + util.vector3(0, 0, playerHeight * 0.7), -- castPosition as in MWSE version
+        startPos = self.position + util.vector3(0, 0, calculatePlayerHeight() * 0.7), -- castPosition as in MWSE version
         directionVector = activationVector,
         activateDistance = activateDistance
     }
