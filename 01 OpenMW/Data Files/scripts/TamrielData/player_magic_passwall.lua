@@ -327,7 +327,10 @@ local function gatherAllRayHitsAndLimitingPosition(raycastingInputData, firstRay
         local thisHit = nearby.castRay(
             prevHit.hitPos,
             limitingPosition,
-            { ignore = previousRaycastSourceObjects })
+            {
+                collisionType = nearby.COLLISION_TYPE.AnyPhysical + nearby.COLLISION_TYPE.VisualOnly,
+                ignore = previousRaycastSourceObjects
+            })
         if thisHit.hitObject then
             table.insert(intermediateRayHits, thisHit)
             remainingTeleportDistance = remainingTeleportDistance - (thisHit.hitPos - prevHit.hitPos):length()
