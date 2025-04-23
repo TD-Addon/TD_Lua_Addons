@@ -3,16 +3,16 @@
 -- The value is set to core.API_REVISION for the player entering the game.
 -- This feature is always on.
 
-local world = require('openmw.world')
 local core = require('openmw.core')
+if not core.API_REVISION or core.API_REVISION < 51 then return end
+
+local world = require('openmw.world')
 local types = require('openmw.types')
 local l10n = core.l10n("TamrielData")
 
-local globalVariableName = "OPENMW_TDLUA"
+local globalVariableName = "T_Glob_OpenMwLuaUsed"
 
 local function setGlobalVariable(player)
-    if not world or not world.mwscript or not core.API_REVISION or core.API_REVISION < 51 then return end
-
     local globalVariables = world.mwscript.getGlobalVariables(player)
 
     if globalVariables[globalVariableName] ~= nil then
