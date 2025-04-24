@@ -11,9 +11,9 @@ Settings_TamrielData_page01Main_group99Misc_debugLogging_Description: "Adds more
 
 TamrielData_main_modName: "Tamriel Data"
 TamrielData_main_luaApiTooLow: "Feature disabled, because it requires OpenMW 0.49+ with Lua API_REVISION {requiredRevision} or higher (you have {currentRevision}). Consider updating OpenMW or turn the option off in Options > Scripts > Tamriel Data."
-TamrielData_main_unknownFeature: "Unknown feature"
 TamrielData_main_noEsmLoaded: "Tamriel_Data.esm is not loaded! Make sure you have it enabled in the OpenMW content files if you want the Tamriel_Data.omwscript features."
 TamrielData_main_publicVersionMismatchWarning: "Incompatible OpenMW version detected. Press F10 for more information."
+TamrielData_main_globalVariableNotDetected: "Global variable {luaAddonGlobalVariableName} not detected. Please make sure you are using Tamriel_Data.esm version 12 or newer."
 
 TamrielData_main_imgaHelm: "Male Imga cannot wear helmets."
 
