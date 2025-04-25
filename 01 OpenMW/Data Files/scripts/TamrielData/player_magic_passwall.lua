@@ -59,7 +59,8 @@ local function startTeleporting(newPosition, newCell, newRotation, targetObject)
         position = newPosition,
         cell = newCell,
         rotation = newRotation,
-        targetObject = targetObject
+        targetObject = targetObject,
+        vfxStatic = core.magic.spells.records[passwallSpellId].effects[1].effect.hitStatic
     })
 end
 
@@ -77,7 +78,7 @@ end
 
 local function onPasswallFail()
     async:newSimulationTimer(
-        0.2,
+        0.3,
         async:registerTimerCallback(
             "T_Passwall_playSpellFailureSound",
             function()

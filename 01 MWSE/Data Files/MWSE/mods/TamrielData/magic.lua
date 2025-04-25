@@ -68,7 +68,7 @@ if config.interventionSpells == true then
 end
 
 if config.miscSpells == true then
-	tes3.claimSpellEffectId("T_alteration_Passwall", 2106)
+	tes3.claimSpellEffectId("T_mysticism_Passwall", 2106)
 	tes3.claimSpellEffectId("T_mysticism_BanishDae", 2119)
 	tes3.claimSpellEffectId("T_mysticism_ReflectDmg", 2120)
 	tes3.claimSpellEffectId("T_mysticism_DetHuman", 2121)
@@ -143,7 +143,7 @@ local td_intervention_effects = {
 
 -- effect id, effect name, effect mana cost, icon, effect description
 local td_misc_effects = {
-	{ tes3.effect.T_alteration_Passwall, common.i18n("magic.miscPasswall"), 750, "td\\s\\td_s_passwall.tga", common.i18n("magic.miscPasswallDesc")},
+	{ tes3.effect.T_mysticism_Passwall, common.i18n("magic.miscPasswall"), 750, "td\\s\\td_s_passwall.tga", common.i18n("magic.miscPasswallDesc")},
 	{ tes3.effect.T_mysticism_BanishDae, common.i18n("magic.miscBanish"), 128, "td\\s\\td_s_ban_daedra.tga", common.i18n("magic.miscBanishDesc")},
 	{ tes3.effect.T_mysticism_ReflectDmg, common.i18n("magic.miscReflectDamage"), 20, "td\\s\\td_s_ref_dam.tga", common.i18n("magic.miscReflectDamageDesc")},
 	{ tes3.effect.T_mysticism_DetHuman, common.i18n("magic.miscDetectHumanoid"), 1.5, "td\\s\\td_s_det_hum.tga", common.i18n("magic.miscDetectHumanoidDesc")},
@@ -218,7 +218,7 @@ local td_intervention_spells = {
 
 -- spell id, cast type, spell name, spell mana cost, (1st effect id, attribute id, skill id), 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
 local td_misc_spells = {
-	{ "T_Com_Mys_UNI_Passwall", tes3.spellType.spell, common.i18n("magic.miscPasswall"), 96, { tes3.effect.T_alteration_Passwall }, tes3.effectRange.touch, 25, 0, 0, 0 },
+	{ "T_Com_Mys_UNI_Passwall", tes3.spellType.spell, common.i18n("magic.miscPasswall"), 96, { tes3.effect.T_mysticism_Passwall }, tes3.effectRange.touch, 25, 0, 0, 0 },
 	{ "T_Com_Mys_BanishDaedra", tes3.spellType.spell, common.i18n("magic.miscBanish"), 64, { tes3.effect.T_mysticism_BanishDae }, tes3.effectRange.touch, 0, 0, 10, 10 },
 	{ "T_Com_Mys_ReflectDamage", tes3.spellType.spell, common.i18n("magic.miscReflectDamage"), 76, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 5, 10, 20 },
 	{ "T_Com_Mys_DetectHumanoid", tes3.spellType.spell, common.i18n("magic.miscDetectHumanoid"), 38, { tes3.effect.T_mysticism_DetHuman }, tes3.effectRange.self, 0, 5, 50, 150 },
@@ -2584,7 +2584,7 @@ end
 ---@param e magicCastedEventData
 function this.passwallEffect(e)
 	for _,v in pairs(e.source.effects) do
-		if v.id == tes3.effect.T_alteration_Passwall then
+		if v.id == tes3.effect.T_mysticism_Passwall then
 
 			if not tes3.mobilePlayer.cell.isInterior or not tes3.mobilePlayer.cell.pathGrid then
 				tes3ui.showNotifyMenu(common.i18n("magic.passwallExterior"))
@@ -2611,8 +2611,8 @@ function this.passwallEffect(e)
 
 			local range = v.radius * 22.1
 
-			local hitSound = "alteration hit"
-			local hitVFX = "VFX_AlterationHit"
+			local hitSound = "mysticism hit"
+			local hitVFX = "VFX_MysticismHit"
 
 			local checkMeshes = tes3.rayTest{
 				position = castPosition,
@@ -2866,7 +2866,6 @@ event.register(tes3.event.magicEffectsResolved, function()
 	end
 	
 	if config.miscSpells == true then
-		local levitateEffect = tes3.getMagicEffect(tes3.effect.levitate)
 		local soultrapEffect = tes3.getMagicEffect(tes3.effect.soultrap)
 		local reflectEffect = tes3.getMagicEffect(tes3.effect.reflect)
 		local detectEffect = tes3.getMagicEffect(tes3.effect.detectAnimal)
@@ -2884,16 +2883,16 @@ event.register(tes3.event.magicEffectsResolved, function()
 			id = effectID,
 			name = effectName,
 			description = effectDescription,
-			school = tes3.magicSchool.alteration,
+			school = tes3.magicSchool.mysticism,
 			baseCost = effectCost,
-			speed = levitateEffect.speed,
+			speed = detectEffect.speed,
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = true,
 			canCastSelf = false,
 			canCastTarget = false,
 			canCastTouch = true,
-			casterLinked = levitateEffect.casterLinked,
+			casterLinked = detectEffect.casterLinked,
 			hasContinuousVFX = false,
 			hasNoDuration = true,
 			hasNoMagnitude = true,
@@ -2903,20 +2902,20 @@ event.register(tes3.event.magicEffectsResolved, function()
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = true,
-			usesNegativeLighting = levitateEffect.usesNegativeLighting,
+			usesNegativeLighting = detectEffect.usesNegativeLighting,
 			icon = iconPath,
-			particleTexture = levitateEffect.particleTexture,
-			castSound = levitateEffect.castSoundEffect.id,
-			castVFX = levitateEffect.castVisualEffect.id,
+			particleTexture = detectEffect.particleTexture,
+			castSound = detectEffect.castSoundEffect.id,
+			castVFX = detectEffect.castVisualEffect.id,
 			boltSound = "T_SndObj_Silence",
 			boltVFX = "T_VFX_Empty",
 			hitSound = "T_SndObj_Silence",
 			hitVFX = "T_VFX_Empty",							-- Currently has to use VFX because otherwise Morrowind crashes when casting the effect on some actors despite this parameter being "optional"
 			areaSound = "T_SndObj_Silence",
 			areaVFX = "T_VFX_Empty",							-- Problems can apparently still arise from missing boltVFX and areaVFX for some people
-			lighting = {x = levitateEffect.lightingRed / 255, y = levitateEffect.lightingGreen / 255, z = levitateEffect.lightingBlue / 255},
-			size = levitateEffect.size,
-			sizeCap = levitateEffect.sizeCap,
+			lighting = {x = detectEffect.lightingRed / 255, y = detectEffect.lightingGreen / 255, z = detectEffect.lightingBlue / 255},
+			size = detectEffect.size,
+			sizeCap = detectEffect.sizeCap,
 			onTick = function(eventData) eventData:trigger() end,
 			onCollision = nil
 		}
