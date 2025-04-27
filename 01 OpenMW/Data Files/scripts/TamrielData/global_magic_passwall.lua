@@ -2,7 +2,6 @@ if not require("scripts.TamrielData.utils.version_check").isFeatureSupported("mi
     return
 end
 
-local core = require('openmw.core')
 local types = require('openmw.types')
 local world = require('openmw.world')
 local crimes = require('openmw.interfaces').Crimes
@@ -41,8 +40,7 @@ local function teleportPlayer(data)
 
     triggerCrimeIfTrespassing(data)
 
-    local effect = core.magic.effects.records[core.magic.EFFECT_TYPE.Open]
-    local passwall_target_effect_model = types.Static.record(effect.hitStatic).model
+    local passwall_target_effect_model = types.Static.records[data.vfxStatic].model
     world.vfx.spawn(passwall_target_effect_model, data.position)
 end
 
