@@ -2633,8 +2633,8 @@ function this.passwallEffect(e)
 				return
 			end
 
-			if tes3.worldController.flagTeleportingDisabled then
-				tes3ui.showNotifyMenu(common.i18n("magic.passwallTeleportationDisabled"))
+			if tes3.worldController.flagTeleportingDisabled or tes3.worldController.flagLevitationDisabled then
+				tes3ui.showNotifyMenu(common.i18n("magic.passwallDisabled"))
 				return
 			end
 
@@ -2700,7 +2700,7 @@ function this.passwallEffect(e)
 
 			if hitReference then
 				if hitReference.baseObject.objectType == tes3.objectType.static or hitReference.baseObject.objectType == tes3.objectType.activator then
-					if hitReference.baseObject.boundingBox.max:heightDifference(hitReference.baseObject.boundingBox.min) >= 192 then		-- Check how tall the targeted object is; this is Passwall, not Passtable
+					if hitReference.baseObject.boundingBox.max:heightDifference(hitReference.baseObject.boundingBox.min) >= 172 then		-- Check how tall the targeted object is; this is Passwall, not Passtable
 						local bestPosition, bestDistance = passwallCalculate(wallPosition + (forward * 16) - (up * 48), forward, right, up, range)		-- (forward * 16) is used to hopefully prevent teleporting inside the target; (up * 64) is used to make the effect work better with stairways down that are right behind doors and to limit the player's ability to teleport up stairs
 
 						if bestPosition then

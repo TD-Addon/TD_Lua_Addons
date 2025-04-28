@@ -130,7 +130,7 @@ return {
 	["magic.gazeOfVelothCreature"] = "%s cannot comprehend the Face of Veloth!",
 	["magic.gazeOfVelothOther"] = "%s is unaffected by the Face of Veloth!",
 	["magic.banishFailure"] = "This spell is too weak to banish %s!",
-	["magic.passwallTeleportationDisabled"] = "Passwall does not work here.",
+	["magic.passwallDisabled"] = "Passwall does not work here.",
 	["magic.passwallWard"] = "You cannot pass through to there.",
 	["magic.passwallAlpha"] = "You cannot pass through that.",
 	["magic.passwallExterior"] = "You must be in a confined space.",
