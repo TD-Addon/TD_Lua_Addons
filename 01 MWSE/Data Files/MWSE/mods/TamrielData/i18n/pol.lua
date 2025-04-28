@@ -195,7 +195,7 @@ return {
 	["mcm.miscSpellsDescription"] = "Dodaje nowe zaklęcia nie pasujące do żadnej z powyższych kategorii, jak Wypędzenie Daedry, Odbicie Obrażeń, Rozproszenie Humanoida czy Łabadżak.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
 
 	["mcm.passwallAlterationLabel"] = "Przeniknięcie Ściany Jako Efekt Szkoły Przemiany",
-	["mcm.passwallAlterationDescription"] = "Przipisuje Przeniknięcie ściany do szkoły Przemiany, zamiast szkoły Mistycyzmu.\nWymaga ponownego uruchomienia gry.\n\nDomyślnie: Wył.\n\n",
+	["mcm.passwallAlterationDescription"] = "Przypisuje Przeniknięcie ściany do szkoły Przemiany, zamiast szkoły Mistycyzmu.\nWymaga ponownego uruchomienia gry.\n\nDomyślnie: Wył.\n\n",
 
 	["mcm.magickaExpandedLabel"] = "Nadpisanie Efektów Magicka Expanded",
 	["mcm.magickaExpandedDescription"] = "Podmienia, dla spójności, niektóre efekty dodane w Magicka Expanded na takie same zaimplementowane również w Tamriel Data, jak np. Wypędzenie Daedry czy Przywołanie Vermai" ..
