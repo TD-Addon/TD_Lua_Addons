@@ -3,6 +3,12 @@ local this = {}
 local common = require("tamrielData.common")
 local config = require("tamrielData.config")
 
+local passwallAlteration = config.passwallAlteration	-- Magic effects are only resolved once when the game begins, but just checking config.passwallAlteration means that the effect's hit sound and VFX will change with the config's value even if the game is not restarted
+local passwallIcon = "td\\s\\td_s_passwall.tga"
+if passwallAlteration then
+	passwallIcon = "td\\s\\td_s_passwall_alt.tga"
+end
+
 local northMarkerCos = 0
 local northMarkerSin = 0
 local mapWidth = 0
@@ -143,7 +149,7 @@ local td_intervention_effects = {
 
 -- effect id, effect name, effect mana cost, icon, effect description
 local td_misc_effects = {
-	{ tes3.effect.T_mysticism_Passwall, common.i18n("magic.miscPasswall"), 750, "td\\s\\td_s_passwall.tga", common.i18n("magic.miscPasswallDesc")},
+	{ tes3.effect.T_mysticism_Passwall, common.i18n("magic.miscPasswall"), 750, passwallIcon, common.i18n("magic.miscPasswallDesc")},
 	{ tes3.effect.T_mysticism_BanishDae, common.i18n("magic.miscBanish"), 128, "td\\s\\td_s_ban_daedra.tga", common.i18n("magic.miscBanishDesc")},
 	{ tes3.effect.T_mysticism_ReflectDmg, common.i18n("magic.miscReflectDamage"), 20, "td\\s\\td_s_ref_dam.tga", common.i18n("magic.miscReflectDamageDesc")},
 	{ tes3.effect.T_mysticism_DetHuman, common.i18n("magic.miscDetectHumanoid"), 1.5, "td\\s\\td_s_det_hum.tga", common.i18n("magic.miscDetectHumanoidDesc")},
@@ -448,9 +454,9 @@ local td_ingredients = {
 							  tes3.effect.fireDamage, -1, -1,
 							  tes3.effect.T_mysticism_Insight, -1, -1 },
 	{ "T_IngFlor_MonksTons_01", tes3.effect.T_mysticism_Insight, -1, -1,
-							tes3.effect.blind, -1, -1,
-							tes3.effect.fortifyAttribute, tes3.attribute.willpower, 0,
-							tes3.effect.drainAttribute, tes3.attribute.personality, 0 },
+								tes3.effect.blind, -1, -1,
+								tes3.effect.fortifyAttribute, tes3.attribute.willpower, 0,
+								tes3.effect.drainAttribute, tes3.attribute.personality, 0 },
 	--{ "T_IngMine_Agate_01", tes3.effect.reflect, -1, -1,
 	--						  tes3.effect.levitate, -1, -1,
 	--						  tes3.effect.T_illusion_PrismaticLight, -1, -1,
@@ -2628,7 +2634,7 @@ function this.passwallEffect(e)
 			end
 
 			if tes3.worldController.flagTeleportingDisabled then
-				tes3ui.showNotifyMenu(tes3.findGMST(tes3.gmst.sTeleportDisabled).value)
+				tes3ui.showNotifyMenu(common.i18n("magic.passwallTeleportationDisabled"))
 				return
 			end
 
@@ -2644,6 +2650,10 @@ function this.passwallEffect(e)
 
 			local hitSound = "mysticism hit"
 			local hitVFX = "VFX_MysticismHit"
+			if passwallAlteration then
+				hitSound = "alteration hit"
+				hitVFX = "VFX_AlterationHit"
+			end
 
 			local checkMeshes = tes3.rayTest{
 				position = castPosition,
@@ -2902,6 +2912,14 @@ event.register(tes3.event.magicEffectsResolved, function()
 	end
 	
 	if config.miscSpells == true then
+		local passwallBaseEffect = tes3.getMagicEffect(tes3.effect.detectAnimal)
+		local passwallSchool = tes3.magicSchool.mysticism
+
+		if passwallAlteration then
+			passwallBaseEffect = tes3.getMagicEffect(tes3.effect.levitate)
+			passwallSchool = tes3.magicSchool.alteration
+		end
+
 		local soultrapEffect = tes3.getMagicEffect(tes3.effect.soultrap)
 		local reflectEffect = tes3.getMagicEffect(tes3.effect.reflect)
 		local detectEffect = tes3.getMagicEffect(tes3.effect.detectAnimal)
@@ -2919,16 +2937,16 @@ event.register(tes3.event.magicEffectsResolved, function()
 			id = effectID,
 			name = effectName,
 			description = effectDescription,
-			school = tes3.magicSchool.mysticism,
+			school = passwallSchool,
 			baseCost = effectCost,
-			speed = detectEffect.speed,
+			speed = passwallBaseEffect.speed,
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = true,
 			canCastSelf = false,
 			canCastTarget = false,
 			canCastTouch = true,
-			casterLinked = detectEffect.casterLinked,
+			casterLinked = passwallBaseEffect.casterLinked,
 			hasContinuousVFX = false,
 			hasNoDuration = true,
 			hasNoMagnitude = true,
@@ -2938,20 +2956,20 @@ event.register(tes3.event.magicEffectsResolved, function()
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = true,
-			usesNegativeLighting = detectEffect.usesNegativeLighting,
+			usesNegativeLighting = passwallBaseEffect.usesNegativeLighting,
 			icon = iconPath,
-			particleTexture = detectEffect.particleTexture,
-			castSound = detectEffect.castSoundEffect.id,
-			castVFX = detectEffect.castVisualEffect.id,
+			particleTexture = passwallBaseEffect.particleTexture,
+			castSound = passwallBaseEffect.castSoundEffect.id,
+			castVFX = passwallBaseEffect.castVisualEffect.id,
 			boltSound = "T_SndObj_Silence",
 			boltVFX = "T_VFX_Empty",
 			hitSound = "T_SndObj_Silence",
 			hitVFX = "T_VFX_Empty",							-- Currently has to use VFX because otherwise Morrowind crashes when casting the effect on some actors despite this parameter being "optional"
 			areaSound = "T_SndObj_Silence",
 			areaVFX = "T_VFX_Empty",							-- Problems can apparently still arise from missing boltVFX and areaVFX for some people
-			lighting = {x = detectEffect.lightingRed / 255, y = detectEffect.lightingGreen / 255, z = detectEffect.lightingBlue / 255},
-			size = detectEffect.size,
-			sizeCap = detectEffect.sizeCap,
+			lighting = {x = passwallBaseEffect.lightingRed / 255, y = passwallBaseEffect.lightingGreen / 255, z = passwallBaseEffect.lightingBlue / 255},
+			size = passwallBaseEffect.size,
+			sizeCap = passwallBaseEffect.sizeCap,
 			onTick = function(eventData) eventData:trigger() end,
 			onCollision = nil
 		}
