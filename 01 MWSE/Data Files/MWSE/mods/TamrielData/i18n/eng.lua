@@ -120,6 +120,7 @@ return {
 	["magic.miscPrismaticLight"] = "Prismatic Light",
 	["magic.miscPrismaticLightDesc"] = "This effect creates a projectile of prismatic light. Upon striking a target, the projectile illuminates the area for the duration of the effect. The light projectile does not cause any damage.",
 	
+	["magic.blinkLevitationDisabled"] = "Blink does not work here.",
 	["magic.wabbajackFailure"] = "%s is too strong to be Wabbajacked!",
 	["magic.wabbajackAlready"] = "%s is already Wabbajacked!",
 	["magic.gazeOfVelothImmune"] = "%s transcends the Face of Veloth!",
