@@ -119,6 +119,12 @@ return {
 	["magic.miscFortifyCastingDesc"] = "Tymczasowo zwiększa szanse postaci na skuteczne rzucenie zaklęcia.",
 	["magic.miscPrismaticLight"] = "Pryzmatyczne Światło",
 	["magic.miscPrismaticLightDesc"] = "Tworzy magiczny pocisk, który po uderzeniu w cel rozświetla na pewien czas okolicę. Nie zadaje obrażeń.", -- Aly: polish description of "Light" is so cut, trying to get consistent basically makes prismatic light's description a duplicate
+	["magic.miscBloodMagic"] = "Magia Krwi",
+	["magic.miscBloodMagicDesc"] = "Tekst zastępczy",
+	["magic.miscSanguineRose"] = "Róża Sanguine'a", -- Aly: fuck anyone who was working on translation for TESV :P
+	["magic.miscSanguineRoseDesc"] = "Przywołuje z Otchłani losową daedrę. Stworzenie pojawi się sześć stóp przed magiem i będzie atakowało każdą zagrażającą mu istotę, póki nie minie czas trwania efektu lub póki samo nie zostanie zabite. W obydwu przypadkach przywołana istota znika, powracając do Otchłani. Pamiętaj, że jeśli przywołasz istotę z innego wymiaru wewnątrz miasta, miejska straż rzuci się na ciebie bez ostrzeżenia!",
+	["magic.miscDetectValuables"] = "Wykrycie Kosztowności",
+	["magic.miscDetectValuablesDesc"] = "Rzucający zaklęcie może wykrywać na odległość kosztowne przedmioty. Stopień efektu określa promień (w stopach) obszaru, który zostanie magicznie przeszukany.",
 
 	["magic.blinkLevitationDisabled"] = "Migotanie nie działa w tym miejscu.",
 	["magic.wabbajackFailure"] = "Cel: %s jest zbyt potężny, nie może być poddany efektowi Łabadżaka!", -- Aly: ok this was harder to figure out due to adjectives inheriting gender of subject so: "Alex is strong" -> "Alex jest silny" but "Anna is strong" -> "Anna jest silna"; in this case "cel (target)" not %s is the subject so no matter what gender %s is, string will remain the same
