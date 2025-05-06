@@ -1,4 +1,4 @@
-local common = require("tamrielData.common")
+local common = require("TamrielData.common")
 
 local defaultConfig = {
 	summoningSpells = true,

@@ -1,7 +1,7 @@
 local this = {}
 
-local common = require("tamrielData.common")
-local config = require("tamrielData.config")
+local common = require("TamrielData.common")
+local config = require("TamrielData.config")
 
 -- Default weather settings; set using findGMST instead?
 local defaultSnowFog = { landFogDayDepth = 1, landFogNightDepth = 1.2 }

@@ -1,5 +1,5 @@
 -- Script for allowing Graphic Herbalism to affect containers that it otherwise wouldn't
-local common = require("tamrielData.common")
+local common = require("TamrielData.common")
 event.register(tes3.event.initialized, function()
     if common.gh_config then
 		--common.gh_config.blacklist["t_glb_fauna_seabiscuit1"] = false

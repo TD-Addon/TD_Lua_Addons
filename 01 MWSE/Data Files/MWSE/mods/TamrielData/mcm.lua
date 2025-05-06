@@ -1,5 +1,5 @@
-local common = require("tamrielData.common")
-local config = require("tamrielData.config")
+local common = require("TamrielData.common")
+local config = require("TamrielData.config")
 
 ----------------------
 -- MCM Template --

@@ -6,7 +6,7 @@
 
 local this = {}
 
-local common = require("tamrielData.common")
+local common = require("TamrielData.common")
 
 local baseReputation
 

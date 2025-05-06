@@ -1,6 +1,6 @@
 local this = {}
 
-local common = require("tamrielData.common")
+local common = require("TamrielData.common")
 
 -- Provinces must be in reverse alphabetical order
 local provinceTable = {

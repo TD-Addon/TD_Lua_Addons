@@ -3,13 +3,13 @@
 	By Kynesifnar, mort, and Rakanishu
 ]]
 
-local common = require("tamrielData.common")
-local config = require("tamrielData.config")
+local common = require("TamrielData.common")
+local config = require("TamrielData.config")
 local behavior = require("TamrielData.behavior")
-local factions = require("tamrielData.factions")
-local magic = require("tamrielData.magic")
-local reputation = require("tamrielData.reputation")
-local weather = require("tamrielData.weather")
+local factions = require("TamrielData.factions")
+local magic = require("TamrielData.magic")
+local reputation = require("TamrielData.reputation")
+local weather = require("TamrielData.weather")
 
 mwse.log("[Tamriel Data MWSE-Lua] Initialized Version 2.1")
 
@@ -735,6 +735,10 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.mobileActivated, magic.corruptionSummoned, { unregisterOnLoad = true })
 		
 		event.register(tes3.event.magicEffectRemoved, magic.wabbajackTransRemovedEffect, { unregisterOnLoad = true })	-- Rename this function and related ones to wabbajackHelper? wabbajackTrans isn't very obvious.
+
+		timer.start{ duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectValuablesTick }
+		event.register(tes3.event.magicCasted, magic.detectValuablesTick, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.detectValuablesTick, { unregisterOnLoad = true })
 
 		timer.start{ duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectInvisibilityTick }
 		event.register(tes3.event.magicCasted, magic.detectInvisibilityTick, { unregisterOnLoad = true })

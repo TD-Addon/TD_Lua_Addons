@@ -119,6 +119,12 @@ return {
 	["magic.miscFortifyCastingDesc"] = "This effect raises the subject's chance of successfully casting a spell.",
 	["magic.miscPrismaticLight"] = "Prismatic Light",
 	["magic.miscPrismaticLightDesc"] = "This effect creates a projectile of prismatic light. Upon striking a target, the projectile illuminates the area for the duration of the effect. The light projectile does not cause any damage.",
+	["magic.miscBloodMagic"] = "Blood Magic",
+	["magic.miscBloodMagicDesc"] = "Placeholder",
+	["magic.miscSanguineRose"] = "Sanguine Rose",
+	["magic.miscSanguineRoseDesc"] = "This effect summons a random daedra from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight.",
+	["magic.miscDetectValuables"] = "Detect Valuables",
+	["magic.miscDetectValuablesDesc"] = "The caster of this effect can detect valuable items; they appear on the map as symbols. The effect's magnitude is the range in feet from the caster that items are detected.",
 	
 	["magic.blinkLevitationDisabled"] = "Blink does not work here.",
 	["magic.wabbajackFailure"] = "%s is too strong to be Wabbajacked!",
