@@ -1,5 +1,5 @@
 --[[
-	Tamriel Data MWSE-Lua Addon v2.1
+	Tamriel Data MWSE-Lua Addon v2.2
 	By Kynesifnar, mort, and Rakanishu
 ]]
 
@@ -11,7 +11,7 @@ local magic = require("TamrielData.magic")
 local reputation = require("TamrielData.reputation")
 local weather = require("TamrielData.weather")
 
-mwse.log("[Tamriel Data MWSE-Lua] Initialized Version 2.1")
+mwse.log("[Tamriel Data MWSE-Lua] Initialized Version 2.2")
 
 local player_data_defaults = {
 	corruptionReferenceID = ""
@@ -225,6 +225,11 @@ local hats = {
 	"T_A_ImpEpHat02_Hr",
 }
 
+-- (cell ids), (journal topic id, journal index), global id, (container id, (container cell id, container cell x, container cell y), container position)
+local react_cells = {
+	--{ cells = { "" }, journal = { id = "", index = 0 }, global = "", container = { id = "", cell = { id = "", x = 0, y = 0 }, position = { 0, 0, 0} } }
+}
+
 local TD_ButterflyMothTooltip = {}
 
 -- Taken from MWSE's documentation
@@ -277,7 +282,7 @@ end
 -- The following function is based on one that G7 made for Graphic Herbalism
 ---@param e uiObjectTooltipEventData
 local function butterflyMothTooltip(e)
-	if e.reference and e.reference.baseObject.objectType == tes3.objectType.creature and e.reference.baseObject.sourceMod == "Tamriel_Data.esm" then
+	if e.reference and e.reference.baseObject.objectType == tes3.objectType.creature and common.isFromTD(e.reference.baseObject, false) then
 		local refID = e.reference.baseObject.id
 		local isButterfly = refID:find("Butterfly")
 		local isMoth = refID:find("Moth")
@@ -366,7 +371,7 @@ end
 local function replaceHatCell(e)
 	for armor in e.cell:iterateReferences(tes3.objectType.armor) do
 		if armor and armor.object and armor.object.slot == tes3.armorSlot.helmet and not armor.object.isClosedHelmet then
-			if armor.object.sourceMod == "Tamriel_Data.esm" or armor.object.sourceMod == "TR_Mainland.esm" or armor.object.sourceMod == "Cyr_Main.esm" or armor.object.sourceMod == "Sky_Main.esm"	then
+			if common.isFromTD(armor.object, false) or common.isFromPTR(armor.object, false) then
 				if tes3.getObject(armor.object.id .. "H") then
 					local hat = tes3.createReference({ object = armor.object.id .. "H", orientation = armor.orientation, position = armor.position, cell = armor.cell, scale = armor.scale })
 					
@@ -386,7 +391,7 @@ local function replaceHatCell(e)
 		helmetNumber = 1
 		for _,itemStack in pairs(actor.object.inventory) do	-- Containers don't have mobiles, but the object property can access the instances for all of the applicable references
 			if itemStack and itemStack.object and itemStack.object.objectType == tes3.objectType.armor and itemStack.object.slot == tes3.armorSlot.helmet and not itemStack.object.isClosedHelmet then
-				if itemStack.object.sourceMod == "Tamriel_Data.esm" or itemStack.object.sourceMod == "TR_Mainland.esm" or itemStack.object.sourceMod == "Cyr_Main.esm" or itemStack.object.sourceMod == "Sky_Main.esm"	then
+				if common.isFromTD(itemStack.object, false) or common.isFromPTR(itemStack.object, false) then
 					if tes3.getObject(itemStack.object.id .. "H") and itemStack.count > 0 then
 						replaceableHelmets[helmetNumber] = { itemStack.object.id, itemStack.count }
 						helmetNumber = helmetNumber + 1
@@ -405,7 +410,7 @@ end
 ---@param e leveledItemPickedEventData
 local function replaceHatLeveledItem(e)
 	if e.pick and e.pick.objectType == tes3.objectType.armor and e.pick.slot == tes3.armorSlot.helmet and not e.pick.isClosedHelmet then
-		if e.pick.sourceMod == "Tamriel_Data.esm" or e.pick.sourceMod == "TR_Mainland.esm" or e.pick.sourceMod == "Cyr_Main.esm" or e.pick.sourceMod == "Sky_Main.esm"	then
+		if common.isFromTD(e.pick, false) or common.isFromPTR(e.pick, false)then
 			local hatItem = tes3.getObject(e.pick.id .. "H")
 			if hatItem and not hatItem.sourceMod then e.pick = hatItem end
 		end
@@ -416,11 +421,11 @@ local function createHatObjects()
 	for armor in tes3.iterateObjects(tes3.objectType.armor) do
 		---@cast armor tes3armor
 		if armor.slot == tes3.armorSlot.helmet and not armor.isClosedHelmet then	-- Closed helmets are not going to be hats by definition
-			if armor.sourceMod == "Tamriel_Data.esm" or armor.sourceMod == "TR_Mainland.esm" or armor.sourceMod == "Cyr_Main.esm" or armor.sourceMod == "Sky_Main.esm"	then -- Only affect TD hats or unique versions from PTR
-				if armor.id:find("Hat") or armor.name:find("Hat") or armor.icon:lower():find("hat") then	-- Check whether these conditions are actually worth having
+			if common.isFromTD(armor, false) or common.isFromPTR(armor, false) then -- Only affect TD hats or unique variants from PTR
+				if armor.id:find("Hat") or armor.name:find("Hat") or armor.icon:lower():find("hat") or armor.id:find("Robe") or armor.name:find("Robe") or armor.icon:lower():find("robe") then	-- Check whether these conditions are actually worth having
 					for _,v in pairs(hats) do
-						if armor.parts[1].male and armor.parts[1].male.id == v and not tes3.getObject(armor.id .. "H") and #(armor.id .. "H") < 32 then
-							local hat = tes3.createObject({ objectType = tes3.objectType.clothing, id = armor.id .. "H" })
+						if armor.parts[1] and armor.parts[1].male and armor.parts[1].male.id == v and #(armor.id .. "H") < 32 then
+							local hat = tes3.createObject({ objectType = tes3.objectType.clothing, id = armor.id .. "H", getIfExists = true })
 							hat.name = armor.name
 							hat.value = armor.value
 							hat.weight = armor.weight
@@ -528,24 +533,27 @@ end
 local function fixVampireHeadAssignment(e)
 	if e.reference.baseObject.objectType == tes3.objectType.npc and e.index == tes3.activeBodyPart.head then
 		if not e.object or e.object.objectType ~= tes3.objectType.armor then
-			if e.reference.mobile then
-				if e.reference.mobile.object then
-					if e.reference.mobile.object.baseObject.head.id == "T_B_De_UNI_HeadOrlukhTR" then	-- Handles the unique head for Varos of the Orlukh bloodline
-							e.bodyPart = e.reference.mobile.object.baseObject.head
-					elseif e.reference.mobile.object.baseObject.head.id == "T_B_Imp_UNI_HeadHerrius2PC" then	-- Handles the unique head for Herrius Thimistrel when he is openly a vampire
-							e.bodyPart = e.reference.mobile.object.baseObject.head
-					elseif e.reference.mobile.object.baseObject.head.id == "T_B_Imp_UNI_HeadHerriusPC" then	-- Handles the unique head for Herrius Thimistrel
-						if e.reference.mobile.inCombat or e.reference.mobile.isDead then
-							e.bodyPart = tes3.getObject("T_B_Imp_UNI_HeadHerrius2PC")
-						else
-							e.bodyPart = tes3.getObject("T_B_Imp_UNI_HeadHerriusPC")
-						end
+			if e.reference.mobile and e.reference.mobile.object then
+				if e.reference.mobile.object.baseObject.head.id == "T_B_De_UNI_HeadOrlukhTR" then	-- Handles the unique head for Varos of the Orlukh bloodline
+						e.bodyPart = e.reference.mobile.object.baseObject.head
+				elseif e.reference.mobile.object.baseObject.head.id == "T_B_Imp_UNI_HeadHerrius2PC" then	-- Handles the unique head for Herrius Thimistrel when he is openly a vampire
+						e.bodyPart = e.reference.mobile.object.baseObject.head
+				elseif e.reference.mobile.object.baseObject.head.id == "T_B_Imp_UNI_HeadHerriusPC" then	-- Handles the unique head for Herrius Thimistrel
+					if e.reference.mobile.inCombat or e.reference.mobile.isDead then
+						e.bodyPart = tes3.getObject("T_B_Imp_UNI_HeadHerrius2PC")
+					else
+						e.bodyPart = tes3.getObject("T_B_Imp_UNI_HeadHerriusPC")
 					end
-					
-					if e.reference.mobile == tes3.mobilePlayer then										-- Handles the player's head when wearing Namira's Shroud						
-						if tes3.player.object:hasItemEquipped("T_Dae_UNI_RobeShroud") then		
-							e.bodyPart = e.reference.mobile.object.baseObject.head
-						end
+				end
+				
+				if e.reference.mobile == tes3.mobilePlayer then										-- Handles the player's head when wearing Namira's Shroud						
+					if tes3.player.object:hasItemEquipped("T_Dae_UNI_RobeShroud") then		
+						e.bodyPart = e.reference.mobile.object.baseObject.head
+					end
+				else
+					if e.reference.mobile.hasVampirism and common.isFromPTR(e.reference, true) then	-- Sometimes the no head shows up on PTR vampires for unclear reasons. Hopefully this fixes that.
+						if e.reference.baseObject.female then e.bodyPart = e.reference.baseObject.race.femaleBody.vampireHead
+						else e.bodyPart = e.reference.baseObject.race.maleBody.vampireHead end
 					end
 				end
 			end
@@ -554,14 +562,12 @@ local function fixVampireHeadAssignment(e)
 
 	if e.index == tes3.activeBodyPart.hair then	-- Check for being an NPC too?
 		if not e.object or e.object.objectType ~= tes3.objectType.armor then
-			if e.reference.mobile then
-				if e.reference.mobile.object then
-					if e.reference.mobile.object.baseObject.hair.id == "T_B_Imp_UNI_HairHerriusPC" then	-- Handles the unique hair for Herrius Thimistrel
-						if e.reference.mobile.inCombat or e.reference.mobile.isDead then
-							e.bodyPart = tes3.getObject("T_B_Imp_UNI_HairHerrius2PC")
-						else
-							e.bodyPart = tes3.getObject("T_B_Imp_UNI_HairHerriusPC")
-						end
+			if e.reference.mobile and e.reference.mobile.object then
+				if e.reference.mobile.object.baseObject.hair.id == "T_B_Imp_UNI_HairHerriusPC" then	-- Handles the unique hair for Herrius Thimistrel
+					if e.reference.mobile.inCombat or e.reference.mobile.isDead then
+						e.bodyPart = tes3.getObject("T_B_Imp_UNI_HairHerrius2PC")
+					else
+						e.bodyPart = tes3.getObject("T_B_Imp_UNI_HairHerriusPC")
 					end
 				end
 			end
@@ -613,6 +619,72 @@ local function adjustTravelPrices(e)
 		if providerInstance.faction and providerInstance.faction.id:find("Mages") and providerInstance.factionRank > 3 then	-- Increase price of teleporting between MG networks
 			e.price = e.price * 5;
 		end
+	end
+end
+
+---@param e itemDroppedEventData
+local function markReactCellItem(e)
+	for _,reactCell in pairs(react_cells) do
+		for _,cellID in pairs(reactCell.cells) do
+			if e.reference.cell.id == cellID then
+				e.reference.data.tamrielData = e.reference.data.tamrielData or {}
+				e.reference.data.tamrielData.playerItem = true
+				break
+			end
+		end
+	end
+end
+
+---@param e journalEventData
+local function moveReactCellItems(e)
+	for _,reactCell in pairs(react_cells) do
+		if e.topic.id == reactCell.journal.id and e.index >= reactCell.journal.index then
+			local hasRun = false
+			for _,pastReactCellJournal in pairs(tes3.player.data.tamrielData.pastReactCellJournals) do							-- The pastReactCellJournals are checked so that cells are only gone through once.
+				if reactCell.journal.id == pastReactCellJournal[1] and reactCell.journal.index == pastReactCellJournal[2] then	-- The reactCell values (and not the event data's) are used so that all cells are gone through if there are reactions to multiple journal indices and the index jumps over the lower indices
+					hasRun = true
+					break
+				end
+			end
+
+			if not hasRun then
+				local containerCell
+				if reactCell.container.cell.id then containerCell = tes3.getCell({ id = reactCell.container.cell.id })		-- These conditions are needed to handle both interior and exterior containerCells
+				else containerCell = tes3.getCell({ x = reactCell.container.cell.x, y = reactCell.container.cell.y }) end
+				local playerItemsContainer
+
+				if containerCell then
+					for container in containerCell:iterateReferences(tes3.objectType.container, false) do
+						if container.baseObject.id == reactCell.container.id and container.position == reactCell.container.position then
+							playerItemsContainer = container
+							break
+						end
+					end
+				end
+
+				if playerItemsContainer then
+					for _,cellID in pairs(reactCell.cells) do
+						local cell = tes3.getCell({ id = cellID })
+					
+						if cell then -- This doesn't yet go over items that have been placed in containers or disable items after adding them to playerItemsContainer
+							for ref in cell:iterateReferences({ tes3.objectType.alchemy, tes3.objectType.ammunition, tes3.objectType.apparatus, tes3.objectType.armor, tes3.objectType.book, tes3.objectType.clothing, tes3.objectType.ingredient, tes3.objectType.light, tes3.objectType.lockpick, tes3.objectType.miscItem, tes3.objectType.probe, tes3.objectType.repairItem, tes3.objectType.weapon }) do
+								if ref.data.tamrielData and ref.data.tamrielData.playerItem then
+									local owner, requirement = tes3.getOwner({ reference = ref })
+									local count, item, itemData = tes3.addItem({ reference = playerItemsContainer, item = ref.baseObject, itemData = ref.itemData, playSound = false })
+								
+									itemData.owner = owner				-- The ownership data is removed from itemData by addItem, so it must be added back here
+									itemData.requirement = requirement
+								end
+							end
+						end
+					end
+				end
+
+				table.insert(tes3.player.data.tamrielData.pastReactCellJournals, { reactCell.journal.id, reactCell.journal.index })
+			end
+		end
+
+		-- break cannot be used here because that might cause other suitable reactCells with different indices to be missed
 	end
 end
 
@@ -681,7 +753,7 @@ end
 -- Checks the player's race and replaces it with an animation file if one is needed. Should be expanded more for races in the future (such Minotaurs)
 local function fixPlayerAnimations()
 	if tes3.player.object.race.id == "T_Els_Ohmes-raht" or tes3.player.object.race.id == "T_Els_Suthay" then
-		if tes3.player.object.female == true then
+		if tes3.player.object.female then
 			tes3.loadAnimation({ reference = tes3.player, file = "epos_kha_upr_anim_f.nif" })
 		else
 			tes3.loadAnimation({ reference = tes3.player, file = "epos_kha_upr_anim_m.nif" })
@@ -711,6 +783,8 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.miscSpells == true then
+		event.register(tes3.event.spellMagickaUse, magic.bloodMagicCast, { unregisterOnLoad = true })
+
 		--timer.start{ duration = 0.0166667, iterations = -1, type = timer.simulate, callback = magic.prismaticLightTick }
 		--event.register(tes3.event.referenceActivated, magic.onPrismaticLightReferenceActivated, { unregisterOnLoad = true })
 		--event.register(tes3.event.referenceDeactivated, magic.onPrismaticLightReferenceDeactivated, { unregisterOnLoad = true })
@@ -733,7 +807,7 @@ event.register(tes3.event.loaded, function()
 
 		event.register(tes3.event.activate, magic.corruptionBlockActivation, { unregisterOnLoad = true })
 		event.register(tes3.event.mobileActivated, magic.corruptionSummoned, { unregisterOnLoad = true })
-		
+
 		event.register(tes3.event.magicEffectRemoved, magic.wabbajackTransRemovedEffect, { unregisterOnLoad = true })	-- Rename this function and related ones to wabbajackHelper? wabbajackTrans isn't very obvious.
 
 		timer.start{ duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectValuablesTick }
@@ -788,6 +862,12 @@ event.register(tes3.event.loaded, function()
 	if config.provincialFactionUI == true then
 		event.register(tes3.event.uiRefreshed, factions.uiRefreshedCallback, { priority = 5, filter = "MenuStat_scroll_pane", unregisterOnLoad = true })	-- Priority is set so that UI Expansion affects the tooltips and Tidy Charsheet moves the labels over to the left.
 		event.register(tes3.event.menuEnter, function(e) tes3ui.updateStatsPane() end, { unregisterOnLoad = true })
+
+		tes3.getFaction("Fighters Guild").name = common.i18n("main.morrowindFightersGuild")
+		tes3.getFaction("Mages Guild").name = common.i18n("main.morrowindMagesGuild")
+		tes3.getFaction("Thieves Guild").name = common.i18n("main.morrowindThievesGuild")
+		tes3.getFaction("Imperial Legion").name = common.i18n("main.morrowindImperialLegion")
+		tes3.getFaction("Dark Brotherhood").name = common.i18n("main.morrowindDarkBrotherhood")
 	end
 	
 	if config.weatherChanges == true then
@@ -844,6 +924,12 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.calcTravelPrice, adjustTravelPrices, { unregisterOnLoad = true })
 	end
 
+	if config.handleReactCellItems == true then
+		myData.pastReactCellJournals = {}
+		event.register(tes3.event.itemDropped, markReactCellItem, { unregisterOnLoad = true })
+		event.register(tes3.event.journal, moveReactCellItems, { unregisterOnLoad = true })
+	end
+
 	if config.khajiitFormCharCreation == true then
 		event.register(tes3.event.uiActivated, changeRaceMenuKhajiitNames, { filter = "MenuRaceSex", unregisterOnLoad = true })
 	end
@@ -864,5 +950,9 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.magicCasted, limitInterventionMessage, { unregisterOnLoad = true })
 		event.register(tes3.event.spellTick, limitIntervention, { unregisterOnLoad = true })
 	end
-	
+
+end)
+
+event.register(tes3.event.initialized, function()
+	--tes3.findRace("Argonian").abilities:add("T_Arg_Mys_BloodMagic")	-- This has to be done during initialization, or Argonian players won't have the spell upon loading a save
 end)

@@ -170,7 +170,7 @@ return {
 	-- MCM Text
 	["mcm.name"] = "Ressources communes de Tamriel",
 	["mcm.preferences"] = "Préférences",
-	["mcm.preferencesInfo"] = "Ressources communes de Tamriel MWSE-Lua v2.1",
+	["mcm.preferencesInfo"] = "Ressources communes de Tamriel MWSE-Lua v2.2",
 	["mcm.credits"] = "Crédits :",
 	["mcm.Kynesifnar"] = "Kynesifnar - Scripting",
 	["mcm.mort"] = "mort - Scripting",

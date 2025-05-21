@@ -222,8 +222,8 @@ local snowParticles = { "Snowflake", "BM_Snow_01", "tr_weather_ow_spore" }
 -- Custom Region Weather Chances
 -- region id, ash chance, blight chance, blizzard chance, clear chance, cloudy chance, foggy chance, overcast chance, rain chance, snow chance, thunder chance
 local region_weather_chances = {
-	{ "Othreleth Woods Region", 0, 0, 0, 25, 25, 6, 10, 15, 14, 5 },	-- Ash chance is set to 0 to prevent interference with sandstorms in SH
-	{ "Shipal-Shin Region", 8, 0, 0, 54, 18, 10, 5, 3, 0, 2 },
+	{ "Othreleth Woods Region", 0, 0, 0, 25, 25, 5, 10, 15, 15, 5 },	-- Ash chance is set to 0 to prevent interference with sandstorms in SH
+	{ "Shipal-Shin Region", 15, 0, 0, 50, 15, 10, 5, 3, 0, 2 },
 	{ "Abecean Sea Region", 3, 0, 0, 72, 10, 5, 0, 0, 0, 10 },
 	{ "Stirk Isle Region", 3, 0, 0, 72, 10, 5, 0, 0, 0, 10 },
 	{ "Gilded Hills Region", 3, 0, 0, 55, 20, 0, 4, 10, 0, 8 },

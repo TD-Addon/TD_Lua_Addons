@@ -9,6 +9,12 @@ return {
 	["main.rangeAlmsivi"] = "The power of Almsivi does not extend to these lands.",
 	["main.rangeKyne"] = "The power of Kyne does not extend to these lands.",
 
+	["main.morrowindFightersGuild"] = "Morrowind Fighters Guild",
+	["main.morrowindMagesGuild"] = "Morrowind Mages Guild",
+	["main.morrowindThievesGuild"] = "Morrowind Thieves Guild",
+	["main.morrowindImperialLegion"] = "Morrowind Imperial Legion",
+	["main.morrowindDarkBrotherhood"] = "Morrowind Dark Brotherhood",
+
 	-- Magic Text
 	["magic.summonDevourer"] = "Summon Devourer",
 	["magic.summonDevourerDesc"] = "This effect summons a devourer from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight.",
@@ -50,8 +56,8 @@ return {
 	["magic.summonDraugrDesc"] = "This effect summons a draugr from the Underworld. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Underworld. If summoned in town, the guards will attack you and the summoning on sight.",
 	["magic.summonSpriggan"] = "Summon Spriggan",
 	["magic.summonSprigganDesc"] = "This effect summons a spriggan from the Outer Realms. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Outer Realms. If summoned in town, the guards will attack you and the summoning on sight.",
-	["magic.summonGreaterBonelord"] = "Summon Greater Bonelord",
-	["magic.summonGreaterBonelordDesc"] = "This effect summons a greater bonelord from the Outer Realms. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Outer Realms. If summoned in town, the guards will attack you and the summoning on sight.",
+	["magic.summonGreaterBonelord"] = "Summon Bonelord Warder",
+	["magic.summonGreaterBonelordDesc"] = "This effect summons a bonelord warder from the Outer Realms. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Outer Realms. If summoned in town, the guards will attack you and the summoning on sight.",
 	["magic.summonGhost"] = "Summon Ghost",
 	["magic.summonGhostDesc"] = "This effect summons a ghost from the Outer Realms. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to the Outer Realms. If summoned in town, the guards will attack you and the summoning on sight.",
 	["magic.summonWraith"] = "Summon Wraith",
@@ -86,7 +92,7 @@ return {
 	["magic.miscPasswall"] = "Passwall",
 	["magic.miscPasswallDesc"] = "In an indoor area, this effect permits the caster to pass through a solid barrier to a vacant space behind it. The effect will fail if the destination beyond the traversed barrier is filled with water, is blocked by a forcefield, sigil gate, or ward, or lies above or below the caster.",
 	["magic.miscBanish"] = "Banish Daedra",
-	["magic.miscBanishDesc"] = "Banishes any daedra that the spell is cast upon, if the spell's magnitude is greater than or equal to the target's level. If the daedra is wounded, then it will be easier to banish. Banishing a daedra will transfer any of their important belongings to a sigil that is left behind.",
+	["magic.miscBanishDesc"] = "Banishes any daedra that the spell is cast upon if the spell's magnitude is greater than or equal to the target's level. If the daedra is wounded, then it will be easier to banish. Banishing a daedra will transfer any of their important belongings to a sigil that is left behind.",
 	["magic.miscReflectDamage"] = "Reflect Damage",
 	["magic.miscReflectDamageDesc"] = "This effect allows the subject to reflect physical damage back at an attacker. The effect's magnitude is the percent damage that will be reflected for each attack. Any unreflected damage is dealt to the defender normally.",
 	["magic.miscDetectHumanoid"] = "Detect Humanoid",
@@ -125,7 +131,9 @@ return {
 	["magic.miscSanguineRoseDesc"] = "This effect summons a random daedra from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight.",
 	["magic.miscDetectValuables"] = "Detect Valuables",
 	["magic.miscDetectValuablesDesc"] = "The caster of this effect can detect valuable items; they appear on the map as symbols. The effect's magnitude is the range in feet from the caster that items are detected.",
-	
+	["magic.miscMagickaWard"] = "Magicka Ward",
+	["magic.miscMagickaWardDesc"] = "The caster of this effect can detect valuable items; they appear on the map as symbols. The effect's magnitude is the range in feet from the caster that items are detected.",
+
 	["magic.blinkLevitationDisabled"] = "Blink does not work here.",
 	["magic.wabbajackFailure"] = "%s is too strong to be Wabbajacked!",
 	["magic.wabbajackAlready"] = "%s is already Wabbajacked!",
@@ -177,7 +185,7 @@ return {
 	-- MCM Text
 	["mcm.name"] = "Tamriel Data",
 	["mcm.preferences"] = "Preferences",
-	["mcm.preferencesInfo"] = "Tamriel Data MWSE-Lua v2.1",
+	["mcm.preferencesInfo"] = "Tamriel Data MWSE-Lua v2.2",
 	["mcm.credits"] = "Credits:",
 	["mcm.Kynesifnar"] = "Kynesifnar - Scripting",
 	["mcm.mort"] = "mort - Scripting",
@@ -242,6 +250,9 @@ return {
 
 	["mcm.travelPricesLabel"] = "Adjust Travel Prices",
 	["mcm.travelPricesDescription"] = "Changes the cost of traveling to destinations added by Tamriel Rebuilt and Project Tamriel when Morrowind's calculated prices are unreasonable, such as between Mages Guild networks.\nRequires reload.\n\nDefault: On\n\n",
+	
+	["mcm.reactCellItemsLabel"] = "Prevent Item Loss in Cells tied to Quests",
+	["mcm.reactCellItemsDescription"] = "Moves items dropped in some cells to containers so that they are not lost when they become inaccessible after completing quests in Tamriel Rebuilt and Project Tamriel.\nRequires reload.\n\nDefault: On\n\n",	-- I do not endorse this description, but I can't think of a better way to describe it right now. I have come up with lots of worse ones though.
 	
 	["mcm.khajiitFormCharacterCreationLabel"] = "Specify Khajiit Form during Character Creation",
 	["mcm.khajiitFormCharacterCreationDescription"] = "Names the Khajiit forms in the relevant character creation menus rather than just calling all of them \"Khajiit\". Another mod, such as All Races and Classes Unlocked, is needed to actually make these races available during character creation.\nRequires reload.\n\nDefault: On\n\n",

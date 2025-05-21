@@ -188,7 +188,7 @@ function this.switchReputation(e)
     
 	if not actorTarget or not actorTarget.reference or actorTarget.reference.baseObject.objectType ~= tes3.objectType.npc then return end
 
-	local actorSource = actorTarget.reference.sourceMod
+	local actorSource = actorTarget.reference.sourceMod -- This approach should be revised (in a manner similar to common.isFromPTR) so that mods for PT are affected
 	
 	if actorSource then
 		if e.menuMode and (actorSource == "Cyr_Main.esm" or actorSource == "Sky_Main.esm") then  -- menuEnter
@@ -203,7 +203,7 @@ function this.switchReputation(e)
                 tes3.player.object.reputation = baseReputation + tes3.getGlobal("T_Glob_Rep_MW")
                 tes3.setGlobal("T_Glob_Rep_MW", 0)
                 baseReputation = nil    -- The menuExit event does not know which menu the player is exiting from, but since baseReputation can only be set during menuEnter and must exist for menuExit, setting it to nil here will prevent menuExit from running unless exiting from the dialogue menu
-                                        -- Interestingly, exiting other menus while in the dialogue menu does not trigger the menu exit event, so exiting the persuasion/travel menus does not swap the player's reputation when they are still talking.
+                                        -- Interestingly, exiting other menus while in the dialogue menu does not trigger the menu exit event, so exiting the persuasion/travel menus does not swap the player's reputation with this function when they are still talking.
             end
 		end
 	end

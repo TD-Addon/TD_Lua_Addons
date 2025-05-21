@@ -175,6 +175,7 @@ local td_misc_effects = {
 	{ tes3.effect.T_mysticism_BloodMagic, common.i18n("magic.miscBloodMagic"), 1, "td\\s\\td_s_ftfy_cast.tga", common.i18n("magic.miscBloodMagicDesc")},
 	{ tes3.effect.T_conjuration_SanguineRose, common.i18n("magic.miscSanguineRose"), 40, "td\\s\\td_s_sanguine.dds.tga", common.i18n("magic.miscSanguineRoseDesc")},
 	{ tes3.effect.T_mysticism_DetValuables, common.i18n("magic.miscDetectValuables"), 2.25, "td\\s\\td_s_det_invisibility.tga", common.i18n("magic.miscDetectValuablesDesc")},
+	{ tes3.effect.T_mysticism_MagickaWard, common.i18n("magic.miscMagickaWard"), 2.25, "td\\s\\td_s_det_invisibility.tga", common.i18n("magic.miscMagickaWardDesc")},
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -249,6 +250,7 @@ local td_misc_spells = {
 	{ "T_Com_Mys_Blink", tes3.spellType.spell, common.i18n("magic.miscBlink"), 25, { tes3.effect.T_mysticism_Blink }, tes3.effectRange.self, 0, 0, 50, 50 },
 	--{ "T_Cr_Ab_AuroranLight", tes3.spellType.ability, nil, nil, { tes3.effect.T_illusion_PrismaticLight }, tes3.effectRange.self, 0, 0, 20, 20 },	-- There should be a separate, higher magnitude ability for the radiant Aurorans that will be affected instead
 	{ "T_UNI_SaintTelynBlessing", tes3.spellType.ability, nil, nil, { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 0, 10, 10 },
+	{ "T_Arg_Mys_BloodMagic", tes3.spellType.spell, nil, nil, { tes3.effect.T_mysticism_BloodMagic }, tes3.effectRange.self, 0, 60, 0, 0 },
 }
 
 -- enchantment id, (1st effect id, attribute id, skill id), 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -313,7 +315,7 @@ local td_enchantments = {
 	{ "T_Const_VelothsPauld_R", tes3.enchantmentType.constant, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 30, 30 },
 	{ "T_Strike_StaffVeloth", tes3.enchantmentType.onUse, { tes3.effect.T_destruction_GazeOfVeloth }, tes3.effectRange.target, 0, 1, 1, 1 },
 	{ "T_Const_Spell_Bifurcation", tes3.enchantmentType.constant, { tes3.effect.T_restoration_FortifyCasting }, tes3.effectRange.self, 0, 1, 20, 20 },
-	{ "T_Use_SkullOfCorruption", tes3.enchantmentType.onUse, { tes3.effect.T_Use_SanguineRose }, tes3.effectRange.self, 0, 120, 1, 1 },
+	{ "TR_m1_SanguinesRose_en", tes3.enchantmentType.onUse, { tes3.effect.T_Use_SanguineRose }, tes3.effectRange.self, 0, 120, 1, 1 },
 }
 
 -- ingredient id, 1st effect id, 1st effect attribute id, 1st effect skill id, 2nd effect id, ...
@@ -764,6 +766,15 @@ function this.useCustomSpell(e)
 	--end
 end
 
+---@param e spellMagickaUseEventData
+function this.bloodMagicCast(e)
+	local bloodMagicEffects = e.caster.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_BloodMagic })
+	if #bloodMagicEffects > 0 then
+		e.cost = e.cost / 2
+		e.caster.mobile:applyDamage({ damage = e.cost, applyArmor = false, playerAttack = false })	-- If cast chance is improved, then set a data field on the caster so that the cast chance will be affected even if the effect has worn off when the animation finishes?
+	end
+end
+
 function this.prismaticLightTick()
 	for ref in pairs(prismaticReferences) do
 		---@cast ref tes3reference
@@ -1010,40 +1021,24 @@ local function blinkEffect(e)
 
 	local range = e.effectInstance.magnitude * 22.1
 
-	local wardCheck = tes3.rayTest{
-		position = tes3.getPlayerEyePosition(),
-		direction = tes3.getPlayerEyeVector(),
-		maxDistance = range,
-		findAll = true,
-		ignore = { tes3.player },
-		observeAppCullFlag  = false,
-		useBackTriangles = true
-	}			
-	
-	if wardCheck then
-		for _,detection in ipairs(wardCheck) do
-			if detection.reference then
-				if detection.reference.baseObject.id:find("T_Dae_Ward_") or detection.reference.baseObject.id:find("T_Aid_PasswallWard_") then
-					range = detection.distance - 16
-					break
-				end
-			end
-		end
-	end
-
 	if range > 0 then
 		local obstacles = tes3.rayTest{
 			position = tes3.getPlayerEyePosition(),
 			direction = tes3.getPlayerEyeVector(),
 			maxDistance = range,
 			findAll = true,
-			ignore = { tes3.player }
+			accurateSkinned = true,		-- I want for people to be able to teleport past actors, which can be difficult and inconsistent without this parameter being true
+			observeAppCullFlag  = false
 		}
-	
-		if obstacles then		-- I would much rather just test the collision, but that doesn't seem to be possible
+
+		if obstacles then
 			for _,obstacle in ipairs(obstacles) do
 				local validObstacle = true
 				if obstacle.reference then
+					if obstacle.reference == tes3.player or (obstacle.reference.baseObject.objectType == tes3.objectType.creature or obstacle.reference.baseObject.objectType == tes3.objectType.npc) and obstacle.reference.mobile.isDead then	-- tes3.player cannot be ignored by the rayTest because observeAppCullFlag is false
+						validObstacle = false
+					end
+
 					local mesh = tes3.loadMesh(obstacle.reference.baseObject.mesh)
 					if mesh.extraData then
 						repeat
@@ -1053,30 +1048,34 @@ local function blinkEffect(e)
 				elseif obstacle.object.name and obstacle.object.name:startswith("Water ") then
 					validObstacle = false
 				end
-		
+
 				if validObstacle then
-					range = obstacle.distance - (tes3.mobilePlayer.boundSize2D.y / 2) - 16		-- The 16 is there to put a bit more space between the player and the target; there is probably a better way to do this by taking the angle of the camera into account
+					range = obstacle.distance - (tes3.mobilePlayer.boundSize2D.y / 2) - 16		-- The 16 is there to put a bit more space between the player and the target; there is probably a better way to do this by taking the angle of the camera into account though
 					break
 				end
 			end
 		end
-	
+
 		if range > 0 then
 			local destination = tes3.mobilePlayer.position + tes3.getPlayerEyeVector() * range
-	
-			tes3.mobilePlayer.isSwimming = false	-- If the player is swimming, then they need to stop swimming in order to leave the water; a condition for this shouldn't be needed since they were either not swimming to begin with or will immediately begin swimming again if still underwater
-	
+
+			if tes3.player.cell.waterLevel and destination.z >= tes3.player.cell.waterLevel then
+				tes3.mobilePlayer.isSwimming = false	-- If the player is swimming, then they need to stop swimming in order to leave the water
+			end
+
 			local heightCheck = tes3.rayTest{
 				position = destination + tes3vector3.new(0, 0, tes3.mobilePlayer.height),
 				direction = tes3vector3.new(0, 0, -1),
 				maxDistance = tes3.mobilePlayer.height,
 				ignore = { tes3.player },
+				accurateSkinned = true,
+				observeAppCullFlag  = false
 			}
-	
+
 			if heightCheck and heightCheck.distance then
 				destination = destination + tes3vector3.new(0, 0, tes3.mobilePlayer.height - heightCheck.distance)	-- This should prevent the player from clipping through objects below them
 			end
-	
+
 			tes3.mobilePlayer.position = destination
 		end
 	end
@@ -1689,6 +1688,12 @@ local function createValuableDetections(pane, x, y)
 	detection.height = 3
 end
 
+
+---@param item tes3object
+local function isValuable(item)
+	local minValue = 5000
+end
+
 --- @param e magicEffectRemovedEventData
 function this.detectValuablesTick(e)
 	if e.reference and e.reference ~= tes3.player then return end	-- I would just use a filter, but that triggers a warning for some reason
@@ -1713,9 +1718,7 @@ function this.detectValuablesTick(e)
 				totalMagnitude = totalMagnitude + v.magnitude
 			end
 
-			local minValue = 5000
-
-			for item in tes3.player.cell:iterateReferences({ tes3.objectType.alchemy, tes3.objectType.ammunition, tes3.objectType.apparatus, tes3.objectType.armor, tes3.objectType.book, tes3.objectType.clothing, tes3.objectType.ingredient, tes3.objectType.light, tes3.objectType.lockpick, tes3.objectType.miscItem, tes3.objectType.probe, tes3.objectType.repairItem, tes3.objectType.weapon, }) do
+			for item in tes3.player.cell:iterateReferences({ tes3.objectType.alchemy, tes3.objectType.ammunition, tes3.objectType.apparatus, tes3.objectType.armor, tes3.objectType.book, tes3.objectType.clothing, tes3.objectType.ingredient, tes3.objectType.light, tes3.objectType.lockpick, tes3.objectType.miscItem, tes3.objectType.probe, tes3.objectType.repairItem, tes3.objectType.weapon }, false) do
 				if item.value and item.value >= minValue and tes3.player.position:distance(item.position) <= totalMagnitude then
 					local mapX, mapY, multiX, multiY
 					if tes3.player.cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(item.position)
@@ -1726,7 +1729,7 @@ function this.detectValuablesTick(e)
 				end
 			end
 
-			for ref in tes3.player.cell:iterateReferences({ tes3.objectType.container, tes3.objectType.creature, tes3.objectType.npc }) do	-- Some way of hiding merchant chests that are inaccessible might need to be added
+			for ref in tes3.player.cell:iterateReferences({ tes3.objectType.container, tes3.objectType.creature, tes3.objectType.npc }, false) do
 				if tes3.player.position:distance(ref) <= totalMagnitude then
 					local valueSum = 0
 					for _,stack in pairs(ref.object.inventory) do
@@ -2506,7 +2509,7 @@ end
 ---@param e containerClosedEventData
 function this.deleteBanishDaedraContainer(e)
 	if e.reference.baseObject.id == "T_Glb_BanishDae_Empty" and #e.reference.object.inventory == 0 then	-- isEmpty does not work here
-		for light in e.reference.cell:iterateReferences(tes3.objectType.light) do
+		for light in e.reference.cell:iterateReferences(tes3.objectType.light, false) do
 			if light.position.x == e.reference.position.x and light.position.y == e.reference.position.y and light.position.z == e.reference.position.z and light.baseObject.id == "T_Glb_BanishDae_Light" then
 				light:delete()
 				break
@@ -3908,49 +3911,49 @@ event.register(tes3.event.magicEffectsResolved, function()
 		--	onCollision = nil
 		--}
 
-		--effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[21])		-- Blood Magic
-		--tes3.addMagicEffect{
-		--	id = effectID,
-		--	name = effectName,
-		--	description = effectDescription,
-		--	school = tes3.magicSchool.mysticism,
-		--	baseCost = effectCost,
-		--	speed = detectEffect.speed,
-		--	allowEnchanting = false,
-		--	allowSpellmaking = false,
-		--	appliesOnce = false,
-		--	canCastSelf = true,
-		--	canCastTarget = false,
-		--	canCastTouch = false,
-		--	casterLinked = detectEffect.casterLinked,
-		--	hasContinuousVFX = detectEffect.hasContinuousVFX,
-		--	hasNoDuration = false,
-		--	hasNoMagnitude = true,
-		--	illegalDaedra = detectEffect.illegalDaedra,
-		--	isHarmful = false,
-		--	nonRecastable = false,
-		--	targetsAttributes = false,
-		--	targetsSkills = false,
-		--	unreflectable = true,
-		--	usesNegativeLighting = detectEffect.usesNegativeLighting,
-		--	icon = iconPath,
-		--	particleTexture = detectEffect.particleTexture,
-		--	castSound = detectEffect.castSoundEffect.id,
-		--	castVFX = detectEffect.castVisualEffect.id,
-		--	boltSound = detectEffect.boltSoundEffect.id,
-		--	boltVFX = detectEffect.boltVisualEffect.id,
-		--	hitSound = detectEffect.hitSoundEffect.id,
-		--	hitVFX = detectEffect.hitVisualEffect.id,
-		--	areaSound = detectEffect.areaSoundEffect.id,
-		--	areaVFX = detectEffect.areaVisualEffect.id,
-		--	lighting = {x = detectEffect.lightingRed / 255, y = detectEffect.lightingGreen / 255, z = detectEffect.lightingBlue / 255},
-		--	size = detectEffect.size,
-		--	sizeCap = detectEffect.sizeCap,
-		--	onTick = nil,
-		--	onCollision = nil
-		--}
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[20])		-- Blood Magic
+		tes3.addMagicEffect{
+			id = effectID,
+			name = effectName,
+			description = effectDescription,
+			school = tes3.magicSchool.mysticism,
+			baseCost = effectCost,
+			speed = detectEffect.speed,
+			allowEnchanting = false,
+			allowSpellmaking = false,
+			appliesOnce = false,
+			canCastSelf = true,
+			canCastTarget = false,
+			canCastTouch = false,
+			casterLinked = detectEffect.casterLinked,
+			hasContinuousVFX = detectEffect.hasContinuousVFX,
+			hasNoDuration = false,
+			hasNoMagnitude = true,
+			illegalDaedra = detectEffect.illegalDaedra,
+			isHarmful = false,
+			nonRecastable = false,
+			targetsAttributes = false,
+			targetsSkills = false,
+			unreflectable = false,
+			usesNegativeLighting = detectEffect.usesNegativeLighting,
+			icon = iconPath,
+			particleTexture = detectEffect.particleTexture,
+			castSound = detectEffect.castSoundEffect.id,
+			castVFX = detectEffect.castVisualEffect.id,
+			boltSound = detectEffect.boltSoundEffect.id,
+			boltVFX = detectEffect.boltVisualEffect.id,
+			hitSound = detectEffect.hitSoundEffect.id,
+			hitVFX = detectEffect.hitVisualEffect.id,
+			areaSound = detectEffect.areaSoundEffect.id,
+			areaVFX = detectEffect.areaVisualEffect.id,
+			lighting = {x = detectEffect.lightingRed / 255, y = detectEffect.lightingGreen / 255, z = detectEffect.lightingBlue / 255},
+			size = detectEffect.size,
+			sizeCap = detectEffect.sizeCap,
+			onTick = nil,
+			onCollision = nil
+		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[20])		-- Sanguine Rose
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[21])		-- Sanguine Rose
 		tes3.addMagicEffect{
 			id = effectID,
 			name = effectName,
@@ -3994,7 +3997,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[21])		-- Detect Valuable
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[22])		-- Detect Valuable
 		tes3.addMagicEffect{
 			id = effectID,
 			name = effectName,

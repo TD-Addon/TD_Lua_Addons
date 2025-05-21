@@ -126,7 +126,7 @@ function this.uiRefreshedCallback(e)
 		local provinceHasFaction = false
         for _,faction in ipairs(playerFactions) do
             ---@cast faction tes3faction
-            if faction.id:find(province.id) or (province.id == "Mw" and (table.contains(vanillaFactionTable, faction.id) or faction.sourceMod ~= "Tamriel_Data.esm")) then   -- All factions that are not from TD are assumed to fall under Morrowind
+            if faction.id:find(province.id) or (province.id == "Mw" and (table.contains(vanillaFactionTable, faction.id) or not common.isFromTD(faction, false))) then   -- All factions that are not from TD are assumed to fall under Morrowind
 				provinceHasFaction = true
 
 				local modifiedName = faction.name:gsub(province.name .. " ", "")

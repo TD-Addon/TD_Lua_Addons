@@ -177,7 +177,7 @@ return {
 	-- MCM Text
 	["mcm.name"] = "Tamriel Data",
 	["mcm.preferences"] = "Preferencje",
-	["mcm.preferencesInfo"] = "Tamriel Data MWSE-Lua v2.1",
+	["mcm.preferencesInfo"] = "Tamriel Data MWSE-Lua v2.2",
 	["mcm.credits"] = "Autorzy:",
 	["mcm.Kynesifnar"] = "Kynesifnar - Oskryptowanie",
 	["mcm.mort"] = "mort - Oskryptowanie",

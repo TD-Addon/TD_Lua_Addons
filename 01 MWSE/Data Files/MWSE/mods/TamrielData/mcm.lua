@@ -175,6 +175,14 @@ local function registerModConfig()
         },
     }
     toggles:createOnOffButton{
+        label = common.i18n("mcm.reactCellItemsLabel"),
+        description = common.i18n("mcm.reactCellItemsDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "handleReactCellItems",
+            table = config,
+        },
+    }
+    toggles:createOnOffButton{
         label = common.i18n("mcm.khajiitFormCharacterCreationLabel"),
         description = common.i18n("mcm.khajiitFormCharacterCreationDescription"),
         variable = mwse.mcm.createTableVariable{

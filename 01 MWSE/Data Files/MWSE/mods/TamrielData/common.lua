@@ -4,6 +4,12 @@ this.i18n = mwse.loadTranslations("TamrielData")
 
 this.gh_config = include("graphicHerbalism.config")
 
+local PTRMasterFiles = {
+    "Cyr_Main.esm",
+    "Sky_Main.esm",
+    "TR_Mainland.esm",
+}
+
 ---@param cell tes3cell
 ---@param cellVisitTable table<tes3cell, boolean>|nil
 ---@return tes3cell?
@@ -19,7 +25,7 @@ function this.getExteriorCell(cell, cellVisitTable)
 	end
 	cellVisitTable[cell] = true
 
-	for ref in cell:iterateReferences(tes3.objectType.door) do
+	for ref in cell:iterateReferences(tes3.objectType.door, false) do
 		if ref.destination and ref.destination.cell then
 			local linkedExterior = this.getExteriorCell(ref.destination.cell, cellVisitTable)
 			if linkedExterior then
@@ -278,6 +284,64 @@ function this.hasAlpha(node, clip, blend)
 		end
 	end
 
+    return false
+end
+
+-- Returns whether or not the given parameter is from a PTR project (TR, SHotN, etc.) or (optionally) from a mod that is dependent on one
+---@param ref tes3reference|tes3object|tes3faction
+---@param includeMods boolean
+---@return boolean
+function this.isFromPTR(ref, includeMods)
+    local sourceMod = ref.sourceMod
+    if not sourceMod and ref.leveledBaseReference then sourceMod = ref.leveledBaseReference.sourceMod end   -- These conditions are present to account for references that have been created by leveled lists or scripts
+    if not sourceMod and ref.baseObject then sourceMod = ref.baseObject.sourceMod end
+
+    if sourceMod then
+        if table.contains(PTRMasterFiles, sourceMod) then
+            return true
+        elseif includeMods then
+            local sourceModFile = tes3.dataHandler.nonDynamicData:getGameFile(sourceMod)
+            if sourceModFile then
+                for _,master in ipairs(sourceModFile.masterNames) do
+                    if table.contains(PTRMasterFiles, master) then
+                        return true
+                    end
+                end
+            end
+
+            return false
+        end
+    end
+
+    return false
+end
+
+-- Returns whether or not the given parameter is from TD or (optionally) from a mod that is dependent on it
+---@param ref tes3reference|tes3object|tes3faction
+---@param includeMods boolean
+---@return boolean
+function this.isFromTD(ref, includeMods)
+    local sourceMod = ref.sourceMod
+    if not sourceMod and ref.leveledBaseReference then sourceMod = ref.leveledBaseReference.sourceMod end   -- These conditions are present to account for references that have been created by leveled lists or scripts
+    if not sourceMod and ref.baseObject then sourceMod = ref.baseObject.sourceMod end
+
+    if sourceMod then
+        if sourceMod == "Tamriel_Data.esm" then
+            return true
+        elseif includeMods then
+            local sourceModFile = tes3.dataHandler.nonDynamicData:getGameFile(sourceMod)
+            if sourceModFile then
+                for _,master in ipairs(sourceModFile.masterNames) do
+                    if master == "Tamriel_Data.esm" then
+                        return true
+                    end
+                end
+            end
+
+            return false
+        end
+    end
+    
     return false
 end
 
