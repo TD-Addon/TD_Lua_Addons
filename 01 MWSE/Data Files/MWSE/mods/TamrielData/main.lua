@@ -783,6 +783,8 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.miscSpells == true then
+		event.register(tes3.event.damage, magic.magickaWardEffect, { priority = -10, unregisterOnLoad = true })		-- Priority is set so that the function runs after Reflect Damage affects the damage
+
 		event.register(tes3.event.spellMagickaUse, magic.bloodMagicCast, { unregisterOnLoad = true })
 
 		--timer.start{ duration = 0.0166667, iterations = -1, type = timer.simulate, callback = magic.prismaticLightTick }

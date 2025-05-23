@@ -97,6 +97,7 @@ if config.miscSpells == true then
 	tes3.claimSpellEffectId("T_mysticism_BloodMagic", 2147)
 	tes3.claimSpellEffectId("T_conjuration_SanguineRose", 2148)
 	tes3.claimSpellEffectId("T_mysticism_DetValuables", 2149)
+	tes3.claimSpellEffectId("T_mysticism_MagickaWard", 2150)
 end
 
 -- The effect costs for most summons were initially calculated by mort using a formula (dependent on a creature's health and soul) that is now lost and were then adjusted as seemed reasonable.
@@ -172,10 +173,10 @@ local td_misc_effects = {
 	{ tes3.effect.T_mysticism_Blink, common.i18n("magic.miscBlink"), 10, "td\\s\\td_s_blink.tga", common.i18n("magic.miscBlinkDesc")},
 	{ tes3.effect.T_restoration_FortifyCasting, common.i18n("magic.miscFortifyCasting"), 1, "td\\s\\td_s_ftfy_cast.tga", common.i18n("magic.miscFortifyCastingDesc")},
 	--{ tes3.effect.T_illusion_PrismaticLight, common.i18n("magic.miscPrismaticLight"), 0.4, "td\\s\\td_s_p_light.tga", common.i18n("magic.miscPrismaticLightDesc")},
-	{ tes3.effect.T_mysticism_BloodMagic, common.i18n("magic.miscBloodMagic"), 1, "td\\s\\td_s_ftfy_cast.tga", common.i18n("magic.miscBloodMagicDesc")},
+	{ tes3.effect.T_mysticism_BloodMagic, common.i18n("magic.miscBloodMagic"), 0, "td\\s\\td_s_blood_magic.tga", common.i18n("magic.miscBloodMagicDesc")},
 	{ tes3.effect.T_conjuration_SanguineRose, common.i18n("magic.miscSanguineRose"), 40, "td\\s\\td_s_sanguine.dds.tga", common.i18n("magic.miscSanguineRoseDesc")},
-	{ tes3.effect.T_mysticism_DetValuables, common.i18n("magic.miscDetectValuables"), 2.25, "td\\s\\td_s_det_invisibility.tga", common.i18n("magic.miscDetectValuablesDesc")},
-	{ tes3.effect.T_mysticism_MagickaWard, common.i18n("magic.miscMagickaWard"), 2.25, "td\\s\\td_s_det_invisibility.tga", common.i18n("magic.miscMagickaWardDesc")},
+	{ tes3.effect.T_mysticism_DetValuables, common.i18n("magic.miscDetectValuables"), 1.5, "td\\s\\td_s_det_value.tga", common.i18n("magic.miscDetectValuablesDesc")},
+	{ tes3.effect.T_mysticism_MagickaWard, common.i18n("magic.miscMagickaWard"), 20, "td\\s\\td_s_magickaward.tga", common.i18n("magic.miscMagickaWardDesc")},
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -190,7 +191,7 @@ local td_summon_spells = {
 	{ "T_Com_Cnj_SummonSeducerDark", tes3.spellType.spell, common.i18n("magic.summonSeducerDark"), 169, { tes3.effect.T_summon_SeducerDark }, tes3.effectRange.self, 0, 45, 1, 1 },
 	{ "T_Com_Cnj_SummonVermai", tes3.spellType.spell, common.i18n("magic.summonVermai"), 88, { tes3.effect.T_summon_Vermai }, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Com_Cnj_SummonStormMonarch", tes3.spellType.spell, common.i18n("magic.summonStormMonarch"), 180, { tes3.effect.T_summon_AtroStormMon }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Nor_Cnj_SummonIceWraith", tes3.spellType.spell, common.i18n("magic.summonIceWraith"), 105, { tes3.effect.T_summon_IceWraith }, tes3.effectRange.self, 60, 1, 1 },
+	{ "T_Nor_Cnj_SummonIceWraith", tes3.spellType.spell, common.i18n("magic.summonIceWraith"), 105, { tes3.effect.T_summon_IceWraith }, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Dwe_Cnj_Uni_SummonDweSpectre", tes3.spellType.spell, common.i18n("magic.summonDweSpectre"), 52, { tes3.effect.T_summon_DweSpectre }, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Dwe_Cnj_Uni_SummonSteamCent", tes3.spellType.spell, common.i18n("magic.summonSteamCent"), 88, { tes3.effect.T_summon_SteamCent }, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Dwe_Cnj_Uni_SummonSpiderCent", tes3.spellType.spell, common.i18n("magic.summonSpiderCent"), 45, { tes3.effect.T_summon_SpiderCent }, tes3.effectRange.self, 0, 60, 1, 1 },
@@ -250,7 +251,9 @@ local td_misc_spells = {
 	{ "T_Com_Mys_Blink", tes3.spellType.spell, common.i18n("magic.miscBlink"), 25, { tes3.effect.T_mysticism_Blink }, tes3.effectRange.self, 0, 0, 50, 50 },
 	--{ "T_Cr_Ab_AuroranLight", tes3.spellType.ability, nil, nil, { tes3.effect.T_illusion_PrismaticLight }, tes3.effectRange.self, 0, 0, 20, 20 },	-- There should be a separate, higher magnitude ability for the radiant Aurorans that will be affected instead
 	{ "T_UNI_SaintTelynBlessing", tes3.spellType.ability, nil, nil, { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 0, 10, 10 },
-	{ "T_Arg_Mys_BloodMagic", tes3.spellType.spell, nil, nil, { tes3.effect.T_mysticism_BloodMagic }, tes3.effectRange.self, 0, 60, 0, 0 },
+	{ "T_Arg_Mys_BloodMagic", tes3.spellType.spell, nil, nil, { tes3.effect.T_mysticism_BloodMagic }, tes3.effectRange.self, 0, 30, 0, 0 },
+	{ "T_Com_Mys_DetectValuables", tes3.spellType.spell, common.i18n("magic.miscDetectValuables"), 38, { tes3.effect.T_mysticism_DetValuables }, tes3.effectRange.self, 0, 5, 50, 150 },
+	{ "T_Com_Mys_MagickaWard", tes3.spellType.spell, common.i18n("magic.miscMagickaWard"), 20, { tes3.effect.T_mysticism_MagickaWard }, tes3.effectRange.self, 0, 30, 1, 1 },
 }
 
 -- enchantment id, (1st effect id, attribute id, skill id), 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -766,6 +769,32 @@ function this.useCustomSpell(e)
 	--end
 end
 
+---@param e damageEventData
+function this.magickaWardEffect(e)
+	if e.damage > 0 then
+		local magickaWardEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_MagickaWard })
+		if #magickaWardEffects > 0 then
+			local difficultyTerm = 0	-- Annoyingly MWSE's damage-related events do not make the actual damage available in the event data
+			if tes3.worldController.difficulty < 0 then
+				difficultyTerm = tes3.worldController.difficulty / tes3.findGMST("fDifficultyMult").value
+			else
+				difficultyTerm = tes3.findGMST("fDifficultyMult").value * tes3.worldController.difficulty
+			end
+
+			local trueDamage = e.damage * (1 + difficultyTerm)				-- Should armor be taken into consideration?
+			local magickaDamage = trueDamage * math.clamp((50 / 100), 0, 1)
+
+			if e.mobile.magicka.current >= magickaDamage then
+				e.damage = (trueDamage - magickaDamage) / (1 + difficultyTerm)
+				e.mobile.magicka.current = e.mobile.magicka.current - magickaDamage
+			elseif e.mobile.magicka.current > 0 then
+				e.damage = (trueDamage - e.mobile.magicka.current) / (1 + difficultyTerm)
+				e.mobile.magicka.current = 0
+			end
+		end
+	end
+end
+
 ---@param e spellMagickaUseEventData
 function this.bloodMagicCast(e)
 	local bloodMagicEffects = e.caster.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_BloodMagic })
@@ -1042,10 +1071,10 @@ local function blinkEffect(e)
 					local mesh = tes3.loadMesh(obstacle.reference.baseObject.mesh)
 					if mesh.extraData then
 						repeat
-							if mesh.extraData.string and (mesh.extraData.string:lower() == "nco" or mesh.extraData.string:lower() == "nc") then validObstacle = false end
+							if mesh.extraData.string and mesh.extraData.string:lower():find("nc") then validObstacle = false end
 						until not mesh.extraData.next
 					end
-				elseif obstacle.object.name and obstacle.object.name:startswith("Water ") then
+				elseif (obstacle.object.name and obstacle.object.name:startswith("Water ")) or (obstacle.object.parent and obstacle.object.parent.name and (obstacle.object.parent.name == "Precipitation Rain Root" or obstacle.object.parent.name == "BM_Snow_01")) then
 					validObstacle = false
 				end
 
@@ -1067,7 +1096,6 @@ local function blinkEffect(e)
 				position = destination + tes3vector3.new(0, 0, tes3.mobilePlayer.height),
 				direction = tes3vector3.new(0, 0, -1),
 				maxDistance = tes3.mobilePlayer.height,
-				ignore = { tes3.player },
 				accurateSkinned = true,
 				observeAppCullFlag  = false
 			}
@@ -1679,7 +1707,7 @@ end
 ---@param x number
 ---@param y number
 local function createValuableDetections(pane, x, y)
-	local detection = pane:createImage({ id = "T_detVal", path = "textures\\td\\td_detect_humanoid_icon.dds" })
+	local detection = pane:createImage({ id = "T_detVal", path = "textures\\td\\td_detect_valuable_icon.dds" })
 	detection.positionX = x
 	detection.positionY = y
 	detection.absolutePosAlignX = -32668
@@ -1688,16 +1716,9 @@ local function createValuableDetections(pane, x, y)
 	detection.height = 3
 end
 
-
----@param item tes3object
-local function isValuable(item)
-	local minValue = 5000
-end
-
 --- @param e magicEffectRemovedEventData
 function this.detectValuablesTick(e)
 	if e.reference and e.reference ~= tes3.player then return end	-- I would just use a filter, but that triggers a warning for some reason
-
 	local mapMenu = tes3ui.findMenu("MenuMap")
 	local multiMenu = tes3ui.findMenu("MenuMulti")
 	local mapPane, multiPane
@@ -1717,41 +1738,69 @@ function this.detectValuablesTick(e)
 			for _,v in pairs(detectValuablesEffects) do
 				totalMagnitude = totalMagnitude + v.magnitude
 			end
+			totalMagnitude = totalMagnitude * 22.1
 
-			for item in tes3.player.cell:iterateReferences({ tes3.objectType.alchemy, tes3.objectType.ammunition, tes3.objectType.apparatus, tes3.objectType.armor, tes3.objectType.book, tes3.objectType.clothing, tes3.objectType.ingredient, tes3.objectType.light, tes3.objectType.lockpick, tes3.objectType.miscItem, tes3.objectType.probe, tes3.objectType.repairItem, tes3.objectType.weapon }, false) do
-				if item.value and item.value >= minValue and tes3.player.position:distance(item.position) <= totalMagnitude then
-					local mapX, mapY, multiX, multiY
-					if tes3.player.cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(item.position)
-					else mapX, mapY, multiX, multiY = calcExteriorPos(item.position) end
+			local minValue = 4000	-- The minimum value that an item must be to be detected
 
-					createValuableDetections(mapPane, mapX, mapY)
-					createValuableDetections(multiPane, multiX, multiY)
-				end
-			end
-
-			for ref in tes3.player.cell:iterateReferences({ tes3.objectType.container, tes3.objectType.creature, tes3.objectType.npc }, false) do
-				if tes3.player.position:distance(ref) <= totalMagnitude then
-					local valueSum = 0
-					for _,stack in pairs(ref.object.inventory) do
-						---@cast stack tes3itemStack
-						local value = 0
-						local count = math.abs(stack.count)
-						if stack.object.objectType == tes3.objectType.leveledItem then
-							value = 0	-- A proper solution for dealing with leveled items should be figured out; don't forget that Insight exists
-						else
-							value = stack.object.value
-						end
-	
-						valueSum = valueSum + value * count
-					end
-	
-					if valueSum >= minValue then
+			for _,cell in pairs(tes3.getActiveCells()) do
+				for item in cell:iterateReferences({ tes3.objectType.alchemy, tes3.objectType.ammunition, tes3.objectType.apparatus, tes3.objectType.armor, tes3.objectType.book, tes3.objectType.clothing, tes3.objectType.ingredient, tes3.objectType.light, tes3.objectType.lockpick, tes3.objectType.miscItem, tes3.objectType.probe, tes3.objectType.repairItem, tes3.objectType.weapon }, false) do
+					if item.baseObject.value and item.baseObject.value >= minValue and tes3.player.position:distance(item.position) <= totalMagnitude then
 						local mapX, mapY, multiX, multiY
-						if tes3.player.cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(ref.position)
-						else mapX, mapY, multiX, multiY = calcExteriorPos(ref.position) end
-	
+						if cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(item.position)
+						else mapX, mapY, multiX, multiY = calcExteriorPos(item.position) end
+
 						createValuableDetections(mapPane, mapX, mapY)
 						createValuableDetections(multiPane, multiX, multiY)
+					end
+				end
+
+				for ref in cell:iterateReferences({ tes3.objectType.container, tes3.objectType.creature, tes3.objectType.npc }, false) do
+					if ref ~= tes3.player and tes3.player.position:distance(ref.position) <= totalMagnitude then
+						local hasValuable = false
+						for _,stack in pairs(ref.object.inventory.items) do
+							---@cast stack tes3itemStack
+							if stack.object.objectType == tes3.objectType.leveledItem then
+								local valueSum = 0
+								local itemCount = 0
+
+								local minLevel = 0	-- The minimum level that an item must be associated with to be chosen; set to the highest level if calculateFromAllLevels is false or left at 0 if it is true
+								if not stack.object.calculateFromAllLevels then
+									for _,node in pairs(stack.object.list) do
+										---@cast node tes3leveledListNode
+										if node.levelRequired > minLevel and tes3.player.baseObject.level >= node.levelRequired then minLevel = node.levelRequired end
+									end
+								end
+
+								for _,node in pairs(stack.object.list) do
+								---@cast node tes3leveledListNode
+									if node.levelRequired >= minLevel and tes3.player.baseObject.level >= node.levelRequired then
+										if node.object.value then
+											valueSum = valueSum + node.object.value
+											itemCount = itemCount + 1
+										end
+									end
+								end
+
+								if itemCount > 0 and valueSum / itemCount >= minValue then
+									hasValuable = true
+									break
+								end
+							else
+								if stack.object.value >= minValue then
+									hasValuable = true
+									break
+								end
+							end
+						end
+
+						if hasValuable then
+							local mapX, mapY, multiX, multiY
+							if cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(ref.position)
+							else mapX, mapY, multiX, multiY = calcExteriorPos(ref.position) end
+
+							createValuableDetections(mapPane, mapX, mapY)
+							createValuableDetections(multiPane, multiX, multiY)
+						end
 					end
 				end
 			end
@@ -2358,7 +2407,7 @@ function this.radiantShieldDamagedEffect(e)
 				totalMagnitude = totalMagnitude + v.magnitude
 			end
 			
-			tes3.applyMagicSource({ reference = e.attacker, name = "Radiant Shield", effects = {{ id = tes3.effect.blind, duration = 1.5, min = totalMagnitude, max = totalMagnitude }} })
+			tes3.applyMagicSource({ reference = e.attacker, name = "Blinding Radiance", effects = {{ id = tes3.effect.blind, duration = 1.5, min = totalMagnitude, max = totalMagnitude }} })
 		end
 	end
 end
@@ -2537,7 +2586,7 @@ local function banishDaedraEffect(e)
 	local targetLevel = target.object.level
 	local caster = e.sourceInstance.caster
 	local uniqueItems = {}
-	
+
 	if magnitude >= (targetLevel / 2) + ((targetLevel / 2) * target.mobile.health.normalized) then
 		for _,v in pairs(target.baseObject.inventory.items) do
 			if v.object.objectType ~= tes3.objectType.leveledItem then
@@ -2554,7 +2603,7 @@ local function banishDaedraEffect(e)
 		local soundSource = tes3.createReference({ object = "T_VFX_Empty", position = target.position + tes3vector3.new(0, 0, target.mobile.height/2) , orientation = target.orientation, cell = target.cell })
 		tes3.playSound{ sound = "mysticism hit", reference = soundSource }
 		local vfx = tes3.createVisualEffect({ object = "T_VFX_Banish", lifespan = 1.5, position = target.position })
-		
+
 		local targetHandle = tes3.makeSafeObjectHandle(target)
 		timer.delayOneFrame(function()
 			timer.delayOneFrame(function()		-- Give MWScripts using onDeath time to run
@@ -2599,7 +2648,7 @@ local function passWallDoorCrime(door)
 		if owner.objectType == tes3.objectType.npc then
 			if requirement and requirement.value ~= 0 then return false end
 		elseif owner.objectType == tes3.objectType.faction then
-			if owner.playerRank >= requirement then	return false end -- I guess that the game doesn't check whether the player is expelledend
+			if owner.playerRank >= requirement then	return false end -- I guess that the game doesn't check whether the player is expelled
 		end
 
 		return true
@@ -3919,8 +3968,8 @@ event.register(tes3.event.magicEffectsResolved, function()
 			school = tes3.magicSchool.mysticism,
 			baseCost = effectCost,
 			speed = detectEffect.speed,
-			allowEnchanting = false,
-			allowSpellmaking = false,
+			allowEnchanting = true,
+			allowSpellmaking = true,
 			appliesOnce = false,
 			canCastSelf = true,
 			canCastTarget = false,
@@ -4035,6 +4084,48 @@ event.register(tes3.event.magicEffectsResolved, function()
 			areaSound = detectEffect.areaSoundEffect.id,
 			areaVFX = detectEffect.areaVisualEffect.id,
 			lighting = {x = detectEffect.lightingRed / 255, y = detectEffect.lightingGreen / 255, z = detectEffect.lightingBlue / 255},
+			size = detectEffect.size,
+			sizeCap = detectEffect.sizeCap,
+			onTick = nil,
+			onCollision = nil
+		}
+
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[23])		-- Magicka Ward
+		tes3.addMagicEffect{
+			id = effectID,
+			name = effectName,
+			description = effectDescription,
+			school = tes3.magicSchool.mysticism,
+			baseCost = effectCost,
+			speed = detectEffect.speed,
+			allowEnchanting = true,
+			allowSpellmaking = true,
+			appliesOnce = false,
+			canCastSelf = true,
+			canCastTarget = false,
+			canCastTouch = false,
+			casterLinked = detectEffect.casterLinked,
+			hasContinuousVFX = shieldEffect.hasContinuousVFX,
+			hasNoDuration = false,
+			hasNoMagnitude = true,
+			illegalDaedra = detectEffect.illegalDaedra,
+			isHarmful = false,
+			nonRecastable = false,
+			targetsAttributes = false,
+			targetsSkills = false,
+			unreflectable = false,
+			usesNegativeLighting = detectEffect.usesNegativeLighting,
+			icon = iconPath,
+			particleTexture = detectEffect.particleTexture,
+			castSound = detectEffect.castSoundEffect.id,
+			castVFX = detectEffect.castVisualEffect.id,
+			boltSound = detectEffect.boltSoundEffect.id,
+			boltVFX = detectEffect.boltVisualEffect.id,
+			hitSound = detectEffect.hitSoundEffect.id,
+			hitVFX = shieldEffect.hitVisualEffect.id,
+			areaSound = detectEffect.areaSoundEffect.id,
+			areaVFX = detectEffect.areaVisualEffect.id,
+			lighting = {x = shieldEffect.lightingRed / 255, y = shieldEffect.lightingGreen / 255, z = shieldEffect.lightingBlue / 255},
 			size = detectEffect.size,
 			sizeCap = detectEffect.sizeCap,
 			onTick = nil,

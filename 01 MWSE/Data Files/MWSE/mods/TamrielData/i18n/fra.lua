@@ -8,6 +8,12 @@ return {
 
 	["main.rangeAlmsivi"] = "Le pouvoir d'Almsivi ne s'étend pas sur ces terres.",
 	["main.rangeKyne"] = "Le pouvoir de Kyne ne s'étend pas sur ces terres.",
+	
+	["main.morrowindFightersGuild"] = "de la guilde des Guerriers",
+	["main.morrowindMagesGuild"] = "de la guilde des Mages",
+	["main.morrowindThievesGuild"] = "de la guilde des Voleurs",
+	["main.morrowindImperialLegion"] = "de la légion impériale",
+	["main.morrowindDarkBrotherhood"] = "de la Confrérie noire",
 
 	-- Magic Text
 	["magic.summonDevourer"] = "Appel de consummeur",
@@ -50,8 +56,8 @@ return {
 	["magic.summonDraugrDesc"] = "Cet effet permet d'invoquer un draugr des Royaumes extérieurs. Il apparaît à 2 mètres du lanceur et attaque toute entité hostile à son maître jusqu'à ce que le sort prenne fin ou qu'il soit tué. Quand il meurt ou que le sort prend fin, il disparaît et retourne dans les Royaumes extérieurs. En cas d'invocation en ville, les gardes vous attaqueront, vous et votre invocation.",
 	["magic.summonSpriggan"] = "Appel de spriggane",
 	["magic.summonSprigganDesc"] = "Cet effet permet d'invoquer une spriggane des Royaumes extérieurs. Elle apparaît à 2 mètres du lanceur et attaque toute entité hostile à son maître jusqu'à ce que le sort prenne fin ou qu'elle soit tuée. Quand elle meurt ou que le sort prend fin, elle disparaît et retourne dans les Royaumes extérieurs. En cas d'invocation en ville, les gardes vous attaqueront, vous et votre invocation.",
-	["magic.summonGreaterBonelord"] = "Appel seigneur ossements sup.",
-	["magic.summonGreaterBonelordDesc"] = "Cet effet permet d'invoquer un seigneur des ossements supérieur des Royaumes extérieurs. Il apparaît à 2 mètres du lanceur et attaque toute entité hostile à son maître jusqu'à ce que le sort prenne fin ou qu'il soit tué. Quand il meurt ou que le sort prend fin, il disparaît et retourne dans les Royaumes extérieurs. En cas d'invocation en ville, les gardes vous attaqueront, vous et votre invocation.",
+	["magic.summonGreaterBonelord"] = "Appel gardien seigneur ossement",
+	["magic.summonGreaterBonelordDesc"] = "Cet effet permet d'invoquer un gardien seigneur des ossements des Royaumes extérieurs. Il apparaît à 2 mètres du lanceur et attaque toute entité hostile à son maître jusqu'à ce que le sort prenne fin ou qu'il soit tué. Quand il meurt ou que le sort prend fin, il disparaît et retourne dans les Royaumes extérieurs. En cas d'invocation en ville, les gardes vous attaqueront, vous et votre invocation.",
 	["magic.summonGhost"] = "Appel de fantôme",
 	["magic.summonGhostDesc"] = "Cet effet permet d'invoquer un fantôme des Royaumes extérieurs. Il apparaît à 2 mètres du lanceur et attaque toute entité hostile à son maître jusqu'à ce que le sort prenne fin ou qu'il soit tué. Quand il meurt ou que le sort prend fin, il disparaît et retourne dans les Royaumes extérieurs. En cas d'invocation en ville, les gardes vous attaqueront, vous et votre invocation.",
 	["magic.summonWraith"] = "Appel de spectre",
@@ -119,6 +125,14 @@ return {
 	["magic.miscFortifyCastingDesc"] = "Cet effet augmente la chance du sujet de parvenir à lancer un sort.",
 	["magic.miscPrismaticLight"] = "Lumière prismatique",
 	["magic.miscPrismaticLightDesc"] = "Cet effet crée un projectile de lumière prismatique. Quand il touche une cible, le projectile illumine la zone pour la durée de l'effet. Le projectile de lumière n'inflige aucun dégât.",
+	["magic.miscBloodMagic"] = "Magie du sang",
+	["magic.miscBloodMagicDesc"] = "Placeholder",
+	["magic.miscSanguineRose"] = "Rose de Sanguiyn",
+	["magic.miscSanguineRoseDesc"] = "Cet effet permet d'invoquer un Daedra aléatoire des Royaumes extérieurs. Il apparaît à 2 mètres du lanceur et attaque toute entité hostile à son maître jusqu'à ce que le sort prenne fin ou qu'il soit tué. Quand il meurt ou que le sort prend fin, il disparaît et retourne dans les Royaumes extérieurs. En cas d'invocation en ville, les gardes vous attaqueront, vous et votre invocation.",
+	["magic.miscDetectValuables"] = "Détection des objets précieux",
+	["magic.miscDetectValuablesDesc"] = "Cet effet permet de détecter les objets précieux ; ils apparaissent sous forme de symboles sur la carte. La puissance de l'effet détermine la portée à laquelle le lanceur peut détecter des objets précieux (en pieds).",
+	["magic.miscMagickaWard"] = "Barrière magique",
+	["magic.miscMagickaWardDesc"] = "Cet effet permet de détecter les objets précieux ; ils apparaissent sous forme de symboles sur la carte. La puissance de l'effet détermine la portée à laquelle le lanceur peut détecter des objets précieux (en pieds).",
 
 	["magic.blinkLevitationDisabled"] = "Transfert ne fonctionne pas ici.",
 	["magic.wabbajackFailure"] = "%s est trop puissant pour que Wabbajack l'affecte !",
@@ -130,6 +144,7 @@ return {
 	["magic.gazeOfVelothCreature"] = "%s est incapable de comprendre le visage de Véloth !",
 	["magic.gazeOfVelothOther"] = "%s n'est pas affecté par le visage de Véloth !",
 	["magic.banishFailure"] = "Ce sort est trop faible pour bannir : %s !",
+	["magic.passwallDisabled"] = "Passe-muraille ne fonctionne pas ici.",
 	["magic.passWallWard"] = "Vous ne pouvez pas passer jusque-là.",
 	["magic.passWallAlpha"] = "Vous ne pouvez pas passer à travers ceci.",
 	["magic.passWallExterior"] = "Vous devez vous trouver dans un espace confiné.",
@@ -235,6 +250,9 @@ return {
 	
 	["mcm.travelPricesLabel"] = "Ajustement des prix des voyages",
 	["mcm.travelPricesDescription"] = "Modifie le coût des voyages vers les destinations ajoutées par les mods de provinces dans les cas où ceux calculés par le jeu sont déraisonnables, comme les prix des voyages entre les réseaux de guides de guilde de la guilde des Mages.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+	
+	["mcm.reactCellItemsLabel"] = "Empêcher la perte d'objets dans les cellules liées à des quêtes",
+	["mcm.reactCellItemsDescription"] = "Déplace les objets lâchés dans certaines cellules vers des conteneurs pour qu'ils ne soient pas perdus quand elles deviennent inaccessibles après avoir accompli certaines quêtes dans les mods de provinces.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",	-- I do not endorse this description, but I can't think of a better way to describe it right now. I have come up with lots of worse ones though.
 	
 	["mcm.khajiitFormCharacterCreationLabel"] = "Spécifier la forme de Khajiit pendant la création du personnage",
 	["mcm.khajiitFormCharacterCreationDescription"] = "Nomme les formes de Khajiit dans les menus de création du personnage au lieu de toutes les appeler \"Khajiit\". Un mod tiers comme Races de Tamriel est requis pour que ces races soient disponibles à la création du personnage.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
