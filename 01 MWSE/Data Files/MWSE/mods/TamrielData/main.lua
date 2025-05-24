@@ -225,6 +225,11 @@ local hats = {
 	"T_A_ImpEpHat02_Hr",
 }
 
+-- bodypart id
+local male_imga_helmets = {
+
+}
+
 -- (cell ids), (journal topic id, journal index), global id, (container id, (container cell id, container cell x, container cell y), container position)
 local react_cells = {
 	--{ cells = { "" }, journal = { id = "", index = 0 }, global = "", container = { id = "", cell = { id = "", x = 0, y = 0 }, position = { 0, 0, 0} } }
@@ -447,7 +452,7 @@ local function createHatObjects()
 end
 
 ---@param e equipEventData
-local function restrictEquip(e)
+local function restrictRaceEquip(e)
 	if e.reference.baseObject.objectType == tes3.objectType.npc then
 		if e.reference.mobile.object.race.id == "T_Val_Imga" then
 			if e.item.objectType == tes3.objectType.armor then
@@ -455,37 +460,41 @@ local function restrictEquip(e)
 					if e.reference.mobile == tes3.mobilePlayer then
 						tes3ui.showNotifyMenu(common.i18n("main.imgaShoes"))
 					end
-					
+
 					return false
 				end
-				
+
 				if e.item.slot == tes3.armorSlot.helmet then
 					if not e.reference.mobile.object.female then
-						if e.reference.mobile == tes3.mobilePlayer then
-							tes3ui.showNotifyMenu(common.i18n("main.imgaHelm"))
+						if e.item.parts[1] and e.item.parts[1].male and not table.contains(male_imga_helmets, e.item.parts[1].male.id) then
+							if e.reference.mobile == tes3.mobilePlayer then
+								tes3ui.showNotifyMenu(common.i18n("main.imgaHelm"))
+							end
+
+							return false
 						end
-						
-						return false
 					end
 				end
 			end
-			
+
 			if e.item.objectType == tes3.objectType.clothing then
 				if e.item.slot == tes3.clothingSlot.shoes then
 					if e.reference.mobile == tes3.mobilePlayer then
 						tes3ui.showNotifyMenu(common.i18n("main.imgaShoes"))
 					end
-					
+
 					return false
 				end
-				
+
 				if e.item.slot == tes3.clothingSlot.hat then
 					if not e.reference.mobile.object.female then
-						if e.reference.mobile == tes3.mobilePlayer then
-							tes3ui.showNotifyMenu(common.i18n("main.imgaHat"))
+						if e.item.parts[1] and e.item.parts[1].male and not table.contains(male_imga_helmets, e.item.parts[1].male.id) then
+							if e.reference.mobile == tes3.mobilePlayer then
+								tes3ui.showNotifyMenu(common.i18n("main.imgaHat"))
+							end
+
+							return false
 						end
-						
-						return false
 					end
 				end
 			end
@@ -495,33 +504,33 @@ local function restrictEquip(e)
 					if e.reference.mobile == tes3.mobilePlayer then
 						tes3ui.showNotifyMenu(common.i18n("main.tsaesciShoes"))
 					end
-					
+
 					return false
 				end
-				
+
 				if e.item.slot == tes3.armorSlot.greaves then
 					if e.reference.mobile == tes3.mobilePlayer then
 						tes3ui.showNotifyMenu(common.i18n("main.tsaesciPants"))
 					end
-					
+
 					return false
 				end
 			end
-			
+
 			if e.item.objectType == tes3.objectType.clothing then
 				if e.item.slot == tes3.clothingSlot.shoes then
 					if e.reference.mobile == tes3.mobilePlayer then
 						tes3ui.showNotifyMenu(common.i18n("main.tsaesciShoes"))
 					end
-					
+
 					return false
 				end	
-				
+
 				if e.item.slot == tes3.clothingSlot.pants then
 					if e.reference.mobile == tes3.mobilePlayer then
 						tes3ui.showNotifyMenu(common.i18n("main.tsaesciPants"))
 					end
-					
+
 					return false
 				end
 			end
@@ -848,10 +857,10 @@ event.register(tes3.event.loaded, function()
 
 		event.register(tes3.event.cellChanged, magic.banishDaedraCleanup, { unregisterOnLoad = true })
 		event.register(tes3.event.containerClosed, magic.deleteBanishDaedraContainer, { unregisterOnLoad = true })
-		
+
 		event.register(tes3.event.magicCasted, magic.passwallEffect, { unregisterOnLoad = true })
 	end
-	
+
 	if config.provincialReputation == true then
 		event.register(tes3.event.menuEnter, reputation.switchReputation, { filter = "MenuDialog", unregisterOnLoad = true })
 		event.register(tes3.event.menuExit, reputation.switchReputation, { unregisterOnLoad = true })
@@ -871,7 +880,7 @@ event.register(tes3.event.loaded, function()
 		tes3.getFaction("Imperial Legion").name = common.i18n("main.morrowindImperialLegion")
 		tes3.getFaction("Dark Brotherhood").name = common.i18n("main.morrowindDarkBrotherhood")
 	end
-	
+
 	if config.weatherChanges == true then
 		weather.changeRegionWeatherChances()
 		
@@ -894,7 +903,7 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.cellChanged, replaceHatCell, { unregisterOnLoad = true })
 		event.register(tes3.event.equipped, hatHelmetEquip, { unregisterOnLoad = true })
 	end
-	
+
 	if config.creatureBehaviors == true then
 		event.register(tes3.event.playGroup, behavior.loopStridentRunnerNesting, { unregisterOnLoad = true })
 		event.register(tes3.event.activate, behavior.onNestLoot, { priority = 250, unregisterOnLoad = true })	-- The priority is set so that the function is guranteed to work with GH even if the nests are removed from the blacklist
@@ -910,7 +919,7 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.restrictEquipment == true then
-		event.register(tes3.event.equip, restrictEquip, { unregisterOnLoad = true })
+		event.register(tes3.event.equip, restrictRaceEquip, { unregisterOnLoad = true })
 	end
 	
 	if config.fixVampireHeads == true then
@@ -947,7 +956,7 @@ event.register(tes3.event.loaded, function()
 
 		event.register(tes3.event.uiObjectTooltip, butterflyMothTooltip, { priority = 200, unregisterOnLoad = true })
 	end
-	
+
 	if config.limitIntervention == true then
 		event.register(tes3.event.magicCasted, limitInterventionMessage, { unregisterOnLoad = true })
 		event.register(tes3.event.spellTick, limitIntervention, { unregisterOnLoad = true })

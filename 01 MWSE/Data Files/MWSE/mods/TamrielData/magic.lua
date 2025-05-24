@@ -236,7 +236,7 @@ local td_misc_spells = {
 	{ "T_Com_Mys_BanishDaedra", tes3.spellType.spell, common.i18n("magic.miscBanish"), 64, { tes3.effect.T_mysticism_BanishDae }, tes3.effectRange.touch, 0, 0, 10, 10 },
 	{ "T_Com_Mys_ReflectDamage", tes3.spellType.spell, common.i18n("magic.miscReflectDamage"), 76, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 5, 10, 20 },
 	{ "T_Com_Mys_DetectHumanoid", tes3.spellType.spell, common.i18n("magic.miscDetectHumanoid"), 19, { tes3.effect.T_mysticism_DetHuman }, tes3.effectRange.self, 0, 5, 50, 150 },
-	{ "T_Ayl_Alt_RadiantShield", tes3.spellType.spell, common.i18n("magic.miscRadiantShield"), 75, { tes3.effect.T_alteration_RadShield }, tes3.effectRange.self, 0, 30, 10, 10 },
+	--{ "T_Ayl_Alt_RadiantShield", tes3.spellType.spell, common.i18n("magic.miscRadiantShield"), 75, { tes3.effect.T_alteration_RadShield }, tes3.effectRange.self, 0, 30, 10, 10 },	-- Not currently in TD
 	{ "T_Cr_Alt_AuroranShield", tes3.spellType.ability, nil, nil, { tes3.effect.T_alteration_RadShield }, tes3.effectRange.self, 0, 0, 20, 20 },
 	{ "T_Cr_Alt_AylSorcKLightShield", tes3.spellType.spell, common.i18n("magic.miscRadiantShield"), 10, { tes3.effect.T_alteration_RadShield }, tes3.effectRange.self, 0, 12, 10, 10, { tes3.effect.light }, tes3.effectRange.self, 0, 12, 20, 20 },
 	{ "T_Com_Mys_Insight", tes3.spellType.spell, common.i18n("magic.miscInsight"), 76, { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 10, 15, 15 },
