@@ -1,4 +1,7 @@
 -- Script for overwriting Magicka Expanded's spells/effects with those from Tamriel Data
+
+if not tes3.isModActive("Tamriel_Data.esm") then return end
+
 local config = require("TamrielData.config")
 event.register(tes3.event.loaded, function()
     local me_framework = include("OperatorJack.MagickaExpanded")

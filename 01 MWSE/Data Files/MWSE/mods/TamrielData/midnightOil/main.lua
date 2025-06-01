@@ -1,3 +1,5 @@
+if not tes3.isModActive("Tamriel_Data.esm") then return end
+
 event.register(tes3.event.initialized, function()
 	local midnightOil = include("mer.midnightOil.interop")
 	if midnightOil then

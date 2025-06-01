@@ -14,6 +14,8 @@ ADDITIONALLY:
 - Spell IDs can be referenced here: https://mwse.github.io/MWSE/references/magic-effects/
 --]]
 
+if not tes3.isModActive("Tamriel_Data.esm") then return end
+
 local cso = include("Character Sound Overhaul.interop")
 event.register(tes3.event.initialized, function()
     if cso then

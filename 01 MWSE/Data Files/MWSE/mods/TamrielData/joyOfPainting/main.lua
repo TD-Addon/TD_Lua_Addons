@@ -1,3 +1,5 @@
+if not tes3.isModActive("Tamriel_Data.esm") then return end
+
 local JoyOfPainting = include("mer.joyOfPainting")
 
 local paletteItems = {

@@ -3,6 +3,8 @@
 	By Kynesifnar, mort, and Rakanishu
 ]]
 
+if not tes3.isModActive("Tamriel_Data.esm") then return end
+
 local common = require("TamrielData.common")
 local config = require("TamrielData.config")
 local behavior = require("TamrielData.behavior")
@@ -379,7 +381,7 @@ local function replaceHatCell(e)
 			if common.isFromTD(armor.object, false) or common.isFromPTR(armor.object, false) then
 				if tes3.getObject(armor.object.id .. "H") then
 					local hat = tes3.createReference({ object = armor.object.id .. "H", orientation = armor.orientation, position = armor.position, cell = armor.cell, scale = armor.scale })
-					
+
 					local armorOwner, requirement = tes3.getOwner({ reference = armor })
 					if armorOwner then tes3.setOwner({ reference = hat, owner = armorOwner, requiredRank = requirement, requiredGlobal = requirement }) end
 
@@ -427,7 +429,7 @@ local function createHatObjects()
 		---@cast armor tes3armor
 		if armor.slot == tes3.armorSlot.helmet and not armor.isClosedHelmet then	-- Closed helmets are not going to be hats by definition
 			if common.isFromTD(armor, false) or common.isFromPTR(armor, false) then -- Only affect TD hats or unique variants from PTR
-				if armor.id:find("Hat") or armor.name:find("Hat") or armor.icon:lower():find("hat") or armor.id:find("Robe") or armor.name:find("Robe") or armor.icon:lower():find("robe") then	-- Check whether these conditions are actually worth having
+				if armor.id:find("Hat") or armor.name:find("Hat") or armor.icon:lower():find("hat") or armor.id:find("Hood") or armor.name:find("Hood") or armor.icon:lower():find("hood") then	-- Check whether these conditions are actually worth having
 					for _,v in pairs(hats) do
 						if armor.parts[1] and armor.parts[1].male and armor.parts[1].male.id == v and #(armor.id .. "H") < 32 then
 							local hat = tes3.createObject({ objectType = tes3.objectType.clothing, id = armor.id .. "H", getIfExists = true })

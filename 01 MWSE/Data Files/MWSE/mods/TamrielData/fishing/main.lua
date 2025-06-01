@@ -1,3 +1,5 @@
+if not tes3.isModActive("Tamriel_Data.esm") then return end
+
 local ultimateFishing = include("mer.fishing")
 
 local fishingNets = {

@@ -1,4 +1,7 @@
 -- Script for allowing Graphic Herbalism to affect containers that it otherwise wouldn't
+
+if not tes3.isModActive("Tamriel_Data.esm") then return end
+
 local common = require("TamrielData.common")
 event.register(tes3.event.initialized, function()
     if common.gh_config then
