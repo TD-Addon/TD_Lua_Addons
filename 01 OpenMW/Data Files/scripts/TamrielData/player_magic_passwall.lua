@@ -125,7 +125,10 @@ local function isObjectReachable(from, targetObject)
     local status, path = nearby.findPath(
         from,
         to,
-        { includeFlags = nearby.NAVIGATOR_FLAGS.Walk, destinationTolerance = 0.0 })
+        {
+            includeFlags = nearby.NAVIGATOR_FLAGS.Walk, destinationTolerance = 0.0,
+            agentBounds = types.Actor.getPathfindingAgentBounds(self)
+        })
 
     if status == nearby.FIND_PATH_STATUS.Success or status == nearby.FIND_PATH_STATUS.PartialPath then
         -- Even though a navmesh path is found, it still could have hopped through an obstacle,
@@ -348,12 +351,14 @@ local PSW = {}
 function PSW.onCastPasswall()
     debug.log(
         string.format(
-            "START: pos:%s, cell:%s, rotation:%s, race:%s, isMale:%s",
+            "START: pos:%s, cell:%s, rotation:%s, race:%s, isMale:%s, navHalfExtents:%s, navShapeType:%s",
             self.position,
             self.cell,
             self.rotation,
             types.NPC.record(self).race,
-            types.NPC.record(self).isMale
+            types.NPC.record(self).isMale,
+            types.Actor.getPathfindingAgentBounds(self).halfExtents,
+            types.Actor.getPathfindingAgentBounds(self).shapeType
         ),
         passwallSpellId
     )
