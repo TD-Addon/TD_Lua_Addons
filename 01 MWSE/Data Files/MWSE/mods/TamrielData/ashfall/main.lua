@@ -3160,6 +3160,7 @@ event.register(tes3.event.initialized, function()
 			t_ingfood_meatcliffracer_01 = types.meat,
 			t_ingfood_meatdolphin_01 = types.meat,
 			t_ingfood_meatdurzog_01 = types.cookedMeat,
+			t_ingfood_meatgoat_01 = types.meat,
 			t_ingfood_meatguar_01 = types.meat,
 			t_ingfood_meatham_01 = types.meat,
 			t_ingfood_meathorker_01 = types.meat,
