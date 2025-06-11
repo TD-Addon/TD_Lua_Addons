@@ -60,7 +60,7 @@ local function handleMGRecall(pad, teleCompanions)
                 x,y,z,o,cell = -10162,-193741,3957,339,"Mount Annu"
             end
         elseif roll <= 0.5 then
-            x,y,z,o,cell = 473,4230,4278,286,"TEM Emperor Antiochus, Hold"
+            x,y,z,o,cell = 4736,4230,4278,286,"TEM Emperor Antiochus, Hold"
         elseif roll <= 0.75 then
             x,y,z,o,cell = 3997,4139,2592,270,"Nivalis, Icebreaker Keep: Dock Tower"
         else
