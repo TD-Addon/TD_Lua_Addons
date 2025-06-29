@@ -3075,7 +3075,6 @@ event.register(tes3.event.initialized, function()
 			t_ingflor_tigerlilynectar_01 = types.food,
 			t_ingflor_tinderpolypore_01 = types.mushroom,
 			t_ingflor_trembleweedsap_01 = types.herb,
-			t_ingflor_trollroot_01 = types.vegetable,
 			t_ingflor_turnip_01 = types.vegetable,
 			t_ingflor_umbermorchella_01 = types.mushroom,
 			t_ingflor_veiledurnula_01 = types.mushroom,
