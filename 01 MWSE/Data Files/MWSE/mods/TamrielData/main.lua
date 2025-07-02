@@ -181,6 +181,7 @@ local travel_actor_prices = {
 
 -- bodypart id
 local hats = {
+	"T_A_ImpEpHat02_Hr",
 	"T_C_BreEpHatWizard01_Hr",
 	"T_C_BreEpHatWizard02_Hr",
 	"T_C_ComCmHat01_Hr",
@@ -224,7 +225,10 @@ local hats = {
 	"T_C_ImpEtHatColNorth04_Hr",
 	"T_C_ImpEtHatColNorth05_Hr",
 	"T_A_ReaLeatherHat01_Hr",
-	"T_A_ImpEpHat02_Hr",
+	"T_C_RgaCmHat01_Hr",
+	"T_C_RgaCmHat02_Hr",
+	"T_C_RgaCmHat03_Hr",
+
 }
 
 -- bodypart id
