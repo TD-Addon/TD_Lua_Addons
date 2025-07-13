@@ -437,6 +437,8 @@ event.register(tes3.event.initialized, function()
 			t_sky_flora_bushleaves5dry_02  = types.vegetation,
 			t_sky_flora_bushleaves5dry_03  = types.vegetation,
 			t_sky_flora_bushpine2_01       = types.vegetation,
+			t_sky_flora_bushpine2_02       = types.vegetation,
+			t_sky_flora_bushpine2_03       = types.vegetation,
 			t_sky_flora_bushpine3_01       = types.vegetation,
 			t_sky_flora_bushpine3_02       = types.vegetation,
 			t_sky_flora_bushpine3_03       = types.vegetation,
