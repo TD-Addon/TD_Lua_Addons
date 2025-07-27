@@ -907,7 +907,7 @@ local function fortifyCastingMultiFillbar(e)
 		return
 	end
 
-	local fortifyCastingEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_restoration_FortifyCasting })	-- This limits findChild calls, but is that actually more efficient?
+	local fortifyCastingEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_restoration_FortifyCasting })
 	if #fortifyCastingEffects > 0 then
 		local magicLayout = multiMenu:findChild("MenuMulti_bottom_row_left"):findChild("MenuMulti_icons"):findChild("MenuMulti_magic_layout")
 		if not magicLayout then
@@ -1200,7 +1200,6 @@ local function gazeOfVelothEffect(e)
 		e.effectInstance.state = tes3.spellState.retired
 		return
 	end
-
 
 	target.data.tamrielData = target.data.tamrielData or {}
 	target.data.tamrielData.gazeOfVeloth = true
@@ -2821,6 +2820,7 @@ function this.passwallEffect(e)
 			local up = tes3vector3.new(0, 0, 1)
 
 			local range = v.radius * 22.1
+			local activationRange = tes3.findGMST(tes3.gmst.iMaxActivateDist).value
 
 			local hitSound = "mysticism hit"
 			local hitVFX = "VFX_MysticismHit"
@@ -2833,7 +2833,7 @@ function this.passwallEffect(e)
 				position = castPosition,
 				direction = forward,
 				findAll = true,
-				maxDistance = 196 + range,
+				maxDistance = activationRange + range,
 				ignore = { tes3.player },
 				observeAppCullFlag  = false,
 			}
@@ -2866,7 +2866,7 @@ function this.passwallEffect(e)
 			local target = tes3.rayTest{
 				position = castPosition,
 				direction = forward,
-				maxDistance = 196,		-- The normal activation range
+				maxDistance = activationRange,
 				ignore = { tes3.player },
 			}
 

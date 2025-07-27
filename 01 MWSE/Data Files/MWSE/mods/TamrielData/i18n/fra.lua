@@ -130,9 +130,9 @@ return {
 	["magic.miscSanguineRose"] = "Rose de Sanguiyn",
 	["magic.miscSanguineRoseDesc"] = "Cet effet permet d'invoquer un Daedra aléatoire des Royaumes extérieurs. Il apparaît à 2 mètres du lanceur et attaque toute entité hostile à son maître jusqu'à ce que le sort prenne fin ou qu'il soit tué. Quand il meurt ou que le sort prend fin, il disparaît et retourne dans les Royaumes extérieurs. En cas d'invocation en ville, les gardes vous attaqueront, vous et votre invocation.",
 	["magic.miscDetectValuables"] = "Détection des objets précieux",
-	["magic.miscDetectValuablesDesc"] = "Cet effet permet de détecter les objets précieux ; ils apparaissent sous forme de symboles sur la carte. La puissance de l'effet détermine la portée à laquelle le lanceur peut détecter des objets précieux (en pieds).",
+	["magic.miscDetectValuablesDesc"] = "Cet effet permet de détecter les objets précieux valant au moins 4000 drakes ; ils apparaissent sous forme de symboles sur la carte. La puissance de l'effet détermine la portée à laquelle le lanceur peut détecter des objets précieux (en pieds).",
 	["magic.miscMagickaWard"] = "Barrière magique",
-	["magic.miscMagickaWardDesc"] = "Cet effet permet de détecter les objets précieux ; ils apparaissent sous forme de symboles sur la carte. La puissance de l'effet détermine la portée à laquelle le lanceur peut détecter des objets précieux (en pieds).",
+	["magic.miscMagickaWardDesc"] = "Placeholder",
 
 	["magic.blinkLevitationDisabled"] = "Transfert ne fonctionne pas ici.",
 	["magic.wabbajackFailure"] = "%s est trop puissant pour que Wabbajack l'affecte !",

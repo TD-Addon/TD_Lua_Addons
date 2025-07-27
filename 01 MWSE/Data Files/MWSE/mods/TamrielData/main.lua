@@ -775,6 +775,8 @@ local function fixPlayerAnimations()
 		end
 	elseif tes3.player.object.race.id == "T_Aka_Tsaesci" then
 		tes3.loadAnimation({ reference = tes3.player, file = "pi_tsa_base_anim.nif" })
+	elseif tes3.player.object.race.id == "T_Cyr_Minotaur" then
+		tes3.loadAnimation({ reference = tes3.player, file = "pc_min_base_anim.nif" })
 	end
 end
 
@@ -915,7 +917,7 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.activate, behavior.onNestLoot, { priority = 250, unregisterOnLoad = true })	-- The priority is set so that the function is guranteed to work with GH even if the nests are removed from the blacklist
 		event.register(tes3.event.combatStarted, behavior.onGroupAttacked, { unregisterOnLoad = true })
 
-		timer.start{ duration = 5, iterations = -1, type = timer.simulate, callback = behavior.creatureDetectionTick }	-- Morrowind's AI is (supposedly) updated every 5 seconds, which is why that value is used here.
+		timer.start{ duration = 5, iterations = -1, type = timer.simulate, callback = behavior.creatureDetectionTick }	-- Morrowind's AI is updated every 5 seconds, which is why that value is used here.
 		event.register(tes3.event.mobileActivated, behavior.onMobileActivated, { unregisterOnLoad = true })
 		event.register(tes3.event.mobileDeactivated, behavior.onMobileDeactivated, { unregisterOnLoad = true })
 	end
