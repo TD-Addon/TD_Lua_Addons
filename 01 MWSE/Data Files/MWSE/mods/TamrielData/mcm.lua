@@ -143,6 +143,14 @@ local function registerModConfig()
         },
     }
     toggles:createOnOffButton{
+        label = common.i18n("mcm.wereCreatureFixLabel"),
+        description = common.i18n("mcm.wereCreatureFixDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "hideWerewolfMesh",
+            table = config,
+        },
+    }
+    toggles:createOnOffButton{
         label = common.i18n("mcm.restrictEquipmentLabel"),
         description = common.i18n("mcm.restrictEquipmentDescription"),
         variable = mwse.mcm.createTableVariable{

@@ -5,6 +5,9 @@ return {
 	["main.imgaHat"] = "Male Imga cannot wear hats.",
 	["main.tsaesciShoes"] = "Tsaesci cannot wear shoes.",
 	["main.tsaesciPants"] = "Tsaesci cannot wear pants.",
+	["main.minotaurShoes"] = "Minotaurs cannot wear shoes.",
+	["main.minotaurHelm"] = "Minotaurs cannot wear helmets.",
+	["main.minotaurHat"] = "Minotaurs cannot wear hats.",
 
 	["main.rangeAlmsivi"] = "The power of Almsivi does not extend to these lands.",
 	["main.rangeKyne"] = "The power of Kyne does not extend to these lands.",
@@ -143,6 +146,7 @@ return {
 	["magic.gazeOfVelothDaedra"] = "%s does not care about the Face of Veloth!",
 	["magic.gazeOfVelothCreature"] = "%s cannot comprehend the Face of Veloth!",
 	["magic.gazeOfVelothOther"] = "%s is unaffected by the Face of Veloth!",
+	["magic.corruptionScript"] = "%s cannot be corrupted.",
 	["magic.banishFailure"] = "This spell is too weak to banish %s!",
 	["magic.passwallDisabled"] = "Passwall does not work here.",
 	["magic.passwallWard"] = "You cannot pass through to there.",
@@ -237,23 +241,28 @@ return {
 	["mcm.animationFixLabel"] = "Fix Player Animations for Tamriel Data Races",
 	["mcm.animationFixDescription"] = "Fixes animations when playing as Ohmes-raht or Suthay Khajiit via 3rd party mods.\nRequires reload. Tail may vanish until reload when animations from other MWSE addons are applied to the player character." ..
 										"\nIf using an animation replacer that adds tail bones to base_anim.nif, then this feature is likely not necessary.\n\nDefault: On\n\n",
-
-	["mcm.restrictEquipmentLabel"] ="Restrict Equipment for Tamriel Data Races",
-	["mcm.restrictEquipmentDescription"] = "Prevents races added by Tamriel Data from wearing certain kinds of equipment when doing so would be physically implausible or technically problematic.\nRequires reload.\n\nAffected races and equipment:" ..
-											"\n- Stops male Imga from equipping helmets and all Imga from equipping footwear.\n\nDefault: On\n\n",
+					
+	["mcm.wereCreatureFixLabel"] = "Fix Custom Werecreatures",
+	["mcm.wereCreatureFixDescription"] = "Hides the werewolf model when the player has transformed into another werecreature from Tamriel Data.\nRequires reload.\n\nDefault: On\n\n",
 
 	["mcm.fixVampireLabel"] = "Fix Vampire Heads",
 	["mcm.fixVampireDescription"] = "Stops Namira's Shroud from hiding the player's head when equipped and allows vampire NPCs to use unique heads made specifically for them.\nRequires reload.\n\nDefault: On\n\n",
+
+	["mcm.restrictEquipmentLabel"] ="Restrict Equipment for Tamriel Data Races",
+	["mcm.restrictEquipmentDescription"] = "Prevents races added by Tamriel Data from wearing certain kinds of equipment when doing so would be physically implausible or technically problematic.\nRequires reload.\n\nAffected races and equipment:" ..
+											"\n- Stops male Imga from equipping helmets and all Imga from equipping footwear." ..
+											"\n- Stops Tsaesci from equipping greaves and footwear." ..
+											"\n\nDefault: On\n\n",
 
 	["mcm.itemSoundsLabel"] = "Improve Item Sounds",
 	["mcm.itemSoundsDescription"] = "Gives some items from Tamriel Data, such as perfume and wasabi paste, more reasonable sounds when they are used or added to/removed from one's inventory.\nRequires reload.\n\nDefault: On\n\n",
 
 	["mcm.travelPricesLabel"] = "Adjust Travel Prices",
 	["mcm.travelPricesDescription"] = "Changes the cost of traveling to destinations added by Tamriel Rebuilt and Project Tamriel when Morrowind's calculated prices are unreasonable, such as between Mages Guild networks.\nRequires reload.\n\nDefault: On\n\n",
-	
+
 	["mcm.reactCellItemsLabel"] = "Prevent Item Loss in Cells tied to Quests",
 	["mcm.reactCellItemsDescription"] = "Moves items dropped in some cells to containers so that they are not lost when they become inaccessible after completing quests in Tamriel Rebuilt and Project Tamriel.\nRequires reload.\n\nDefault: On\n\n",	-- I do not endorse this description, but I can't think of a better way to describe it right now. I have come up with lots of worse ones though.
-	
+
 	["mcm.khajiitFormCharacterCreationLabel"] = "Specify Khajiit Form during Character Creation",
 	["mcm.khajiitFormCharacterCreationDescription"] = "Names the Khajiit forms in the relevant character creation menus rather than just calling all of them \"Khajiit\". Another mod, such as All Races and Classes Unlocked, is needed to actually make these races available during character creation.\nRequires reload.\n\nDefault: On\n\n",
 

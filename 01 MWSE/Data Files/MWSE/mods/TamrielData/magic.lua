@@ -25,6 +25,7 @@ local multiOriginGridX = 0
 local multiOriginGridY = 0
 
 local corruptionActorID = "T_Glb_Cre_Gremlin_01"	-- A funny default, just in case
+local corruptionTargetReference = nil
 local corruptionCasted = false
 
 if config.summoningSpells == true then
@@ -505,7 +506,7 @@ local td_enchanted_items = {
 	{ "T_EnSc_Nor_KynesIntervention", common.i18n("magic.itemScKynesIntervention"), nil }
 }
 
--- race name, female, distraction voice files, distraction end voice lines
+-- race id, female, distraction voice files, distraction end voice lines
 local distractedVoiceLines = {
 	{ "Argonian", false, { "vo\\a\\m\\Idl_AM001.mp3", "vo\\a\\m\\Hlo_AM056.mp3" }, { "vo\\a\\m\\Idl_AM008.mp3" } },
 	{ "Argonian", true, { "vo\\a\\f\\Idl_AF007.mp3", "vo\\a\\f\\Idl_AF004.mp3" }, { "vo\\a\\f\\Idl_AF002.mp3" } },
@@ -517,8 +518,19 @@ local distractedVoiceLines = {
 	{ "High Elf", true, { "vo\\h\\f\\Hlo_HF056.mp3" }, { "vo\\i\\f\\Idl_HF007.mp3" } },
 	{ "Imperial", false, { "vo\\i\\m\\Idl_IM008.mp3", "vo\\i\\m\\Idl_IM003.mp3" }, { "vo\\i\\m\\Idl_IM005.mp3" } },
 	{ "Imperial", true, { "vo\\i\\f\\Idl_IF001.mp3" }, { "vo\\i\\f\\Idl_IF009.mp3" } },
-	{ "Khajiit", false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },	-- The main reason for using race names instead of IDs is to make the Khajiit easier, but that should change when/if certain forms get their own voicelines
-	{ "Khajiit", true, { "vo\\k\\f\\Idl_KF005.mp3", "vo\\k\\f\\Idl_KF006.mp3", "vo\\k\\f\\Idl_KF007.mp3" }, { "vo\\k\\f\\Idl_KF002.mp3", "vo\\k\\f\\Idl_KF003.mp3" } },
+	{ "Khajiit", false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },
+	{ "T_Els_Cathay",		false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },
+	{ "T_Els_Cathay-raht",	false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },
+	{ "T_Els_Dagi-raht",	false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },
+	{ "T_Els_Ohmes",		false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },
+	{ "T_Els_Ohmes-raht", 	false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },
+	{ "T_Els_Suthay",		false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },
+	{ "T_Els_Cathay",		true, { "vo\\k\\f\\Idl_KF005.mp3", "vo\\k\\f\\Idl_KF006.mp3", "vo\\k\\f\\Idl_KF007.mp3" }, { "vo\\k\\f\\Idl_KF002.mp3", "vo\\k\\f\\Idl_KF003.mp3" } },
+	{ "T_Els_Cathay-raht",	true, { "vo\\k\\f\\Idl_KF005.mp3", "vo\\k\\f\\Idl_KF006.mp3", "vo\\k\\f\\Idl_KF007.mp3" }, { "vo\\k\\f\\Idl_KF002.mp3", "vo\\k\\f\\Idl_KF003.mp3" } },
+	{ "T_Els_Dagi-raht",	true, { "vo\\k\\f\\Idl_KF005.mp3", "vo\\k\\f\\Idl_KF006.mp3", "vo\\k\\f\\Idl_KF007.mp3" }, { "vo\\k\\f\\Idl_KF002.mp3", "vo\\k\\f\\Idl_KF003.mp3" } },
+	{ "T_Els_Ohmes",		true, { "vo\\k\\f\\Idl_KF005.mp3", "vo\\k\\f\\Idl_KF006.mp3", "vo\\k\\f\\Idl_KF007.mp3" }, { "vo\\k\\f\\Idl_KF002.mp3", "vo\\k\\f\\Idl_KF003.mp3" } },
+	{ "T_Els_Ohmes-raht",	true, { "vo\\k\\f\\Idl_KF005.mp3", "vo\\k\\f\\Idl_KF006.mp3", "vo\\k\\f\\Idl_KF007.mp3" }, { "vo\\k\\f\\Idl_KF002.mp3", "vo\\k\\f\\Idl_KF003.mp3" } },
+	{ "T_Els_Suthay",		true, { "vo\\k\\f\\Idl_KF005.mp3", "vo\\k\\f\\Idl_KF006.mp3", "vo\\k\\f\\Idl_KF007.mp3" }, { "vo\\k\\f\\Idl_KF002.mp3", "vo\\k\\f\\Idl_KF003.mp3" } },
 	{ "Nord", false, { "vo\\n\\m\\Idl_NM001.mp3" }, { "vo\\n\\m\\Idl_NM009.mp3" } },
 	{ "Nord", true, { "vo\\n\\f\\Idl_NF002.mp3", "vo\\n\\f\\Idl_NF004.mp3" }, { "vo\\n\\f\\Idl_NM008.mp3" } },
 	{ "Orc", false, { "vo\\o\\m\\Idl_OM001.mp3", "vo\\o\\m\\Idl_OM002.mp3" }, { "vo\\o\\m\\Idl_OM004.mp3", "vo\\o\\m\\Idl_OM009.mp3" } },
@@ -600,6 +612,49 @@ local gazeOfVelothImmuneActors = {
 	"divayth fyr",
 	"wulf",
 	"Sky_qRe_KWMG6_Azra"
+}
+
+-- script id
+local safeScripts = {
+	"nolore",
+	"slaveScript",
+	"fortloreboozeScript",
+	"TR_m3_Kha_Methats_sc",
+	"TR_m3_NPC_DiceGamblerNoLore",
+	"TR_m3_NPC_OE_commonNoLore",
+	"TR_m3_NPC_OE_poorNoLore",
+	"TR_m3_NPC_OE_richNoLore",
+	"TR_m3_NPC_OE_towerNoLore",
+	"TR_m4_AA_Vf_NPC_NoLoresc",
+	"TR_m7_NPC_RuddyEggsNoLore",
+	"TR_m7_Ns_KhanVolnyr_sc",
+	"TR_m3_q_kharg",
+	"TR_m3_Kha_AtroLordDis_sc",
+	"TR_m3_Kha_Black_Heart_Script",
+	"TR_m3_Kha_ClannLordDis_sc",
+	"TR_m3_Kha_FireScamp_sc",
+	"TR_m1_Lornie_Slave_scpt",
+	"TR_m4_OranSlave_Sc",
+	"TR_m1_T_CouncilorSc",
+	"TR_m2_T_CouncilorSc",
+	"TR_NecMQ_MovingNPCScript",
+	"TR_m1_FW_TG3_HrongalDrink",
+	"TR_m1_MinTalScript",
+	"TR_m1_NPC_DiceGambler",
+	"TR_m2_NPC_DiceGambler",
+	"TR_m3_NPC_DiceGambler",
+	"TR_m3_NPC_DiceGamblerNoLore",
+	"TR_m3_NPC_DiceGamblerOECom",
+	"TR_m3_NPC_DiceGamblerOEPoor",
+	"TR_m4_NPC_DiceGambler",
+	"TR_m5_NPC_DiceGambler",
+	"TR_m6_NPC_DiceGambler",
+	"TR_m7_NPC_DiceGambler",
+	"TR_m1_NPC_Fervas_Shulisa",
+	"TR_m1_NPC_Gilen_Indothan",
+	"TR_m1_NPC_Malvas_Relvani",
+	"TR_m1_T_Seducer",
+	"TR_m3_q_vampambush"
 }
 
 ---@param table table
@@ -1174,42 +1229,31 @@ local function gazeOfVelothEffect(e)
 			tes3ui.showNotifyMenu(common.i18n("magic.gazeOfVelothDagoth"))
 			e.effectInstance.state = tes3.spellState.retired
 			return
-		end
-
-		if target.baseObject.type == tes3.creatureType.humanoid then
-			if id:find("ash_") or id:find("dagoth_") or id:find("corprus_") or id == "ascended_sleeper" then
-				tes3ui.showNotifyMenu(common.i18n("magic.gazeOfVelothAsh", { name }))
-				e.effectInstance.state = tes3.spellState.retired
-				return
-			end
-		end
-		
-		if target.baseObject.type == tes3.creatureType.daedra then
+		elseif target.baseObject.type == tes3.creatureType.humanoid and (id:find("ash_") or id:find("dagoth_") or id:find("corprus_") or id == "ascended_sleeper") then
+			tes3ui.showNotifyMenu(common.i18n("magic.gazeOfVelothAsh", { name }))
+			e.effectInstance.state = tes3.spellState.retired
+			return
+		elseif target.baseObject.type == tes3.creatureType.daedra then
 			tes3ui.showNotifyMenu(common.i18n("magic.gazeOfVelothDaedra", { name }))
 			e.effectInstance.state = tes3.spellState.retired
 			return
-		end
-
-		if target.baseObject.type == tes3.creatureType.normal or target.baseObject.type == tes3.creatureType.undead then
+		elseif target.baseObject.type == tes3.creatureType.normal or target.baseObject.type == tes3.creatureType.undead then
 			tes3ui.showNotifyMenu(common.i18n("magic.gazeOfVelothCreature", { name }))
 			e.effectInstance.state = tes3.spellState.retired
 			return
+		else
+			tes3ui.showNotifyMenu(common.i18n("magic.gazeOfVelothOther", { name }))
+			e.effectInstance.state = tes3.spellState.retired
+			return
 		end
-
-		tes3ui.showNotifyMenu(common.i18n("magic.gazeOfVelothOther", { name }))
-		e.effectInstance.state = tes3.spellState.retired
-		return
 	end
 
 	target.data.tamrielData = target.data.tamrielData or {}
 	target.data.tamrielData.gazeOfVeloth = true
-	tes3.removeSound({ sound = nil, reference = target })	-- Stop long-winded voice lines from playing when the target is stripped of their flesh
+	tes3.removeSound({ sound = nil, reference = target })	-- Stop long-winded voice lines from continuing to play after the target is stripped of their flesh
 	tes3.playSound({ sound = tes3.getMagicEffect(tes3.effect.damageHealth).hitSoundEffect, reference = target })	-- The hit sound is stopped by the line above though, so this plays it again
 	target.mobile:kill()
 	tes3.incrementKillCount({ actor = target.baseObject })
-
-	if target.baseObject.faction then tes3.triggerCrime({ type = tes3.crimeType.killing, victim = target.baseObject.faction }) end	-- Ensures that the player will be expelled for killing a faction member
-	tes3.triggerCrime({ type = tes3.crimeType.killing, victim = target.baseObject })
 
 	if target.baseObject.race then
 		for _,v in pairs(raceSkeletonBodyParts) do
@@ -1289,17 +1333,17 @@ end
 local function playDistractedVoiceLine(ref, isEnd)
 	if ref.mobile.actorType == tes3.actorType.npc then
 		for _,v in pairs(distractedVoiceLines) do
-			local raceName, isFemale, voicesStart, voicesEnd = unpack(v)
-			if ref.baseObject.race.name == raceName and ref.baseObject.female == isFemale then
+			local raceID, isFemale, voicesStart, voicesEnd = unpack(v)
+			if ref.baseObject.race.id == raceID and ref.baseObject.female == isFemale then
 				local voices
 				if not isEnd then voices = voicesStart
 				else voices = voicesEnd end
-	
+
 				if voices then
 					local path = voices[math.random(#voices)]
 					if path then tes3.say({ reference = ref, soundPath = path }) end
 				end
-	
+
 				return
 			end
 		end
@@ -1309,9 +1353,9 @@ local function playDistractedVoiceLine(ref, isEnd)
 		while (creature.soundCreature) do
 			creature = creature.soundCreature	-- Get the base sound creature
 		end
-		
+
 		local soundGen = tes3.getSoundGenerator(creature.id, tes3.soundGenType.moan)
-	
+
 		if soundGen then tes3.playSound({ reference = ref, sound = soundGen.sound }) end
 	end
 end
@@ -1543,7 +1587,57 @@ function this.corruptionSummoned(e)
 		e.mobile.fight = 100
 		e.mobile.flee = 0
 		e.mobile.hello = 0
+
+		---@cast corruptionTargetReference tes3reference
+		if corruptionTargetReference then	-- Just in case
+			-- The loops below ensure that the summoned reference does not have different items from leveled items than the target and that they only have items relevant for actors in combat
+			for _,itemStack in pairs(e.mobile.inventory) do
+				itemStack.count = 0
+			end
+
+			for _,itemStack in pairs(corruptionTargetReference.mobile.inventory) do
+				if itemStack.object.objectType == tes3.objectType.ammunition or itemStack.object.objectType == tes3.objectType.armor or itemStack.object.objectType == tes3.objectType.clothing or itemStack.object.objectType == tes3.objectType.weapon then
+					local firstItemData
+					if itemStack.variables then firstItemData = itemStack.variables[1] end
+
+					tes3.addItem({ reference = e.reference, item = itemStack.object, count = itemStack.count, itemData = firstItemData })	-- Just using the first item's itemData should be fine here
+				end
+			end
+		end
+
+		corruptionTargetReference = nil
 	end
+end
+
+---@param inventory tes3itemStack[]
+local function hasScriptedItem(inventory)
+	for _,itemStack in pairs(inventory) do
+		if itemStack.object.script then return true end
+	end
+end
+
+---@param e tes3magicEffectTickEventData
+local function corruptionEffect(e)
+	if (not e:trigger()) then
+		return
+	end
+
+	local target = e.effectInstance.target
+
+	if target.id ~= tes3.player.data.tamrielData.corruptionReferenceID then	-- Memory errors can be reported if the effect is applied to the summon and doing so is weird anyways
+		if target.baseObject.script and (not ((target.baseObject.script.id:find("T_ScNpc") and not target.baseObject.script.id:find("_Were")) or table.contains(safeScripts, target.baseObject.script.id)) or hasScriptedItem(target.mobile.inventory)) then	-- Checks whether the target has a scripted item or a script that is not known to be safely cloneable
+			tes3ui.showNotifyMenu(common.i18n("magic.corruptionScript", { target.object.name }))
+			e.effectInstance.state = tes3.spellState.retired
+			return
+		end
+
+		corruptionActorID = target.baseObject.id
+		corruptionTargetReference = target
+		corruptionCasted = true
+		tes3.cast({ reference = e.sourceInstance.caster, spell = "T_Dae_Cnj_UNI_CorruptionSummon", alwaysSucceeds = true, bypassResistances = true, instant = true, target = e.sourceInstance.caster })
+	end
+
+	e.effectInstance.state = tes3.spellState.retired
 end
 
 ---@param e tes3magicEffectTickEventData
@@ -2333,7 +2427,7 @@ local function wabbajackEffect(e)
 		e.effectInstance.state = tes3.spellState.retired
 		return
 	end
-	
+
 	if target.object.level < 30 then
 		if not target.data.tamrielData or not target.data.tamrielData.wabbajack then
 			target.data.tamrielData = target.data.tamrielData or {}
@@ -2341,20 +2435,20 @@ local function wabbajackEffect(e)
 
 			local maxDuration = 16
 			local minDuration = 4
-	
+
 			local effectiveLevel = 0
 			if target.object.level > 5 then
 				effectiveLevel = target.object.level - 5	-- The effect lasts for maxDuration for creatures of level 5 and below
 			end
-			
+
 			local duration = maxDuration - ((maxDuration - minDuration) * (effectiveLevel / 24))
-	
+
 			local targetHealth = target.mobile.health.normalized
 			local targetFatigue = target.mobile.fatigue.normalized
 			local targetMagicka = target.mobile.magicka.normalized
-			
+
 			local transformCreature = tes3.getObject(wabbajackCreatures[math.random(#wabbajackCreatures)])
-	
+
 			local transformedTarget = tes3.createReference({ object = transformCreature, position = target.position, orientation = target.orientation, cell = target.cell })	-- Could this setup and the WabbajackTrans effect actually be done through a summon like the Corruption effect does?
 			transformedTarget.data.tamrielData = transformedTarget.data.tamrielData or {}
 			transformedTarget.data.tamrielData.wabbajack = {}
@@ -2362,19 +2456,19 @@ local function wabbajackEffect(e)
 			transformedTarget.data.tamrielData.wabbajack.targetID = target.id
 			transformedTarget.data.tamrielData.wabbajack.targetName = target.object.name
 			transformedTarget.mobile.fight = 0	-- Without this guards will fight transformed NPCs
-	
+
 			local vfx = tes3.createVisualEffect({ object = "T_VFX_Wabbajack", lifespan = 1.5, reference = transformedTarget })
 			tes3.playSound{ sound = "alteration hit", reference = transformedTarget }
-	
+
 			tes3.cast({ reference = e.sourceInstance.caster, spell = "T_Dae_Alt_UNI_WabbajackTrans", alwaysSucceeds = true, bypassResistances = true, instant = true, target = transformedTarget })
 			tes3.positionCell({ reference = target, position = { 0, 0, -53.187 }, cell = "T_Wabbajack" })	-- All sorts of problems can arise from disabling a target within the effect event
-	
+
 			local transformedHealth = transformedTarget.mobile.health.base * targetHealth
 			if transformedHealth <= 1 then transformedHealth = 2 end 	-- Ensures that an actor with low base health won't die if the target had a high base health and was badly wounded
 			transformedTarget.mobile.health.current = transformedHealth
 			transformedTarget.mobile.fatigue.current = transformedTarget.mobile.fatigue.base * targetFatigue
 			transformedTarget.mobile.magicka.current = transformedTarget.mobile.magicka.base * targetMagicka
-	
+
 			transformedTarget.mobile:startCombat(e.sourceInstance.caster.mobile)
 			e.sourceInstance.caster.mobile:startCombat(transformedTarget.mobile)	-- Is this actually needed?
 		else
@@ -2980,7 +3074,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			}
 		end
 	end
-	
+
 	if config.boundSpells == true then
 		local boundCuirassEffect = tes3.getMagicEffect(tes3.effect.boundBoots)
 
@@ -3038,7 +3132,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			}
 		end
 	end
-	
+
 	if config.interventionSpells == true then
 		local divineInterventionEffect = tes3.getMagicEffect(tes3.effect.divineIntervention)
 
@@ -3084,7 +3178,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 	end
-	
+
 	if config.miscSpells == true then
 		local passwallBaseEffect = tes3.getMagicEffect(tes3.effect.detectAnimal)
 		local passwallSchool = tes3.magicSchool.mysticism
@@ -3526,19 +3620,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			lighting = {x = summonDremoraEffect.lightingRed / 255, y = summonDremoraEffect.lightingGreen / 255, z = summonDremoraEffect.lightingBlue / 255},
 			size = summonDremoraEffect.size,
 			sizeCap = summonDremoraEffect.sizeCap,
-			onTick = function(eventData)
-				if (not eventData:trigger()) then
-					return
-				end
-				
-				if eventData.effectInstance.target.id ~= tes3.player.data.tamrielData.corruptionReferenceID then	-- Memory errors can be reported if the effect is applied to the summon and doing so is weird anyways
-					corruptionActorID = eventData.effectInstance.target.baseObject.id
-					corruptionCasted = true
-					tes3.cast({ reference = eventData.sourceInstance.caster, spell = "T_Dae_Cnj_UNI_CorruptionSummon", alwaysSucceeds = true, bypassResistances = true, instant = true, target = eventData.sourceInstance.caster })
-				end
-
-				eventData.effectInstance.state = tes3.spellState.retired
-			end,
+			onTick = corruptionEffect,
 			onCollision = nil
 		}
 

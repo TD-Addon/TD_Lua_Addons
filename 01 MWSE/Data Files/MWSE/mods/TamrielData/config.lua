@@ -13,6 +13,7 @@ local defaultConfig = {
 	hats = true,
 	creatureBehaviors = true,
 	fixPlayerRaceAnimations = true,
+	hideWerewolfMesh = true,
 	restrictEquipment = true,
 	fixVampireHeads = true,
 	improveItemSounds = true,

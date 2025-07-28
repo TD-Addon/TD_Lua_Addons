@@ -228,7 +228,6 @@ local hats = {
 	"T_C_RgaCmHat01_Hr",
 	"T_C_RgaCmHat02_Hr",
 	"T_C_RgaCmHat03_Hr",
-
 }
 
 -- bodypart id
@@ -275,14 +274,14 @@ local function changeRaceMenuKhajiitNames(e)
 		if layout.children[1] and layout.children[1].text == "Khajiit" then
 			local race = layout.children[1]:getPropertyObject("MenuRaceSex_ListNumber")
 			---@cast race tes3race
-			
+
 			if race.id:startswith("T_Els_") then
 				local formName = race.id:sub(7)
 				--layout.children[1].text = "Khajiit (" .. formName .. ")"
 				layout.children[1].text = formName
 			elseif race.id == "Khajiit" then
 				--layout.children[1].text = "Khajiit (Suthay-raht)"
-				layout.children[1].text = "Suthay-raht"	-- Unfortunately the vanilla pane is not wide enough to fully display this naming format, so I am just using the form names here
+				layout.children[1].text = "Suthay-raht"	-- Unfortunately the vanilla pane is not wide enough to fully display the naming format above, so I am just using the form names here
 			end
 		end
 	end
@@ -299,7 +298,7 @@ local function butterflyMothTooltip(e)
 		local isMoth = refID:find("Moth")
 		if isButterfly or isMoth then
 			local visibleEffects = math.clamp(math.floor(tes3.mobilePlayer.alchemy.current / tes3.findGMST(tes3.gmst.fWortChanceValue).value), 0, 4)
-	
+
 			local first, second = refID:find("_%a+_")
 			local region = refID:sub(first + 1, second - 1)
 
@@ -317,21 +316,21 @@ local function butterflyMothTooltip(e)
 				parent.childAlignX = 0.5
 				parent.autoHeight = true
 				parent.autoWidth = true
-		
+
 				local label = parent:createLabel({ id = TD_ButterflyMothTooltip.weight, text = string.format("Weight: %.2f", ingredient.weight) })
 				label.wrapText = true
-		
+
 				local label = parent:createLabel({ id = TD_ButterflyMothTooltip.value, text = string.format("Value: %d", ingredient.value) })
 				label.wrapText = true
-		
+
 				for i = 1, 4 do
 					local effect = tes3.getMagicEffect(ingredient.effects[i])
 					local target = math.max(ingredient.effectAttributeIds[i], ingredient.effectSkillIds[i])
-		
+
 					local block = parent:createBlock({ id = TD_ButterflyMothTooltip[i] })
 					block.autoHeight = true
 					block.autoWidth = true
-		
+
 					if effect == nil then
 					elseif i > visibleEffects then
 						local label = block:createLabel({ text = "?" })
@@ -340,14 +339,14 @@ local function butterflyMothTooltip(e)
 						local image = block:createImage({ path = ("icons\\" .. effect.icon) })
 						image.wrapText = false
 						image.borderLeft = 4
-		
+
 						local targetName
 						if effect.targetsAttributes then
 							targetName = tes3.findGMST(888 + target).value
 						elseif effect.targetsSkills then
 							targetName = tes3.findGMST(896 + target).value
 						end
-					
+
 						local effectName
 						if targetName then
 							effectName = tes3.findGMST(1283 + effect.id).value:match("%S+") .. " " .. targetName
@@ -363,6 +362,18 @@ local function butterflyMothTooltip(e)
 			end
 		end
 	end
+end
+
+---@param e bodyPartAssignedEventData
+local function hideWerewolfBodyParts(e)
+	local werewolfBodyParts = {
+		"WerewolfHair",
+		"WerewolfHead",
+		"WerewolfSkin",
+		"WerewolfSkin.1st"
+	}
+
+	if e.bodyPart and table.contains(werewolfBodyParts, e.bodyPart.id) and not (tes3.getGlobal("T_Glob_WereInfected") == 0 or tes3.getGlobal("T_Glob_WereInfected") == 2) then return false end
 end
 
 ---@param e equippedEventData
@@ -540,6 +551,46 @@ local function restrictRaceEquip(e)
 					return false
 				end
 			end
+		elseif e.reference.mobile.object.race.id == "T_Cyr_Minotaur" then
+			if e.item.objectType == tes3.objectType.armor then
+				if e.item.slot == tes3.armorSlot.boots then
+					if e.reference.mobile == tes3.mobilePlayer then
+						tes3ui.showNotifyMenu(common.i18n("main.minotaurShoes"))
+					end
+
+					return false
+				end
+
+				if e.item.slot == tes3.armorSlot.helmet then
+					if e.item.parts[1] and e.item.parts[1].male and not table.contains(male_imga_helmets, e.item.parts[1].male.id) then
+						if e.reference.mobile == tes3.mobilePlayer then
+							tes3ui.showNotifyMenu(common.i18n("main.minotaurHelm"))
+						end
+
+						return false
+					end
+				end
+			end
+
+			if e.item.objectType == tes3.objectType.clothing then
+				if e.item.slot == tes3.clothingSlot.shoes then
+					if e.reference.mobile == tes3.mobilePlayer then
+						tes3ui.showNotifyMenu(common.i18n("main.minotaurShoes"))
+					end
+
+					return false
+				end
+
+				if e.item.slot == tes3.clothingSlot.hat then
+					if e.item.parts[1] and e.item.parts[1].male and not table.contains(male_imga_helmets, e.item.parts[1].male.id) then
+						if e.reference.mobile == tes3.mobilePlayer then
+							tes3ui.showNotifyMenu(common.i18n("main.minotaurHat"))
+						end
+
+						return false
+					end
+				end
+			end
 		end
 	end
 end
@@ -560,7 +611,7 @@ local function fixVampireHeadAssignment(e)
 						e.bodyPart = tes3.getObject("T_B_Imp_UNI_HeadHerriusPC")
 					end
 				end
-				
+
 				if e.reference.mobile == tes3.mobilePlayer then										-- Handles the player's head when wearing Namira's Shroud						
 					if tes3.player.object:hasItemEquipped("T_Dae_UNI_RobeShroud") then		
 						e.bodyPart = e.reference.mobile.object.baseObject.head
@@ -926,15 +977,19 @@ event.register(tes3.event.loaded, function()
 		fixPlayerAnimations()
 	end
 
+	if config.hideWerewolfMesh == true then
+		event.register(tes3.event.bodyPartAssigned, hideWerewolfBodyParts, { unregisterOnLoad = true })
+	end
+
 	if config.restrictEquipment == true then
 		event.register(tes3.event.equip, restrictRaceEquip, { unregisterOnLoad = true })
 	end
-	
+
 	if config.fixVampireHeads == true then
 		event.register(tes3.event.bodyPartAssigned, fixVampireHeadAssignment, { unregisterOnLoad = true })
 		event.register(tes3.event.combatStarted, vampireHeadCombatStarted, { unregisterOnLoad = true })
 	end
-	
+
 	if config.improveItemSounds == true then
 		event.register(tes3.event.playItemSound, improveItemSounds, { unregisterOnLoad = true })
 	end
