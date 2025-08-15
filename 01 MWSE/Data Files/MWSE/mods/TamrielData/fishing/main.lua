@@ -17,6 +17,16 @@ local baits = {
         type = "shiny",
         uses = 10,
     },
+    {
+        id = "t_ingmine_pearlblack_01",
+        type = "shiny",
+        uses = 10,
+    },
+    {
+        id = "t_ingmine_pearlblue_01",
+        type = "shiny",
+        uses = 10,
+    },
 }
 
 event.register(tes3.event.initialized, function()
