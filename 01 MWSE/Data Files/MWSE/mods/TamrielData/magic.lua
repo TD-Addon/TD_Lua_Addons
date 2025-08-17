@@ -575,7 +575,7 @@ local raceSkeletonBodyParts = {
 	{ "T_Yne_Ynesai", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },		-- Imga, and Tsaesci skeletons will take more effort
 }
 
-local wabbajackCreatures = { 
+local wabbajackCreatures = {
 	"T_Mw_UNI_GrahlWabbajack",	-- This version of the Grahl does not have fireregenScript attached to it; I saw a crash occur while it was being executed, but I am not sure why.
 	"scamp",
 	"T_Glb_Cre_LandDreu_01",
@@ -586,7 +586,7 @@ local wabbajackCreatures = {
 	"golden saint"
 }
 
-local sanguineRoseDaedra = { 
+local sanguineRoseDaedra = {
 	"dremora_summon",
 	"T_Dae_Cre_Seduc_01",
 	"atronach_flame",
@@ -909,7 +909,7 @@ function this.prismaticLightRemovedEffect(e)
 
 			if #prismaticLightEffects > 1 then	-- 1 is checked rather than 0 because the (final) effect being removed will still be counted here
 				local totalMagnitude = 0
-				
+
 				for _,v in pairs(prismaticLightEffects) do
 					totalMagnitude = totalMagnitude + v.effectInstance.effectiveMagnitude
 				end
@@ -930,7 +930,7 @@ local function prismaticLightEffect(e)
 	if (not e:trigger()) then
 		return
 	end
-	
+
 	local target = e.effectInstance.target
 	prismaticReferences[target] = true
 
@@ -939,7 +939,7 @@ local function prismaticLightEffect(e)
 	if lightNode.light.name == "prismaticLightAttachment" then
 		local prismaticLightEffects = target.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_PrismaticLight })
 		local totalMagnitude = 0
-				
+
 		for _,v in pairs(prismaticLightEffects) do
 			totalMagnitude = totalMagnitude + v.effectInstance.effectiveMagnitude
 		end
@@ -1058,7 +1058,7 @@ local function fortifyCastingMenuPercents(e)
 				local spell = percent:getPropertyObject("MagicMenu_Spell")
 				---@cast spell tes3spell
 				local castChance
-				
+
 				if spell.magickaCost > tes3.mobilePlayer.magicka.current then
 					castChance = 0
 				else
@@ -1270,7 +1270,7 @@ local function gazeOfVelothEffect(e)
 	local container = tes3.createReference({ object = "T_Glb_GazeVeloth_Empty", position = target.position , orientation = target.orientation, cell = target.cell })	-- If this runs, then the target does not belong to a compatible race listed in raceSkeletonBodyParts
 	tes3.transferInventory({ from = target, to = container, limitCapacity = false })
 	tes3.positionCell({ reference = target, position = { 0, 0, -53.187 }, cell = "T_GazeOfVeloth" })	-- All sorts of problems can arise from disabling a target within the effect event
-	
+
 	e.effectInstance.state = tes3.spellState.retired
 end
 
@@ -1281,7 +1281,7 @@ function this.distractedReturnTick()
 			if (ref.mobile.actorType == tes3.actorType.npc and #ref.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_DistractHumanoid }) == 0) or (ref.mobile.actorType == tes3.actorType.creature and #ref.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_DistractCreature }) == 0) then
 				if not ref.mobile.isMovingForward then
 					tes3.setAIWander({ reference = ref, range = ref.data.tamrielData.distract.distance, duration = ref.data.tamrielData.distract.duration, time = ref.data.tamrielData.distract.hour, idles = ref.data.tamrielData.distract.idles })
-					
+
 					if ref.data.tamrielData.distract.distance == 0 then
 						ref.orientation = ref.data.tamrielData.distract.orientation -- If they are supposed to actually wander around, then not resetting the orientation feels more natural, hence it being under this condition
 						ref.data.tamrielData.distractOldPosition = ref.data.tamrielData.distract.position	-- They don't quite return to their original positions, so this is used with onDistractedReferenceActivated to do so
@@ -1425,18 +1425,18 @@ end
 local function distractEffect(e)
 	local target = e.effectInstance.target
 	local range = e.effectInstance.magnitude * 22.1
-	
+
 	local activePackage = target.mobile.aiPlanner:getActivePackage()
 	if not activePackage or activePackage.type < 1 then
 		local targetDistance
 		local finalPlayerDistance
 
 		local bestDestination
-		
+
 		if target.cell.isInterior or (target.cell.pathGrid and #target.cell.pathGrid.nodes > 9 and target.position:distance(common.getClosestNode(target).position) <= 512) then	-- The path grid approach is used in interiors and in exterior cells where there are many nodes with one nearby, such as in cities. These conditions should prevent actors outside of a city's walls yet still in the cell from moving inside.
 			local nodeArr = target.cell.pathGrid.nodes
 			local bestScore = 0
-			
+
 			local threeClosestNodes = common.getClosestNodes(target, 512)
 
 			for _,node in pairs(nodeArr) do
@@ -1479,9 +1479,9 @@ local function distractEffect(e)
 									if math.abs(tes3.player.position.z - pathNode.position.z) > 160 then nodePlayerDistance = nodePlayerDistance * 4 end
 									if nodePlayerDistance < shortestPlayerDistance then shortestPlayerDistance = nodePlayerDistance end
 								end
-	
+
 								local score = targetDistance / 2 + finalPlayerDistance / 4 + shortestPlayerDistance		-- These constants were also chosen arbitrarily and finetuning them might yield better results
-	
+
 								if score > bestScore then
 									bestScore = score
 									bestDestination = node.position
@@ -1528,7 +1528,7 @@ local function distractEffect(e)
 			tes3.setAITravel({ reference = target, destination = bestDestination })
 			target.mobile.hello = 0
 			distractedReferences[target] = true
-		else  
+		else
 			target.data.tamrielData.distract = nil
 		end
 	end
@@ -1546,13 +1546,13 @@ local function distractHumanoidEffect(e)
 		e.effectInstance.state = tes3.spellState.retired	-- This condition seems to be hit when the effect expires
 		return
 	end
-	
+
 	--	if target.mobile.isPlayerDetected then
 	--		tes3.triggerCrime({ type = tes3.crimeType.trespass })
 	--		e.effectInstance.state = tes3.spellState.retired
 	--		return
 	--	end
-	
+
 	distractEffect(e)
 end
 
@@ -1645,7 +1645,7 @@ local function weaponResartusEffect(e)
 	if (not e:trigger()) then
 		return
 	end
-	
+
 	local weapon = tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.weapon})
 
 	if weapon then
@@ -1653,7 +1653,7 @@ local function weaponResartusEffect(e)
 		if weapon.itemData.condition > weapon.object.maxCondition then
 			weapon.itemData.condition = weapon.object.maxCondition
 		end
-		
+
 		weapon.itemData.charge = weapon.itemData.charge + e.effectInstance.magnitude
 		if weapon.itemData.charge > weapon.object.enchantment.maxCharge then
 			weapon.itemData.charge = weapon.object.enchantment.maxCharge
@@ -1668,7 +1668,7 @@ local function armorResartusEffect(e)
 	if (not e:trigger()) then
 		return
 	end
-	
+
 	local armor = {
 		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.cuirass }),
 		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.greaves }),
@@ -1695,7 +1695,7 @@ local function armorResartusEffect(e)
 					conditionMagnitude = conditionMagnitude - 1
 					hasChanged = true
 				end
-				
+
 				if chargeMagnitude > 0 and item.itemData.charge < item.object.enchantment.maxCharge then
 					item.itemData.charge = item.itemData.charge + 1
 					chargeMagnitude = chargeMagnitude - 1
@@ -1743,7 +1743,7 @@ local function calculateMapValues(mapPane, multiPane)
 		local yShift = tes3.player.position.y
 		local xNorm = xShift * northMarkerCos + yShift * northMarkerSin
 		local yNorm = yShift * northMarkerCos - xShift * northMarkerSin
-	
+
 		local newInteriorMapOriginX = mapPlayerMarker.positionX + xNorm / (8192 / mapWidth)
 		local newInteriorMapOriginY = mapPlayerMarker.positionY - yNorm / (8192 / mapHeight)
 		local newInteriorMultiOriginX = -multiPane.parent.positionX + multiPlayerMarker.positionX + xNorm / (8192 / multiWidth)
@@ -1922,7 +1922,7 @@ local function detectInvisibilityValid(ref)
 		or obj.id:lower():find("ghost") or obj.id:lower():find("spirit") or obj.id:lower():find("wraith") or obj.id:lower():find("spectre") or obj.id:lower():find("specter") then
 		return false
 	end
-	
+
 	if not tes3.canCastSpells({ target = ref }) then return false end
 	local actorSpells = tes3.getSpells({ target = ref, spellType = tes3.spellType.ability, getActorSpells = true, getRaceSpells = false, getBirthsignSpells = false })
 
@@ -1955,7 +1955,7 @@ function this.onInvisibleMobileActivated(e)
 			end
 
 			if chameleonMagnitude > 100 then chameleonMagnitude = 100 end
-			
+
 			chameleonMagnitude = chameleonMagnitude / 100
 
 			detectedChameleonMagnitude = chameleonMagnitude - .5
@@ -2029,7 +2029,7 @@ function this.detectInvisibilityOpacity(e)
 			if tes3.player.position:distance(actor.position) <= detectMagnitude * 22.1 then
 				local opacity = (1 - .75 * magnitudes.detectedChameleon) * (1 - magnitudes.invisibility / 2)
 				if opacity < .5 then opacity = .5 end
-			
+
 				actor.mobile.animationController.opacity = opacity
 				actor.data.tamrielData = actor.data.tamrielData or {}
 				actor.data.tamrielData.invisibilityDetected = true
@@ -2040,7 +2040,7 @@ function this.detectInvisibilityOpacity(e)
 			undetectable = true
 		end
 
-		
+
 		if undetectable and actor.data.tamrielData and actor.data.tamrielData.invisibilityDetected then
 			local opacity = (1 - .75 * magnitudes.chameleon) * (1 - magnitudes.invisibility)
 			if opacity < 0 then opacity = 0
@@ -2073,19 +2073,19 @@ function this.detectInvisibilityHitChance(e)
 					for _,v in pairs(chameleonEffects) do
 						chameleonMagnitude = chameleonMagnitude + v.magnitude
 					end
-	
+
 					if chameleonMagnitude > 100 then chameleonMagnitude = 100 end
-	
+
 					reducedChameleonMagnitude = chameleonMagnitude - 50
 					if reducedChameleonMagnitude < 0 then reducedChameleonMagnitude = 0 end
 				end
-	
+
 				local invisibilityEffects = e.targetMobile:getActiveMagicEffects({ effect = tes3.effect.invisibility })
 				local invisibilityMagnitude = 0
 				if #invisibilityEffects > 0 then
 					invisibilityMagnitude = 1		-- It doesn't look as though invisibility has much effect on hitchance as per https://wiki.openmw.org/index.php?title=Research:Combat and my own testing. In the calculation, invisibility's magnitude will be evaluated as 1 and multiplied by fCombatInvisoMult (.2).
 				end
-	
+
 				e.hitChance = e.hitChance + fCombatInvisoMult * (chameleonMagnitude - reducedChameleonMagnitude)
 				e.hitChance = e.hitChance + fCombatInvisoMult * invisibilityMagnitude / 2
 			end
@@ -2291,7 +2291,7 @@ function this.insightEffect(e)
 
 		local effectiveMagnitude = totalMagnitude / 100
 		if effectiveMagnitude > 1 then effectiveMagnitude = 1 end		-- If the total magnitude ends up being higher than 100, this ensures that the probabilities won't get messed up
-		
+
 		if effectiveMagnitude > 0 then
 			if e.list.chanceForNothing > 0 then
 				local nothingFactor = 1 - (effectiveMagnitude * .9)	-- 0% chance of getting nothing seems OP and too obvious, so the probability of getting nothing is reduced by 90% at most
@@ -2330,7 +2330,7 @@ function this.insightEffect(e)
 
 						leveledItemTable[tableIndex] = { item = v.object, value = valueTemp, probability = nil }
 						tableIndex = tableIndex + 1
-						
+
 						if valueTemp > maxValue then
 							maxValue = valueTemp
 						end
@@ -2385,7 +2385,7 @@ function this.wabbajackTransRemovedEffect(e)
 				tes3.playSound{ sound = "alteration hit", reference = ref }
 
 				tes3.positionCell({ reference = ref, position = target.position, orientation = target.orientation, cell = target.cell })
-				
+
 				if target.mobile.isDead or target.mobile.health.current <= 1 then
 					tes3.decrementKillCount({ actor = target.baseObject })
 					ref.mobile:kill()
@@ -2487,13 +2487,13 @@ end
 function this.radiantShieldSpellResistEffect(e)
 	local radiantShieldEffects
 	if e.target.mobile then radiantShieldEffects = e.target.mobile:getActiveMagicEffects({ effect = tes3.effect.T_alteration_RadShield }) end	-- Sometimes e.target.mobile just doesn't exist
-		
+
 	-- Only resist hostile effects; 'not e.effect' is checked because the documentation says that e.effect "may not always be available" and I'd rather resist the odd positive effects than not resist harmful ones
 	if radiantShieldEffects and #radiantShieldEffects > 0 and (not e.effect or e.effect.object.isHarmful) then
 		for _,v in pairs(radiantShieldEffects) do
 			e.resistedPercent = e.resistedPercent + v.magnitude
 		end
-		
+
 		if e.resistedPercent > 100 then
 			e.resistedPercent = 100		-- Prevents anomalous behavior from occuring when above 100%
 		end
@@ -2509,7 +2509,7 @@ function this.radiantShieldDamagedEffect(e)
 			for _,v in pairs(radiantShieldEffects) do
 				totalMagnitude = totalMagnitude + v.magnitude
 			end
-			
+
 			tes3.applyMagicSource({ reference = e.attacker, name = "Blinding Radiance", effects = {{ id = tes3.effect.blind, duration = 1.5, min = totalMagnitude, max = totalMagnitude }} })
 		end
 	end
@@ -2677,7 +2677,7 @@ local function banishDaedraEffect(e)
 	if (not e:trigger()) then
 		return
 	end
-	
+
 	local target = e.effectInstance.target
 
 	if target.object.type ~= tes3.creatureType.daedra or target.isDead or table.contains(target.mobile.friendlyActors, e.sourceInstance.caster.mobile) or (target.data.tamrielData and target.data.tamrielData.wabbajack) then
@@ -2806,7 +2806,7 @@ local function passwallCalculate(wallPosition, forward, right, up, range)
 							--root = {tes3.game.sceneGraphCollideString},
 							useBackTriangles = true,
 						}
-						
+
 						if not targetY and not targetX then
 							bestDistance = distance
 							bestPosition = node.position
@@ -2830,7 +2830,7 @@ local function passwallCalculate(wallPosition, forward, right, up, range)
 					local prevEndDistance = nil
 
 					local prevInVolume = false		-- Given that raytests are used to check for collision near the tested positions, the closest acceptable position might actually be further away, so positions should keep being checked until they are outside of the volume entirely
-					
+
 					for i=1,14,1 do
 						local incrementPosition = node.position + (increment * i)
 						local startDistance = incrementPosition:distance(startPosition)
@@ -2847,7 +2847,7 @@ local function passwallCalculate(wallPosition, forward, right, up, range)
 								if (point1.y <= incrementPosition.y and incrementPosition.y <= point2.y) or (point1.y >= incrementPosition.y and incrementPosition.y >= point2.y) then
 									if (point1.z <= incrementPosition.z and incrementPosition.z <= point2.z) or (point1.z >= incrementPosition.z and incrementPosition.z >= point2.z) then
 										prevInVolume = true
-										
+
 										local targetY = tes3.rayTest{
 											position = incrementPosition - (forward * rayTestOffset) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
 											direction = forward,
@@ -2862,7 +2862,7 @@ local function passwallCalculate(wallPosition, forward, right, up, range)
 											--root = {tes3.game.sceneGraphCollideString},
 											useBackTriangles = true,
 										}
-										
+
 										if not targetY and not targetX then
 											bestDistance = startDistance
 											bestPosition = incrementPosition
@@ -2871,7 +2871,7 @@ local function passwallCalculate(wallPosition, forward, right, up, range)
 								end
 							end
 						end
-						
+
 						prevStartDistance = startDistance
 						prevEndDistance = endDistance
 					end
@@ -4235,7 +4235,7 @@ event.register(tes3.event.load, function()
 	if config.boundSpells == true then
 		this.replaceSpells(td_bound_spells)
 	end
-	
+
 	if config.interventionSpells == true then
 		this.replaceSpells(td_intervention_spells)
 	end

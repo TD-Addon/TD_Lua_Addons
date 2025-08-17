@@ -186,6 +186,16 @@ return {
 	-- Faction Text
 	["faction.title"] = "Factions",		-- Yes, it is just "Faction" in vanilla, but that really does not make sense
 
+	-- Khajiit Text
+	["khajiit.khajiit"] = "Khajiit",
+	["khajiit.suthay-raht"] = "Suthay-raht",
+	["khajiit.cathay"] = "Cathay",
+	["khajiit.cathay-raht"] = "Cathay-raht",
+	["khajiit.dagi-raht"] = "Dagi-raht",
+	["khajiit.ohmes"] = "Ohmes",
+	["khajiit.ohmes-raht"] = "Ohmes-raht",
+	["khajiit.suthay"] = "Suthay",
+
 	-- MCM Text
 	["mcm.name"] = "Tamriel Data",
 	["mcm.preferences"] = "Preferences",

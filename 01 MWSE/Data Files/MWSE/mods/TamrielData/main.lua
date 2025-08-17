@@ -20,7 +20,7 @@ local player_data_defaults = {
 }
 
 -- item id, pickup sound id, putdown sound id, equip sound id
-local item_sounds = {	
+local item_sounds = {
 	{ "T_Imp_Subst_Blackdrake_01", "Item Misc Up", "Item Misc Down", "T_SndObj_DrugSniff"},
 	{ "T_De_Subst_Greydust_01", "Item Misc Up", "Item Misc Down", "T_SndObj_DrugSniff"},
 	{ "T_Nor_Subst_WasabiPaste_01", "Item Misc Up", "Item Misc Down", "Swallow"},
@@ -146,7 +146,7 @@ local kyne_intervention_regions = {
 	{ "Skaldring Mountains Region", nil, nil, nil, nil },
 	{ "Solitude Forest Region", nil, nil, nil, nil },
 	{ "Solitude Forest Region S", nil, nil, nil, nil },
-	{ "Sundered Hills Region", nil, nil, nil, nil },	
+	{ "Sundered Hills Region", nil, nil, nil, nil },
 	{ "Throat of the World Region", nil, nil, nil, nil },
 	{ "Troll's Teeth Mountains Region", nil, nil, nil, nil },
 	{ "Uld Vraech Region", nil, nil, nil, nil },
@@ -275,13 +275,21 @@ local function changeRaceMenuKhajiitNames(e)
 			local race = layout.children[1]:getPropertyObject("MenuRaceSex_ListNumber")
 			---@cast race tes3race
 
-			if race.id:startswith("T_Els_") then
-				local formName = race.id:sub(7)
-				--layout.children[1].text = "Khajiit (" .. formName .. ")"
-				layout.children[1].text = formName
-			elseif race.id == "Khajiit" then
-				--layout.children[1].text = "Khajiit (Suthay-raht)"
-				layout.children[1].text = "Suthay-raht"	-- Unfortunately the vanilla pane is not wide enough to fully display the naming format above, so I am just using the form names here
+			if race.id == "Khajiit" then
+				--layout.children[1].text = common.i18n("khajiit.khajiit") .. " (" .. common.i18n("khajiit.suthay-raht") .. ")"
+				layout.children[1].text = common.i18n("khajiit.suthay-raht")	-- Unfortunately the vanilla pane is not wide enough to fully display the naming format above, so I am just using the form names here
+			elseif race.id == "T_Els_Cathay" then
+				layout.children[1].text = common.i18n("khajiit.cathay")
+			elseif race.id == "T_Els_Cathay-raht" then
+				layout.children[1].text = common.i18n("khajiit.cathay-raht")
+			elseif race.id == "T_Els_Dagi-raht" then
+				layout.children[1].text = common.i18n("khajiit.dagi-raht")
+			elseif race.id == "T_Els_Ohmes" then
+				layout.children[1].text = common.i18n("khajiit.ohmes")
+			elseif race.id == "T_Els_Ohmes-raht" then
+				layout.children[1].text = common.i18n("khajiit.ohmes-raht")
+			elseif race.id == "T_Els_Suthay" then
+				layout.children[1].text = common.i18n("khajiit.suthay")
 			end
 		end
 	end
@@ -541,7 +549,7 @@ local function restrictRaceEquip(e)
 					end
 
 					return false
-				end	
+				end
 
 				if e.item.slot == tes3.clothingSlot.pants then
 					if e.reference.mobile == tes3.mobilePlayer then
@@ -613,7 +621,7 @@ local function fixVampireHeadAssignment(e)
 				end
 
 				if e.reference.mobile == tes3.mobilePlayer then										-- Handles the player's head when wearing Namira's Shroud						
-					if tes3.player.object:hasItemEquipped("T_Dae_UNI_RobeShroud") then		
+					if tes3.player.object:hasItemEquipped("T_Dae_UNI_RobeShroud") then
 						e.bodyPart = e.reference.mobile.object.baseObject.head
 					end
 				else
@@ -655,7 +663,7 @@ end
 local function improveItemSounds(e)
 	for _,v in pairs(item_sounds) do
 		local itemID, upSound, downSound, useSound = unpack(v)
-		
+
 		if e.item.id == itemID then
 			if e.state == tes3.itemSoundState.up then
 				tes3.playSound{ sound = upSound }
@@ -664,7 +672,7 @@ local function improveItemSounds(e)
 			elseif e.state == tes3.itemSoundState.consume then
 				tes3.playSound{ sound = useSound }
 			end
-			
+
 			return false	-- Block the vanilla behavior and stop iterating through item_sounds 
 		end
 	end
@@ -679,7 +687,7 @@ local function adjustTravelPrices(e)
 			return
 		end
 	end
-	
+
 	if e.reference.mobile.objectType == tes3.objectType.mobileNPC then
 		local providerInstance = e.reference.mobile.object
 		if providerInstance.faction and providerInstance.faction.id:find("Mages") and providerInstance.factionRank > 3 then	-- Increase price of teleporting between MG networks
@@ -731,13 +739,13 @@ local function moveReactCellItems(e)
 				if playerItemsContainer then
 					for _,cellID in pairs(reactCell.cells) do
 						local cell = tes3.getCell({ id = cellID })
-					
+
 						if cell then -- This doesn't yet go over items that have been placed in containers or disable items after adding them to playerItemsContainer
 							for ref in cell:iterateReferences({ tes3.objectType.alchemy, tes3.objectType.ammunition, tes3.objectType.apparatus, tes3.objectType.armor, tes3.objectType.book, tes3.objectType.clothing, tes3.objectType.ingredient, tes3.objectType.light, tes3.objectType.lockpick, tes3.objectType.miscItem, tes3.objectType.probe, tes3.objectType.repairItem, tes3.objectType.weapon }) do
 								if ref.data.tamrielData and ref.data.tamrielData.playerItem then
 									local owner, requirement = tes3.getOwner({ reference = ref })
 									local count, item, itemData = tes3.addItem({ reference = playerItemsContainer, item = ref.baseObject, itemData = ref.itemData, playSound = false })
-								
+
 									itemData.owner = owner				-- The ownership data is removed from itemData by addItem, so it must be added back here
 									itemData.requirement = requirement
 								end
@@ -772,7 +780,7 @@ local function isInterventionCell(cell, regionTable)
 				end
 			end
 	end
-	
+
 	return false
 end
 
@@ -801,14 +809,14 @@ local function limitIntervention(e)
 		if v.id == tes3.effect.almsiviIntervention then
 			local cellVisitTable = { e.caster.cell }
 			local extCell = common.getExteriorCell(e.caster.cell, cellVisitTable)
-			
+
 			if not extCell or not isInterventionCell(extCell, almsivi_intervention_regions) then
 				return false
 			end
 		elseif v.id == tes3.effect.T_intervention_Kyne then
 			local cellVisitTable = { e.caster.cell }
 			local extCell = common.getExteriorCell(e.caster.cell, cellVisitTable)
-			
+
 			if not extCell or not isInterventionCell(extCell, kyne_intervention_regions) then
 				return false
 			end
@@ -924,7 +932,7 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.menuEnter, reputation.switchReputation, { filter = "MenuDialog", unregisterOnLoad = true })
 		event.register(tes3.event.menuExit, reputation.switchReputation, { unregisterOnLoad = true })
 		event.register(tes3.event.cellChanged, reputation.travelSwitchReputation, { unregisterOnLoad = true })
-		
+
 		event.register(tes3.event.uiRefreshed, reputation.uiRefreshedCallback, { filter = "MenuStat_scroll_pane", unregisterOnLoad = true })
 		event.register(tes3.event.menuEnter, function(e) tes3ui.updateStatsPane() end, { unregisterOnLoad = true })
 	end
@@ -942,7 +950,7 @@ event.register(tes3.event.loaded, function()
 
 	if config.weatherChanges == true then
 		weather.changeRegionWeatherChances()
-		
+
 		event.register(tes3.event.cellChanged, weather.manageWeathers, { unregisterOnLoad = true })
 		event.register(tes3.event.weatherChangedImmediate, weather.manageWeathers, { unregisterOnLoad = true })
 		event.register(tes3.event.weatherTransitionStarted, weather.manageWeathers, { unregisterOnLoad = true })

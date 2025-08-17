@@ -4,7 +4,10 @@ return {
 	["main.imgaHelm"] = "Les Imgas mâles ne peuvent porter de casque.",
 	["main.imgaHat"] = "Les Imgas mâles ne peuvent porter de chapeau.",
 	["main.tsaesciShoes"] = "Les Tsaescis ne peuvent porter de chaussures.",
-    ["main.tsaesciPants"] = "Les Tsaescis ne peuvent porter de pantalon.", 
+    ["main.tsaesciPants"] = "Les Tsaescis ne peuvent porter de pantalon.",
+	["main.minotaurShoes"] = "Les minotaures ne peuvent porter de chaussures.",
+	["main.minotaurHelm"] = "Les minotauresne peuvent porter de casque.",
+	["main.minotaurHat"] = "Les minotaures ne peuvent porter de chapeau.",
 
 	["main.rangeAlmsivi"] = "Le pouvoir d'Almsivi ne s'étend pas sur ces terres.",
 	["main.rangeKyne"] = "Le pouvoir de Kyne ne s'étend pas sur ces terres.",
@@ -143,6 +146,7 @@ return {
 	["magic.gazeOfVelothDaedra"] = "%s se moque du visage de Véloth !",
 	["magic.gazeOfVelothCreature"] = "%s est incapable de comprendre le visage de Véloth !",
 	["magic.gazeOfVelothOther"] = "%s n'est pas affecté par le visage de Véloth !",
+	["magic.corruptionScript"] = "%s ne peut être corrompu.",
 	["magic.banishFailure"] = "Ce sort est trop faible pour bannir : %s !",
 	["magic.passwallDisabled"] = "Passe-muraille ne fonctionne pas ici.",
 	["magic.passWallWard"] = "Vous ne pouvez pas passer jusque-là.",
@@ -237,13 +241,18 @@ return {
 	["mcm.animationFixLabel"] = "Corriger les animations du joueur pour les nouvelles races",
 	["mcm.animationFixDescription"] = "Corrige les animations lorsque vous jouez un Khajiit Ohmes-raht ou Suthay via un plugin tiers.\nRequiert un rechargement. Votre queue peut disparaître jusqu'au rechargement quand des animations d'autres addons MWSE sont appliquées au joueur." ..
 										"\nSi vous utilisez un replacer d'animations qui ajoute des os pour la queue au fichier base_anim.nif, cette fonctionnalité ne sera probablement pas nécessaire.\n\nPar défaut : activé\n\n",
-	
-	["mcm.restrictEquipmentLabel"] ="Restriction d'équipement pour les nouvelles races",
-	["mcm.restrictEquipmentDescription"] = "Empêche les nouvelles races du mod de porter certains types d'équipement lorsque cela serait physiquement impossible ou poserait problème techniquement.\nRequiert un rechargement.\n\nRaces et équipement affectés :" ..
-											"\n- Empêche les Imgas mâles d'équiper des casques et tous les Imgas d'équiper des bottes ou chaussures.\n\nPar défaut : activé\n\n",
+										
+	["mcm.wereCreatureFixLabel"] = "Corriger les lycanthropes autres que les loups-garous",
+	["mcm.wereCreatureFixDescription"] = "Dissimule le modèle de loup-garou quand le joueur s'est transformé en un autre type de lycanthrope ajouté par le mod.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 	
 	["mcm.fixVampireLabel"] = "Corriger les visages de vampires",
 	["mcm.fixVampireDescription"] = "Empêche le linceul de Namira de cacher la tête du joueur lorsqu'il est équipé et permet aux PNJs vampires d'avoir des visages uniques conçus spécialement pour eux.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+	
+	["mcm.restrictEquipmentLabel"] ="Restriction d'équipement pour les nouvelles races",
+	["mcm.restrictEquipmentDescription"] = "Empêche les nouvelles races du mod de porter certains types d'équipement lorsque cela serait physiquement impossible ou poserait problème techniquement.\nRequiert un rechargement.\n\nRaces et équipement affectés :" ..
+											"\n- Empêche les Imgas mâles d'équiper des casques et tous les Imgas d'équiper des bottes ou chaussures.\n\n" ..
+											"\n- Empêche les Tsaescis d'équiper des jambières, pantalons, et bottes ou chaussures." ..
+											"Par défaut : activé\n\n",
 	
 	["mcm.itemSoundsLabel"] = "Améliorer les sons des objets",
 	["mcm.itemSoundsDescription"] = "Donne à certains objets du mod, comme les parfums et la pâte de wasabi, des sons plus adaptés lorsqu'ils sont utilisés ou ajoutés à/retirés de l'inventaire.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
