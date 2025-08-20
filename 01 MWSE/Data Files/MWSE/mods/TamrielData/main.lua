@@ -262,39 +262,41 @@ end
 
 --- @param e uiActivatedEventData
 local function changeRaceMenuKhajiitNames(e)
-    local raceMenu = tes3ui.findMenu("MenuRaceSex")
+	if tes3.findRace("T_Els_Suthay") and tes3.findRace("T_Els_Suthay").isPlayable then	-- Races (and ESPs that can enable races) cannot be accessed when config.lua runs, so this condition ensures that people who can only play as Suthay-raht just see it called "Khajiit" as in vanilla
+    	local raceMenu = tes3ui.findMenu("MenuRaceSex")
 
-    if not raceMenu then return end
+    	if not raceMenu then return end
 
-	local racePane = raceMenu:findChild("PartScrollPane_pane")
+		local racePane = raceMenu:findChild("PartScrollPane_pane")
 
-    if not racePane then return end
+    	if not racePane then return end
 
-	for i,layout in ipairs(racePane.children) do
-		if layout.children[1] and layout.children[1].text == "Khajiit" then
-			local race = layout.children[1]:getPropertyObject("MenuRaceSex_ListNumber")
-			---@cast race tes3race
+		for _,layout in ipairs(racePane.children) do
+			if layout.children[1] and layout.children[1].text == "Khajiit" then
+				local race = layout.children[1]:getPropertyObject("MenuRaceSex_ListNumber")
+				---@cast race tes3race
 
-			if race.id == "Khajiit" then
-				--layout.children[1].text = common.i18n("khajiit.khajiit") .. " (" .. common.i18n("khajiit.suthay-raht") .. ")"
-				layout.children[1].text = common.i18n("khajiit.suthay-raht")	-- Unfortunately the vanilla pane is not wide enough to fully display the naming format above, so I am just using the form names here
-			elseif race.id == "T_Els_Cathay" then
-				layout.children[1].text = common.i18n("khajiit.cathay")
-			elseif race.id == "T_Els_Cathay-raht" then
-				layout.children[1].text = common.i18n("khajiit.cathay-raht")
-			elseif race.id == "T_Els_Dagi-raht" then
-				layout.children[1].text = common.i18n("khajiit.dagi-raht")
-			elseif race.id == "T_Els_Ohmes" then
-				layout.children[1].text = common.i18n("khajiit.ohmes")
-			elseif race.id == "T_Els_Ohmes-raht" then
-				layout.children[1].text = common.i18n("khajiit.ohmes-raht")
-			elseif race.id == "T_Els_Suthay" then
-				layout.children[1].text = common.i18n("khajiit.suthay")
+				if race.id == "Khajiit" then
+					--layout.children[1].text = common.i18n("khajiit.khajiit") .. " (" .. common.i18n("khajiit.suthay-raht") .. ")"
+					layout.children[1].text = common.i18n("khajiit.suthay-raht")	-- Unfortunately the vanilla pane is not wide enough to fully display the naming format above, so I am just using the form names here
+				elseif race.id == "T_Els_Cathay" then
+					layout.children[1].text = common.i18n("khajiit.cathay")
+				elseif race.id == "T_Els_Cathay-raht" then
+					layout.children[1].text = common.i18n("khajiit.cathay-raht")
+				elseif race.id == "T_Els_Dagi-raht" then
+					layout.children[1].text = common.i18n("khajiit.dagi-raht")
+				elseif race.id == "T_Els_Ohmes" then
+					layout.children[1].text = common.i18n("khajiit.ohmes")
+				elseif race.id == "T_Els_Ohmes-raht" then
+					layout.children[1].text = common.i18n("khajiit.ohmes-raht")
+				elseif race.id == "T_Els_Suthay" then
+					layout.children[1].text = common.i18n("khajiit.suthay")
+				end
 			end
 		end
-	end
 
-	--racePane:sortChildren(function(a, b) return a.children[1].text <= b.children[1].text end)	-- I would rather use this only when keeping "Khajiit" in the names
+		--racePane:sortChildren(function(a, b) return a.children[1].text <= b.children[1].text end)	-- I would rather use this only when keeping "Khajiit" in the names
+	end
 end
 
 -- The following function is based on one that G7 made for Graphic Herbalism

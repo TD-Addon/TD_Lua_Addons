@@ -19,7 +19,7 @@ local defaultConfig = {
 	improveItemSounds = true,
 	adjustTravelPrices = true,
 	handleReactCellItems = true,
-	khajiitFormCharCreation = false, -- tes3.dataHandler.nonDynamicData:getGameFile("All Races and Classes Unlocked - Vanilla and Tamriel_Data.ESP") or tes3.dataHandler.nonDynamicData:getGameFile("TD Races.ESP"),	-- dataHandler is not available when it is needed here
+	khajiitFormCharCreation = true,
 	butterflyMothTooltip = common.gh_config and common.gh_config.showTooltips,
 	limitIntervention = false
 }

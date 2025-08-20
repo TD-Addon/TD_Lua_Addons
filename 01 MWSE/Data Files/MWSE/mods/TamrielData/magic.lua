@@ -1575,7 +1575,7 @@ end
 -- Stop the player from talking to the summon and the summon from talking to the player (just in case)
 ---@param e activateEventData
 function this.corruptionBlockActivation(e)
-	if e.target.id == tes3.player.data.tamrielData.corruptionReferenceID or (e.activator.id == tes3.player.data.tamrielData.corruptionReferenceID and e.target == tes3.player) then return false end
+	if e.target.id == tes3.player.data.tamrielData.corruptionReferenceID or (e.target == tes3.player and e.activator.id and e.activator.id == tes3.player.data.tamrielData.corruptionReferenceID) then return false end
 end
 
 ---@param e mobileActivatedEventData
