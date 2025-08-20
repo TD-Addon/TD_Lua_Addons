@@ -70,8 +70,8 @@ event.register(tes3.event.initialized, function()
 			{ id = "hr\\lnd\\hr_ostern_road_01", category = cso.landTypes.dirt, soundType = "land" },
 			{ id = "hr\\lnd\\hr_wr_gravel_01", category = cso.landTypes.dirt, soundType = "land" },
 			{ id = "hr\\lnd\\hr_wr_rock_01", category = cso.landTypes.stone, soundType = "land" },
-			{ id = "hr\x\tx_hr_ruin_floor_01", category = cso.landTypes.gravel, soundType = "land" },
-			{ id = "hr\x\tx_hr_ruin_rubble_01", category = cso.landTypes.gravel, soundType = "land" },
+			{ id = "hr\\x\\tx_hr_ruin_floor_01", category = cso.landTypes.gravel, soundType = "land" },
+			{ id = "hr\\x\\tx_hr_ruin_rubble_01", category = cso.landTypes.gravel, soundType = "land" },
 			
 			{ id = "pc_arwetstone01", category = cso.landTypes.stone, soundType = "land" },
 			{ id = "pc_ex_anv_cobbles", category = cso.landTypes.stone, soundType = "land" },
@@ -417,7 +417,7 @@ event.register(tes3.event.initialized, function()
 			{ id = "va\\lnd\\va_xm_slope_02a", category = cso.landTypes.gravel, soundType = "land" },
 			{ id = "va\\lnd\\va_xm_slope_02b", category = cso.landTypes.gravel, soundType = "land" },
 			
-			{ id = "water\water01", category = cso.landTypes.water, soundType = "land" },
+			{ id = "water\\water01", category = cso.landTypes.water, soundType = "land" },
 
             -- Land, Dirt:
             --{ id = "oaab\\corpseburnedatlas", category = cso.landTypes.dirt, soundType = "land" },
