@@ -2510,7 +2510,7 @@ function this.radiantShieldDamagedEffect(e)
 				totalMagnitude = totalMagnitude + v.magnitude
 			end
 
-			tes3.applyMagicSource({ reference = e.attacker, name = "Blinding Radiance", effects = {{ id = tes3.effect.blind, duration = 1.5, min = totalMagnitude, max = totalMagnitude }} })
+			tes3.applyMagicSource({ reference = e.attacker, name = common.i18n("magic.miscRadiantShieldBlindness"), effects = {{ id = tes3.effect.blind, duration = 1.5, min = totalMagnitude, max = totalMagnitude }} })
 		end
 	end
 end

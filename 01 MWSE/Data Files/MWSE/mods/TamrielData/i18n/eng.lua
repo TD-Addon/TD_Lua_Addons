@@ -18,6 +18,18 @@ return {
 	["main.morrowindImperialLegion"] = "Morrowind Imperial Legion",
 	["main.morrowindDarkBrotherhood"] = "Morrowind Dark Brotherhood",
 
+	["main.tooltipWeight"] = "Weight",
+	["main.tooltipValue"] = "Value",
+
+	["main.khajiit.khajiit"] = "Khajiit",
+	["main.khajiit.suthay-raht"] = "Suthay-raht",
+	["main.khajiit.cathay"] = "Cathay",
+	["main.khajiit.cathay-raht"] = "Cathay-raht",
+	["main.khajiit.dagi-raht"] = "Dagi-raht",
+	["main.khajiit.ohmes"] = "Ohmes",
+	["main.khajiit.ohmes-raht"] = "Ohmes-raht",
+	["main.khajiit.suthay"] = "Suthay",
+
 	-- Magic Text
 	["magic.summonDevourer"] = "Summon Devourer",
 	["magic.summonDevourerDesc"] = "This effect summons a devourer from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight.",
@@ -102,6 +114,7 @@ return {
 	["magic.miscDetectHumanoidDesc"] = "The caster of this effect can detect any entity animated by a spirit; they appear on the map as symbols. This effect includes all people. The effect's magnitude is the range in feet from the caster that humanoids are detected.",
 	["magic.miscRadiantShield"] = "Radiant Shield",
 	["magic.miscRadiantShieldDesc"] = "This effect creates a shield of brilliant light around the subject's entire body. The spell adds its magnitude to the subject's Armor Rating, resists harmful magic, and briefly blinds attackers in melee.",
+	["magic.miscRadiantShieldBlindness"] = "Blinding Radiance",
 	["magic.miscWabbajack"] = "Wabbajack",
 	["magic.miscWabbajackDesc"] = "Wabbajack!",
 	["magic.miscInsight"] = "Insight",
@@ -185,16 +198,6 @@ return {
 
 	-- Faction Text
 	["faction.title"] = "Factions",		-- Yes, it is just "Faction" in vanilla, but that really does not make sense
-
-	-- Khajiit Text
-	["khajiit.khajiit"] = "Khajiit",
-	["khajiit.suthay-raht"] = "Suthay-raht",
-	["khajiit.cathay"] = "Cathay",
-	["khajiit.cathay-raht"] = "Cathay-raht",
-	["khajiit.dagi-raht"] = "Dagi-raht",
-	["khajiit.ohmes"] = "Ohmes",
-	["khajiit.ohmes-raht"] = "Ohmes-raht",
-	["khajiit.suthay"] = "Suthay",
 
 	-- MCM Text
 	["mcm.name"] = "Tamriel Data",

@@ -277,20 +277,20 @@ local function changeRaceMenuKhajiitNames(e)
 				---@cast race tes3race
 
 				if race.id == "Khajiit" then
-					--layout.children[1].text = common.i18n("khajiit.khajiit") .. " (" .. common.i18n("khajiit.suthay-raht") .. ")"
-					layout.children[1].text = common.i18n("khajiit.suthay-raht")	-- Unfortunately the vanilla pane is not wide enough to fully display the naming format above, so I am just using the form names here
+					--layout.children[1].text = common.i18n("main.khajiit.khajiit") .. " (" .. common.i18n("main.khajiit.suthay-raht") .. ")"
+					layout.children[1].text = common.i18n("main.khajiit.suthay-raht")	-- Unfortunately the vanilla pane is not wide enough to fully display the naming format above, so I am just using the form names here
 				elseif race.id == "T_Els_Cathay" then
-					layout.children[1].text = common.i18n("khajiit.cathay")
+					layout.children[1].text = common.i18n("main.khajiit.cathay")
 				elseif race.id == "T_Els_Cathay-raht" then
-					layout.children[1].text = common.i18n("khajiit.cathay-raht")
+					layout.children[1].text = common.i18n("main.khajiit.cathay-raht")
 				elseif race.id == "T_Els_Dagi-raht" then
-					layout.children[1].text = common.i18n("khajiit.dagi-raht")
+					layout.children[1].text = common.i18n("main.khajiit.dagi-raht")
 				elseif race.id == "T_Els_Ohmes" then
-					layout.children[1].text = common.i18n("khajiit.ohmes")
+					layout.children[1].text = common.i18n("main.khajiit.ohmes")
 				elseif race.id == "T_Els_Ohmes-raht" then
-					layout.children[1].text = common.i18n("khajiit.ohmes-raht")
+					layout.children[1].text = common.i18n("main.khajiit.ohmes-raht")
 				elseif race.id == "T_Els_Suthay" then
-					layout.children[1].text = common.i18n("khajiit.suthay")
+					layout.children[1].text = common.i18n("main.khajiit.suthay")
 				end
 			end
 		end
@@ -327,10 +327,10 @@ local function butterflyMothTooltip(e)
 				parent.autoHeight = true
 				parent.autoWidth = true
 
-				local label = parent:createLabel({ id = TD_ButterflyMothTooltip.weight, text = string.format("Weight: %.2f", ingredient.weight) })
+				local label = parent:createLabel({ id = TD_ButterflyMothTooltip.weight, text = string.format(common.i18n("main.tooltipWeight") .. ": %.2f", ingredient.weight) })
 				label.wrapText = true
 
-				local label = parent:createLabel({ id = TD_ButterflyMothTooltip.value, text = string.format("Value: %d", ingredient.value) })
+				local label = parent:createLabel({ id = TD_ButterflyMothTooltip.value, text = string.format(common.i18n("main.tooltipValue") .. ": %d", ingredient.value) })
 				label.wrapText = true
 
 				for i = 1, 4 do
