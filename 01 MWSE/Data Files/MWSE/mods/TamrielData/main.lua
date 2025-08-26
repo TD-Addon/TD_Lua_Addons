@@ -974,6 +974,7 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.creatureBehaviors == true then
+		event.register(tes3.event.cellChanged, behavior.fixWelkyndSpiritLight, { unregisterOnLoad = true })
 		event.register(tes3.event.playGroup, behavior.loopStridentRunnerNesting, { unregisterOnLoad = true })
 		event.register(tes3.event.activate, behavior.onNestLoot, { priority = 250, unregisterOnLoad = true })	-- The priority is set so that the function is guranteed to work with GH even if the nests are removed from the blacklist
 		event.register(tes3.event.combatStarted, behavior.onGroupAttacked, { unregisterOnLoad = true })

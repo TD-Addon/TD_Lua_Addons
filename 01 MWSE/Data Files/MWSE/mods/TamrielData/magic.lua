@@ -834,6 +834,12 @@ function this.useCustomSpell(e)
 	--end
 end
 
+---@param sourceInstance tes3magicSourceInstance
+local function restoreCharge(sourceInstance)
+	sourceInstance.itemData.charge = sourceInstance.itemData.charge + tes3.calculateChargeUse({ mobile = sourceInstance.caster.mobile, enchantment = sourceInstance.item.enchantment })
+	if sourceInstance.itemData.charge > sourceInstance.item.enchantment.maxCharge then sourceInstance.itemData.charge = sourceInstance.item.enchantment.maxCharge end
+end
+
 ---@param e damageEventData
 function this.magickaWardEffect(e)
 	if e.damage > 0 then
@@ -1628,6 +1634,7 @@ local function corruptionEffect(e)
 		if target.baseObject.script and (not ((target.baseObject.script.id:find("T_ScNpc") and not target.baseObject.script.id:find("_Were")) or table.contains(safeScripts, target.baseObject.script.id)) or hasScriptedItem(target.mobile.inventory)) then	-- Checks whether the target has a scripted item or a script that is not known to be safely cloneable
 			tes3ui.showNotifyMenu(common.i18n("magic.corruptionScript", { target.object.name }))
 			e.effectInstance.state = tes3.spellState.retired
+			restoreCharge(e.sourceInstance)
 			return
 		end
 
@@ -1635,6 +1642,8 @@ local function corruptionEffect(e)
 		corruptionTargetReference = target
 		corruptionCasted = true
 		tes3.cast({ reference = e.sourceInstance.caster, spell = "T_Dae_Cnj_UNI_CorruptionSummon", alwaysSucceeds = true, bypassResistances = true, instant = true, target = e.sourceInstance.caster })
+	else
+		restoreCharge(e.sourceInstance)		-- Should a message be given here too?
 	end
 
 	e.effectInstance.state = tes3.spellState.retired
@@ -2423,8 +2432,14 @@ local function wabbajackEffect(e)
 	end
 
 	local target = e.effectInstance.target
-	if target.isDead or (target.data.tamrielData and target.data.tamrielData.wabbajacked) or (target.mobile.actorType == tes3.actorType.creature and not target.baseObject.walks and not target.baseObject.biped) then
+	if target.isDead or (target.data.tamrielData and target.data.tamrielData.wabbajacked) then
 		e.effectInstance.state = tes3.spellState.retired
+		return
+	end
+
+	if target.mobile.actorType == tes3.actorType.creature and not target.baseObject.walks and not target.baseObject.biped then
+		e.effectInstance.state = tes3.spellState.retired
+		restoreCharge(e.sourceInstance)
 		return
 	end
 
@@ -2474,6 +2489,7 @@ local function wabbajackEffect(e)
 		else
 			tes3.playSound{ sound = "Spell Failure Alteration", reference = target }
 			if target.data.tamrielData and target.data.tamrielData.wabbajack and target.data.tamrielData.wabbajack.targetName then tes3ui.showNotifyMenu(common.i18n("magic.wabbajackAlready", { target.data.tamrielData.wabbajack.targetName })) end
+			restoreCharge(e.sourceInstance)
 		end
 	else
 		tes3.playSound{ sound = "Spell Failure Alteration", reference = target }

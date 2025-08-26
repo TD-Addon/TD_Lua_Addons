@@ -6,7 +6,7 @@ return {
 	["main.tsaesciShoes"] = "Les Tsaescis ne peuvent porter de chaussures.",
     ["main.tsaesciPants"] = "Les Tsaescis ne peuvent porter de pantalon.",
 	["main.minotaurShoes"] = "Les minotaures ne peuvent porter de chaussures.",
-	["main.minotaurHelm"] = "Les minotauresne peuvent porter de casque.",
+	["main.minotaurHelm"] = "Les minotaures ne peuvent porter de casque.",
 	["main.minotaurHat"] = "Les minotaures ne peuvent porter de chapeau.",
 
 	["main.rangeAlmsivi"] = "Le pouvoir d'Almsivi ne s'étend pas sur ces terres.",
@@ -17,6 +17,18 @@ return {
 	["main.morrowindThievesGuild"] = "de la guilde des Voleurs",
 	["main.morrowindImperialLegion"] = "de la légion impériale",
 	["main.morrowindDarkBrotherhood"] = "de la Confrérie noire",
+	
+	["main.tooltipWeight"] = "Poids ",
+	["main.tooltipValue"] = "Valeur ",
+
+	["main.khajiit.khajiit"] = "Khajiit",
+	["main.khajiit.suthay-raht"] = "Suthay-raht",
+	["main.khajiit.cathay"] = "Cathay",
+	["main.khajiit.cathay-raht"] = "Cathay-raht",
+	["main.khajiit.dagi-raht"] = "Dagi-raht",
+	["main.khajiit.ohmes"] = "Ohmes",
+	["main.khajiit.ohmes-raht"] = "Ohmes-raht",
+	["main.khajiit.suthay"] = "Suthay",
 
 	-- Magic Text
 	["magic.summonDevourer"] = "Appel de consummeur",
@@ -94,7 +106,7 @@ return {
 
 	["magic.miscPasswall"] = "Passe-muraille",
 	["magic.miscPasswallDesc"] = "En intérieur, cet effet permet au lanceur de traverser une barrière solide vers un espace vide derrière celle-ci. L'effet échouera si la destination au-delà de la barrière traversée est emplie d'eau, bloquée par un champ de force, une porte scellée ou une barrière, ou se trouve au-dessus ou au-dessous du lanceur.",
-	["magic.miscBanish"] = "Banissement de Daedra",
+	["magic.miscBanish"] = "Bannissement de Daedra",
 	["magic.miscBanishDesc"] = "Bannit tout Daedra sur lequel ce sort est lancé, à condition que la cible soit d'un niveau suffisamment bas comparé à la puissance du sort. Si le Daedra est blessé, il sera plus facile à bannir. Bannir un Daedra transfert tous ses biens d'importance dans un sceau laissé à sa place.",
 	["magic.miscReflectDamage"] = "Réflexion de dégâts",
 	["magic.miscReflectDamageDesc"] = "Cet effet permet de renvoyer des dégâts physiques à un agresseur. La puissance de l'effet détermine le pourcentage de dégâts qui sera reflété pour chaque attaque. Tout dégât non réfléchi affecte normalement sa cible.",
@@ -102,6 +114,7 @@ return {
 	["magic.miscDetectHumanoidDesc"] = "Cet effet permet de détecter n'importe quelle entité animée par un esprit ; elles apparaissent sous forme de symboles sur la carte. Cet effet comprend tous les personnages. La puissance de l'effet détermine la portée à laquelle le lanceur peut détecter des individus (en pieds).", 
 	["magic.miscRadiantShield"] = "Bouclier radieux",
 	["magic.miscRadiantShieldDesc"] = "Cet effet crée un bouclier de lumière brillante autour du sujet. La puissance de l'effet s'ajoute à la valeur d'armure du sujet, réduit considérablement les effets des attaques magiques, et aveugle brièvement les agresseurs au corps-à-corps.",
+	["magic.miscRadiantShieldBlindness"] = "Brillance aveuglante",
 	["magic.miscWabbajack"] = "Wabbajack",
 	["magic.miscWabbajackDesc"] = "Wabbajack !",
 	["magic.miscInsight"] = "Perspicacité",

@@ -59,18 +59,21 @@ end
 
 ---@param e mobileActivatedEventData
 function this.onMobileActivated(e)
-	-- Special thanks to G7 for showing me where he used this kind of setup in one of his mods; it is a much more efficient system than what I had in mind.
-	if e.reference.baseObject.name:lower():find("lamia") then
-		lamiaReferences[e.reference] = true
-	elseif e.reference.baseObject.name:lower():find("dreugh") then
-		dreughReferences[e.reference] = true
+	if e.mobile.actorType == tes3.actorType.creature then
+		if e.reference.baseObject.id == "T_Glb_Cre_Lami_01" or e.reference.baseObject.id == "T_Glb_Cre_LamiLess_01" then
+			lamiaReferences[e.reference] = true		-- Special thanks to G7 for showing me where he used this kind of setup in one of his mods; it is a much more efficient system than what I had in mind.
+		elseif e.reference.baseObject.id == "dreugh" or e.reference.baseObject.id == "T_Cyr_Cre_Dreu_01" or e.reference.baseObject.id == "T_Glb_Cre_DreuDs_01" or e.reference.baseObject.id == "T_Glb_Cre_DreuMoW_01" then
+			dreughReferences[e.reference] = true
+		end
 	end
 end
 
 ---@param e mobileDeactivatedEventData
 function this.onMobileDeactivated(e)
-	lamiaReferences[e.reference] = nil
-	dreughReferences[e.reference] = nil
+	if e.mobile.actorType == tes3.actorType.creature then
+		lamiaReferences[e.reference] = nil
+		dreughReferences[e.reference] = nil
+	end
 end
 
 function this.creatureDetectionTick()
@@ -88,7 +91,22 @@ end
 ---@param e playGroupEventData
 function this.loopStridentRunnerNesting(e)
 	if e.reference.baseObject.id == "T_Cyr_Fau_BirdStridN_01" and e.group == tes3.animationGroup.idle6 then
-		e.loopCount = -1	-- Ordinarily idles don't loop correctly (see: Vivec) and a MWScript solution (like the one that some mods use for Vivec) doesn't work well on a hostile creature such as the Strident Runners, but this does.
+		e.loopCount = -1	-- Ordinarily idles don't loop correctly (e.g. Vivec) and a MWScript solution (like the one that some mods use for Vivec) doesn't work well on a hostile creature such as the Strident Runners, but this does.
+	end
+end
+
+-- The Welkynd Spirit has a script that reenables its light like so upon changing cells, but it cannot account for the game being loaded. I would just do this in onMobileActivated, but mobileActivated does not run on loading the game.
+---@param e cellChangedEventData
+function this.fixWelkyndSpiritLight(e)
+	if not e.previousCell then
+		for creature in e.cell:iterateReferences(tes3.objectType.creature, false) do
+			if creature.baseObject.mesh:find("ayl_guard") then
+				if not creature.isDead then
+					tes3.removeItem({ reference = creature, item = "T_Ayl_DngRuin_LightWelkynd_256", count = 999 })
+					tes3.addItem({ reference = creature, item = "T_Ayl_DngRuin_LightWelkynd_256" })
+				end
+			end
+		end
 	end
 end
 
