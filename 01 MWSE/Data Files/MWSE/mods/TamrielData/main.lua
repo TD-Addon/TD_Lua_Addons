@@ -865,12 +865,15 @@ event.register(tes3.event.loaded, function()
 
 		event.register(tes3.event.spellMagickaUse, magic.bloodMagicCast, { unregisterOnLoad = true })
 
-		--timer.start{ duration = 0.0166667, iterations = -1, type = timer.simulate, callback = magic.prismaticLightTick }
-		--event.register(tes3.event.referenceActivated, magic.onPrismaticLightReferenceActivated, { unregisterOnLoad = true })
-		--event.register(tes3.event.referenceDeactivated, magic.onPrismaticLightReferenceDeactivated, { unregisterOnLoad = true })
-		--event.register(tes3.event.magicEffectRemoved, magic.prismaticLightRemovedEffect, { unregisterOnLoad = true })
+		timer.start{ duration = 0.0166667, iterations = -1, type = timer.simulate, callback = magic.prismaticLightTick }
+		event.register(tes3.event.referenceActivated, magic.onPrismaticLightReferenceActivated, { unregisterOnLoad = true })
+		event.register(tes3.event.referenceDeactivated, magic.onPrismaticLightReferenceDeactivated, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.prismaticLightRemovedEffect, { unregisterOnLoad = true })
 
 		event.register(tes3.event.spellCast, magic.fortifyCastingOnSpellCast, { unregisterOnLoad = true })
+
+		timer.start{ duration = 1, iterations = -1, type = timer.simulate, callback = magic.removeBlinkData }
+		event.register(tes3.event.damage, magic.blinkFallDamage, { unregisterOnLoad = true })
 
 		tes3.getObject("T_B_GazeVeloth_Skeleton_01").partType = tes3.activeBodyPartLayer.base		-- I don't want these body parts to be associated with a race, so I set them to be base layer here rather than in the CS; the race name of the body part needs to be removed from the ESP that will be merged though
 		tes3.getObject("T_B_GazeVeloth_SkeletonArg_01").partType = tes3.activeBodyPartLayer.base

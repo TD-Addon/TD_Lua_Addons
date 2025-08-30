@@ -62,7 +62,7 @@ function this.onMobileActivated(e)
 	if e.mobile.actorType == tes3.actorType.creature then
 		if e.reference.baseObject.id == "T_Glb_Cre_Lami_01" or e.reference.baseObject.id == "T_Glb_Cre_LamiLess_01" then
 			lamiaReferences[e.reference] = true		-- Special thanks to G7 for showing me where he used this kind of setup in one of his mods; it is a much more efficient system than what I had in mind.
-		elseif e.reference.baseObject.id == "dreugh" or e.reference.baseObject.id == "T_Cyr_Cre_Dreu_01" or e.reference.baseObject.id == "T_Glb_Cre_DreuDs_01" or e.reference.baseObject.id == "T_Glb_Cre_DreuMoW_01" then
+		elseif e.reference.baseObject.id == "dreugh" or e.reference.baseObject.id == "T_Cyr_Cre_Dreu_01" or e.reference.baseObject.id:find("T_Glb_Cre_Dreu") or e.reference.baseObject.id:find("T_Glb_Cre_LandDreu") then
 			dreughReferences[e.reference] = true
 		end
 	end

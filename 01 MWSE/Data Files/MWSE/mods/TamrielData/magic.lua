@@ -94,7 +94,7 @@ if config.miscSpells == true then
 	tes3.claimSpellEffectId("T_mysticism_DetInvisibility", 2141)
 	tes3.claimSpellEffectId("T_mysticism_Blink", 2142)
 	tes3.claimSpellEffectId("T_restoration_FortifyCasting", 2143)
-	--tes3.claimSpellEffectId("T_illusion_PrismaticLight", 2144)
+	tes3.claimSpellEffectId("T_illusion_PrismaticLight", 2144)
 	tes3.claimSpellEffectId("T_mysticism_BloodMagic", 2147)
 	tes3.claimSpellEffectId("T_conjuration_SanguineRose", 2148)
 	tes3.claimSpellEffectId("T_mysticism_DetValuables", 2149)
@@ -173,7 +173,7 @@ local td_misc_effects = {
 	{ tes3.effect.T_mysticism_DetInvisibility, common.i18n("magic.miscDetectInvisibility"), 1.5, "td\\s\\td_s_det_invisibility.tga", common.i18n("magic.miscDetectInvisibilityDesc")},
 	{ tes3.effect.T_mysticism_Blink, common.i18n("magic.miscBlink"), 10, "td\\s\\td_s_blink.tga", common.i18n("magic.miscBlinkDesc")},
 	{ tes3.effect.T_restoration_FortifyCasting, common.i18n("magic.miscFortifyCasting"), 1, "td\\s\\td_s_ftfy_cast.tga", common.i18n("magic.miscFortifyCastingDesc")},
-	--{ tes3.effect.T_illusion_PrismaticLight, common.i18n("magic.miscPrismaticLight"), 0.4, "td\\s\\td_s_p_light.tga", common.i18n("magic.miscPrismaticLightDesc")},
+	{ tes3.effect.T_illusion_PrismaticLight, common.i18n("magic.miscPrismaticLight"), 0.4, "td\\s\\td_s_p_light.tga", common.i18n("magic.miscPrismaticLightDesc")},
 	{ tes3.effect.T_mysticism_BloodMagic, common.i18n("magic.miscBloodMagic"), 0, "td\\s\\td_s_blood_magic.tga", common.i18n("magic.miscBloodMagicDesc")},
 	{ tes3.effect.T_conjuration_SanguineRose, common.i18n("magic.miscSanguineRose"), 40, "td\\s\\td_s_sanguine.dds.tga", common.i18n("magic.miscSanguineRoseDesc")},
 	{ tes3.effect.T_mysticism_DetValuables, common.i18n("magic.miscDetectValuables"), 1.5, "td\\s\\td_s_det_value.tga", common.i18n("magic.miscDetectValuablesDesc")},
@@ -847,9 +847,9 @@ function this.magickaWardEffect(e)
 		if #magickaWardEffects > 0 then
 			local difficultyTerm = 0	-- Annoyingly MWSE's damage-related events do not make the actual damage available in the event data
 			if tes3.worldController.difficulty < 0 then
-				difficultyTerm = tes3.worldController.difficulty / tes3.findGMST("fDifficultyMult").value
+				difficultyTerm = tes3.worldController.difficulty / tes3.findGMST(tes3.gmst.fDifficultyMult).value
 			else
-				difficultyTerm = tes3.findGMST("fDifficultyMult").value * tes3.worldController.difficulty
+				difficultyTerm = tes3.findGMST(tes3.gmst.fDifficultyMult).value * tes3.worldController.difficulty
 			end
 
 			local trueDamage = e.damage * (1 + difficultyTerm)				-- Should armor be taken into consideration?
@@ -1107,6 +1107,41 @@ function this.fortifyCastingOnSpellCast(e)
 	end
 end
 
+function this.removeBlinkData()
+	if not (tes3.mobilePlayer.isFalling or tes3.mobilePlayer.isJumping) and tes3.player.data.tamrielData.hasBlinked then
+		tes3.player.data.tamrielData.hasBlinked = nil	-- Prevent blinkFallDamage from taking effect when it shouldn't due to the player blinking and not taking fall damage afterwards
+	end
+end
+
+-- This function cannot correct fall damage in some cases (e.g. jumping up a short distance, then blinking up much further only to land at the original location), but most problems are resolved by it.
+---@param e damageEventData
+function this.blinkFallDamage(e)
+	if e.source == tes3.damageSource.fall and e.reference == tes3.player and tes3.player.data.tamrielData.hasBlinked then
+		tes3.player.data.tamrielData.hasBlinked = nil
+		local fatigueTerm = tes3.findGMST(tes3.gmst.fFatigueBase).value - tes3.findGMST(tes3.gmst.fFatigueMult).value * (1 - tes3.mobilePlayer.fatigue.normalized)
+		local acrobatics = tes3.mobilePlayer.acrobatics.current
+		local jumpMagnitude = 0
+
+		local jumpEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.jump })
+		if #jumpEffects > 0 then
+			for _,v in pairs(jumpEffects) do
+				jumpMagnitude = jumpMagnitude + v.magnitude
+			end
+		end
+
+		local calculatedDistance = (tes3.mobilePlayer.velocity.z ^ 2) / (2 * 627.2)
+
+		-- The calculations below and those for the fatigue term above are based on those that OpenMW found for fall damage
+		if calculatedDistance <= tes3.findGMST(tes3.gmst.fFallDamageDistanceMin).value then return false end
+		calculatedDistance = calculatedDistance - tes3.findGMST(tes3.gmst.fFallDamageDistanceMin).value
+		calculatedDistance = calculatedDistance - (1.5 * acrobatics + jumpMagnitude)
+		calculatedDistance = math.max(0, calculatedDistance)
+		calculatedDistance = calculatedDistance * (tes3.findGMST(tes3.gmst.fFallDistanceBase).value + tes3.findGMST(tes3.gmst.fFallDistanceMult).value)
+		calculatedDistance = calculatedDistance * (tes3.findGMST(tes3.gmst.fFallAcroBase).value + tes3.findGMST(tes3.gmst.fFallAcroMult).value * (100 - acrobatics))
+		e.damage = calculatedDistance * (1 - .25 * fatigueTerm)
+	end
+end
+
 ---@param e tes3magicEffectTickEventData
 local function blinkEffect(e)
 	if (not e:trigger()) then
@@ -1128,7 +1163,7 @@ local function blinkEffect(e)
 			maxDistance = range,
 			findAll = true,
 			accurateSkinned = true,		-- I want for people to be able to teleport past actors, which can be difficult and inconsistent without this parameter being true
-			observeAppCullFlag  = false
+			observeAppCullFlag = false
 		}
 
 		if obstacles then
@@ -1175,6 +1210,7 @@ local function blinkEffect(e)
 				destination = destination + tes3vector3.new(0, 0, tes3.mobilePlayer.height - heightCheck.distance)	-- This should prevent the player from clipping through objects below them
 			end
 
+			if tes3.mobilePlayer.isFalling or tes3.mobilePlayer.isJumping then tes3.player.data.tamrielData.hasBlinked = true end
 			tes3.mobilePlayer.position = destination
 		end
 	end
@@ -4026,49 +4062,49 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		--effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[20])		-- Prismatic Light
-		--tes3.addMagicEffect{
-		--	id = effectID,
-		--	name = effectName,
-		--	description = effectDescription,
-		--	school = tes3.magicSchool.illusion,
-		--	baseCost = effectCost,
-		--	speed = lightEffect.speed,
-		--	allowEnchanting = lightEffect.allowEnchanting,
-		--	allowSpellmaking = lightEffect.allowSpellmaking,
-		--	appliesOnce = lightEffect.appliesOnce,
-		--	canCastSelf = lightEffect.canCastSelf,
-		--	canCastTarget = lightEffect.canCastTarget,
-		--	canCastTouch = lightEffect.canCastTouch,
-		--	casterLinked = lightEffect.casterLinked,
-		--	hasContinuousVFX = lightEffect.hasContinuousVFX,
-		--	hasNoDuration = lightEffect.hasNoDuration,
-		--	hasNoMagnitude = lightEffect.hasNoMagnitude,
-		--	illegalDaedra = lightEffect.illegalDaedra,
-		--	isHarmful = lightEffect.isHarmful,
-		--	nonRecastable = lightEffect.nonRecastable,
-		--	targetsAttributes = lightEffect.targetsAttributes,
-		--	targetsSkills = lightEffect.targetsSkills,
-		--	unreflectable = lightEffect.unreflectable,
-		--	usesNegativeLighting = lightEffect.usesNegativeLighting,
-		--	icon = iconPath,
-		--	particleTexture = lightEffect.particleTexture,
-		--	castSound = lightEffect.castSoundEffect.id,
-		--	castVFX = lightEffect.castVisualEffect.id,
-		--	boltSound = lightEffect.boltSoundEffect.id,
-		--	boltVFX = lightEffect.boltVisualEffect.id,
-		--	hitSound = lightEffect.hitSoundEffect.id,
-		--	hitVFX = lightEffect.hitVisualEffect.id,
-		--	areaSound = lightEffect.areaSoundEffect.id,
-		--	areaVFX = lightEffect.areaVisualEffect.id,
-		--	lighting = {x = lightEffect.lightingRed / 255, y = lightEffect.lightingGreen / 255, z = lightEffect.lightingBlue / 255},
-		--	size = lightEffect.size,
-		--	sizeCap = lightEffect.sizeCap,
-		--	onTick = prismaticLightEffect,
-		--	onCollision = nil
-		--}
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[20])		-- Prismatic Light
+		tes3.addMagicEffect{
+			id = effectID,
+			name = effectName,
+			description = effectDescription,
+			school = tes3.magicSchool.illusion,
+			baseCost = effectCost,
+			speed = lightEffect.speed,
+			allowEnchanting = lightEffect.allowEnchanting,
+			allowSpellmaking = lightEffect.allowSpellmaking,
+			appliesOnce = lightEffect.appliesOnce,
+			canCastSelf = lightEffect.canCastSelf,
+			canCastTarget = lightEffect.canCastTarget,
+			canCastTouch = lightEffect.canCastTouch,
+			casterLinked = lightEffect.casterLinked,
+			hasContinuousVFX = lightEffect.hasContinuousVFX,
+			hasNoDuration = lightEffect.hasNoDuration,
+			hasNoMagnitude = lightEffect.hasNoMagnitude,
+			illegalDaedra = lightEffect.illegalDaedra,
+			isHarmful = lightEffect.isHarmful,
+			nonRecastable = lightEffect.nonRecastable,
+			targetsAttributes = lightEffect.targetsAttributes,
+			targetsSkills = lightEffect.targetsSkills,
+			unreflectable = lightEffect.unreflectable,
+			usesNegativeLighting = lightEffect.usesNegativeLighting,
+			icon = iconPath,
+			particleTexture = lightEffect.particleTexture,
+			castSound = lightEffect.castSoundEffect.id,
+			castVFX = lightEffect.castVisualEffect.id,
+			boltSound = lightEffect.boltSoundEffect.id,
+			boltVFX = lightEffect.boltVisualEffect.id,
+			hitSound = lightEffect.hitSoundEffect.id,
+			hitVFX = lightEffect.hitVisualEffect.id,
+			areaSound = lightEffect.areaSoundEffect.id,
+			areaVFX = lightEffect.areaVisualEffect.id,
+			lighting = {x = lightEffect.lightingRed / 255, y = lightEffect.lightingGreen / 255, z = lightEffect.lightingBlue / 255},
+			size = lightEffect.size,
+			sizeCap = lightEffect.sizeCap,
+			onTick = prismaticLightEffect,
+			onCollision = nil
+		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[20])		-- Blood Magic
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[21])		-- Blood Magic
 		tes3.addMagicEffect{
 			id = effectID,
 			name = effectName,
@@ -4110,7 +4146,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[21])		-- Sanguine Rose
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[22])		-- Sanguine Rose
 		tes3.addMagicEffect{
 			id = effectID,
 			name = effectName,
@@ -4154,7 +4190,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[22])		-- Detect Valuable
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[23])		-- Detect Valuable
 		tes3.addMagicEffect{
 			id = effectID,
 			name = effectName,
@@ -4198,7 +4234,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[23])		-- Magicka Ward
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[24])		-- Magicka Ward
 		tes3.addMagicEffect{
 			id = effectID,
 			name = effectName,
