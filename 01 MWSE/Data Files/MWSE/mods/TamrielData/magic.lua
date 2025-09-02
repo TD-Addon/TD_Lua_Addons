@@ -1108,16 +1108,53 @@ function this.fortifyCastingOnSpellCast(e)
 end
 
 function this.removeBlinkData()
-	if not (tes3.mobilePlayer.isFalling or tes3.mobilePlayer.isJumping) and tes3.player.data.tamrielData.hasBlinked then
+	if not (tes3.mobilePlayer.isFalling or tes3.mobilePlayer.isJumping) and (tes3.player.data.tamrielData.hasBlinked or tes3.player.data.tamrielData.blinkVelocity) then
 		tes3.player.data.tamrielData.hasBlinked = nil	-- Prevent blinkFallDamage from taking effect when it shouldn't due to the player blinking and not taking fall damage afterwards
+		tes3.player.data.tamrielData.blinkVelocity = nil
 	end
 end
 
--- This function cannot correct fall damage in some cases (e.g. jumping up a short distance, then blinking up much further only to land at the original location), but most problems are resolved by it.
+---@param e simulatedEventData
+function this.blinkFallDamageSmallJump(e)
+	if tes3.player.data.tamrielData.hasBlinked then
+		if not tes3.mobilePlayer.isFalling and not tes3.mobilePlayer.isJumping and tes3.player.data.tamrielData.blinkVelocity then
+			tes3.player.data.tamrielData.hasBlinked = nil
+
+			local fatigueTerm = tes3.findGMST(tes3.gmst.fFatigueBase).value - tes3.findGMST(tes3.gmst.fFatigueMult).value * (1 - tes3.mobilePlayer.fatigue.normalized)
+			local acrobatics = tes3.mobilePlayer.acrobatics.current
+			local jumpMagnitude = 0
+
+			local jumpEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.jump })
+			if #jumpEffects > 0 then
+				for _,v in pairs(jumpEffects) do
+					jumpMagnitude = jumpMagnitude + v.magnitude
+				end
+			end
+
+			local calculatedDistance = (tes3.player.data.tamrielData.blinkVelocity ^ 2) / (2 * 627.2)
+			tes3.player.data.tamrielData.blinkVelocity = nil
+
+			-- The calculations below and those for the fatigue term above are based on those that OpenMW found for fall damage
+			if calculatedDistance <= tes3.findGMST(tes3.gmst.fFallDamageDistanceMin).value then return false end
+			calculatedDistance = calculatedDistance - tes3.findGMST(tes3.gmst.fFallDamageDistanceMin).value
+			calculatedDistance = calculatedDistance - (1.5 * acrobatics + jumpMagnitude)
+			calculatedDistance = math.max(0, calculatedDistance)
+			calculatedDistance = calculatedDistance * (tes3.findGMST(tes3.gmst.fFallDistanceBase).value + tes3.findGMST(tes3.gmst.fFallDistanceMult).value)
+			calculatedDistance = calculatedDistance * (tes3.findGMST(tes3.gmst.fFallAcroBase).value + tes3.findGMST(tes3.gmst.fFallAcroMult).value * (100 - acrobatics))
+			if acrobatics * fatigueTerm < calculatedDistance then tes3.mobilePlayer:hitStun({ knockDown = true }) end
+			tes3.mobilePlayer:applyDamage({ damage = calculatedDistance * (1 - .25 * fatigueTerm) })
+		else
+			tes3.player.data.tamrielData.blinkVelocity = tes3.mobilePlayer.velocity.z
+		end
+	end
+end
+
+-- This function cannot correct fall damage in some cases (e.g. jumping and after reaching the peak blinking up much further only to land at the original location), but most problems are resolved by it. The rest are covered by blinkFallDamageSmallJump.
 ---@param e damageEventData
 function this.blinkFallDamage(e)
 	if e.source == tes3.damageSource.fall and e.reference == tes3.player and tes3.player.data.tamrielData.hasBlinked then
 		tes3.player.data.tamrielData.hasBlinked = nil
+		tes3.player.data.tamrielData.blinkVelocity = nil
 		local fatigueTerm = tes3.findGMST(tes3.gmst.fFatigueBase).value - tes3.findGMST(tes3.gmst.fFatigueMult).value * (1 - tes3.mobilePlayer.fatigue.normalized)
 		local acrobatics = tes3.mobilePlayer.acrobatics.current
 		local jumpMagnitude = 0
@@ -1138,6 +1175,7 @@ function this.blinkFallDamage(e)
 		calculatedDistance = math.max(0, calculatedDistance)
 		calculatedDistance = calculatedDistance * (tes3.findGMST(tes3.gmst.fFallDistanceBase).value + tes3.findGMST(tes3.gmst.fFallDistanceMult).value)
 		calculatedDistance = calculatedDistance * (tes3.findGMST(tes3.gmst.fFallAcroBase).value + tes3.findGMST(tes3.gmst.fFallAcroMult).value * (100 - acrobatics))
+		if acrobatics * fatigueTerm < calculatedDistance then tes3.mobilePlayer:hitStun({ knockDown = true }) end
 		e.damage = calculatedDistance * (1 - .25 * fatigueTerm)
 	end
 end
