@@ -547,6 +547,73 @@ local distractedReferences = {}	-- Should probably decide on a consistent naming
 
 local invisibleReferences = {}
 
+-- (part of) lowercase static/activator id
+local passWallObjectBlacklist = {
+	"shelf",
+	"bed",
+	"bar_door",
+	"bardoor",
+	"ladder",
+	"wallscreen",
+	"t_ayl_dngruin_ceilingspike",
+	"t_ayl_dngruin_guillotine",
+	"trapdoor",
+	"t_com_var_metalrod",
+	"t_dreu_furn_cagerod_01",
+	"active_mh_forcefield",
+}
+
+-- (part of) lowercase door id
+local passWallDoorBlacklist = {
+	"trap",
+	"trp",
+	"ladder",
+	"hatch",
+	"ex_emp_tower_01_b",
+	"ex_r_pcfort_d_02",
+	"t_de_setred_door",
+	"velothi_sewer_door",
+	"jaildoor",
+	"t_imp_setnord_doorcellar",
+	"t_nor_set_doorcellar",
+	"t_imp_setkva_cellardoor",
+	"t_de_setind_doorjailin",
+	"t_nor_setbarbarian_door",
+	"t_de_set_i_tent_01_door",
+	"t_de_set_x_tent_01_door",
+	"t_de_set_i_tent_02_door",
+	"t_de_set_x_tent_02_door",
+	"t_orc_setnomad_door",
+	"t_rga_setnomadrl_x_door",
+	"t_com_setcir_door",
+	"grate",
+	"fence",
+	"door_cavern_doors",
+	"ex_de_sn_gate",
+	"ex_s_fence_gate",
+	"t_bre_dngcrypt_gate",
+	"t_com_var_gatemystica",
+	"t_de_setind_doorgate",
+	"t_de_setind_gatefloodalm",
+	"t_he_dngdirenni_door",
+	"t_imp_legion_gatebig_02",
+	"t_imp_legion_gatesmall_02",
+	"t_imp_legionmw_gatestrong_01",
+	"t_imp_setgravey_doorex",
+	"t_nor_setpalisade_gate",
+	"bm_karstcav_door",
+	"bm_kartaag_door",
+	"bm_ka_door_dark",
+	"door_load_darkness00",
+	"t_glb_blackdoor",
+	"t_cyr_cavegc_doorin_01",
+	"t_sky_cave_doornat",
+	"t_sky_cave_door_",
+	"cave_doorin_",
+	"t_pi_cave_doorin_01",
+	"t_de_dngship_doordarkhole_01",
+}
+
 -- race id, skeleton base body part id, skeleton "clothing" body part id
 local raceSkeletonBodyParts = {
 	{ "Argonian", "T_B_GazeVeloth_SkeletonArg_01", "T_C_GazeVeloth_SkeletonArg_01" },	-- Use the other Argonian skeletons too depending on the hair mesh of the target?
@@ -849,11 +916,11 @@ function this.magickaWardEffect(e)
 			if tes3.worldController.difficulty < 0 then
 				difficultyTerm = tes3.worldController.difficulty / tes3.findGMST(tes3.gmst.fDifficultyMult).value
 			else
-				difficultyTerm = tes3.findGMST(tes3.gmst.fDifficultyMult).value * tes3.worldController.difficulty
+				difficultyTerm = tes3.worldController.difficulty * tes3.findGMST(tes3.gmst.fDifficultyMult).value
 			end
 
 			local trueDamage = e.damage * (1 + difficultyTerm)				-- Should armor be taken into consideration?
-			local magickaDamage = trueDamage * math.clamp((50 / 100), 0, 1)
+			local magickaDamage = trueDamage * math.clamp((50 / 100), 0, 1)	-- math.clamp is currently used in case magicka ward is set to use a magnitude; anything greater than 100 points will completely block an attack. Right now it doesn't and always blocks 50% of the damage.
 
 			if e.mobile.magicka.current >= magickaDamage then
 				e.damage = (trueDamage - magickaDamage) / (1 + difficultyTerm)
@@ -1114,8 +1181,7 @@ function this.removeBlinkData()
 	end
 end
 
----@param e simulatedEventData
-function this.blinkFallDamageSmallJump(e)
+function this.blinkFallDamageSmallJump()
 	if tes3.player.data.tamrielData.hasBlinked then
 		if not tes3.mobilePlayer.isFalling and not tes3.mobilePlayer.isJumping and tes3.player.data.tamrielData.blinkVelocity then
 			tes3.player.data.tamrielData.hasBlinked = nil
@@ -2850,113 +2916,56 @@ local function passWallDoorCrime(door)
 	return false
 end
 
----@param wallPosition tes3vector3
+---@param targetPosition tes3vector3
 ---@param forward tes3vector3
 ---@param right tes3vector3
 ---@param up tes3vector3
 ---@param range number
 ---@return tes3vector3, number
-local function passwallCalculate(wallPosition, forward, right, up, range)
+local function passwallCalculate(targetPosition, forward, right, up, range)
 	local nodeArr = tes3.mobilePlayer.cell.pathGrid.nodes
 	local playerPosition = tes3.mobilePlayer.position
 
 	local minDistance = 108
-	local forwardOffset = 0
-	local rayTestOffset = 19
 
-	local rightCoord = (right * 200)
-	local upCoord = (up * 105)			-- Should this account for player height, which affects castPosition and wallPosition?
+	local horizontalBound = (right * 200)
+	local verticalBound = (up * 105)
 
-	local startPosition = wallPosition + (forward * forwardOffset)
-	local endPosition = wallPosition + (forward * (range + forwardOffset))
+	local startPosition = targetPosition + (forward * 20) - tes3vector3.new(0, 0, tes3.mobilePlayer.cameraHeight)	-- (forward * 20) is used to hopefully prevent teleporting inside the target; the last term brings the everything down to the surface that the player is on, which is where nodes should be
+	local endPosition = startPosition + (forward * range)
 
-	local point1 = startPosition - rightCoord - upCoord
-	local point2 = endPosition + rightCoord + upCoord
+	local minPoint = startPosition - horizontalBound - verticalBound
+	local maxPoint = endPosition + horizontalBound + verticalBound
 
 	local bestDistance = range
 	local bestPosition = nil
 
-	for _,node in pairs(nodeArr) do
-		if (point1.x <= node.position.x and node.position.x <= point2.x) or (point1.x >= node.position.x and node.position.x >= point2.x) then
-			if (point1.y <= node.position.y and node.position.y <= point2.y) or (point1.y >= node.position.y and node.position.y >= point2.y) then
-				if (point1.z <= node.position.z and node.position.z <= point2.z) or (point1.z >= node.position.z and node.position.z >= point2.z) then
-					local distance = startPosition:distance(node.position)
-					if distance <= bestDistance and playerPosition:distance(node.position) >= minDistance then
-						local targetY = tes3.rayTest{
-							position = node.position - (forward * rayTestOffset) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
-							direction = forward,
-							maxDistance = rayTestOffset * 2,
-							--root = {tes3.game.sceneGraphCollideString},
-							useBackTriangles = true,
-						}
-						local targetX = tes3.rayTest{
-							position = node.position - (right * rayTestOffset) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
-							direction = right,
-							maxDistance = rayTestOffset * 2,
-							--root = {tes3.game.sceneGraphCollideString},
-							useBackTriangles = true,
-						}
+	local checkedNodes = { }
 
-						if not targetY and not targetX then
-							bestDistance = distance
-							bestPosition = node.position
-						end
-					end
-				end
-			end
-		end
-	end
-
-	local checkedNodeTable = { }
 	for _,node in pairs(nodeArr) do
 		for _,connectedNode in pairs(node.connectedNodes) do
-			if not table.contains(checkedNodeTable, node) and not table.contains(checkedNodeTable, connectedNode) then			-- Only check each connection once
-				if (startPosition:distance(node.position) <= 1024 and startPosition:distance(connectedNode.position) <= 1024) or (endPosition:distance(node.position) <= 1024 and endPosition:distance(connectedNode.position) <= 1024) then	-- Reasonable limit on how far nodes can be
+			if not (table.contains(checkedNodes, node) or table.contains(checkedNodes, connectedNode)) then			-- Only check each connection once
+				if (startPosition:distance(node.position) <= range and startPosition:distance(connectedNode.position) <= range) or (endPosition:distance(node.position) <= range and endPosition:distance(connectedNode.position) <= range) then
 					local increment = (connectedNode.position - node.position) / 15
-					local connectionLength = connectedNode.position:distance(node.position)
-					local incrementLength = connectionLength / 15
 
 					local prevStartDistance = nil
 					local prevEndDistance = nil
 
-					local prevInVolume = false		-- Given that raytests are used to check for collision near the tested positions, the closest acceptable position might actually be further away, so positions should keep being checked until they are outside of the volume entirely
-
-					for i=1,14,1 do
+					for i = 0, 15, 1 do					-- Check points along the path, with the 0th and 15th points being at the nodes themselves
 						local incrementPosition = node.position + (increment * i)
 						local startDistance = incrementPosition:distance(startPosition)
 						local endDistance = incrementPosition:distance(endPosition)
 
-						if prevStartDistance and prevEndDistance and not prevInVolume and (startDistance > prevStartDistance and endDistance > prevEndDistance) or ((connectionLength - (incrementLength * i)) < startDistance and (connectionLength - (incrementLength * i)) < endDistance) then
+						if prevStartDistance and prevEndDistance and (startDistance > prevStartDistance and endDistance > prevEndDistance) then
 							break		-- If incrementPosition is moving away or too far from the volume that the player can teleport within and was not inside of it then the loop will be broken out of for the sake of performance
 						end
 
-						prevInVolume = false
-
 						if startDistance <= bestDistance and playerPosition:distance(incrementPosition) >= minDistance then
-							if (point1.x <= incrementPosition.x and incrementPosition.x <= point2.x) or (point1.x >= incrementPosition.x and incrementPosition.x >= point2.x) then
-								if (point1.y <= incrementPosition.y and incrementPosition.y <= point2.y) or (point1.y >= incrementPosition.y and incrementPosition.y >= point2.y) then
-									if (point1.z <= incrementPosition.z and incrementPosition.z <= point2.z) or (point1.z >= incrementPosition.z and incrementPosition.z >= point2.z) then
-										prevInVolume = true
-
-										local targetY = tes3.rayTest{
-											position = incrementPosition - (forward * rayTestOffset) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
-											direction = forward,
-											maxDistance = rayTestOffset * 2,
-											--root = {tes3.game.sceneGraphCollideString},	-- Does not actually have collision meshes; replace with object and pick roots?
-											useBackTriangles = true,
-										}
-										local targetX = tes3.rayTest{
-											position = node.position - (right * rayTestOffset) + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height),
-											direction = right,
-											maxDistance = rayTestOffset * 2,
-											--root = {tes3.game.sceneGraphCollideString},
-											useBackTriangles = true,
-										}
-
-										if not targetY and not targetX then
-											bestDistance = startDistance
-											bestPosition = incrementPosition
-										end
+							if (minPoint.x <= incrementPosition.x and incrementPosition.x <= maxPoint.x) or (minPoint.x >= incrementPosition.x and incrementPosition.x >= maxPoint.x) then
+								if (minPoint.y <= incrementPosition.y and incrementPosition.y <= maxPoint.y) or (minPoint.y >= incrementPosition.y and incrementPosition.y >= maxPoint.y) then
+									if (minPoint.z <= incrementPosition.z and incrementPosition.z <= maxPoint.z) or (minPoint.z >= incrementPosition.z and incrementPosition.z >= maxPoint.z) then
+										bestDistance = startDistance
+										bestPosition = incrementPosition
 									end
 								end
 							end
@@ -2969,7 +2978,7 @@ local function passwallCalculate(wallPosition, forward, right, up, range)
 			end
 		end
 
-		table.insert(checkedNodeTable, node)
+		table.insert(checkedNodes, node)
 	end
 
 	return bestPosition, bestDistance
@@ -2979,8 +2988,7 @@ end
 function this.passwallEffect(e)
 	for _,v in pairs(e.source.effects) do
 		if v.id == tes3.effect.T_mysticism_Passwall then
-
-			if tes3.mobilePlayer.cell.isOrBehavesAsExterior or not tes3.mobilePlayer.cell.pathGrid then
+			if tes3.mobilePlayer.cell.isOrBehavesAsExterior then
 				tes3ui.showNotifyMenu(common.i18n("magic.passwallExterior"))
 				return
 			end
@@ -2995,16 +3003,18 @@ function this.passwallEffect(e)
 				return
 			end
 
-			local alphaDistance = math.huge
-			local wardDistance = math.huge
+			if not tes3.mobilePlayer.cell.pathGrid then
+				return
+			end
 
-			local castPosition = tes3.mobilePlayer.position + tes3vector3.new(0, 0, 0.7 * tes3.mobilePlayer.height)	-- Position of where spells are casted
-			local forward = (tes3.worldController.armCamera.cameraData.camera.worldDirection * tes3vector3.new(1, 1, 0)):normalized()
+			local castPosition = tes3.mobilePlayer.position + tes3vector3.new(0, 0, tes3.mobilePlayer.cameraHeight)	-- The actual cast position is 0.7 * tes3.mobilePlayer.heightPosition, but cameraHeight is more intuitive and reliable
+			local forward = (tes3.worldController.armCamera.cameraData.camera.worldDirection * tes3vector3.new(1, 1, 0)):normalized()	-- While disregarding the player looking up or down can be awkward, taking the z-component of the direction into consideration often causes all sorts of problems
 			local right = tes3.worldController.armCamera.cameraData.camera.worldRight:normalized()
 			local up = tes3vector3.new(0, 0, 1)
 
 			local range = v.radius * 22.1
 			local activationRange = tes3.findGMST(tes3.gmst.iMaxActivateDist).value
+			local minimumViableRange = 160	-- If an unsuitable object or space exists within this distance in front of the player, then Passwall will fail to work at all
 
 			local hitSound = "mysticism hit"
 			local hitVFX = "VFX_MysticismHit"
@@ -3019,93 +3029,120 @@ function this.passwallEffect(e)
 				findAll = true,
 				maxDistance = activationRange + range,
 				ignore = { tes3.player },
-				observeAppCullFlag  = false,
+				observeAppCullFlag = false,
 			}
 
+			local alphaDistance = math.huge
+			local wardDistance = math.huge
 			if checkMeshes then		-- This block of code looks through all of the objects that the effect can hit and finds the closest one that is a ward or has some transparency
 				for _,detection in ipairs(checkMeshes) do
-					if detection.reference then
-						if detection.reference.baseObject.id:find("T_Aid_PasswallWard_") then	-- I considered changing reducing the distance if such an object is found, but just saving the object's distance allows for determining whether or not it is responsible for the effect failing
+					if detection.reference and detection.reference ~= tes3.player then	-- The findAll parameter annoyingly does not obey the ignore parameter, hence the need for the second condition here
+						if detection.reference.baseObject.id:find("T_Aid_PasswallWard_") or detection.reference.baseObject.id:find("T_Dae_Ward_") then	-- I considered changing reducing the distance if such an object is found, but just saving the object's distance allows for determining whether or not it is responsible for the effect failing
 							wardDistance = detection.distance
 							break
 						else
 							local type = detection.reference.baseObject.objectType
-							if type == tes3.objectType.activator and common.hasAlpha(tes3.loadMesh(detection.reference.baseObject.mesh), false, true) then	-- This mesh is passed rather than the rayTest's object because the latter is part of 
+							if type == tes3.objectType.activator and common.hasAlpha(tes3.loadMesh(detection.reference.baseObject.mesh), false, true) then	-- This mesh is passed rather than the rayTest's object because the latter is taken from the sceneGraph, which can cause problems
 								alphaDistance = detection.distance
 								break
 							end
 						end
 					end
 				end
+			else
+				return	-- If the rayTest doesn't find anything without culling, then it won't find anything with it either
 			end
 
-			if alphaDistance <= 160 then	-- These conditions should handle casting the effect on or near an unacceptable object
+			if alphaDistance < minimumViableRange then	-- These conditions should handle casting the effect on or near an unacceptable object
 				tes3ui.showNotifyMenu(common.i18n("magic.passwallAlpha"))
 				return
-			elseif wardDistance <= 160 then
+			elseif wardDistance < minimumViableRange then
 				tes3ui.showNotifyMenu(common.i18n("magic.passwallWard"))
 				return
 			end
 
-			local target = tes3.rayTest{
+			local possibleTargets = tes3.rayTest{
 				position = castPosition,
 				direction = forward,
+				findAll = true,
 				maxDistance = activationRange,
 				ignore = { tes3.player },
+				observeAppCullFlag = true,
 			}
 
-			local hitReference, wallPosition = target and target.reference, target and target.intersection
+			if possibleTargets then
+				for _,target in ipairs(checkMeshes) do
+					local targetReference = target.reference
+					if targetReference and targetReference ~= tes3.player then
 
-			if hitReference then
-				if hitReference.baseObject.objectType == tes3.objectType.static or hitReference.baseObject.objectType == tes3.objectType.activator then
-					if hitReference.baseObject.boundingBox.max:heightDifference(hitReference.baseObject.boundingBox.min) >= 172 then		-- Check how tall the targeted object is; this is Passwall, not Passtable
-						local bestPosition, bestDistance = passwallCalculate(wallPosition + (forward * 16) - (up * 48), forward, right, up, range)		-- (forward * 16) is used to hopefully prevent teleporting inside the target; (up * 64) is used to make the effect work better with stairways down that are right behind doors and to limit the player's ability to teleport up stairs
-
-						if bestPosition then
-							if bestDistance >= alphaDistance then	-- These conditions will notify the player if the closest node was through or inside an unacceptable mesh
-								tes3ui.showNotifyMenu(common.i18n("magic.passwallAlpha"))
-								return
-							elseif bestDistance >= wardDistance then
-								tes3ui.showNotifyMenu(common.i18n("magic.passwallWard"))
-								return
+						if targetReference.baseObject.objectType == tes3.objectType.static or targetReference.baseObject.objectType == tes3.objectType.activator then
+							for _,id in pairs(passWallObjectBlacklist) do
+								if targetReference.baseObject.id:find(id) then return end
 							end
 
-							tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
-							local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
-							tes3.mobilePlayer.position = bestPosition
-						end
-					end
-				elseif hitReference.baseObject.objectType == tes3.objectType.door and (hitReference.baseObject.name:lower():find("door") or hitReference.baseObject.name:lower():find("wooden gate") or hitReference.baseObject.name:lower():find("palace gates") or
-						hitReference.baseObject.name:lower():find("stone gate") or hitReference.baseObject.name:lower():find("old iron gate")) and
-						not (hitReference.baseObject.name:lower():find("trap") or hitReference.baseObject.name:lower():find("cell") or hitReference.baseObject.name:lower():find("tent")) then
-					if not hitReference.destination then
-						local bestPosition, bestDistance = passwallCalculate(wallPosition + (forward * 16) - (up * 48), forward, right, up, range)
-						if bestPosition then
-							if bestDistance >= alphaDistance then
-								tes3ui.showNotifyMenu(common.i18n("magic.passwallAlpha"))
+							local boxPoint1 = target.object.worldTransform.rotation * targetReference.baseObject.boundingBox.min
+							local boxPoint2 = target.object.worldTransform.rotation * targetReference.baseObject.boundingBox.max
+
+							if boxPoint2:heightDifference(boxPoint1) * targetReference.scale >= 168 then		-- Check how tall the targeted object is; this is Passwall, not Passtable
+								local bestPosition, bestDistance = passwallCalculate(target.intersection, forward, right, up, range)
+
+								if bestPosition then
+									if bestDistance >= alphaDistance then	-- These conditions will notify the player if the closest node was through or inside an unacceptable mesh
+										tes3ui.showNotifyMenu(common.i18n("magic.passwallAlpha"))
+										return
+									elseif bestDistance >= wardDistance then
+										tes3ui.showNotifyMenu(common.i18n("magic.passwallWard"))
+										return
+									end
+
+									tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
+									local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
+									tes3.mobilePlayer.position = bestPosition
+								end
+
 								return
-							elseif bestDistance >= wardDistance then
-								tes3ui.showNotifyMenu(common.i18n("magic.passwallWard"))
-								return
+							elseif math.abs(boxPoint2.x - boxPoint1.x) * targetReference.scale > 64 or math.abs(boxPoint2.y - boxPoint1.y) * targetReference.scale > 64 or boxPoint2:heightDifference(boxPoint1) * targetReference.scale > 64 then
+								return	-- If the static/activator is neither tall enough to be valid nor small enough to be ignored, then it is still the actual target of Passwall and the function stops looking for targets past it
+							end
+						elseif targetReference.baseObject.objectType == tes3.objectType.door then
+							for _,id in pairs(passWallDoorBlacklist) do
+								if targetReference.baseObject.id:find(id) then return end
 							end
 
-							if passWallDoorCrime(hitReference) then tes3.triggerCrime({ type = tes3.crimeType.trespass }) end
-							tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }
-							local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
-							tes3.mobilePlayer.position = bestPosition
-						end
-					elseif hitReference.destination and hitReference.destination.cell.isInterior then
-						if hitReference.baseObject.script then
-							tes3ui.showNotifyMenu(common.i18n("magic.passwallAlpha"))
-							return
-						end
+							if not targetReference.destination then
+								local bestPosition, bestDistance = passwallCalculate(target.intersection, forward, right, up, range)
+								if bestPosition then
+									if bestDistance >= alphaDistance then
+											tes3ui.showNotifyMenu(common.i18n("magic.passwallAlpha"))
+											return
+									elseif bestDistance >= wardDistance then
+											tes3ui.showNotifyMenu(common.i18n("magic.passwallWard"))
+											return
+									end
 
-						if passWallDoorCrime(hitReference) then tes3.triggerCrime({ type = tes3.crimeType.trespass }) end
-						tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }
-						local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
-						tes3.positionCell({ cell = hitReference.destination.cell, position = hitReference.destination.marker.position, orientation = hitReference.destination.marker.orientation, teleportCompanions = false })
-					else
-						tes3ui.showNotifyMenu(common.i18n("magic.passwallDoorExterior"))
+									if passWallDoorCrime(targetReference) then tes3.triggerCrime({ type = tes3.crimeType.trespass }) end
+									tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }
+									local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
+									tes3.mobilePlayer.position = bestPosition
+								end
+							elseif targetReference.destination and not targetReference.destination.cell.isOrBehavesAsExterior then
+								if targetReference.baseObject.script then
+									tes3ui.showNotifyMenu(common.i18n("magic.passwallAlpha"))
+									return
+								end
+
+								if passWallDoorCrime(targetReference) then tes3.triggerCrime({ type = tes3.crimeType.trespass }) end
+								tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }
+								local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
+								tes3.positionCell({ cell = targetReference.destination.cell, position = targetReference.destination.marker.position, orientation = targetReference.destination.marker.orientation, teleportCompanions = false })
+							else
+								tes3ui.showNotifyMenu(common.i18n("magic.passwallDoorExterior"))
+							end
+
+							return	-- Passwall should not keep looking for targets through doors regardless of whether it is a valid door
+						elseif targetReference.baseObject.objectType == tes3.objectType.creature or targetReference.baseObject.objectType == tes3.objectType.npc then
+							return	-- Passwall should not allow teleportation through actors
+						end
 					end
 				end
 			end
