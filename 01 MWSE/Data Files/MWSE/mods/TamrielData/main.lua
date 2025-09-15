@@ -230,6 +230,9 @@ local hats = {
 	"T_C_RgaCmHat03_Hr",
 }
 
+-- clothing id
+local embedments = {
+}
 -- bodypart id
 local male_imga_helmets = {
 
@@ -387,13 +390,13 @@ local function hideWerewolfBodyParts(e)
 end
 
 ---@param e equippedEventData
-local function hatHelmetEquip(e)
+local function hatHelmetEquipped(e)
 	if e.item.objectType == tes3.objectType.armor then
-		if e.item.slot == tes3.armorSlot.helmet and tes3.getEquippedItem({ actor = e.actor, objectType = tes3.objectType.clothing, slot = tes3.clothingSlot.hat }) then
+		if e.item.slot == tes3.armorSlot.helmet and tes3.getEquippedItem({ actor = e.reference, objectType = tes3.objectType.clothing, slot = tes3.clothingSlot.hat }) then
 			e.mobile:unequip({ clothingSlot = tes3.clothingSlot.hat })
 		end
 	elseif e.item.objectType == tes3.objectType.clothing then
-		if e.item.slot == tes3.clothingSlot.hat and tes3.getEquippedItem({ actor = e.actor, objectType = tes3.objectType.armor, slot = tes3.armorSlot.helmet }) then
+		if e.item.slot == tes3.clothingSlot.hat and tes3.getEquippedItem({ actor = e.reference, objectType = tes3.objectType.armor, slot = tes3.armorSlot.helmet }) then
 			e.mobile:unequip({ armorSlot = tes3.armorSlot.helmet })
 		end
 	end
@@ -475,6 +478,130 @@ local function createHatObjects()
 				end
 			end
 		end
+	end
+end
+
+local function changeEmbedmentsSlot()
+	for _,clothingID in pairs(embedments) do
+		tes3.getObject(clothingID).slot = tes3.clothingSlot.embedment
+	end
+end
+
+---@param attachNode niNode
+---@param item tes3clothing
+---@param reference tes3reference
+local function addEmbedment(attachNode, item, reference)
+	local embedmentMesh = tes3.loadMesh(item.mesh)
+	if embedmentMesh then
+		embedmentMesh = embedmentMesh:clone()
+		embedmentMesh.name = "td_embedment"
+
+		embedmentMesh.translation.x = 8.25
+		embedmentMesh.translation.y = 7.5
+		embedmentMesh.translation.z = 0
+		local rotationMatrix = tes3matrix33.new()
+		rotationMatrix:fromEulerXYZ(math.pi / 2, 0, math.pi / 2)
+		embedmentMesh.rotation = embedmentMesh.rotation * rotationMatrix			-- The calculation has to be split up like this so that things don't go horribly wrong
+		embedmentMesh.scale = .6
+
+		attachNode:attachChild(embedmentMesh)
+		--if item.enchantment then													-- Right now this section makes the item's texture black when looking at the player in the inventory screen for unclear reasons.
+		--	tes3.worldController:applyEnchantEffect(embedmentMesh, item.enchantment)
+		--	embedmentMesh:updateEffects()
+		--	embedmentMesh:updateProperties()
+		--end
+
+		reference.sceneNode:update()
+		reference.sceneNode:updateEffects()		-- updateProperties shouldn't be needed here
+	end
+end
+
+---@param attachNode niNode
+local function removeEmbedment(attachNode)
+	local embedment = attachNode:getObjectByName("td_embedment")
+	if embedment then
+		attachNode:detachChild(embedment)
+	end
+end
+
+---@param e cellChangedEventData
+local function embedmentLoaded(e)
+	if e.previousCell then return end		-- mobileActivated is not triggered when loading a game, so cellChanged is used instead
+	for _,cell in pairs(tes3.getActiveCells()) do
+		for npc in cell:iterateReferences(tes3.objectType.npc, false) do
+			local embedmentItem = tes3.getEquippedItem({ actor = npc, objectType = tes3.objectType.clothing, slot = tes3.clothingSlot.embedment })
+			if embedmentItem then
+				local helmet = tes3.getEquippedItem({ actor = npc, objectType = tes3.objectType.armor, slot = tes3.armorSlot.helmet })
+				if not helmet or not helmet.object.isClosedHelmet then
+					local attachNode = npc.sceneNode:getObjectByName('Bip01 Head')
+					if attachNode then
+						addEmbedment(attachNode, embedmentItem.object, npc)
+					end
+				end
+			end
+		end
+	end
+
+	local embedmentItem = tes3.getEquippedItem({ actor = tes3.player, objectType = tes3.objectType.clothing, slot = tes3.clothingSlot.embedment })
+	if embedmentItem then
+		local helmet = tes3.getEquippedItem({ actor = tes3.player, objectType = tes3.objectType.armor, slot = tes3.armorSlot.helmet })
+		if not helmet or not helmet.object.isClosedHelmet then
+			local attachNode = tes3.player.sceneNode:getObjectByName('Bip01 Head')
+			if attachNode then
+				addEmbedment(attachNode, embedmentItem.object, tes3.player)
+			end
+		end
+	end
+end
+
+---@param e mobileActivatedEventData
+local function embedmentMobileActivated(e)
+	if e.mobile.actorType ~= tes3.actorType.creature then
+		local helmet = tes3.getEquippedItem({ actor = e.reference, objectType = tes3.objectType.armor, slot = tes3.armorSlot.helmet })
+		if not helmet or not helmet.object.isClosedHelmet then
+			local embedmentItem = tes3.getEquippedItem({ actor = e.reference, objectType = tes3.objectType.clothing, slot = tes3.clothingSlot.embedment })
+			if embedmentItem then
+				local attachNode = e.reference.sceneNode:getObjectByName('Bip01 Head')
+				if attachNode then
+					addEmbedment(attachNode, embedmentItem.object, e.reference)
+				end
+			end
+		end
+	end
+end
+
+---@param e unequippedEventData
+local function embedmentUnequipped(e)
+	if e.item.objectType == tes3.objectType.clothing and e.item.slot == tes3.clothingSlot.embedment then
+		local attachNode = e.reference.sceneNode:getObjectByName('Bip01 Head')
+		if attachNode then removeEmbedment(attachNode) end
+	elseif e.item.objectType == tes3.objectType.armor and e.item.slot == tes3.armorSlot.helmet and e.item.isClosedHelmet then
+		local attachNode = e.reference.sceneNode:getObjectByName('Bip01 Head')
+		if attachNode then
+			removeEmbedment(attachNode)
+			local embedmentItem = tes3.getEquippedItem({ actor = e.reference, objectType = tes3.objectType.clothing, slot = tes3.clothingSlot.embedment })
+			---@cast embedmentItem tes3equipmentStack
+			if embedmentItem then
+				addEmbedment(attachNode, embedmentItem.object, e.reference)
+			end
+		end
+	end
+end
+
+---@param e equippedEventData
+local function embedmentEquipped(e)
+	if e.item.objectType == tes3.objectType.clothing and e.item.slot == tes3.clothingSlot.embedment then
+		local helmet = tes3.getEquippedItem({ actor = e.reference, objectType = tes3.objectType.armor, slot = tes3.armorSlot.helmet })
+		if not helmet or not helmet.object.isClosedHelmet then
+			local attachNode = e.reference.sceneNode:getObjectByName('Bip01 Head')
+			if attachNode then
+				removeEmbedment(attachNode)
+				addEmbedment(attachNode, e.item, e.reference)
+			end
+		end
+	elseif e.item.objectType == tes3.objectType.armor and e.item.slot == tes3.armorSlot.helmet and e.item.isClosedHelmet then
+		local attachNode = e.reference.sceneNode:getObjectByName('Bip01 Head')
+		if attachNode then removeEmbedment(attachNode) end
 	end
 end
 
@@ -875,6 +1002,7 @@ event.register(tes3.event.loaded, function()
 		timer.start{ duration = 1, iterations = -1, type = timer.simulate, callback = magic.removeBlinkData }
 		event.register(tes3.event.cellChanged, magic.removeBlinkData, { unregisterOnLoad = true })			-- Ensures that the player is not damaged by blinkFallDamageSmallJump if they enter a cell as they fall.
 		event.register(tes3.event.simulated, magic.blinkFallDamageSmallJump, { unregisterOnLoad = true })
+		event.register(tes3.event.damaged, magic.blinkPreventKnockdown, { unregisterOnLoad = true })
 		event.register(tes3.event.damage, magic.blinkFallDamage, { unregisterOnLoad = true })
 
 		tes3.getObject("T_B_GazeVeloth_Skeleton_01").partType = tes3.activeBodyPartLayer.base		-- I don't want these body parts to be associated with a race, so I set them to be base layer here rather than in the CS; the race name of the body part needs to be removed from the ESP that will be merged though
@@ -919,10 +1047,11 @@ event.register(tes3.event.loaded, function()
 
 		event.register(tes3.event.leveledItemPicked, magic.insightEffect, { unregisterOnLoad = true })
 
-		event.register(tes3.event.spellResist, magic.radiantShieldSpellResistEffect, { unregisterOnLoad = true })
-		event.register(tes3.event.damaged, magic.radiantShieldDamagedEffect, { unregisterOnLoad = true })
-		event.register(tes3.event.magicEffectRemoved, magic.radiantShieldRemovedEffect, { unregisterOnLoad = true })
-		event.register(tes3.event.spellTick, magic.radiantShieldAppliedEffect, { unregisterOnLoad = true })
+		event.register(tes3.event.spellResist, magic.radiantShieldSpellResist, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.radiantShieldBlindnessRemoved, { unregisterOnLoad = true })
+		event.register(tes3.event.damaged, magic.radiantShieldDamaged, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.radiantShieldRemoved, { unregisterOnLoad = true })
+		event.register(tes3.event.spellTick, magic.radiantShieldApplied, { unregisterOnLoad = true })
 
 		event.register(tes3.event.damaged, magic.reflectDamageStun, { unregisterOnLoad = true })
 		event.register(tes3.event.damagedHandToHand, magic.reflectDamageStun, { unregisterOnLoad = true })
@@ -975,7 +1104,17 @@ event.register(tes3.event.loaded, function()
 
 		event.register(tes3.event.leveledItemPicked, replaceHatLeveledItem, { priority = -100, unregisterOnLoad = true })
 		event.register(tes3.event.cellChanged, replaceHatCell, { unregisterOnLoad = true })
-		event.register(tes3.event.equipped, hatHelmetEquip, { unregisterOnLoad = true })
+		event.register(tes3.event.equipped, hatHelmetEquipped, { unregisterOnLoad = true })
+	end
+
+	if config.embedments == true then
+		if not tes3.clothingSlot.embedment then tes3.addClothingSlot({ slot = 25, name = "Embedment", key = "embedment" }) end
+		changeEmbedmentsSlot()
+
+		event.register(tes3.event.cellChanged, embedmentLoaded, { unregisterOnLoad = true })
+		event.register(tes3.event.mobileActivated, embedmentMobileActivated, { unregisterOnLoad = true })
+		event.register(tes3.event.equipped, embedmentEquipped, { unregisterOnLoad = true })
+		event.register(tes3.event.unequipped, embedmentUnequipped, { unregisterOnLoad = true })
 	end
 
 	if config.creatureBehaviors == true then

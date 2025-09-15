@@ -11,6 +11,7 @@ local defaultConfig = {
 	provincialFactionUI = true,
 	weatherChanges = true,
 	hats = true,
+	embedments = true,
 	creatureBehaviors = true,
 	fixPlayerRaceAnimations = true,
 	hideWerewolfMesh = true,

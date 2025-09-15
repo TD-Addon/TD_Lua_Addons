@@ -1178,6 +1178,7 @@ function this.removeBlinkData()
 	if not (tes3.mobilePlayer.isFalling or tes3.mobilePlayer.isJumping) and (tes3.player.data.tamrielData.hasBlinked or tes3.player.data.tamrielData.blinkVelocity) then
 		tes3.player.data.tamrielData.hasBlinked = nil	-- Prevent blinkFallDamage from taking effect when it shouldn't due to the player blinking and not taking fall damage afterwards
 		tes3.player.data.tamrielData.blinkVelocity = nil
+		tes3.player.data.tamrielData.blinkPreventKnockdown = nil
 	end
 end
 
@@ -1215,6 +1216,14 @@ function this.blinkFallDamageSmallJump()
 	end
 end
 
+---@param e damagedEventData
+function this.blinkPreventKnockdown(e)
+	if e.source == tes3.damageSource.fall and tes3.player.data.tamrielData.blinkPreventKnockdown then
+		tes3.mobilePlayer:hitStun({ cancel = true })				-- Annoyingly, this has to be done in the damaged Event. Even more annoyingly, this means that it will only run if the player takes falling damage. Even more annoyingly than that, it doesn't seem to work at all for some reason.
+		tes3.player.data.tamrielData.blinkPreventKnockdown = nil
+	end
+end
+
 -- This function cannot correct fall damage in some cases (e.g. jumping and after reaching the peak blinking up much further only to land at the original location), but most problems are resolved by it. The rest are covered by blinkFallDamageSmallJump.
 ---@param e damageEventData
 function this.blinkFallDamage(e)
@@ -1235,13 +1244,20 @@ function this.blinkFallDamage(e)
 		local calculatedDistance = (tes3.mobilePlayer.velocity.z ^ 2) / (2 * 627.2)
 
 		-- The calculations below and those for the fatigue term above are based on those that OpenMW found for fall damage
-		if calculatedDistance <= tes3.findGMST(tes3.gmst.fFallDamageDistanceMin).value then return false end
+		if calculatedDistance <= tes3.findGMST(tes3.gmst.fFallDamageDistanceMin).value then
+			tes3.player.data.tamrielData.blinkPreventKnockdown = true
+			return false
+		end
+
 		calculatedDistance = calculatedDistance - tes3.findGMST(tes3.gmst.fFallDamageDistanceMin).value
 		calculatedDistance = calculatedDistance - (1.5 * acrobatics + jumpMagnitude)
 		calculatedDistance = math.max(0, calculatedDistance)
 		calculatedDistance = calculatedDistance * (tes3.findGMST(tes3.gmst.fFallDistanceBase).value + tes3.findGMST(tes3.gmst.fFallDistanceMult).value)
 		calculatedDistance = calculatedDistance * (tes3.findGMST(tes3.gmst.fFallAcroBase).value + tes3.findGMST(tes3.gmst.fFallAcroMult).value * (100 - acrobatics))
-		if acrobatics * fatigueTerm < calculatedDistance then tes3.mobilePlayer:hitStun({ knockDown = true }) end
+
+		if acrobatics * fatigueTerm < calculatedDistance then tes3.mobilePlayer:hitStun({ knockDown = true })
+		else tes3.player.data.tamrielData.blinkPreventKnockdown = true end
+
 		e.damage = calculatedDistance * (1 - .25 * fatigueTerm)
 	end
 end
@@ -1274,15 +1290,16 @@ local function blinkEffect(e)
 			for _,obstacle in ipairs(obstacles) do
 				local validObstacle = true
 				if obstacle.reference then
-					if obstacle.reference == tes3.player or (obstacle.reference.baseObject.objectType == tes3.objectType.creature or obstacle.reference.baseObject.objectType == tes3.objectType.npc) and obstacle.reference.mobile.isDead then	-- tes3.player cannot be ignored by the rayTest because observeAppCullFlag is false
+					if obstacle.reference.baseObject.id:find("T_Aid_PasswallWard_") or obstacle.reference.baseObject.id:find("T_Dae_Ward_") then	-- Needed to prevent a crash that can occur for unclear reasons
+					elseif obstacle.reference == tes3.player or (obstacle.reference.baseObject.objectType == tes3.objectType.creature or obstacle.reference.baseObject.objectType == tes3.objectType.npc) and obstacle.reference.mobile.isDead then	-- tes3.player cannot be ignored by the rayTest because observeAppCullFlag is false
 						validObstacle = false
-					end
-
-					local mesh = tes3.loadMesh(obstacle.reference.baseObject.mesh)
-					if mesh.extraData then
-						repeat
-							if mesh.extraData.string and mesh.extraData.string:lower():find("nc") then validObstacle = false end
-						until not mesh.extraData.next
+					else
+						local mesh = tes3.loadMesh(obstacle.reference.baseObject.mesh)
+						if mesh.extraData then
+							repeat
+								if mesh.extraData.string and mesh.extraData.string:lower():find("nc") then validObstacle = false end
+							until not mesh.extraData.next
+						end
 					end
 				elseif (obstacle.object.name and obstacle.object.name:startswith("Water ")) or (obstacle.object.parent and obstacle.object.parent.name and (obstacle.object.parent.name == "Precipitation Rain Root" or obstacle.object.parent.name == "BM_Snow_01")) then
 					validObstacle = false
@@ -2640,7 +2657,7 @@ local function wabbajackEffect(e)
 end
 
 ---@param e spellResistEventData
-function this.radiantShieldSpellResistEffect(e)
+function this.radiantShieldSpellResist(e)
 	local radiantShieldEffects
 	if e.target.mobile then radiantShieldEffects = e.target.mobile:getActiveMagicEffects({ effect = tes3.effect.T_alteration_RadShield }) end	-- Sometimes e.target.mobile just doesn't exist
 
@@ -2656,8 +2673,25 @@ function this.radiantShieldSpellResistEffect(e)
 	end
 end
 
+---@param e magicEffectRemovedEventData
+function this.radiantShieldBlindnessRemoved(e)
+	if e.effect.id == tes3.effect.blind and e.source.name == common.i18n("magic.miscRadiantShieldBlindness") then
+		local blindEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.blind })
+		if #blindEffects > 0 then
+			local blindingRadianceCount = 0
+			for _,v in pairs(blindEffects) do
+				if v.instance.source.name == common.i18n("magic.miscRadiantShieldBlindness") then  blindingRadianceCount =  blindingRadianceCount + 1 end	-- If another Blinding Radiance instance is still active, then the fader color should not be changed back
+			end
+
+			if blindingRadianceCount > 1 then return end	-- The effect source being removed is still counted above however
+		end
+
+		tes3.worldController.blindnessFader:setColor({ color = { 0, 0, 0 } })
+	end
+end
+
 ---@param e damagedEventData
-function this.radiantShieldDamagedEffect(e)
+function this.radiantShieldDamaged(e)
 	if e.attacker and e.source == tes3.damageSource.attack and not e.projectile then
 		local radiantShieldEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.T_alteration_RadShield })
 		if #radiantShieldEffects > 0 then
@@ -2667,12 +2701,13 @@ function this.radiantShieldDamagedEffect(e)
 			end
 
 			tes3.applyMagicSource({ reference = e.attacker, name = common.i18n("magic.miscRadiantShieldBlindness"), effects = {{ id = tes3.effect.blind, duration = 1.5, min = totalMagnitude, max = totalMagnitude }} })
+			tes3.worldController.blindnessFader:setColor({ color = { 1, 1, 1 } })
 		end
 	end
 end
 
 ---@param e magicEffectRemovedEventData
-function this.radiantShieldRemovedEffect(e)
+function this.radiantShieldRemoved(e)
 	if e.effect.id == tes3.effect.T_alteration_RadShield then
 		e.mobile.shield = e.mobile.shield - e.effectInstance.magnitude
 		e.effectInstance.cumulativeMagnitude = 0	-- The event *might* trigger when it shouldn't, so this ensures that the effect can be reapplied if that actually happens
@@ -2680,7 +2715,7 @@ function this.radiantShieldRemovedEffect(e)
 end
 
 ---@param e spellTickEventData
-function this.radiantShieldAppliedEffect(e)
+function this.radiantShieldApplied(e)
 	if e.effectId == tes3.effect.T_alteration_RadShield then
 		if e.effectInstance.cumulativeMagnitude ~= -1 and e.effectInstance.magnitude > 0 then	-- Just checking whether no time has passed since the effect began doesn't work, since the magnitude isn't actually calculated until after the first tick
 			e.target.mobile.shield = e.target.mobile.shield + e.effectInstance.magnitude
