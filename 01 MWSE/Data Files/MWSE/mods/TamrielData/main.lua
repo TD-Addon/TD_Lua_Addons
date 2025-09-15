@@ -556,8 +556,8 @@ end
 
 ---@param e mobileActivatedEventData
 local function embedmentMobileActivated(e)
-	if e.mobile.actorType ~= tes3.actorType.creature then
-		local helmet = tes3.getEquippedItem({ actor = e.reference, objectType = tes3.objectType.armor, slot = tes3.armorSlot.helmet })
+	if e.mobile.actorType == tes3.actorType.player or e.mobile.actorType == tes3.actorType.npc then
+		local helmet = tes3.getEquippedItem({ actor = e.reference, objectType = tes3.objectType.armor, slot = tes3.armorSlot.helmet })	-- This is causing an error for unclear reasons
 		if not helmet or not helmet.object.isClosedHelmet then
 			local embedmentItem = tes3.getEquippedItem({ actor = e.reference, objectType = tes3.objectType.clothing, slot = tes3.clothingSlot.embedment })
 			if embedmentItem then
@@ -1002,7 +1002,6 @@ event.register(tes3.event.loaded, function()
 		timer.start{ duration = 1, iterations = -1, type = timer.simulate, callback = magic.removeBlinkData }
 		event.register(tes3.event.cellChanged, magic.removeBlinkData, { unregisterOnLoad = true })			-- Ensures that the player is not damaged by blinkFallDamageSmallJump if they enter a cell as they fall.
 		event.register(tes3.event.simulated, magic.blinkFallDamageSmallJump, { unregisterOnLoad = true })
-		event.register(tes3.event.damaged, magic.blinkPreventKnockdown, { unregisterOnLoad = true })
 		event.register(tes3.event.damage, magic.blinkFallDamage, { unregisterOnLoad = true })
 
 		tes3.getObject("T_B_GazeVeloth_Skeleton_01").partType = tes3.activeBodyPartLayer.base		-- I don't want these body parts to be associated with a race, so I set them to be base layer here rather than in the CS; the race name of the body part needs to be removed from the ESP that will be merged though

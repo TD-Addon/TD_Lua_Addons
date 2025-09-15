@@ -1178,7 +1178,6 @@ function this.removeBlinkData()
 	if not (tes3.mobilePlayer.isFalling or tes3.mobilePlayer.isJumping) and (tes3.player.data.tamrielData.hasBlinked or tes3.player.data.tamrielData.blinkVelocity) then
 		tes3.player.data.tamrielData.hasBlinked = nil	-- Prevent blinkFallDamage from taking effect when it shouldn't due to the player blinking and not taking fall damage afterwards
 		tes3.player.data.tamrielData.blinkVelocity = nil
-		tes3.player.data.tamrielData.blinkPreventKnockdown = nil
 	end
 end
 
@@ -1216,14 +1215,6 @@ function this.blinkFallDamageSmallJump()
 	end
 end
 
----@param e damagedEventData
-function this.blinkPreventKnockdown(e)
-	if e.source == tes3.damageSource.fall and tes3.player.data.tamrielData.blinkPreventKnockdown then
-		tes3.mobilePlayer:hitStun({ cancel = true })				-- Annoyingly, this has to be done in the damaged Event. Even more annoyingly, this means that it will only run if the player takes falling damage. Even more annoyingly than that, it doesn't seem to work at all for some reason.
-		tes3.player.data.tamrielData.blinkPreventKnockdown = nil
-	end
-end
-
 -- This function cannot correct fall damage in some cases (e.g. jumping and after reaching the peak blinking up much further only to land at the original location), but most problems are resolved by it. The rest are covered by blinkFallDamageSmallJump.
 ---@param e damageEventData
 function this.blinkFallDamage(e)
@@ -1245,7 +1236,9 @@ function this.blinkFallDamage(e)
 
 		-- The calculations below and those for the fatigue term above are based on those that OpenMW found for fall damage
 		if calculatedDistance <= tes3.findGMST(tes3.gmst.fFallDamageDistanceMin).value then
-			tes3.player.data.tamrielData.blinkPreventKnockdown = true
+			timer.delayOneFrame(function()
+				tes3.mobilePlayer:hitStun({ cancel = true })	-- The hit stun is only applied on the next frame
+			end)
 			return false
 		end
 
@@ -1254,11 +1247,15 @@ function this.blinkFallDamage(e)
 		calculatedDistance = math.max(0, calculatedDistance)
 		calculatedDistance = calculatedDistance * (tes3.findGMST(tes3.gmst.fFallDistanceBase).value + tes3.findGMST(tes3.gmst.fFallDistanceMult).value)
 		calculatedDistance = calculatedDistance * (tes3.findGMST(tes3.gmst.fFallAcroBase).value + tes3.findGMST(tes3.gmst.fFallAcroMult).value * (100 - acrobatics))
+		e.damage = calculatedDistance * (1 - .25 * fatigueTerm)
 
 		if acrobatics * fatigueTerm < calculatedDistance then tes3.mobilePlayer:hitStun({ knockDown = true })
-		else tes3.player.data.tamrielData.blinkPreventKnockdown = true end
+		else
+			timer.delayOneFrame(function()
+				tes3.mobilePlayer:hitStun({ cancel = true })
+			end)
+		end
 
-		e.damage = calculatedDistance * (1 - .25 * fatigueTerm)
 	end
 end
 
