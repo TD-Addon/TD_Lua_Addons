@@ -87,7 +87,7 @@ return {
 	["magic.summonFrostMonarchDesc"] = "This effect summons a frost monarch from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight.",
 	["magic.summonSpiderDaedra"] = "Summon Spider Daedra",
 	["magic.summonSpiderDaedraDesc"] = "This effect summons a spider daedra from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight.",
-	
+
 	["magic.boundGreaves"] = "Bound Greaves",
 	["magic.boundGreavesDesc"] = "The spell effect conjures a lesser Daedra bound in the form of magical, wondrously light Daedric greaves. The greaves appear automatically equipped on the caster, displacing any currently equipped leg armor to inventory. When the effect ends, the greaves disappear, and any previously equipped leg armor is automatically re-equipped.",
 	["magic.boundWarAxe"] = "Bound War Axe",
@@ -214,16 +214,16 @@ return {
 	["mcm.settings"] = "Settings",
 
 	["mcm.summonSpellsLabel"] = "Add New Summoning Spells",
-	["mcm.summonSpellsDescription"] = "Adds new summoning spells using creatures added by Tamriel Data, such as Devourers, Herne, Dark Seducers, and Aurorans.\nRequires reload.\n\nDefault: On\n\n",
+	["mcm.summonSpellsDescription"] = "Adds new summoning spells using creatures added by Tamriel Data, such as Devourers, Herne, Dark Seducers, and Aurorans.\nRequires restart.\n\nDefault: On\n\n",
 
 	["mcm.boundSpellsLabel"] = "Add New Bound Spells",
-	["mcm.boundSpellsDescription"] = "Adds new bound spells for weapons and armor.\nRequires reload.\n\nDefault: On\n\n",
+	["mcm.boundSpellsDescription"] = "Adds new bound spells for weapons and armor.\nRequires restart.\n\nDefault: On\n\n",
 
 	["mcm.interventionSpellsLabel"] = "Add New Intervention Spells",
-	["mcm.interventionSpellsDescription"] = "Adds new intervention spells for different pantheons and gods of Tamriel, such as the Nordic goddess Kyne.\nRequires reload.\n\nDefault: On\n\n",
+	["mcm.interventionSpellsDescription"] = "Adds new intervention spells for different pantheons and gods of Tamriel, such as the Nordic goddess Kyne.\nRequires restart.\n\nDefault: On\n\n",
 
 	["mcm.miscSpellsLabel"] = "Add New Miscellaneous Spells",
-	["mcm.miscSpellsDescription"] = "Adds new spells that do not fit into the categories above, such as Banish Daedra, Reflect Damage, Distract Humanoid, and Wabbajack.\nRequires reload.\n\nDefault: On\n\n",
+	["mcm.miscSpellsDescription"] = "Adds new spells that do not fit into the categories above, such as Banish Daedra, Reflect Damage, Distract Humanoid, and Wabbajack.\nRequires restart.\n\nDefault: On\n\n",
 
 	["mcm.passwallAlterationLabel"] = "Make Passwall an Alteration Effect",
 	["mcm.passwallAlterationDescription"] = "Sets Passwall to belong to the school of Alteration rather than the school of Mysticism.\nRequires restart.\n\nDefault: Off\n\n",
@@ -254,7 +254,7 @@ return {
 	["mcm.animationFixLabel"] = "Fix Player Animations for Tamriel Data Races",
 	["mcm.animationFixDescription"] = "Fixes animations when playing as Ohmes-raht or Suthay Khajiit via 3rd party mods.\nRequires reload. Tail may vanish until reload when animations from other MWSE addons are applied to the player character." ..
 										"\nIf using an animation replacer that adds tail bones to base_anim.nif, then this feature is likely not necessary.\n\nDefault: On\n\n",
-					
+
 	["mcm.wereCreatureFixLabel"] = "Fix Custom Werecreatures",
 	["mcm.wereCreatureFixDescription"] = "Hides the werewolf model when the player has transformed into another werecreature from Tamriel Data.\nRequires reload.\n\nDefault: On\n\n",
 

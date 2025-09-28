@@ -235,7 +235,6 @@ local embedments = {
 }
 -- bodypart id
 local male_imga_helmets = {
-
 }
 
 -- (cell ids), (journal topic id, journal index), global id, (container id, (container cell id, container cell x, container cell y), container position)
@@ -979,15 +978,22 @@ event.register(tes3.event.loaded, function()
     local myData = data.tamrielData
     initTableValues(myData, player_data_defaults)
 
-	if config.summoningSpells == true then
+	if config.summoningSpells then
 		event.register(tes3.event.determinedAction, magic.useCustomSpell, { unregisterOnLoad = true })
 	end
 
-	if config.interventionSpells == true then
+	if config.boundSpells then
+		--event.register(tes3.event.itemTileUpdated, magic.boundKnivesTileUpdate, { unregisterOnLoad = true })
+		--event.register(tes3.event.playItemSound, magic.boundKnivesDropSound, { unregisterOnLoad = true })
+		--event.register(tes3.event.itemDropped, magic.boundKnivesItemDropped, { unregisterOnLoad = true })
+		--event.register(tes3.event.magicEffectRemoved, magic.boundKnivesRemovedEffect, { unregisterOnLoad = true })
+	end
+
+	if config.interventionSpells then
 		magic.replaceInterventionMarkers(kyne_intervention_cells, "T_Aid_KyneInterventionMarker")
 	end
 
-	if config.miscSpells == true then
+	if config.miscSpells then
 		event.register(tes3.event.damage, magic.magickaWardEffect, { priority = -10, unregisterOnLoad = true })		-- Priority is set so that the function runs after Reflect Damage affects the damage
 
 		event.register(tes3.event.spellMagickaUse, magic.bloodMagicCast, { unregisterOnLoad = true })
@@ -1063,7 +1069,7 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.magicCasted, magic.passwallEffect, { unregisterOnLoad = true })
 	end
 
-	if config.provincialReputation == true then
+	if config.provincialReputation then
 		event.register(tes3.event.menuEnter, reputation.switchReputation, { filter = "MenuDialog", unregisterOnLoad = true })
 		event.register(tes3.event.menuExit, reputation.switchReputation, { unregisterOnLoad = true })
 		event.register(tes3.event.cellChanged, reputation.travelSwitchReputation, { unregisterOnLoad = true })
@@ -1072,7 +1078,7 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.menuEnter, function(e) tes3ui.updateStatsPane() end, { unregisterOnLoad = true })
 	end
 
-	if config.provincialFactionUI == true then
+	if config.provincialFactionUI then
 		event.register(tes3.event.uiRefreshed, factions.uiRefreshedCallback, { priority = 5, filter = "MenuStat_scroll_pane", unregisterOnLoad = true })	-- Priority is set so that UI Expansion affects the tooltips and Tidy Charsheet moves the labels over to the left.
 		event.register(tes3.event.menuEnter, function(e) tes3ui.updateStatsPane() end, { unregisterOnLoad = true })
 
@@ -1083,7 +1089,7 @@ event.register(tes3.event.loaded, function()
 		tes3.getFaction("Dark Brotherhood").name = common.i18n("main.morrowindDarkBrotherhood")
 	end
 
-	if config.weatherChanges == true then
+	if config.weatherChanges then
 		weather.changeRegionWeatherChances()
 
 		event.register(tes3.event.cellChanged, weather.manageWeathers, { unregisterOnLoad = true })
@@ -1097,7 +1103,7 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.soundObjectPlay, weather.silenceCreatures, { unregisterOnLoad = true })
 	end
 
-	if config.hats == true then
+	if config.hats then
 		if not tes3.clothingSlot.hat then tes3.addClothingSlot({ slot = 24, name = "Hat", key = "hat" }) end
 		createHatObjects()
 
@@ -1106,7 +1112,7 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.equipped, hatHelmetEquipped, { unregisterOnLoad = true })
 	end
 
-	if config.embedments == true then
+	if config.embedments then
 		if not tes3.clothingSlot.embedment then tes3.addClothingSlot({ slot = 25, name = "Embedment", key = "embedment" }) end
 		changeEmbedmentsSlot()
 
@@ -1116,53 +1122,60 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.unequipped, embedmentUnequipped, { unregisterOnLoad = true })
 	end
 
-	if config.creatureBehaviors == true then
+	if config.creatureBehaviors then
 		event.register(tes3.event.cellChanged, behavior.fixWelkyndSpiritLight, { unregisterOnLoad = true })
 		event.register(tes3.event.playGroup, behavior.loopStridentRunnerNesting, { unregisterOnLoad = true })
 		event.register(tes3.event.activate, behavior.onNestLoot, { priority = 250, unregisterOnLoad = true })	-- The priority is set so that the function is guranteed to work with GH even if the nests are removed from the blacklist
 		event.register(tes3.event.combatStarted, behavior.onGroupAttacked, { unregisterOnLoad = true })
 
+		--event.register(tes3.event.combatStart, behavior.claimCombatFleeing, { priority = 100, unregisterOnLoad = true })
+		--event.register(tes3.event.combatStarted, behavior.claimCombatFleeing, { priority = 100, unregisterOnLoad = true })
+		--event.register(tes3.event.musicChangeTrack, behavior.blockMusicFromFleeing, { unregisterOnLoad = true })
+		--event.register(tes3.event.determinedAction, behavior.fleeFromPlayerCombatAction, { unregisterOnLoad = true })
+		--timer.start{ duration = 5, iterations = -1, type = timer.simulate, callback = behavior.fleeFromPlayerTick }
 		timer.start{ duration = 5, iterations = -1, type = timer.simulate, callback = behavior.creatureDetectionTick }	-- Morrowind's AI is updated every 5 seconds, which is why that value is used here.
+
+		event.register(tes3.event.cellChanged, behavior.onFirstCellLoad, { unregisterOnLoad = true })
 		event.register(tes3.event.mobileActivated, behavior.onMobileActivated, { unregisterOnLoad = true })
 		event.register(tes3.event.mobileDeactivated, behavior.onMobileDeactivated, { unregisterOnLoad = true })
 	end
 
-	if config.fixPlayerRaceAnimations == true then
+	if config.fixPlayerRaceAnimations then
 		fixPlayerAnimations()
 	end
 
-	if config.hideWerewolfMesh == true then
+	if config.hideWerewolfMesh then
 		event.register(tes3.event.bodyPartAssigned, hideWerewolfBodyParts, { unregisterOnLoad = true })
 	end
 
-	if config.restrictEquipment == true then
+	if config.restrictEquipment then
 		event.register(tes3.event.equip, restrictRaceEquip, { unregisterOnLoad = true })
 	end
 
-	if config.fixVampireHeads == true then
+	if config.fixVampireHeads then
 		event.register(tes3.event.bodyPartAssigned, fixVampireHeadAssignment, { unregisterOnLoad = true })
 		event.register(tes3.event.combatStarted, vampireHeadCombatStarted, { unregisterOnLoad = true })
 	end
 
-	if config.improveItemSounds == true then
+	if config.improveItemSounds then
 		event.register(tes3.event.playItemSound, improveItemSounds, { unregisterOnLoad = true })
 	end
 
-	if config.adjustTravelPrices == true then
+	if config.adjustTravelPrices then
 		event.register(tes3.event.calcTravelPrice, adjustTravelPrices, { unregisterOnLoad = true })
 	end
 
-	if config.handleReactCellItems == true then
+	if config.handleReactCellItems then
 		myData.pastReactCellJournals = {}
 		event.register(tes3.event.itemDropped, markReactCellItem, { unregisterOnLoad = true })
 		event.register(tes3.event.journal, moveReactCellItems, { unregisterOnLoad = true })
 	end
 
-	if config.khajiitFormCharCreation == true then
+	if config.khajiitFormCharCreation then
 		event.register(tes3.event.uiActivated, changeRaceMenuKhajiitNames, { filter = "MenuRaceSex", unregisterOnLoad = true })
 	end
 
-	if config.butterflyMothTooltip == true then
+	if config.butterflyMothTooltip then
 		TD_ButterflyMothTooltip.parent = tes3ui.registerID("TD_ButterflyMothTooltip_Parent")
 		TD_ButterflyMothTooltip.weight = tes3ui.registerID("TD_ButterflyMothTooltip_Weight")
 		TD_ButterflyMothTooltip.value = tes3ui.registerID("TD_ButterflyMothTooltip_Value")
@@ -1174,7 +1187,7 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.uiObjectTooltip, butterflyMothTooltip, { priority = 200, unregisterOnLoad = true })
 	end
 
-	if config.limitIntervention == true then
+	if config.limitIntervention then
 		event.register(tes3.event.magicCasted, limitInterventionMessage, { unregisterOnLoad = true })
 		event.register(tes3.event.spellTick, limitIntervention, { unregisterOnLoad = true })
 	end

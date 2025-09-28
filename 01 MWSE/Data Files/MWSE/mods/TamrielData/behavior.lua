@@ -4,6 +4,9 @@ local common = require("TamrielData.common")
 
 local lamiaReferences = {}
 local dreughReferences = {}
+local fleeReferences = {}
+
+local creatureFleeing = false
 
 ---@param e combatStartedEventData
 ---@param creatureID string
@@ -57,13 +60,33 @@ function this.onNestLoot(e)
 	end
 end
 
+-- mobileActivated is not triggered when loading a game, so this function is needed to cover that case
+---@param e cellChangedEventData
+function this.onFirstCellLoad(e)
+	if not e.previousCell then
+		for _,cell in pairs(tes3.getActiveCells()) do
+			for creature in cell:iterateReferences(tes3.objectType.creature, false) do
+				if creature.baseObject.id:find("T_Glb_Cre_Lami") then
+					lamiaReferences[creature] = true
+				elseif creature.baseObject.id:lower():find("dreu") then
+					dreughReferences[creature] = true
+				elseif creature.baseObject.id:find("T_Glb_Fau_Deer") or creature.baseObject.id:find("T_Sky_Fau_Elk") then
+					fleeReferences[creature] = true
+				end
+			end
+		end
+	end
+end
+
 ---@param e mobileActivatedEventData
 function this.onMobileActivated(e)
 	if e.mobile.actorType == tes3.actorType.creature then
 		if e.reference.baseObject.id == "T_Glb_Cre_Lami_01" or e.reference.baseObject.id == "T_Glb_Cre_LamiLess_01" then
 			lamiaReferences[e.reference] = true		-- Special thanks to G7 for showing me where he used this kind of setup in one of his mods; it is a much more efficient system than what I had in mind.
-		elseif e.reference.baseObject.id == "dreugh" or e.reference.baseObject.id == "T_Cyr_Cre_Dreu_01" or e.reference.baseObject.id:find("T_Glb_Cre_Dreu") or e.reference.baseObject.id:find("T_Glb_Cre_LandDreu") then
+		elseif e.reference.baseObject.id:lower():find("dreu") then
 			dreughReferences[e.reference] = true
+		elseif e.reference.baseObject.id:find("T_Glb_Fau_Deer") or e.reference.baseObject.id:find("T_Sky_Fau_Elk") then
+			fleeReferences[e.reference] = true
 		end
 	end
 end
@@ -73,6 +96,11 @@ function this.onMobileDeactivated(e)
 	if e.mobile.actorType == tes3.actorType.creature then
 		lamiaReferences[e.reference] = nil
 		dreughReferences[e.reference] = nil
+		if fleeReferences[e.reference] then
+			e.mobile.fight = e.reference.baseObject.aiConfig.fight
+			e.mobile.flee = e.reference.baseObject.aiConfig.flee
+		end
+		fleeReferences[e.reference] = nil
 	end
 end
 
@@ -107,6 +135,43 @@ function this.fixWelkyndSpiritLight(e)
 				end
 			end
 		end
+	end
+end
+
+function this.fleeFromPlayerTick()
+	for creature in pairs(fleeReferences) do
+		---@cast creature tes3reference
+		if creature.mobile.isPlayerDetected and creature.mobile.canMove then
+			creature.mobile.fight = 0
+			creature.mobile.flee = 1000000000
+			creatureFleeing = true
+			creature.mobile:startCombat(tes3.mobilePlayer)
+			creature.mobile.actionData.aiBehaviorState = tes3.aiBehaviorState.flee
+		end
+	end
+end
+
+---@param e determinedActionEventData
+function this.fleeFromPlayerCombatAction(e)
+	if fleeReferences[e.session.mobile.reference] then
+		if e.session.selectedAction > 0 and e.session.selectedAction < 7 then
+			e.session.selectedAction = 7
+		end
+	end
+end
+
+---@param e combatStartedEventData
+function this.claimCombatFleeing(e)
+	if fleeReferences[e.actor.reference] then
+		e.claim = true		-- The creature fleeing should not really count as combat, so other addons (like MUSE) should not treat it as such
+	end
+end
+
+---@param e musicChangeTrackEventData
+function this.blockMusicFromFleeing(e)
+	if creatureFleeing and e.situation == tes3.musicSituation.combat then
+		creatureFleeing = false
+		return false
 	end
 end
 

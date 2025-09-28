@@ -28,7 +28,10 @@ local corruptionActorID = "T_Glb_Cre_Gremlin_01"	-- A funny default, just in cas
 local corruptionTargetReference = nil
 local corruptionCasted = false
 
-if config.summoningSpells == true then
+local mouseOverInventory = true
+local mouseOverContainer = false
+
+if config.summoningSpells then
 	tes3.claimSpellEffectId("T_summon_Devourer", 2090)
 	tes3.claimSpellEffectId("T_summon_DremArch", 2091)
 	tes3.claimSpellEffectId("T_summon_DremCast", 2092)
@@ -59,22 +62,22 @@ if config.summoningSpells == true then
 	tes3.claimSpellEffectId("T_summon_SpiderDaedra", 2146)
 end
 
-if config.boundSpells == true then
+if config.boundSpells then
 	tes3.claimSpellEffectId("T_bound_Greaves", 2111)
 	tes3.claimSpellEffectId("T_bound_Waraxe", 2112)
 	tes3.claimSpellEffectId("T_bound_Warhammer", 2113)
 	tes3.claimSpellEffectId("T_bound_HammerResdayn", 2114)
 	tes3.claimSpellEffectId("T_bound_RazorResdayn", 2115)
 	tes3.claimSpellEffectId("T_bound_Pauldrons", 2116)
-	--tes3.claimSpellEffectId("T_bound_ThrowingKnives", 2118)
+	tes3.claimSpellEffectId("T_bound_ThrowingKnives", 2118)
 	tes3.claimSpellEffectId("T_bound_Greatsword", 2145)
 end
 
-if config.interventionSpells == true then
+if config.interventionSpells then
 	tes3.claimSpellEffectId("T_intervention_Kyne", 2122)
 end
 
-if config.miscSpells == true then
+if config.miscSpells then
 	tes3.claimSpellEffectId("T_mysticism_Passwall", 2106)
 	tes3.claimSpellEffectId("T_mysticism_BanishDae", 2119)
 	tes3.claimSpellEffectId("T_mysticism_ReflectDmg", 2120)
@@ -144,7 +147,7 @@ local td_bound_effects = {
 	{ tes3.effect.T_bound_RazorResdayn, "", "bound_dagger", "", 2, "td\\s\\td_s_bnd_red_razor.dds", ""},
 	{ tes3.effect.T_bound_Pauldrons, common.i18n("magic.boundPauldrons"), "T_Com_Bound_PauldronL_01", "T_Com_Bound_PauldronR_01", 2, "td\\s\\td_s_bnd_pldrn.dds", common.i18n("magic.boundPauldronsDesc")},
 	{ tes3.effect.T_bound_Greatsword, common.i18n("magic.boundGreatsword"), "T_Com_Bound_Greatsword_01", "", 2, "td\\s\\td_s_bnd_clymr.dds", common.i18n("magic.boundGreatswordDesc")},
-	--{ tes3.effect.T_bound_ThrowingKnives, common.i18n("magic.boundThrowingKnives"), "T_Com_Bound_ThrowingKnife_01", "", 2, "td\\s\\td_s_bnd_knives.dds", common.i18n("magic.boundThrowingKnivesDesc")},
+	{ tes3.effect.T_bound_ThrowingKnives, common.i18n("magic.boundThrowingKnives"), "T_Com_Bound_ThrowingKnife_01", "", 2, "td\\s\\td_s_bnd_knives.dds", common.i18n("magic.boundThrowingKnivesDesc")},
 }
 
 -- effect id, effect name, effect mana cost, icon, effect description
@@ -223,7 +226,7 @@ local td_bound_spells = {
 	{ "T_De_Cnj_Uni_BoundRazorOResdayn", tes3.spellType.spell, nil, 6, { tes3.effect.T_bound_RazorResdayn }, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Com_Cnj_BoundPauldron", tes3.spellType.spell, common.i18n("magic.boundPauldrons"), 6, { tes3.effect.T_bound_Pauldrons }, tes3.effectRange.self, 0, 60, 1, 1 },
 	{ "T_Com_Cnj_BoundGreatsword", tes3.spellType.spell, common.i18n("magic.boundGreatsword"), 6, { tes3.effect.T_bound_Greatsword }, tes3.effectRange.self, 0, 60, 1, 1 },
-	--{ "T_Com_Cnj_BoundThrowingKnives", tes3.spellType.spell, common.i18n("magic.boundThrowingKnives"), 6, { tes3.effect.T_bound_ThrowingKnives }, tes3.effectRange.self, 0, 60, 1, 1 },
+	--{ "T_Com_Cnj_BoundThrowingKnives", tes3.spellType.spell, common.i18n("magic.boundThrowingKnives"), 6, { tes3.effect.T_bound_ThrowingKnives }, tes3.effectRange.self, 0, 10, 1, 1 },
 }
 
 -- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -639,7 +642,7 @@ local raceSkeletonBodyParts = {
 	{ "T_Pya_SeaElf", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
 	{ "T_Sky_Hill_Giant", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },		-- Giants should eventually get their own skeleton mesh though
 	{ "T_Sky_Reachman", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
-	{ "T_Yne_Ynesai", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },		-- Imga, and Tsaesci skeletons will take more effort
+	{ "T_Yne_Ynesai", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },		-- Imga and Tsaesci skeletons will take more effort
 }
 
 local wabbajackCreatures = {
@@ -673,55 +676,55 @@ local sanguineRoseDaedra = {
 
 -- actor id
 local gazeOfVelothImmuneActors = {
-	"vivec_god",
-	"almalexia",
-	"Almalexia_warrior",
-	"divayth fyr",
-	"wulf",
-	"Sky_qRe_KWMG6_Azra"
+	["vivec_god"] = true,
+	["almalexia"] = true,
+	["Almalexia_warrior"] = true,
+	["divayth fyr"] = true,
+	["wulf"] = true,
+	["Sky_qRe_KWMG6_Azra"] = true,
 }
 
 -- script id
 local safeScripts = {
-	"nolore",
-	"slaveScript",
-	"fortloreboozeScript",
-	"TR_m3_Kha_Methats_sc",
-	"TR_m3_NPC_DiceGamblerNoLore",
-	"TR_m3_NPC_OE_commonNoLore",
-	"TR_m3_NPC_OE_poorNoLore",
-	"TR_m3_NPC_OE_richNoLore",
-	"TR_m3_NPC_OE_towerNoLore",
-	"TR_m4_AA_Vf_NPC_NoLoresc",
-	"TR_m7_NPC_RuddyEggsNoLore",
-	"TR_m7_Ns_KhanVolnyr_sc",
-	"TR_m3_q_kharg",
-	"TR_m3_Kha_AtroLordDis_sc",
-	"TR_m3_Kha_Black_Heart_Script",
-	"TR_m3_Kha_ClannLordDis_sc",
-	"TR_m3_Kha_FireScamp_sc",
-	"TR_m1_Lornie_Slave_scpt",
-	"TR_m4_OranSlave_Sc",
-	"TR_m1_T_CouncilorSc",
-	"TR_m2_T_CouncilorSc",
-	"TR_NecMQ_MovingNPCScript",
-	"TR_m1_FW_TG3_HrongalDrink",
-	"TR_m1_MinTalScript",
-	"TR_m1_NPC_DiceGambler",
-	"TR_m2_NPC_DiceGambler",
-	"TR_m3_NPC_DiceGambler",
-	"TR_m3_NPC_DiceGamblerNoLore",
-	"TR_m3_NPC_DiceGamblerOECom",
-	"TR_m3_NPC_DiceGamblerOEPoor",
-	"TR_m4_NPC_DiceGambler",
-	"TR_m5_NPC_DiceGambler",
-	"TR_m6_NPC_DiceGambler",
-	"TR_m7_NPC_DiceGambler",
-	"TR_m1_NPC_Fervas_Shulisa",
-	"TR_m1_NPC_Gilen_Indothan",
-	"TR_m1_NPC_Malvas_Relvani",
-	"TR_m1_T_Seducer",
-	"TR_m3_q_vampambush"
+	["nolore"] = true,
+	["slaveScript"] = true,
+	["fortloreboozeScript"] = true,
+	["TR_m3_Kha_Methats_sc"] = true,
+	["TR_m3_NPC_DiceGamblerNoLore"] = true,
+	["TR_m3_NPC_OE_commonNoLore"] = true,
+	["TR_m3_NPC_OE_poorNoLore"] = true,
+	["TR_m3_NPC_OE_richNoLore"] = true,
+	["TR_m3_NPC_OE_towerNoLore"] = true,
+	["TR_m4_AA_Vf_NPC_NoLoresc"] = true,
+	["TR_m7_NPC_RuddyEggsNoLore"] = true,
+	["TR_m7_Ns_KhanVolnyr_sc"] = true,
+	["TR_m3_q_kharg"] = true,
+	["TR_m3_Kha_AtroLordDis_sc"] = true,
+	["TR_m3_Kha_Black_Heart_Script"] = true,
+	["TR_m3_Kha_ClannLordDis_sc"] = true,
+	["TR_m3_Kha_FireScamp_sc"] = true,
+	["TR_m1_Lornie_Slave_scpt"] = true,
+	["TR_m4_OranSlave_Sc"] = true,
+	["TR_m1_T_CouncilorSc"] = true,
+	["TR_m2_T_CouncilorSc"] = true,
+	["TR_NecMQ_MovingNPCScript"] = true,
+	["TR_m1_FW_TG3_HrongalDrink"] = true,
+	["TR_m1_MinTalScript"] = true,
+	["TR_m1_NPC_DiceGambler"] = true,
+	["TR_m2_NPC_DiceGambler"] = true,
+	["TR_m3_NPC_DiceGambler"] = true,
+	["TR_m3_NPC_DiceGamblerNoLore"] = true,
+	["TR_m3_NPC_DiceGamblerOECom"] = true,
+	["TR_m3_NPC_DiceGamblerOEPoor"] = true,
+	["TR_m4_NPC_DiceGambler"] = true,
+	["TR_m5_NPC_DiceGambler"] = true,
+	["TR_m6_NPC_DiceGambler"] = true,
+	["TR_m7_NPC_DiceGambler"] = true,
+	["TR_m1_NPC_Fervas_Shulisa"] = true,
+	["TR_m1_NPC_Gilen_Indothan"] = true,
+	["TR_m1_NPC_Malvas_Relvani"] = true,
+	["TR_m1_T_Seducer"] = true,
+	["TR_m3_q_vampambush"] = true,
 }
 
 ---@param table table
@@ -888,16 +891,6 @@ function this.useCustomSpell(e)
 				return
 			end
 		end
-
-		--[[
-		if not customSpells and config.boundSpells then
-			customSpells = checkActorSpells(e.session.mobile, td_bound_spells)
-	
-			if customSpells then
-				equipActorSpell(e.session, customSpells)
-			end
-		end
-		]]
 	--end
 end
 
@@ -905,6 +898,84 @@ end
 local function restoreCharge(sourceInstance)
 	sourceInstance.itemData.charge = sourceInstance.itemData.charge + tes3.calculateChargeUse({ mobile = sourceInstance.caster.mobile, enchantment = sourceInstance.item.enchantment })
 	if sourceInstance.itemData.charge > sourceInstance.item.enchantment.maxCharge then sourceInstance.itemData.charge = sourceInstance.item.enchantment.maxCharge end
+end
+
+---@param inventory tes3itemStack[]
+local function hasScriptedItem(inventory)
+	for _,itemStack in pairs(inventory) do
+		if itemStack.object.script then return true end
+	end
+end
+
+---@param e itemTileUpdatedEventData
+function this.boundKnivesTileUpdate(e)
+	if e.item.id == "T_Com_Bound_ThrowingKnife_01" then
+		if e.menu.name == "MenuBarter" then
+			e.element:register("mouseClick", function(event)		-- Handles the extremely unlikely case of trying to buy a bound item
+				tes3.messageBox(tes3.findGMST(tes3.gmst.sBarterDialog10).value)
+			end)
+		else
+			if tes3ui.findMenu("MenuBarter") then
+				e.element:register("mouseClick", function(event)	-- Handles the much more plausible cause of trying to sell a bound item
+					tes3.messageBox(tes3.findGMST(tes3.gmst.sBarterDialog9).value)
+				end)
+			else
+				e.menu:registerBefore(tes3.uiEvent.mouseOver, function (event) mouseOverInventory = true end)
+				e.menu:registerBefore(tes3.uiEvent.mouseLeave, function (event) mouseOverInventory = false end)
+				if tes3ui.findMenu("MenuContainer") then
+					tes3ui.findMenu("MenuContainer"):registerBefore(tes3.uiEvent.mouseOver, function (event) mouseOverContainer = true end)		-- These should really look at the actual inventory space of the MenuContainer, not the whole menu
+					tes3ui.findMenu("MenuContainer"):registerBefore(tes3.uiEvent.mouseLeave, function (event) mouseOverContainer = false end)
+				end
+
+				e.element:registerBefore("mouseDown", function(event) 
+					if mouseOverInventory then	-- This condition should be expanded to check for other parts of the player's UI once MWSE actually has a way to regsiter events to the second click
+						return true				-- Proceed as normal
+					elseif mouseOverContainer then
+						tes3.messageBox(tes3.findGMST(tes3.gmst.sContentsMessage1).value)	-- Handles the player trying to put a bound item in a container
+						return false
+					else
+						tes3.messageBox(tes3.findGMST(tes3.gmst.sBarterDialog12).value)		-- Handles the player trying to drop a bound item
+						return false
+					end
+				end, {priority = 1000})
+
+				--if include("UI Expansion.common") and include("UI Expansion.common").config.components and tes3.worldController.inputController:isAltDown() then???
+			end
+		end
+	end
+end
+
+---@param e playItemSoundEventData
+function this.boundKnivesDropSound(e)
+	if e.state == tes3.itemSoundState.down and e.item.id == "T_Com_Bound_ThrowingKnife_01" then return false end
+end
+
+---@param e itemDroppedEventData
+function this.boundKnivesItemDropped(e)
+	if e.reference.baseObject.id == "T_Com_Bound_ThrowingKnife_01" then
+		tes3.addItem({ item = e.reference.baseObject.id, reference = tes3.player, count = e.reference.stackSize, playSound = false })
+		tes3.messageBox(tes3.findGMST(tes3.gmst.sBarterDialog12).value)
+		e.reference:disable()
+	end
+end
+
+---@param e magicEffectRemovedEventData
+function this.boundKnivesRemovedEffect(e)
+	if e.effect.id == tes3.effect.T_bound_ThrowingKnives then
+		tes3.removeItem({ item = "T_Com_Bound_ThrowingKnife_01", reference = e.effectInstance.target, count = 999, playSound = false })
+	end
+end
+
+---@param e tes3magicEffectTickEventData
+local function boundKnivesEffect(e)
+	if (not e:trigger()) then
+		return
+	end
+
+	if e.effectInstance.state < tes3.spellState.ending then		-- Without checking the state, more throwing knives will be given when the effect expires
+		tes3.addItem({ item = "T_Com_Bound_ThrowingKnife_01", count = 60 - tes3.getItemCount({ item = "T_Com_Bound_ThrowingKnife_01", reference = e.sourceInstance.caster }), reference = e.sourceInstance.caster })
+		e.sourceInstance.caster.mobile:equip({ item = "T_Com_Bound_ThrowingKnife_01" })
+	end
 end
 
 ---@param e damageEventData
@@ -980,7 +1051,7 @@ function this.prismaticLightRemovedEffect(e)
 		if lightNode.light.name == "prismaticLightAttachment" then	-- If this is not true, then some other MWSE addon has replaced the light and it should not be touched
 			local prismaticLightEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_PrismaticLight })
 
-			if #prismaticLightEffects > 1 then	-- 1 is checked rather than 0 because the (final) effect being removed will still be counted here
+			if #prismaticLightEffects > 1 then	-- 1 is checked rather than 0 because the effect being removed will still be counted here
 				local totalMagnitude = 0
 
 				for _,v in pairs(prismaticLightEffects) do
@@ -1186,29 +1257,32 @@ function this.blinkFallDamageSmallJump()
 		if not tes3.mobilePlayer.isFalling and not tes3.mobilePlayer.isJumping and tes3.player.data.tamrielData.blinkVelocity then
 			tes3.player.data.tamrielData.hasBlinked = nil
 
-			local fatigueTerm = tes3.findGMST(tes3.gmst.fFatigueBase).value - tes3.findGMST(tes3.gmst.fFatigueMult).value * (1 - tes3.mobilePlayer.fatigue.normalized)
-			local acrobatics = tes3.mobilePlayer.acrobatics.current
-			local jumpMagnitude = 0
+			if not tes3.mobilePlayer.isSwimming then
+				local fatigueTerm = tes3.findGMST(tes3.gmst.fFatigueBase).value - tes3.findGMST(tes3.gmst.fFatigueMult).value * (1 - tes3.mobilePlayer.fatigue.normalized)
+				local acrobatics = tes3.mobilePlayer.acrobatics.current
+				local jumpMagnitude = 0
 
-			local jumpEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.jump })
-			if #jumpEffects > 0 then
-				for _,v in pairs(jumpEffects) do
-					jumpMagnitude = jumpMagnitude + v.magnitude
+				local jumpEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.jump })
+				if #jumpEffects > 0 then
+					for _,v in pairs(jumpEffects) do
+						jumpMagnitude = jumpMagnitude + v.magnitude
+					end
 				end
+
+				local calculatedDistance = (tes3.player.data.tamrielData.blinkVelocity ^ 2) / (2 * 627.2)
+
+				-- The calculations below and those for the fatigue term above are based on those that OpenMW found for fall damage
+				if calculatedDistance <= tes3.findGMST(tes3.gmst.fFallDamageDistanceMin).value then return false end
+				calculatedDistance = calculatedDistance - tes3.findGMST(tes3.gmst.fFallDamageDistanceMin).value
+				calculatedDistance = calculatedDistance - (1.5 * acrobatics + jumpMagnitude)
+				calculatedDistance = math.max(0, calculatedDistance)
+				calculatedDistance = calculatedDistance * (tes3.findGMST(tes3.gmst.fFallDistanceBase).value + tes3.findGMST(tes3.gmst.fFallDistanceMult).value)
+				calculatedDistance = calculatedDistance * (tes3.findGMST(tes3.gmst.fFallAcroBase).value + tes3.findGMST(tes3.gmst.fFallAcroMult).value * (100 - acrobatics))
+				if acrobatics * fatigueTerm < calculatedDistance then tes3.mobilePlayer:hitStun({ knockDown = true }) end
+				tes3.mobilePlayer:applyDamage({ damage = calculatedDistance * (1 - .25 * fatigueTerm) })
 			end
 
-			local calculatedDistance = (tes3.player.data.tamrielData.blinkVelocity ^ 2) / (2 * 627.2)
 			tes3.player.data.tamrielData.blinkVelocity = nil
-
-			-- The calculations below and those for the fatigue term above are based on those that OpenMW found for fall damage
-			if calculatedDistance <= tes3.findGMST(tes3.gmst.fFallDamageDistanceMin).value then return false end
-			calculatedDistance = calculatedDistance - tes3.findGMST(tes3.gmst.fFallDamageDistanceMin).value
-			calculatedDistance = calculatedDistance - (1.5 * acrobatics + jumpMagnitude)
-			calculatedDistance = math.max(0, calculatedDistance)
-			calculatedDistance = calculatedDistance * (tes3.findGMST(tes3.gmst.fFallDistanceBase).value + tes3.findGMST(tes3.gmst.fFallDistanceMult).value)
-			calculatedDistance = calculatedDistance * (tes3.findGMST(tes3.gmst.fFallAcroBase).value + tes3.findGMST(tes3.gmst.fFallAcroMult).value * (100 - acrobatics))
-			if acrobatics * fatigueTerm < calculatedDistance then tes3.mobilePlayer:hitStun({ knockDown = true }) end
-			tes3.mobilePlayer:applyDamage({ damage = calculatedDistance * (1 - .25 * fatigueTerm) })
 		else
 			tes3.player.data.tamrielData.blinkVelocity = tes3.mobilePlayer.velocity.z
 		end
@@ -1378,7 +1452,7 @@ local function gazeOfVelothEffect(e)
 	local id = target.baseObject.id:lower()
 	local name = target.object.name
 
-	if table.contains(gazeOfVelothImmuneActors, id) then
+	if gazeOfVelothImmuneActors[id] then
 		tes3ui.showNotifyMenu(common.i18n("magic.gazeOfVelothImmune", { name }))
 		e.effectInstance.state = tes3.spellState.retired
 		return
@@ -1769,13 +1843,6 @@ function this.corruptionSummoned(e)
 	end
 end
 
----@param inventory tes3itemStack[]
-local function hasScriptedItem(inventory)
-	for _,itemStack in pairs(inventory) do
-		if itemStack.object.script then return true end
-	end
-end
-
 ---@param e tes3magicEffectTickEventData
 local function corruptionEffect(e)
 	if (not e:trigger()) then
@@ -1785,7 +1852,7 @@ local function corruptionEffect(e)
 	local target = e.effectInstance.target
 
 	if target.id ~= tes3.player.data.tamrielData.corruptionReferenceID then	-- Memory errors can be reported if the effect is applied to the summon and doing so is weird anyways
-		if target.baseObject.script and (not ((target.baseObject.script.id:find("T_ScNpc") and not target.baseObject.script.id:find("_Were")) or table.contains(safeScripts, target.baseObject.script.id)) or hasScriptedItem(target.mobile.inventory)) then	-- Checks whether the target has a scripted item or a script that is not known to be safely cloneable
+		if target.baseObject.script and (not ((target.baseObject.script.id:find("T_ScNpc") and not target.baseObject.script.id:find("_Were")) or safeScripts[target.baseObject.script.id]) or hasScriptedItem(target.mobile.inventory)) then	-- Checks whether the target has a scripted item or a script that is not known to be safely cloneable
 			tes3ui.showNotifyMenu(common.i18n("magic.corruptionScript", { target.object.name }))
 			e.effectInstance.state = tes3.spellState.retired
 			restoreCharge(e.sourceInstance)
@@ -3184,7 +3251,7 @@ end
 
 -- Adds new magic effects based on the tables above
 event.register(tes3.event.magicEffectsResolved, function()
-	if config.summoningSpells == true then
+	if config.summoningSpells then
 		local summonHungerEffect = tes3.getMagicEffect(tes3.effect.summonHunger)
 
 		for _,v in pairs(td_summon_effects) do
@@ -3234,65 +3301,108 @@ event.register(tes3.event.magicEffectsResolved, function()
 		end
 	end
 
-	if config.boundSpells == true then
+	if config.boundSpells then
 		local boundCuirassEffect = tes3.getMagicEffect(tes3.effect.boundBoots)
 
 		for _,v in pairs(td_bound_effects) do
 			local effectID, effectName, itemID, itemID_02, effectCost, iconPath, effectDescription = unpack(v)
-			tes3.addMagicEffect{
-				id = effectID,
-				name = effectName,
-				description = effectDescription,
-				school = tes3.magicSchool.conjuration,
-				baseCost = effectCost,
-				speed = boundCuirassEffect.speed,
-				allowEnchanting = true,
-				allowSpellmaking = true,
-				appliesOnce = boundCuirassEffect.appliesOnce,
-				canCastSelf = true,
-				canCastTarget = false,
-				canCastTouch = false,
-				casterLinked = boundCuirassEffect.casterLinked,
-				hasContinuousVFX = boundCuirassEffect.hasContinuousVFX,
-				hasNoDuration = boundCuirassEffect.hasNoDuration,
-				hasNoMagnitude = boundCuirassEffect.hasNoMagnitude,
-				illegalDaedra = boundCuirassEffect.illegalDaedra,
-				isHarmful = boundCuirassEffect.isHarmful,
-				nonRecastable = boundCuirassEffect.nonRecastable,
-				targetsAttributes = boundCuirassEffect.targetsAttributes,
-				targetsSkills = boundCuirassEffect.targetsSkills,
-				unreflectable = boundCuirassEffect.unreflectable,
-				usesNegativeLighting = boundCuirassEffect.usesNegativeLighting,
-				icon = iconPath,
-				particleTexture = boundCuirassEffect.particleTexture,
-				castSound = boundCuirassEffect.castSoundEffect.id,
-				castVFX = boundCuirassEffect.castVisualEffect.id,
-				boltSound = boundCuirassEffect.boltSoundEffect.id,
-				boltVFX = boundCuirassEffect.boltVisualEffect.id,
-				hitSound = boundCuirassEffect.hitSoundEffect.id,
-				hitVFX = boundCuirassEffect.hitVisualEffect.id,
-				areaSound = boundCuirassEffect.areaSoundEffect.id,
-				areaVFX = boundCuirassEffect.areaVisualEffect.id,
-				lighting = {x = boundCuirassEffect.lightingRed / 255, y = boundCuirassEffect.lightingGreen / 255, z = boundCuirassEffect.lightingBlue / 255},
-				size = boundCuirassEffect.size,
-				sizeCap = boundCuirassEffect.sizeCap,
-				onTick = function(eventData)
-					if tes3.getObject(itemID).objectType == tes3.objectType.armor then
-						if itemID_02 == "" then
-							eventData:triggerBoundArmor(itemID)
-						else
-							eventData:triggerBoundArmor(itemID, itemID_02)
+			if effectID == tes3.effect.T_bound_ThrowingKnives then
+				tes3.addMagicEffect{
+					id = effectID,
+					name = effectName,
+					description = effectDescription,
+					school = tes3.magicSchool.conjuration,
+					baseCost = effectCost,
+					speed = boundCuirassEffect.speed,
+					allowEnchanting = true,
+					allowSpellmaking = true,
+					appliesOnce = true,
+					canCastSelf = true,
+					canCastTarget = false,
+					canCastTouch = false,
+					casterLinked = boundCuirassEffect.casterLinked,
+					hasContinuousVFX = boundCuirassEffect.hasContinuousVFX,
+					hasNoDuration = boundCuirassEffect.hasNoDuration,
+					hasNoMagnitude = boundCuirassEffect.hasNoMagnitude,
+					illegalDaedra = boundCuirassEffect.illegalDaedra,
+					isHarmful = boundCuirassEffect.isHarmful,
+					nonRecastable = boundCuirassEffect.nonRecastable,
+					targetsAttributes = boundCuirassEffect.targetsAttributes,
+					targetsSkills = boundCuirassEffect.targetsSkills,
+					unreflectable = boundCuirassEffect.unreflectable,
+					usesNegativeLighting = boundCuirassEffect.usesNegativeLighting,
+					icon = iconPath,
+					particleTexture = boundCuirassEffect.particleTexture,
+					castSound = boundCuirassEffect.castSoundEffect.id,
+					castVFX = boundCuirassEffect.castVisualEffect.id,
+					boltSound = boundCuirassEffect.boltSoundEffect.id,
+					boltVFX = boundCuirassEffect.boltVisualEffect.id,
+					hitSound = boundCuirassEffect.hitSoundEffect.id,
+					hitVFX = boundCuirassEffect.hitVisualEffect.id,
+					areaSound = boundCuirassEffect.areaSoundEffect.id,
+					areaVFX = boundCuirassEffect.areaVisualEffect.id,
+					lighting = {x = boundCuirassEffect.lightingRed / 255, y = boundCuirassEffect.lightingGreen / 255, z = boundCuirassEffect.lightingBlue / 255},
+					size = boundCuirassEffect.size,
+					sizeCap = boundCuirassEffect.sizeCap,
+					onTick = boundKnivesEffect,
+					onCollision = nil
+				}
+			else
+				tes3.addMagicEffect{
+					id = effectID,
+					name = effectName,
+					description = effectDescription,
+					school = tes3.magicSchool.conjuration,
+					baseCost = effectCost,
+					speed = boundCuirassEffect.speed,
+					allowEnchanting = true,
+					allowSpellmaking = true,
+					appliesOnce = boundCuirassEffect.appliesOnce,
+					canCastSelf = true,
+					canCastTarget = false,
+					canCastTouch = false,
+					casterLinked = boundCuirassEffect.casterLinked,
+					hasContinuousVFX = boundCuirassEffect.hasContinuousVFX,
+					hasNoDuration = boundCuirassEffect.hasNoDuration,
+					hasNoMagnitude = boundCuirassEffect.hasNoMagnitude,
+					illegalDaedra = boundCuirassEffect.illegalDaedra,
+					isHarmful = boundCuirassEffect.isHarmful,
+					nonRecastable = boundCuirassEffect.nonRecastable,
+					targetsAttributes = boundCuirassEffect.targetsAttributes,
+					targetsSkills = boundCuirassEffect.targetsSkills,
+					unreflectable = boundCuirassEffect.unreflectable,
+					usesNegativeLighting = boundCuirassEffect.usesNegativeLighting,
+					icon = iconPath,
+					particleTexture = boundCuirassEffect.particleTexture,
+					castSound = boundCuirassEffect.castSoundEffect.id,
+					castVFX = boundCuirassEffect.castVisualEffect.id,
+					boltSound = boundCuirassEffect.boltSoundEffect.id,
+					boltVFX = boundCuirassEffect.boltVisualEffect.id,
+					hitSound = boundCuirassEffect.hitSoundEffect.id,
+					hitVFX = boundCuirassEffect.hitVisualEffect.id,
+					areaSound = boundCuirassEffect.areaSoundEffect.id,
+					areaVFX = boundCuirassEffect.areaVisualEffect.id,
+					lighting = {x = boundCuirassEffect.lightingRed / 255, y = boundCuirassEffect.lightingGreen / 255, z = boundCuirassEffect.lightingBlue / 255},
+					size = boundCuirassEffect.size,
+					sizeCap = boundCuirassEffect.sizeCap,
+					onTick = function(eventData)
+						if tes3.getObject(itemID).objectType == tes3.objectType.armor then
+							if itemID_02 == "" then
+								eventData:triggerBoundArmor(itemID)
+							else
+								eventData:triggerBoundArmor(itemID, itemID_02)
+							end
+						elseif tes3.getObject(itemID).objectType == tes3.objectType.weapon then
+							eventData:triggerBoundWeapon(itemID)
 						end
-					elseif tes3.getObject(itemID).objectType == tes3.objectType.weapon then
-						eventData:triggerBoundWeapon(itemID)
-					end
-				end,
-				onCollision = nil
-			}
+					end,
+					onCollision = nil
+				}
+			end
 		end
 	end
 
-	if config.interventionSpells == true then
+	if config.interventionSpells then
 		local divineInterventionEffect = tes3.getMagicEffect(tes3.effect.divineIntervention)
 
 		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_intervention_effects[1])	-- Kyne's Intervention
@@ -3338,7 +3448,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 		}
 	end
 
-	if config.miscSpells == true then
+	if config.miscSpells then
 		local passwallBaseEffect = tes3.getMagicEffect(tes3.effect.detectAnimal)
 		local passwallSchool = tes3.magicSchool.mysticism
 
@@ -4387,19 +4497,19 @@ end)
 
 -- Replaces spell names, effects, etc. using the spell tables above
 event.register(tes3.event.load, function()
-	if config.summoningSpells == true then
+	if config.summoningSpells then
 		this.replaceSpells(td_summon_spells)
 	end
 
-	if config.boundSpells == true then
+	if config.boundSpells then
 		this.replaceSpells(td_bound_spells)
 	end
 
-	if config.interventionSpells == true then
+	if config.interventionSpells then
 		this.replaceSpells(td_intervention_spells)
 	end
 
-	if config.miscSpells == true then
+	if config.miscSpells then
 		this.replaceSpells(td_misc_spells)
 
 		event.unregister(tes3.event.uiActivated, this.onMenuMagicActivated, { filter = "MenuMagic" })	-- unregisterOnLoad isn't an option here of course
@@ -4412,7 +4522,7 @@ event.register(tes3.event.load, function()
 		event.register(tes3.event.uiActivated, this.onMenuMultiActivated, { filter = "MenuMulti" })
 	end
 
-	if config.summoningSpells == true and config.boundSpells == true and config.interventionSpells == true and config.miscSpells == true then
+	if config.summoningSpells and config.boundSpells and config.interventionSpells and config.miscSpells then
 		this.replaceEnchantments(td_enchantments)
 		this.replaceIngredientEffects(td_ingredients)
 		this.replacePotions(td_potions)

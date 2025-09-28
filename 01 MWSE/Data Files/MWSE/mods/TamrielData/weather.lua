@@ -51,22 +51,22 @@ local defaultAshColors = {
 	ambientDayColor = tes3vector3.new(0.29411765933037,0.19215688109398,0.16078431904316),
 	ambientSunsetColor = tes3vector3.new(0.18823531270027,0.15294118225574,0.13725490868092),
 	ambientNightColor = tes3vector3.new(0.14117647707462,0.16470588743687,0.19215688109398),
-	
+
 	skySunriseColor = tes3vector3.new(0.35686275362968,0.21960785984993,0.20000001788139),
 	skyDayColor = tes3vector3.new(0.48627454042435,0.28627452254295,0.22745099663734),
 	skySunsetColor = tes3vector3.new(0.41568630933762,0.21568629145622,0.15686275064945),
 	skyNightColor = tes3vector3.new(0.078431375324726,0.082352943718433,0.086274512112141),
-	
+
 	fogSunriseColor = tes3vector3.new(0.35686275362968,0.21960785984993,0.20000001788139),
 	fogDayColor = tes3vector3.new(0.48627454042435,0.28627452254295,0.22745099663734),
 	fogSunsetColor = tes3vector3.new(0.41568630933762,0.21568629145622,0.15686275064945),
 	fogNightColor = tes3vector3.new(0.078431375324726,0.082352943718433,0.086274512112141),
-	
+
 	sunSunriseColor = tes3vector3.new(0.72156864404678,0.35686275362968,0.27843138575554),
 	sunDayColor = tes3vector3.new(0.89411771297455,0.54509806632996,0.44705885648727),
 	sunSunsetColor = tes3vector3.new(0.72549021244049,0.33725491166115,0.22352942824364),
 	sunNightColor = tes3vector3.new(0.21176472306252,0.258823543787,0.29019609093666),
-	
+
 	sundiscSunsetColor = tes3vector3.new(0.50196081399918,0.50196081399918,0.50196081399918)
 }
 local defaultAshSky = { cloudsMaxPercent = 1, cloudsSpeed = 7, cloudTexture = "Textures\\tx_sky_ashstorm.tga" }
@@ -93,17 +93,17 @@ local defaultBlizzardColors = {
 	fogDayColor = tes3vector3.new(0.47450983524323,0.52156865596771,0.5686274766922),
 	fogSunsetColor = tes3vector3.new(0.42352944612503,0.45098042488098,0.47450983524323),
 	fogNightColor = tes3vector3.new(0.082352943718433,0.094117656350136,0.10980392992496),
-	
+
 	skySunriseColor = tes3vector3.new(0.35686275362968,0.38823533058167,0.41568630933762),
 	skyDayColor = tes3vector3.new(0.47450983524323,0.52156865596771,0.5686274766922),
 	skySunsetColor = tes3vector3.new(0.42352944612503,0.45098042488098,0.47450983524323),
 	skyNightColor = tes3vector3.new(0.10588236153126,0.11372549831867,0.12156863510609),
-	
+
 	sunSunriseColor = tes3vector3.new(0.44705885648727,0.50196081399918,0.57254904508591),
 	sunDayColor = tes3vector3.new(0.63921570777893,0.66274511814117,0.71764707565308),
 	sunSunsetColor = tes3vector3.new(0.41568630933762,0.44705885648727,0.53333336114883),
 	sunNightColor = tes3vector3.new(0.22352942824364,0.258823543787,0.29019609093666),
-	
+
 	sundiscSunsetColor = tes3vector3.new(0.50196081399918,0.50196081399918,0.50196081399918),
 }
 local defaultBlizzardSky = { cloudsMaxPercent = 1, cloudsSpeed = 7.5, cloudTexture = "Textures\\tx_bm_sky_blizzard.tga" }
@@ -159,22 +159,22 @@ local shipalSandstormColors = {
 	ambientDayColor = tes3vector3.new(0.29153820872307,0.19568987190723,0.12980020046234),
 	ambientSunsetColor = tes3vector3.new(0.15863129496574,0.13118956983089,0.10972380638123),
 	ambientNightColor = tes3vector3.new(0.1754819303751,0.14343112707138,0.12481042742729),
-	
+
 	skySunriseColor = tes3vector3.new(0.37871468067169,0.21166057884693,0.14759901165962),
 	skyDayColor = tes3vector3.new(0.50329428911209,0.24587486684322,0.064963988959789),
 	skySunsetColor = tes3vector3.new(0.38184657692909,0.22245298326015,0.11584800481796),
 	skyNightColor = tes3vector3.new(0.10468325763941,0.076288469135761,0.056556653231382),
-	
+
 	fogSunriseColor = tes3vector3.new(0.37871468067169,0.21166057884693,0.14759904146194),
 	fogDayColor = tes3vector3.new(0.47953671216965,0.25145751237869,0.098600476980209),
 	fogSunsetColor = tes3vector3.new(0.38184657692909,0.22245298326015,0.11584800481796),
 	fogNightColor = tes3vector3.new(0.10807107388973,0.075333394110203,0.051505777984858),
-	
+
 	sunSunriseColor = tes3vector3.new(0.6495099067688,0.31365808844566,0.20876568555832),
 	sunDayColor = tes3vector3.new(0.83064413070679,0.50800108909607,0.33096680045128),
 	sunSunsetColor = tes3vector3.new(0.66355347633362,0.34237751364708,0.1470145881176),
 	sunNightColor = tes3vector3.new(0.25221019983292,0.20912343263626,0.18309138715267),
-	
+
 	sundiscSunsetColor = tes3vector3.new(0.50196081399918,0.50196081399918,0.50196081399918)
 }
 local shipalSandstormSky = { cloudsMaxPercent = 1, cloudsSpeed = 7, cloudTexture = "Textures\\tx_sky_ashstorm.tga" }
@@ -192,22 +192,22 @@ local tropicalStormColors = {
 	ambientDayColor = tes3vector3.new(0.26627615094185,0.266282081604,0.26628294587135),
 	ambientSunsetColor = tes3vector3.new(0.21176472306252,0.21176472306252,0.21176472306252),
 	ambientNightColor = tes3vector3.new(0.1051777228713,0.11253328621387,0.12334341555834),
-	
+
 	skySunriseColor = tes3vector3.new(0.3021180331707,0.30640208721161,0.31970238685608),
 	skyDayColor = tes3vector3.new(0.43943184614182,0.46728873252869,0.51149290800095),
 	skySunsetColor = tes3vector3.new(0.3021180331707,0.30640208721161,0.31970238685608),
 	skyNightColor = tes3vector3.new(0.087008163332939,0.090532593429089,0.097644492983818),
-	
+
 	fogSunriseColor = tes3vector3.new(0.2162476927042,0.23177614808083,0.27332815527916),	-- Should be changed to 10
 	fogDayColor = tes3vector3.new(0.32280033826828,0.34984081983566,0.39182490110397),		-- 12
 	fogSunsetColor = tes3vector3.new(0.20606455206871,0.21729429066181,0.24860291182995),	-- 9
 	fogNightColor = tes3vector3.new(0.07522377371788,0.07911616563797,0.086906954646111),
-	
+
 	sunSunriseColor = tes3vector3.new(0.10468751192093,0.13780814409256,0.21113251149654),
 	sunDayColor = tes3vector3.new(0.19020310044289,0.21166664361954,0.24804016947746),
 	sunSunsetColor = tes3vector3.new(0.10052275657654,0.14052282273769,0.19936349987984),
 	sunNightColor = tes3vector3.new(0.038123168051243,0.063679918646812,0.11018896102905),
-	
+
 	sundiscSunsetColor = tes3vector3.new(0.50196081399918,0.50196081399918,0.50196081399918),
 }
 local tropicalStormSky = { cloudsMaxPercent = 1, cloudsSpeed = 10, cloudTexture = "Textures\\tx_sky_ashstorm.tga" }
@@ -352,7 +352,7 @@ local function changeWeatherSound(weather, newSoundID)
 		if weather.ambientLoopSound then
 			weather.ambientLoopSound:stop()
 		end
-		
+
 		weather.ambientLoopSoundId = newSoundID
 	end
 end
@@ -381,7 +381,7 @@ local function swapNode(particle, newParticleMesh, isSnow)
     local new = newParticleMesh:clone()
     particle.rainRoot:attachChild(new)
     new.appCulled = old.appCulled
-	
+
     particle.object = new
 end
 
@@ -428,7 +428,7 @@ local function changeWeatherPrecipitation(weather, particleSettings)
 		for _,particle in pairs(weatherController.particlesActive) do
 			swapNode(particle, newParticle, particleSettings.isSnow)
 		end
-	
+
 		for _,particle in pairs(weatherController.particlesInactive) do
 			swapNode(particle, newParticle, particleSettings.isSnow)
 		end
@@ -441,7 +441,7 @@ local function changeWeatherStormClouds(weather, stormClouds)
 	local clouds = tes3.loadMesh(stormClouds.mesh, false)	-- If useCache is true, then running this function twice with the same stormClouds will result in sceneStormRoot having nil children attached to it
 
 	weather.controller.sceneStormRoot.children[stormClouds.stormRootIndex]:detachAllChildren()
-	
+
 	for _,child in pairs(clouds.children) do
 		weather.controller.sceneStormRoot.children[stormClouds.stormRootIndex]:attachChild(child, true)
 	end
@@ -492,7 +492,7 @@ function this.manageWeathers(e)
 
 	local weather
 	local nextWeather
-	
+
 	if not e.to then
 		weather = tes3.getCurrentWeather()
 		if weather.controller.nextWeather then
@@ -557,7 +557,7 @@ function this.changeRegionWeatherChances()
 	for _,v in pairs(region_weather_chances) do
 		local regionID, weatherChanceAsh, weatherChanceBlight, weatherChanceBlizzard, weatherChanceClear, weatherChanceCloudy, weatherChanceFoggy, weatherChanceOvercast, weatherChanceRain, weatherChanceSnow, weatherChanceThunder = unpack(v)
 		local region = tes3.findRegion(regionID)
-		
+
 		if region then
 			region.weatherChanceAsh = weatherChanceAsh
 			region.weatherChanceBlight = weatherChanceBlight
