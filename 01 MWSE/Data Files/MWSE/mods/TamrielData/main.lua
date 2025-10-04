@@ -1,5 +1,5 @@
 --[[
-	Tamriel Data MWSE-Lua Addon v2.2
+	Tamriel Data MWSE-Lua Addon v2.3
 	By Kynesifnar, mort, and Rakanishu
 ]]
 
@@ -13,7 +13,7 @@ local magic = require("TamrielData.magic")
 local reputation = require("TamrielData.reputation")
 local weather = require("TamrielData.weather")
 
-mwse.log("[Tamriel Data MWSE-Lua] Initialized Version 2.2")
+mwse.log("[Tamriel Data MWSE-Lua] Initialized Version 2.3")
 
 local player_data_defaults = {
 	corruptionReferenceID = ""
@@ -233,6 +233,7 @@ local hats = {
 -- clothing id
 local embedments = {
 }
+
 -- bodypart id
 local male_imga_helmets = {
 }
@@ -525,7 +526,7 @@ end
 
 ---@param e cellChangedEventData
 local function embedmentLoaded(e)
-	if e.previousCell then return end		-- mobileActivated is not triggered when loading a game, so cellChanged is used instead
+	if e.previousCell then return end		-- mobileActivated is not triggered when loading a game, so cellChanged is used as well
 	for _,cell in pairs(tes3.getActiveCells()) do
 		for npc in cell:iterateReferences(tes3.objectType.npc, false) do
 			local embedmentItem = tes3.getEquippedItem({ actor = npc, objectType = tes3.objectType.clothing, slot = tes3.clothingSlot.embedment })
@@ -952,7 +953,7 @@ local function limitIntervention(e)
 	end
 end
 
--- Checks the player's race and replaces it with an animation file if one is needed. Should be expanded more for races in the future (such Minotaurs)
+-- Checks the player's race and replaces it with an animation file if one is needed
 local function fixPlayerAnimations()
 	if tes3.player.object.race.id == "T_Els_Ohmes-raht" or tes3.player.object.race.id == "T_Els_Suthay" then
 		if tes3.player.object.female then
@@ -985,8 +986,7 @@ event.register(tes3.event.loaded, function()
 	if config.boundSpells then
 		--event.register(tes3.event.itemTileUpdated, magic.boundKnivesTileUpdate, { unregisterOnLoad = true })
 		--event.register(tes3.event.playItemSound, magic.boundKnivesDropSound, { unregisterOnLoad = true })
-		--event.register(tes3.event.itemDropped, magic.boundKnivesItemDropped, { unregisterOnLoad = true })
-		--event.register(tes3.event.magicEffectRemoved, magic.boundKnivesRemovedEffect, { unregisterOnLoad = true })
+		--event.register(tes3.event.itemDropped, magic.boundKnivesItemDropped, { priority = 1100, unregisterOnLoad = true })
 	end
 
 	if config.interventionSpells then
@@ -994,6 +994,21 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.miscSpells then
+		event.register(tes3.event.uiSpellTooltip, magic.correctSpellTooltipUnit, { unregisterOnLoad = true })
+
+		event.register(tes3.event.equip, magic.etherealEquipPotion, { priority = 1000, unregisterOnLoad = true })
+		event.register(tes3.event.playItemSound, magic.etherealDropSound, { priority = 1000, unregisterOnLoad = true })
+		event.register(tes3.event.itemDropped, magic.etherealItemDropped, { priority = 1000, unregisterOnLoad = true })
+		event.register(tes3.event.activate, magic.etherealActivate, { priority = 1000, unregisterOnLoad = true })
+		event.register(tes3.event.enchantChargeUse, magic.etherealEnchantChargeUse, { priority = 1000, unregisterOnLoad = true })
+		event.register(tes3.event.spellCast, magic.etherealSpellCast, { priority = 1000, unregisterOnLoad = true })
+		event.register(tes3.event.spellMagickaUse, magic.etherealspellMagickaUse, { priority = 1000, unregisterOnLoad = true })
+		event.register(tes3.event.magicReflect, magic.etherealMagicReflect, { priority = 1000, unregisterOnLoad = true })
+		event.register(tes3.event.absorbedMagic, magic.etherealAbsorbedMagic, { priority = 1000, unregisterOnLoad = true })
+		event.register(tes3.event.spellResist, magic.etherealSpellResist, { priority = 1000, unregisterOnLoad = true })
+		event.register(tes3.event.damage, magic.etherealDamage, { priority = 1000, unregisterOnLoad = true })
+		event.register(tes3.event.simulate, magic.etherealOpacity, { priority = 10, unregisterOnLoad = true })		-- Priority is set so that the function runs before Detect Invisibility's opacity function, though that probably won't ever matter
+
 		event.register(tes3.event.damage, magic.magickaWardEffect, { priority = -10, unregisterOnLoad = true })		-- Priority is set so that the function runs after Reflect Damage affects the damage
 
 		event.register(tes3.event.spellMagickaUse, magic.bloodMagicCast, { unregisterOnLoad = true })
@@ -1001,7 +1016,6 @@ event.register(tes3.event.loaded, function()
 		timer.start{ duration = 0.0166667, iterations = -1, type = timer.simulate, callback = magic.prismaticLightTick }
 		event.register(tes3.event.referenceActivated, magic.onPrismaticLightReferenceActivated, { unregisterOnLoad = true })
 		event.register(tes3.event.referenceDeactivated, magic.onPrismaticLightReferenceDeactivated, { unregisterOnLoad = true })
-		event.register(tes3.event.magicEffectRemoved, magic.prismaticLightRemovedEffect, { unregisterOnLoad = true })
 
 		event.register(tes3.event.spellCast, magic.fortifyCastingOnSpellCast, { unregisterOnLoad = true })
 
@@ -1025,8 +1039,6 @@ event.register(tes3.event.loaded, function()
 
 		event.register(tes3.event.activate, magic.corruptionBlockActivation, { unregisterOnLoad = true })
 		event.register(tes3.event.mobileActivated, magic.corruptionSummoned, { unregisterOnLoad = true })
-
-		event.register(tes3.event.magicEffectRemoved, magic.wabbajackTransRemovedEffect, { unregisterOnLoad = true })	-- Rename this function and related ones to wabbajackHelper? wabbajackTrans isn't very obvious.
 
 		timer.start{ duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectValuablesTick }
 		event.register(tes3.event.magicCasted, magic.detectValuablesTick, { unregisterOnLoad = true })
@@ -1055,8 +1067,6 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.spellResist, magic.radiantShieldSpellResist, { unregisterOnLoad = true })
 		event.register(tes3.event.magicEffectRemoved, magic.radiantShieldBlindnessRemoved, { unregisterOnLoad = true })
 		event.register(tes3.event.damaged, magic.radiantShieldDamaged, { unregisterOnLoad = true })
-		event.register(tes3.event.magicEffectRemoved, magic.radiantShieldRemoved, { unregisterOnLoad = true })
-		event.register(tes3.event.spellTick, magic.radiantShieldApplied, { unregisterOnLoad = true })
 
 		event.register(tes3.event.damaged, magic.reflectDamageStun, { unregisterOnLoad = true })
 		event.register(tes3.event.damagedHandToHand, magic.reflectDamageStun, { unregisterOnLoad = true })
@@ -1195,5 +1205,5 @@ event.register(tes3.event.loaded, function()
 end)
 
 event.register(tes3.event.initialized, function()
-	--tes3.findRace("Argonian").abilities:add("T_Arg_Mys_BloodMagic")	-- This has to be done during initialization, or Argonian players won't have the spell upon loading a save
+	--tes3.findRace("Argonian").abilities:add("T_Arg_Mys_BloodMagic")	-- This has to be done during initialization or Argonian players won't have the spell upon loading a save
 end)

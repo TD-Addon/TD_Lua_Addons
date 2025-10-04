@@ -149,6 +149,8 @@ return {
 	["magic.miscDetectValuablesDesc"] = "The caster of this effect can detect items valued at 4000 drakes or more; they appear on the map as symbols. The effect's magnitude is the range in feet from the caster that items are detected.",
 	["magic.miscMagickaWard"] = "Magicka Ward",
 	["magic.miscMagickaWardDesc"] = "Placeholder",
+	["magic.miscEthereal"] = "Ethereal",
+	["magic.miscEtherealDesc"] = "The caster of this effect becomes incorporeal and can pass through other entities. The caster is incapable of being harmed by them, but also cannot act upon them, cast magic, use items, or physically interact with the world in general. The caster cannot pass through objects such as walls and still obeys the laws of gravity.",
 
 	["magic.blinkLevitationDisabled"] = "Blink does not work here.",
 	["magic.wabbajackFailure"] = "%s is too strong to be Wabbajacked!",
@@ -160,6 +162,7 @@ return {
 	["magic.gazeOfVelothCreature"] = "%s cannot comprehend the Face of Veloth!",
 	["magic.gazeOfVelothOther"] = "%s is unaffected by the Face of Veloth!",
 	["magic.corruptionScript"] = "%s cannot be corrupted.",
+	["magic.corruptionSummon"] = "You cannot corrupt a being summoned by the Skull of Corruption.",
 	["magic.banishFailure"] = "This spell is too weak to banish %s!",
 	["magic.passwallDisabled"] = "Passwall does not work here.",
 	["magic.passwallWard"] = "You cannot pass through to there.",
@@ -202,7 +205,7 @@ return {
 	-- MCM Text
 	["mcm.name"] = "Tamriel Data",
 	["mcm.preferences"] = "Preferences",
-	["mcm.preferencesInfo"] = "Tamriel Data MWSE-Lua v2.2",
+	["mcm.preferencesInfo"] = "Tamriel Data MWSE-Lua v2.3",
 	["mcm.credits"] = "Credits:",
 	["mcm.Kynesifnar"] = "Kynesifnar - Scripting",
 	["mcm.mort"] = "mort - Scripting",

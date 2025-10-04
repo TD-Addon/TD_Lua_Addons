@@ -118,7 +118,7 @@ function this.uiRefreshedCallback(e)
     local playerFactions = {}
     for _,faction in ipairs(tes3.dataHandler.nonDynamicData.factions) do
         if faction.playerJoined then
-            table.insert(playerFactions, faction)	-- Change all of the table functions to use OO syntax?
+            table.insert(playerFactions, faction)
         end
     end
 
