@@ -149,6 +149,8 @@ return {
 	["magic.miscDetectValuablesDesc"] = "Cet effet permet de détecter les objets précieux valant au moins 4000 drakes ; ils apparaissent sous forme de symboles sur la carte. La puissance de l'effet détermine la portée à laquelle le lanceur peut détecter des objets précieux (en pieds).",
 	["magic.miscMagickaWard"] = "Barrière magique",
 	["magic.miscMagickaWardDesc"] = "Placeholder",
+	["magic.miscEthereal"] = "Forme éthérée",
+	["magic.miscEtherealDesc"] = "Le lanceur de cet effet revêt une forme incorporelle et peut traverser les autres entités. Le lanceur ne peut être blessé par celles-ci, mais ne peut pas non plus agir sur elles, lancer des sorts, utiliser des objets, ou généralement interagir physiquement avec le monde. Le lanceur ne peut pas traverser des objets comme des murs et obéit toujours aux lois de la gravité.",
 
 	["magic.blinkLevitationDisabled"] = "Transfert ne fonctionne pas ici.",
 	["magic.wabbajackFailure"] = "%s est trop puissant pour que Wabbajack l'affecte !",
@@ -160,6 +162,7 @@ return {
 	["magic.gazeOfVelothCreature"] = "%s est incapable de comprendre le visage de Véloth !",
 	["magic.gazeOfVelothOther"] = "%s n'est pas affecté par le visage de Véloth !",
 	["magic.corruptionScript"] = "%s ne peut être corrompu.",
+	["magic.corruptionSummon"] = "Vous ne pouvez corrompre un être invoqué par le Crâne de Corruption.",
 	["magic.banishFailure"] = "Ce sort est trop faible pour bannir : %s !",
 	["magic.passwallDisabled"] = "Passe-muraille ne fonctionne pas ici.",
 	["magic.passWallWard"] = "Vous ne pouvez pas passer jusque-là.",
@@ -202,7 +205,7 @@ return {
 	-- MCM Text
 	["mcm.name"] = "Ressources communes de Tamriel",
 	["mcm.preferences"] = "Préférences",
-	["mcm.preferencesInfo"] = "Ressources communes de Tamriel MWSE-Lua v2.2",
+	["mcm.preferencesInfo"] = "Ressources communes de Tamriel MWSE-Lua v2.3",
 	["mcm.credits"] = "Crédits :",
 	["mcm.Kynesifnar"] = "Kynesifnar - Scripting",
 	["mcm.mort"] = "mort - Scripting",
@@ -214,16 +217,16 @@ return {
 	["mcm.settings"] = "Paramètres",
 
 	["mcm.summonSpellsLabel"] = "Ajout de nouveaux sorts d'Invocation",
-	["mcm.summonSpellsDescription"] = "Ajoute de nouveaux sorts d'Invocation utilisant des créatures de Ressources communes de Tamriel comme les consummeurs, les hernes, les sombres séductrices, et les auroriens.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+	["mcm.summonSpellsDescription"] = "Ajoute de nouveaux sorts d'Invocation utilisant des créatures de Ressources communes de Tamriel comme les consummeurs, les hernes, les sombres séductrices, et les auroriens.\nRequiert un redémarrage.\n\nPar défaut : activé\n\n",
 	
 	["mcm.boundSpellsLabel"] = "Ajout de nouveaux sorts d'objets liés",
-	["mcm.boundSpellsDescription"] = "Ajoute de nouveaux sorts d'Invocation implémentant des armes et armures liées non couverts par le jeu de base.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+	["mcm.boundSpellsDescription"] = "Ajoute de nouveaux sorts d'Invocation implémentant des armes et armures liées non couverts par le jeu de base.\nRequiert un redémarrage.\n\nPar défaut : activé\n\n",
 	
 	["mcm.interventionSpellsLabel"] = "Ajout de nouveaux sorts d'Intervention",
-	["mcm.interventionSpellsDescription"] = "Ajout de nouveaux sorts d'Intervention pour différents panthéons et dieux de Tamriel, comme la déesse nordique Kyne.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+	["mcm.interventionSpellsDescription"] = "Ajout de nouveaux sorts d'Intervention pour différents panthéons et dieux de Tamriel, comme la déesse nordique Kyne.\nRequiert un redémarrage.\n\nPar défaut : activé\n\n",
 	
 	["mcm.miscSpellsLabel"] = "Ajout de nouveaux sorts divers",
-	["mcm.miscSpellsDescription"] = "Ajoute de nouveaux sorts qui ne rentrent pas dans les catégories précédentes, comme Bannissement de Daedra, Réflexion de dégâts, Distraction des humanoïdes, et Wabbajack.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+	["mcm.miscSpellsDescription"] = "Ajoute de nouveaux sorts qui ne rentrent pas dans les catégories précédentes, comme Bannissement de Daedra, Réflexion de dégâts, Distraction des humanoïdes, et Wabbajack.\nRequiert un redémarrage.\n\nPar défaut : activé\n\n",
 	
 	["mcm.passwallAlterationLabel"] = "Faire de Passe-muraille un effet de l'école d'Altération",
 	["mcm.passwallAlterationDescription"] = "Définit l'effet magique Passe-muraille comme appartenant à l'école de l'Altération au lieu de celle du Mysticisme.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
