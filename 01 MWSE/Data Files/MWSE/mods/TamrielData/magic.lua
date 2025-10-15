@@ -28,6 +28,9 @@ local corruptionActorID = "T_Glb_Cre_Gremlin_01"	-- A funny default, just in cas
 local corruptionTargetReference = nil
 local corruptionCasted = false
 
+local blinkIndicator
+local blinkGround
+
 local mouseOverInventory = true
 local mouseOverContainer = false
 
@@ -1460,6 +1463,107 @@ function this.fortifyCastingOnSpellCast(e)
 	end
 end
 
+function this.blinkIndicator()
+	-- The indicator either needs to be hidden because the player is no longer ready to cast Blink or so that the raytests don't hit it
+	if not blinkIndicator.appCulled then
+		blinkIndicator.appCulled = true
+		tes3.worldController.vfxManager.worldVFXRoot:detachChild(blinkIndicator)
+		blinkGround.appCulled = true
+		tes3.worldController.vfxManager.worldVFXRoot:detachChild(blinkGround)
+	end
+
+	if not tes3.worldController.flagTeleportingDisabled and tes3.mobilePlayer.castReady and tes3.mobilePlayer.currentSpell then
+		for _,effect in ipairs(tes3.mobilePlayer.currentSpell.effects) do
+			-- The calculations below mostly match those of Blink itself
+			if effect.id == tes3.effect.T_mysticism_Blink then
+				local range = effect.max * 22.1
+
+				local obstacles = tes3.rayTest{
+					position = tes3.getPlayerEyePosition(),
+					direction = tes3.getPlayerEyeVector(),
+					maxDistance = range,
+					findAll = true,
+					accurateSkinned = true,
+					observeAppCullFlag = false
+				}
+
+				if obstacles then
+					for _,obstacle in ipairs(obstacles) do
+						local validObstacle = true
+						if obstacle.reference then
+							if obstacle.reference.baseObject.id:find("T_Aid_PasswallWard_") or obstacle.reference.baseObject.id:find("T_Dae_Ward_") then
+							elseif obstacle.reference.id == tes3.player.id or (obstacle.reference.baseObject.objectType == tes3.objectType.creature or obstacle.reference.baseObject.objectType == tes3.objectType.npc) and obstacle.reference.mobile.isDead then
+								validObstacle = false
+							else
+								local mesh = tes3.loadMesh(obstacle.reference.baseObject.mesh)
+								if mesh.extraData then
+									repeat
+										if mesh.extraData.string and mesh.extraData.string:lower():find("nc") then validObstacle = false end
+									until not mesh.extraData.next
+								end
+							end
+						elseif obstacle.object.name and obstacle.object.name:startswith("Water ") then
+							validObstacle = false
+						elseif obstacle.object.parent and obstacle.object.parent.name and (obstacle.object.parent.name == "Precipitation Rain Root" or obstacle.object.parent.name == "BM_Snow_01") then
+							validObstacle = false
+						elseif obstacle.object and obstacle.object.parent and obstacle.object.parent.parent and obstacle.object.parent.parent.name and obstacle.object.parent.parent.name == "COPY VFX_MysticismCast" then		-- Without this, the indicator will move right next to the player while casting
+							validObstacle = false
+						end
+
+						if validObstacle then
+							range = obstacle.distance - (tes3.mobilePlayer.boundSize2D.y / 2) - 16
+							break
+						end
+					end
+				end
+
+				if range >= 48 then	-- Having it automatically appear right in front of the player when they blink next to a wall feels awkward
+					local destination = tes3.mobilePlayer.position + tes3vector3.new(0, 0, tes3.mobilePlayer.height) + tes3.getPlayerEyeVector() * range
+
+					local heightCheck = tes3.rayTest{
+						position = destination + tes3vector3.new(0, 0, tes3.mobilePlayer.height),
+						direction = tes3vector3.new(0, 0, -1),
+						accurateSkinned = true,
+						observeAppCullFlag = false
+					}
+
+					local groundPosition
+					if heightCheck and heightCheck.distance then
+						groundPosition = tes3vector3.new(heightCheck.intersection.x, heightCheck.intersection.y, heightCheck.intersection.z + 24)
+					 	if heightCheck.distance < 196 then destination = tes3vector3.new(destination.x, destination.y, destination.z + 196 - heightCheck.distance) end
+					end
+
+					tes3.worldController.vfxManager.worldVFXRoot:attachChild(blinkIndicator, true)
+					blinkIndicator.appCulled = false
+					blinkIndicator:clearTransforms()
+
+					blinkIndicator:update()
+					blinkIndicator:updateProperties()
+					blinkIndicator:updateNodeEffects()
+
+					blinkIndicator.translation = destination
+					blinkIndicator:update()
+
+					if groundPosition then
+						tes3.worldController.vfxManager.worldVFXRoot:attachChild(blinkGround, true)
+						blinkGround.appCulled = false
+						blinkGround:clearTransforms()
+
+						blinkGround:update()
+						blinkGround:updateProperties()
+						blinkGround:updateNodeEffects()
+
+						blinkGround.translation = groundPosition
+						blinkGround:update()
+					end
+				end
+
+				return
+			end
+		end
+	end
+end
+
 function this.removeBlinkData()
 	if not (tes3.mobilePlayer.isFalling or tes3.mobilePlayer.isJumping) and (tes3.player.data.tamrielData.hasBlinked or tes3.player.data.tamrielData.blinkVelocity) then
 		tes3.player.data.tamrielData.hasBlinked = nil	-- Prevent blinkFallDamage from taking effect when it shouldn't due to the player blinking and not taking fall damage afterwards
@@ -1561,6 +1665,13 @@ local function blinkEffect(e)
 	local range = e.effectInstance.magnitude * 22.1
 
 	if range > 0 then
+		if config.blinkIndicator then		-- If the indicator is present when Blink's raytests are performed, then it will get in the way
+			blinkIndicator.appCulled = true
+			tes3.worldController.vfxManager.worldVFXRoot:detachChild(blinkIndicator)
+			blinkGround.appCulled = true
+			tes3.worldController.vfxManager.worldVFXRoot:detachChild(blinkGround)
+		end
+
 		local obstacles = tes3.rayTest{
 			position = tes3.getPlayerEyePosition(),
 			direction = tes3.getPlayerEyeVector(),
@@ -1585,7 +1696,9 @@ local function blinkEffect(e)
 							until not mesh.extraData.next
 						end
 					end
-				elseif (obstacle.object.name and obstacle.object.name:startswith("Water ")) or (obstacle.object.parent and obstacle.object.parent.name and (obstacle.object.parent.name == "Precipitation Rain Root" or obstacle.object.parent.name == "BM_Snow_01")) then
+				elseif obstacle.object.name and obstacle.object.name:startswith("Water ") then
+					validObstacle = false
+				elseif obstacle.object.parent and obstacle.object.parent.name and (obstacle.object.parent.name == "Precipitation Rain Root" or obstacle.object.parent.name == "BM_Snow_01") then
 					validObstacle = false
 				end
 
@@ -1617,6 +1730,11 @@ local function blinkEffect(e)
 
 			if tes3.mobilePlayer.isFalling or tes3.mobilePlayer.isJumping then tes3.player.data.tamrielData.hasBlinked = true end
 			tes3.mobilePlayer.position = destination
+
+			if config.blinkIndicator then
+				blinkIndicator.appCulled = false
+				tes3.worldController.vfxManager.worldVFXRoot:attachChild(blinkIndicator, true)
+			end
 		end
 	end
 
@@ -4695,6 +4813,13 @@ event.register(tes3.event.load, function()
 
 		event.unregister(tes3.event.uiActivated, this.onMenuMultiActivated, { filter = "MenuMulti" })
 		event.register(tes3.event.uiActivated, this.onMenuMultiActivated, { filter = "MenuMulti" })
+
+		if config.blinkIndicator then
+			blinkIndicator = tes3.loadMesh("td\\td_vfx_blink_indicator.nif")
+    		blinkIndicator.appCulled = true
+			blinkGround = tes3.loadMesh("td\\td_vfx_blink_ground.nif")
+    		blinkGround.appCulled = true
+		end
 	end
 
 	if config.summoningSpells and config.boundSpells and config.interventionSpells and config.miscSpells then

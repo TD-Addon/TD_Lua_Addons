@@ -1019,6 +1019,7 @@ event.register(tes3.event.loaded, function()
 
 		event.register(tes3.event.spellCast, magic.fortifyCastingOnSpellCast, { unregisterOnLoad = true })
 
+		if config.blinkIndicator then event.register(tes3.event.simulate, magic.blinkIndicator, { unregisterOnLoad = true }) end
 		timer.start{ duration = 1, iterations = -1, type = timer.simulate, callback = magic.removeBlinkData }
 		event.register(tes3.event.cellChanged, magic.removeBlinkData, { unregisterOnLoad = true })			-- Ensures that the player is not damaged by blinkFallDamageSmallJump if they enter a cell as they fall.
 		event.register(tes3.event.simulated, magic.blinkFallDamageSmallJump, { unregisterOnLoad = true })

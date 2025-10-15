@@ -87,6 +87,14 @@ local function registerModConfig()
         },
     }
     toggles:createOnOffButton{
+        label = common.i18n("mcm.blinkIndicatorLabel"),
+        description = common.i18n("mcm.blinkIndicatorDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "blinkIndicator",
+            table = config,
+        },
+    }
+    toggles:createOnOffButton{
         label = common.i18n("mcm.magickaExpandedLabel"),
         description = common.i18n("mcm.magickaExpandedDescription"),
         variable = mwse.mcm.createTableVariable{

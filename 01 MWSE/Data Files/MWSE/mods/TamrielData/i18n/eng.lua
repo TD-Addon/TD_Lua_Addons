@@ -231,6 +231,9 @@ return {
 	["mcm.passwallAlterationLabel"] = "Make Passwall an Alteration Effect",
 	["mcm.passwallAlterationDescription"] = "Sets Passwall to belong to the school of Alteration rather than the school of Mysticism.\nRequires restart.\n\nDefault: Off\n\n",
 
+	["mcm.blinkIndicatorLabel"] = "Indicator for Blink",
+	["mcm.blinkIndicatorDescription"] = "Shows where Tamriel Data's Blink effect will teleport you to.\nRequires reload.\n\nDefault: On\n\n",
+
 	["mcm.magickaExpandedLabel"] = "Overwrite Magicka Expanded Effects",
 	["mcm.magickaExpandedDescription"] = "Replaces some magic effects from Magicka Expanded with ones that are also implemented by Tamriel Data for the sake of consistency, such as Banish Daedra and Summon Vermai." ..
 											"\nOnly has an effect if applicable packs of Magicka Expanded are installed and if the new spells settings above are enabled.\nRequires reload.\n\nDefault: On\n\n",
