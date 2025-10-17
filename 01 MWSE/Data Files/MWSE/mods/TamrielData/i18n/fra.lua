@@ -229,7 +229,10 @@ return {
 	["mcm.miscSpellsDescription"] = "Ajoute de nouveaux sorts qui ne rentrent pas dans les catégories précédentes, comme Bannissement de Daedra, Réflexion de dégâts, Distraction des humanoïdes, et Wabbajack.\nRequiert un redémarrage.\n\nPar défaut : activé\n\n",
 	
 	["mcm.passwallAlterationLabel"] = "Faire de Passe-muraille un effet de l'école d'Altération",
-	["mcm.passwallAlterationDescription"] = "Définit l'effet magique Passe-muraille comme appartenant à l'école de l'Altération au lieu de celle du Mysticisme.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+	["mcm.passwallAlterationDescription"] = "Définit l'effet magique Passe-muraille comme appartenant à l'école de l'Altération au lieu de celle du Mysticisme.\nRequiert un rechargement.\n\nPar défaut : désactivé\n\n",
+	
+	["mcm.blinkIndicatorLabel"] = "Indicateur pour l'effet de Transfert",
+	["mcm.blinkIndicatorDescription"] = "Indique où l'effet magique de Transfert du mod vous téléportera quand vous le lancerez.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 
 	["mcm.magickaExpandedLabel"] = "Remplacer les effets de Magie étendue",
 	["mcm.magickaExpandedDescription"] = "Remplace certains effets magiques de Magie étendue avec ceux implémentés par Ressources communes de Tamriel pour être consistant, comme Bannissement de Daedra et Appel de vermaï." ..

@@ -1472,7 +1472,7 @@ function this.blinkIndicator()
 		tes3.worldController.vfxManager.worldVFXRoot:detachChild(blinkGround)
 	end
 
-	if not tes3.worldController.flagTeleportingDisabled and tes3.mobilePlayer.castReady and tes3.mobilePlayer.currentSpell then
+	if not tes3.worldController.flagTeleportingDisabled and tes3.mobilePlayer.castReady and tes3.mobilePlayer.currentSpell and not tes3.mobilePlayer.isKnockedDown and not tes3.mobilePlayer.isKnockedOut then
 		for _,effect in ipairs(tes3.mobilePlayer.currentSpell.effects) do
 			-- The calculations below mostly match those of Blink itself
 			if effect.id == tes3.effect.T_mysticism_Blink then
