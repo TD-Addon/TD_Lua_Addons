@@ -1069,7 +1069,7 @@ end
 ---@param e damageEventData
 function this.etherealDamage(e)
 	if (e.attacker and #e.attacker:getActiveMagicEffects({ effect = tes3.effect.T_illusion_Ethereal }) > 0) or #e.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_Ethereal }) > 0 then
-		timer.delayOneFrame(function() tes3.mobilePlayer:hitStun({ cancel = true })	end)	-- The hit stun is only applied on the next frame
+		timer.delayOneFrame(function() e.mobile:hitStun({ cancel = true })	end)	-- The hit stun is only applied on the next frame
 		return false
 	end
 end
@@ -1492,6 +1492,8 @@ function this.blinkIndicator()
 						local validObstacle = true
 						if obstacle.reference then
 							if obstacle.reference.baseObject.id:find("T_Aid_PasswallWard_") or obstacle.reference.baseObject.id:find("T_Dae_Ward_") then
+							elseif obstacle.reference.disabled then
+								validObstacle = false
 							elseif obstacle.reference.id == tes3.player.id or (obstacle.reference.baseObject.objectType == tes3.objectType.creature or obstacle.reference.baseObject.objectType == tes3.objectType.npc) and obstacle.reference.mobile.isDead then
 								validObstacle = false
 							else
@@ -1686,6 +1688,8 @@ local function blinkEffect(e)
 				local validObstacle = true
 				if obstacle.reference then
 					if obstacle.reference.baseObject.id:find("T_Aid_PasswallWard_") or obstacle.reference.baseObject.id:find("T_Dae_Ward_") then	-- Needed to prevent a crash that can occur for unclear reasons
+					elseif obstacle.reference.disabled then
+						validObstacle = false
 					elseif obstacle.reference == tes3.player or (obstacle.reference.baseObject.objectType == tes3.objectType.creature or obstacle.reference.baseObject.objectType == tes3.objectType.npc) and obstacle.reference.mobile.isDead then	-- tes3.player cannot be ignored by the rayTest because observeAppCullFlag is false
 						validObstacle = false
 					else
