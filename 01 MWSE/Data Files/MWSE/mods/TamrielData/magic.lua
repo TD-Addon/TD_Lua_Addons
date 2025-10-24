@@ -580,6 +580,7 @@ local distractedVoiceLines = {
 	{ "Imperial", false, { "vo\\i\\m\\Idl_IM008.mp3", "vo\\i\\m\\Idl_IM003.mp3" }, { "vo\\i\\m\\Idl_IM005.mp3" } },
 	{ "Imperial", true, { "vo\\i\\f\\Idl_IF001.mp3" }, { "vo\\i\\f\\Idl_IF009.mp3" } },
 	{ "Khajiit", false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },
+	{ "Khajiit", true, { "vo\\k\\f\\Idl_KF005.mp3", "vo\\k\\f\\Idl_KF006.mp3", "vo\\k\\f\\Idl_KF007.mp3" }, { "vo\\k\\f\\Idl_KF002.mp3", "vo\\k\\f\\Idl_KF003.mp3" } },
 	{ "T_Els_Cathay",		false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },
 	{ "T_Els_Cathay-raht",	false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },
 	{ "T_Els_Dagi-raht",	false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },
@@ -2706,7 +2707,6 @@ function this.detectEnemyTick(e)
 			end
 
 			for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = totalMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua 
-
 				local isHostile = false
 				for _,hostileActor in pairs(actor.hostileActors) do
 					if hostileActor == tes3.mobilePlayer then
