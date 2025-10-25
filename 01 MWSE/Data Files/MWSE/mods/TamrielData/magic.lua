@@ -567,7 +567,7 @@ local td_enchanted_items = {
 	{ "T_EnSc_Nor_KynesIntervention", common.i18n("magic.itemScKynesIntervention"), nil }
 }
 
--- race id, female, distraction voice files, distraction end voice lines
+-- race id, isFemale, distraction voice files, distraction end voice lines
 local distractedVoiceLines = {
 	{ "Argonian", false, { "vo\\a\\m\\Idl_AM001.mp3", "vo\\a\\m\\Hlo_AM056.mp3" }, { "vo\\a\\m\\Idl_AM008.mp3" } },
 	{ "Argonian", true, { "vo\\a\\f\\Idl_AF007.mp3", "vo\\a\\f\\Idl_AF004.mp3" }, { "vo\\a\\f\\Idl_AF002.mp3" } },
@@ -577,7 +577,7 @@ local distractedVoiceLines = {
 	{ "Dark Elf", true, { "vo\\d\\f\\Idl_DF006.mp3" }, { "vo\\d\\f\\Idl_DF003.mp3" } },
 	{ "High Elf", false, { "vo\\h\\m\\Hlo_HM056.mp3" }, { "vo\\i\\m\\Idl_HF007.mp3" } },
 	{ "High Elf", true, { "vo\\h\\f\\Hlo_HF056.mp3" }, { "vo\\i\\f\\Idl_HF007.mp3" } },
-	{ "Imperial", false, { "vo\\i\\m\\Idl_IM008.mp3", "vo\\i\\m\\Idl_IM003.mp3" }, { "vo\\i\\m\\Idl_IM005.mp3" } },
+	{ "Imperial", false, { "vo\\i\\m\\Idl_IM008.mp3" }, { "vo\\i\\m\\Idl_IM005.mp3" } },
 	{ "Imperial", true, { "vo\\i\\f\\Idl_IF001.mp3" }, { "vo\\i\\f\\Idl_IF009.mp3" } },
 	{ "Khajiit", false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },
 	{ "Khajiit", true, { "vo\\k\\f\\Idl_KF005.mp3", "vo\\k\\f\\Idl_KF006.mp3", "vo\\k\\f\\Idl_KF007.mp3" }, { "vo\\k\\f\\Idl_KF002.mp3", "vo\\k\\f\\Idl_KF003.mp3" } },
@@ -1901,7 +1901,7 @@ end
 ---@param ref tes3reference
 ---@param isEnd boolean
 local function playDistractedVoiceLine(ref, isEnd)
-	if ref.mobile.actorType == tes3.actorType.npc then
+	if ref.mobile.actorType == tes3.actorType.npc and not ref.mobile.hasVampirism then
 		for _,v in pairs(distractedVoiceLines) do
 			local raceID, isFemale, voicesStart, voicesEnd = unpack(v)
 			if ref.baseObject.race.id == raceID and ref.baseObject.female == isFemale then
@@ -2016,28 +2016,32 @@ local function distractEffect(e)
 						local pathExists = common.pathGridBFS(threeClosestNodes[1], node)	-- pathGridBFS is used here to check whether a path actually exists because it is quicker than pathGridDijkstra
 						if pathExists then
 							finalPlayerDistance = tes3.player.position:distance(node.position)
-							if math.abs(tes3.player.position.z - node.position.z) > 160 then finalPlayerDistance = finalPlayerDistance * 4 end	-- 4 was chosen as a constant arbitrarily and the distract effects may benefit from tweaking it
+							if math.abs(tes3.player.position.z - node.position.z) > 160 then finalPlayerDistance = finalPlayerDistance * 4 end	-- This condition makes actors prefer to travel to a above or below the player. 4 was chosen as a constant arbitrarily and adjusting it may be beneficial.
 
 							local shortestPathDistance = math.huge
 							local shortestPath
-							for _,v in ipairs(threeClosestNodes) do
-								if node ~= threeClosestNodes[1] and node ~= threeClosestNodes[2] and node ~= threeClosestNodes[3] then
+							if node ~= threeClosestNodes[1] and node ~= threeClosestNodes[2] and node ~= threeClosestNodes[3] then
+								for _,v in ipairs(threeClosestNodes) do				-- This loop recreates the logic of how actors move along pathgrid nodes to reach some destination, allowing for values such as how close the actor comes to the player to be determined later
 									---@cast v tes3pathGridNode
 									local path = common.pathGridDijkstra(v, node)
 									local pathDistance = 0
 									local previousPathNode
 
-									for _,pathNode in ipairs(path) do
-										---@cast pathNode tes3pathGridNode
-										if previousPathNode then pathDistance = pathDistance + pathNode.position:distance(previousPathNode.position) end
-										previousPathNode = pathNode
-									end
+									if path then
+										for _,pathNode in ipairs(path) do
+											---@cast pathNode tes3pathGridNode
+											if previousPathNode then pathDistance = pathDistance + pathNode.position:distance(previousPathNode.position) end
+											previousPathNode = pathNode
+										end
 
-									if pathDistance < shortestPathDistance then
-										shortestPath = path
-										shortestPathDistance = pathDistance
+										if pathDistance < shortestPathDistance then	-- Actors prefer to take the shortest path to their destination starting from the 3 nodes that are closest to them
+											shortestPath = path
+											shortestPathDistance = pathDistance
+										end
 									end
 								end
+							else
+								shortestPath = { node }
 							end
 
 							local nodePlayerDistance
@@ -2050,7 +2054,7 @@ local function distractEffect(e)
 									if nodePlayerDistance < shortestPlayerDistance then shortestPlayerDistance = nodePlayerDistance end
 								end
 
-								local score = targetDistance / 2 + finalPlayerDistance / 4 + shortestPlayerDistance		-- These constants were also chosen arbitrarily and finetuning them might yield better results
+								local score = (targetDistance / 2) + (finalPlayerDistance / 4) + shortestPlayerDistance		-- A destination is more suitable the further away it is from the target, the further away it is from their player, and the further away that the target stays from the player while travelling. These constants were also chosen arbitrarily.
 
 								if score > bestScore then
 									bestScore = score
@@ -2066,13 +2070,11 @@ local function distractEffect(e)
 			local bestPlayerFinalDistance = 0
 			local destination
 
-
 			for rotation = 0, 342, 18 do
 				local pathCollision = tes3.rayTest{	-- This is not a very rigorous check, but anything that works better would also be much more complicated, so this is it for now
 					position = target.position + tes3vector3.new(0, 0, 0.25 * target.mobile.height),
 					direction = target.orientation + tes3vector3.new(0, 0, rotation),
 					maxDistance = range + target.mobile.boundSize2D.y / 2,
-					root = { tes3.game.worldObjectRoot },
 					ignore = { target },
 				}
 
@@ -2099,6 +2101,7 @@ local function distractEffect(e)
 			target.mobile.hello = 0
 			distractedReferences[target] = true
 		else
+			target.data.tamrielData = target.data.tamrielData or {}
 			target.data.tamrielData.distract = nil
 		end
 	end
