@@ -39,7 +39,7 @@ event.register(tes3.event.loaded, function()
 							spell.effects[i] = replacementEffect
 						end
 					end
-					
+
 					if me_tr then
 						if spell.effects[i].id == tes3.effect.summonWelkyndSpirit then
 							replacementEffect = tes3.getObject("T_Ayl_Cnj_SummonWelkyndSpirit").effects[1]
@@ -50,7 +50,7 @@ event.register(tes3.event.loaded, function()
 						end
 					end
 				end
-				
+
 				if config.boundSpells == true and me_lorefriendly then
 					if spell.effects[i].id == tes3.effect.boundGreaves then
 						replacementEffect = tes3.getObject("T_Com_Cnj_BoundGreaves").effects[1]
@@ -71,7 +71,7 @@ event.register(tes3.event.loaded, function()
 						spell.effects[i] = replacementEffect
 					end
 				end
-				
+
 				if config.miscSpells == true then
 					if me_lorefriendly then
 						if spell.effects[i].id == tes3.effect.banishDaedra then
@@ -87,7 +87,7 @@ event.register(tes3.event.loaded, function()
 						end
 					end
 				end
-				
+
 				-- Cost is not modified because getAutoCalcMagickaCost() has problems with these ME spells (and T_Com_Mys_BanishDaedra) for unclear reasons
 				spell.effects[i].duration = duration
 				spell.effects[i].min = min
