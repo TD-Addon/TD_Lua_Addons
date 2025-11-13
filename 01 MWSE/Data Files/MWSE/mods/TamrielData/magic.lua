@@ -1530,8 +1530,15 @@ function this.blinkIndicator()
 
 					local groundPosition
 					if heightCheck and heightCheck.distance then
-						groundPosition = tes3vector3.new(heightCheck.intersection.x, heightCheck.intersection.y, heightCheck.intersection.z + 24)
-					 	if heightCheck.distance < 196 then destination = tes3vector3.new(destination.x, destination.y, destination.z + 196 - heightCheck.distance) end
+						if heightCheck.reference and heightCheck.reference == tes3.player then	-- Stop the ground mesh from being placed on top of the player, which might otherwise happen if they are looking up
+						else
+							if tes3.player.cell.waterLevel and heightCheck.intersection.z <= tes3.player.cell.waterLevel and not tes3.player.mobile.underwater and destination.z > tes3.player.cell.waterLevel + 48 then		-- If the player and their destination are above water, then the ground mesh should be too so that it is visible
+								groundPosition = tes3vector3.new(heightCheck.intersection.x, heightCheck.intersection.y, tes3.player.cell.waterLevel + 6)
+							else
+								groundPosition = tes3vector3.new(heightCheck.intersection.x, heightCheck.intersection.y, heightCheck.intersection.z + 24)
+							end
+					 		if heightCheck.distance < 196 then destination = tes3vector3.new(destination.x, destination.y, destination.z + 196 - heightCheck.distance) end
+						end
 					end
 
 					tes3.worldController.vfxManager.worldVFXRoot:attachChild(blinkIndicator, true)
