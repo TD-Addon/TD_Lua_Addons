@@ -96,8 +96,8 @@ return {
 	["magic.boundWarhammerDesc"] = "The spell effect conjures a lesser Daedra bound in the form of a magical, wondrously light Daedric warhammer. The warhammer appears automatically equipped on the caster, displacing any currently equipped weapon to inventory. When the effect ends, the warhammer disappears, and any previously equipped weapon is automatically re-equipped.",
 	["magic.boundPauldrons"] = "Bound Pauldrons",
 	["magic.boundPauldronsDesc"] = "The spell effect conjures a lesser Daedra bound in the form of magical, wondrously light Daedric pauldrons. The pauldrons appear automatically equipped on the caster, displacing any currently equipped shoulder armor to inventory. When the effect ends, the pauldrons disappear, and any previously equipped shoulder armor is automatically re-equipped.",
-	["magic.boundGreatsword"] = "Bound Greatsword",
-	["magic.boundGreatswordDesc"] = "The spell effect conjures a lesser Daedra bound in the form of a magical, wondrously light Daedric greatsword. The greatsword appears automatically equipped on the caster, displacing any currently equipped weapon to inventory. When the effect ends, the greatsword disappears, and any previously equipped weapon is automatically re-equipped.",
+	["magic.boundClaymore"] = "Bound Claymore",
+	["magic.boundClaymoreDesc"] = "The spell effect conjures a lesser Daedra bound in the form of a magical, wondrously light Daedric claymore. The claymore appears automatically equipped on the caster, displacing any currently equipped weapon to inventory. When the effect ends, the claymore disappears, and any previously equipped weapon is automatically re-equipped.",
 	["magic.boundThrowingKnives"] = "Bound Throwing Knives",
 	["magic.boundThrowingKnivesDesc"] = "The spell effect conjures a lesser Daedra bound in the form of magical, wondrously light Daedric throwing knives. The throwing knives appear automatically equipped on the caster, displacing any currently equipped weapon to inventory. When the effect ends, the throwing knives disappear, and any previously equipped weapon is automatically re-equipped.",
 

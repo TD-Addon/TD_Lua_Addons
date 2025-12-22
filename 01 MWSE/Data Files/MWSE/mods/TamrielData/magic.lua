@@ -150,7 +150,7 @@ local td_bound_effects = {
 	{ tes3.effect.T_bound_HammerResdayn, "", "T_Com_Bound_Warhammer_01", "", 2, "td\\s\\td_s_bnd_res_ham.dds", ""},
 	{ tes3.effect.T_bound_RazorResdayn, "", "bound_dagger", "", 2, "td\\s\\td_s_bnd_red_razor.dds", ""},
 	{ tes3.effect.T_bound_Pauldrons, common.i18n("magic.boundPauldrons"), "T_Com_Bound_PauldronL_01", "T_Com_Bound_PauldronR_01", 2, "td\\s\\td_s_bnd_pldrn.dds", common.i18n("magic.boundPauldronsDesc")},
-	{ tes3.effect.T_bound_Greatsword, common.i18n("magic.boundGreatsword"), "T_Com_Bound_Greatsword_01", "", 2, "td\\s\\td_s_bnd_clymr.dds", common.i18n("magic.boundGreatswordDesc")},
+	{ tes3.effect.T_bound_Greatsword, common.i18n("magic.boundClaymore"), "T_Com_Bound_Claymore_01", "", 2, "td\\s\\td_s_bnd_clymr.dds", common.i18n("magic.boundClaymoreDesc")},
 	{ tes3.effect.T_bound_ThrowingKnives, common.i18n("magic.boundThrowingKnives"), "T_Com_Bound_ThrowingKnife_01", "", 2, "td\\s\\td_s_bnd_knives.dds", common.i18n("magic.boundThrowingKnivesDesc")},
 }
 
@@ -411,7 +411,7 @@ local td_ingredients = {
 								   tes3.effect.T_mysticism_Blink, -1, -1 },
 	{ "T_IngMine_PearlPink_01", nil, nil, nil,
 								nil, nil, nil,
-								tes3.effect.T_restoration_FortifyCasting, -1, -1,		-- Shouldn't the effects on blue and pink pearls be switched around?
+								tes3.effect.T_restoration_FortifyCasting, -1, -1,
 								nil, nil, nil },
 	{ "T_IngMine_PearlPinkDae_01", nil, nil, nil,
 								   nil, nil, nil,
@@ -479,7 +479,7 @@ local td_ingredients = {
 	{ "T_IngFood_MeatDolphin_01", nil, nil, nil,
 								  nil, nil, nil,
 								  nil, nil, nil,
-								  tes3.effect.T_mysticism_DetHuman, -1, -1 },	-- Detect invisibility seems much more suitable here
+								  tes3.effect.T_mysticism_DetHuman, -1, -1 },
 	{ "T_IngFlor_Indulcet_01", nil, nil, nil,
 							   tes3.effect.T_mysticism_DetInvisibility, -1, -1,
 							   nil, nil, nil,
