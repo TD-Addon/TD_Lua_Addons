@@ -276,7 +276,7 @@ local function changeRaceMenuKhajiitNames(e)
     	if not racePane then return end
 
 		for _,layout in ipairs(racePane.children) do
-			if layout.children[1] and layout.children[1].text == "Khajiit" then
+			if layout.children[1] and layout.children[1].text == common.i18n("main.khajiit.khajiit") then
 				local race = layout.children[1]:getPropertyObject("MenuRaceSex_ListNumber")
 				---@cast race tes3race
 
@@ -295,6 +295,8 @@ local function changeRaceMenuKhajiitNames(e)
 					layout.children[1].text = common.i18n("main.khajiit.ohmes-raht")
 				elseif race.id == "T_Els_Suthay" then
 					layout.children[1].text = common.i18n("main.khajiit.suthay")
+				elseif race.id == "T_Els_Tojay" then
+					layout.children[1].text = common.i18n("main.khajiit.tojay")
 				end
 			end
 		end
@@ -609,11 +611,11 @@ end
 ---@param e equipEventData
 local function restrictRaceEquip(e)
 	if e.reference.baseObject.objectType == tes3.objectType.npc then
-		if e.reference.mobile.object.race.id == "T_Val_Imga" then
+		if e.reference.mobile.object.race.id == "T_Val_Imga" then			-- Imga are not able to wear boots/shoes and male Imga cannot wear any helmets/hats due to their skull's crest unless the item is made specifically for them
 			if e.item.objectType == tes3.objectType.armor then
 				if e.item.slot == tes3.armorSlot.boots then
 					if e.reference.mobile == tes3.mobilePlayer then
-						tes3ui.showNotifyMenu(common.i18n("main.imgaShoes"))
+						tes3ui.showNotifyMenu(common.i18n("main.imgaBoots"))
 					end
 
 					return false
@@ -653,11 +655,11 @@ local function restrictRaceEquip(e)
 					end
 				end
 			end
-		elseif e.reference.mobile.object.race.id == "T_Aka_Tsaesci" then
+		elseif e.reference.mobile.object.race.id == "T_Aka_Tsaesci" then	-- Tsaesci are not able to wear greaves/pants or boots/shoes
 			if e.item.objectType == tes3.objectType.armor then
 				if e.item.slot == tes3.armorSlot.boots then
 					if e.reference.mobile == tes3.mobilePlayer then
-						tes3ui.showNotifyMenu(common.i18n("main.tsaesciShoes"))
+						tes3ui.showNotifyMenu(common.i18n("main.tsaesciBoots"))
 					end
 
 					return false
@@ -665,7 +667,7 @@ local function restrictRaceEquip(e)
 
 				if e.item.slot == tes3.armorSlot.greaves then
 					if e.reference.mobile == tes3.mobilePlayer then
-						tes3ui.showNotifyMenu(common.i18n("main.tsaesciPants"))
+						tes3ui.showNotifyMenu(common.i18n("main.tsaesciGreaves"))
 					end
 
 					return false
@@ -689,7 +691,7 @@ local function restrictRaceEquip(e)
 					return false
 				end
 			end
-		elseif e.reference.mobile.object.race.id == "T_Cyr_Minotaur" then
+		elseif e.reference.mobile.object.race.id == "T_Cyr_Minotaur" then	-- Minotaurs are not able to any helmets/hats; boots/shoes are accounted by them being a beast race
 			if e.item.objectType == tes3.objectType.armor then
 				if e.item.slot == tes3.armorSlot.boots then
 					if e.reference.mobile == tes3.mobilePlayer then
@@ -700,7 +702,7 @@ local function restrictRaceEquip(e)
 				end
 
 				if e.item.slot == tes3.armorSlot.helmet then
-					if e.item.parts[1] and e.item.parts[1].male and not table.contains(male_imga_helmets, e.item.parts[1].male.id) then
+					if e.item.parts[1] and e.item.parts[1].male then
 						if e.reference.mobile == tes3.mobilePlayer then
 							tes3ui.showNotifyMenu(common.i18n("main.minotaurHelm"))
 						end
@@ -720,9 +722,33 @@ local function restrictRaceEquip(e)
 				end
 
 				if e.item.slot == tes3.clothingSlot.hat then
-					if e.item.parts[1] and e.item.parts[1].male and not table.contains(male_imga_helmets, e.item.parts[1].male.id) then
+					if e.item.parts[1] and e.item.parts[1].male then
 						if e.reference.mobile == tes3.mobilePlayer then
 							tes3ui.showNotifyMenu(common.i18n("main.minotaurHat"))
+						end
+
+						return false
+					end
+				end
+			end
+		elseif e.reference.mobile.object.race.id == "T_Arg_Naga" then		-- Naga are not able to wear any helmets/hats; boots/shoes are accounted by them being a beast race
+			if e.item.objectType == tes3.objectType.armor then
+				if e.item.slot == tes3.armorSlot.helmet then
+					if e.item.parts[1] and e.item.parts[1].male then
+						if e.reference.mobile == tes3.mobilePlayer then
+							tes3ui.showNotifyMenu(common.i18n("main.nagaHelm"))
+						end
+
+						return false
+					end
+				end
+			end
+
+			if e.item.objectType == tes3.objectType.clothing then
+				if e.item.slot == tes3.clothingSlot.hat then
+					if e.item.parts[1] and e.item.parts[1].male then
+						if e.reference.mobile == tes3.mobilePlayer then
+							tes3ui.showNotifyMenu(common.i18n("main.nagaHat"))
 						end
 
 						return false
@@ -736,7 +762,7 @@ end
 ---@param e bodyPartAssignedEventData
 local function fixVampireHeadAssignment(e)
 	if e.reference.baseObject.objectType == tes3.objectType.npc and e.index == tes3.activeBodyPart.head then
-		if not e.object or e.object.objectType ~= tes3.objectType.armor then
+		if not e.object or e.object.objectType ~= tes3.objectType.armor or e.object.objectType ~= tes3.objectType.clothing then
 			if e.reference.mobile and e.reference.mobile.object then
 				if e.reference.mobile.object.baseObject.head.id == "T_B_De_UNI_HeadOrlukhTR" then	-- Handles the unique head for Varos of the Orlukh bloodline
 						e.bodyPart = e.reference.mobile.object.baseObject.head
@@ -765,7 +791,7 @@ local function fixVampireHeadAssignment(e)
 	end
 
 	if e.index == tes3.activeBodyPart.hair then	-- Check for being an NPC too?
-		if not e.object or e.object.objectType ~= tes3.objectType.armor then
+		if not e.object or e.object.objectType ~= tes3.objectType.armor or e.object.objectType ~= tes3.objectType.clothing then
 			if e.reference.mobile and e.reference.mobile.object then
 				if e.reference.mobile.object.baseObject.hair.id == "T_B_Imp_UNI_HairHerriusPC" then	-- Handles the unique hair for Herrius Thimistrel
 					if e.reference.mobile.inCombat or e.reference.mobile.isDead then
@@ -956,7 +982,7 @@ end
 
 -- Checks the player's race and replaces it with an animation file if one is needed
 local function fixPlayerAnimations()
-	if tes3.player.object.race.id == "T_Els_Ohmes-raht" or tes3.player.object.race.id == "T_Els_Suthay" then
+	if tes3.player.object.race.id == "T_Els_Ohmes-raht" or tes3.player.object.race.id == "T_Els_Suthay" or tes3.player.object.race.id == "T_Els_Tojay" then
 		if tes3.player.object.female then
 			tes3.loadAnimation({ reference = tes3.player, file = "epos_kha_upr_anim_f.nif" })
 		else

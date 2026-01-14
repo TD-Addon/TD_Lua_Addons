@@ -1,13 +1,17 @@
 return {
 	-- Main Text
+	["main.imgaBoots"] = "Imga cannot wear boots.",
 	["main.imgaShoes"] = "Imga cannot wear shoes.",
 	["main.imgaHelm"] = "Male Imga cannot wear helmets.",
 	["main.imgaHat"] = "Male Imga cannot wear hats.",
+	["main.tsaesciBoots"] = "Tsaesci cannot wear boots.",
 	["main.tsaesciShoes"] = "Tsaesci cannot wear shoes.",
+	["main.tsaesciGreaves"] = "Tsaesci cannot wear greaves.",
 	["main.tsaesciPants"] = "Tsaesci cannot wear pants.",
-	["main.minotaurShoes"] = "Minotaurs cannot wear shoes.",
 	["main.minotaurHelm"] = "Minotaurs cannot wear helmets.",
 	["main.minotaurHat"] = "Minotaurs cannot wear hats.",
+	["main.nagaHelm"] = "Naga cannot wear helmets.",
+	["main.nagaHat"] = "Naga cannot wear hats.",
 
 	["main.rangeAlmsivi"] = "The power of Almsivi does not extend to these lands.",
 	["main.rangeKyne"] = "The power of Kyne does not extend to these lands.",
@@ -22,13 +26,14 @@ return {
 	["main.tooltipValue"] = "Value",
 
 	["main.khajiit.khajiit"] = "Khajiit",
-	["main.khajiit.suthay-raht"] = "Suthay-raht",
 	["main.khajiit.cathay"] = "Cathay",
 	["main.khajiit.cathay-raht"] = "Cathay-raht",
 	["main.khajiit.dagi-raht"] = "Dagi-raht",
 	["main.khajiit.ohmes"] = "Ohmes",
 	["main.khajiit.ohmes-raht"] = "Ohmes-raht",
 	["main.khajiit.suthay"] = "Suthay",
+	["main.khajiit.suthay-raht"] = "Suthay-raht",
+	["main.khajiit.tojay"] = "Tojay",
 
 	-- Magic Text
 	["magic.summonDevourer"] = "Summon Devourer",

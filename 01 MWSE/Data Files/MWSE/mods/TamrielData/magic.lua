@@ -266,6 +266,7 @@ local td_misc_spells = {
 	{ "T_Com_Mys_DetectValuables", tes3.spellType.spell, common.i18n("magic.miscDetectValuables"), 38, { tes3.effect.T_mysticism_DetValuables }, tes3.effectRange.self, 0, 5, 50, 150 },
 	{ "T_Com_Mys_MagickaWard", tes3.spellType.spell, common.i18n("magic.miscMagickaWard"), 20, { tes3.effect.T_mysticism_MagickaWard }, tes3.effectRange.self, 0, 30, 1, 1 },
 	{ "T_Com_Ilu_Ethereal", tes3.spellType.spell, common.i18n("magic.miscEthereal"), 30, { tes3.effect.T_illusion_Ethereal }, tes3.effectRange.self, 0, 15, 1, 1 },
+	{ "T_Nag_Pow_StalkersShroud", tes3.spellType.power, nil, nil, { tes3.effect.chameleon }, tes3.effectRange.self, 0, 60, 50, 50, { tes3.effect.T_mysticism_DetHuman }, tes3.effectRange.self, 0, 60, 100, 100 },
 }
 
 -- enchantment id, (1st effect id, attribute id, skill id), 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
@@ -370,7 +371,7 @@ local td_enchantments = {
 														{ tes3.effect.boundHelm }, tes3.effectRange.self, 0, 60, 1, 1, },
 	{ "T_Use_WabbajackUni", tes3.enchantmentType.onUse, { tes3.effect.T_alteration_Wabbajack }, tes3.effectRange.target, 0, 1, 1, 1 },
 	{ "T_Use_SkullOfCorruption", tes3.enchantmentType.onUse, { tes3.effect.T_conjuration_Corruption }, tes3.effectRange.target, 0, 0, 1, 1 },
-	{ "T_Use_SummonGuardian60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Guardian }, tes3.effectRange.self, 0, 60, 1, 1 },
+	{ "T_Use_SummonGuardian60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Guardian }, tes3.effectRange.self, 0, 60, 1, 1 },			-- Not on any items?
 	{ "T_Const_VelothsPauld_R", tes3.enchantmentType.constant, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 30, 30 },
 	{ "T_Strike_StaffVeloth", tes3.enchantmentType.onUse, { tes3.effect.T_destruction_GazeOfVeloth }, tes3.effectRange.target, 0, 1, 1, 1 },
 	{ "T_Const_Spell_Bifurcation", tes3.enchantmentType.constant, { tes3.effect.T_restoration_FortifyCasting }, tes3.effectRange.self, 0, 1, 20, 20 },
