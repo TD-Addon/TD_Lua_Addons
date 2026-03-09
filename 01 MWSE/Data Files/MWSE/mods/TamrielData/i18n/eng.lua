@@ -239,6 +239,12 @@ return {
 	["mcm.blinkIndicatorLabel"] = "Indicator for Blink",
 	["mcm.blinkIndicatorDescription"] = "Shows where Tamriel Data's Blink effect will teleport you to.\nRequires reload.\n\nDefault: On\n\n",
 
+	["mcm.argonianBloodMagicLabel"] = "Blood Magic for Argonian Races",
+	["mcm.argonianBloodMagicDescription"] = "Gives Argonian players Blood Magic as a racial power.\nRequires restart.\n\nDefault: On\n\n",
+
+	["mcm.detectValuablesThresholdLabel"] = "Detect Valuables Threshold",
+	["mcm.detectValuablesThresholdDescription"] = "The minimum value that items must be in order for them to be detected by Detect Valuables.\n\nDefault: 4000\n\n",
+
 	["mcm.magickaExpandedLabel"] = "Overwrite Magicka Expanded Effects",
 	["mcm.magickaExpandedDescription"] = "Replaces some magic effects from Magicka Expanded with ones that are also implemented by Tamriel Data for the sake of consistency, such as Banish Daedra and Summon Vermai." ..
 											"\nOnly has an effect if applicable packs of Magicka Expanded are installed and if the new spells settings above are enabled.\nRequires reload.\n\nDefault: On\n\n",
@@ -276,6 +282,7 @@ return {
 	["mcm.restrictEquipmentDescription"] = "Prevents races added by Tamriel Data from wearing certain kinds of equipment when doing so would be physically implausible or technically problematic.\nRequires reload.\n\nAffected races and equipment:" ..
 											"\n- Stops male Imga from equipping helmets and all Imga from equipping footwear." ..
 											"\n- Stops Tsaesci from equipping greaves and footwear." ..
+											"\n- Stops Naga from equipping helmets." ..
 											"\n\nDefault: On\n\n",
 
 	["mcm.itemSoundsLabel"] = "Improve Item Sounds",

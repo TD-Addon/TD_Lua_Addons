@@ -1,13 +1,17 @@
 return {
 	-- Main Text
+	["main.imgaBoots"] = "Les Imgas ne peuvent porter de bottes.",
 	["main.imgaShoes"] = "Les Imgas ne peuvent porter de chaussures.",
 	["main.imgaHelm"] = "Les Imgas mâles ne peuvent porter de casque.",
 	["main.imgaHat"] = "Les Imgas mâles ne peuvent porter de chapeau.",
+	["main.tsaesciBoots"] = "Les Tsaescis ne peuvent porter de bottes.",
 	["main.tsaesciShoes"] = "Les Tsaescis ne peuvent porter de chaussures.",
-    ["main.tsaesciPants"] = "Les Tsaescis ne peuvent porter de pantalon.",
-	["main.minotaurShoes"] = "Les minotaures ne peuvent porter de chaussures.",
+	["main.tsaesciGreaves"] = "Les Tsaescis ne peuvent porter de jambières.",
+        ["main.tsaesciPants"] = "Les Tsaescis ne peuvent porter de pantalon.",
 	["main.minotaurHelm"] = "Les minotaures ne peuvent porter de casque.",
 	["main.minotaurHat"] = "Les minotaures ne peuvent porter de chapeau.",
+	["main.nagaHelm"] = "Les Nagas ne peuvent porter de casque.",
+	["main.nagaHat"] = "Les Nagas ne peuvent porter de chapeau.",
 
 	["main.rangeAlmsivi"] = "Le pouvoir d'Almsivi ne s'étend pas sur ces terres.",
 	["main.rangeKyne"] = "Le pouvoir de Kyne ne s'étend pas sur ces terres.",
@@ -22,13 +26,14 @@ return {
 	["main.tooltipValue"] = "Valeur ",
 
 	["main.khajiit.khajiit"] = "Khajiit",
-	["main.khajiit.suthay-raht"] = "Suthay-raht",
 	["main.khajiit.cathay"] = "Cathay",
 	["main.khajiit.cathay-raht"] = "Cathay-raht",
 	["main.khajiit.dagi-raht"] = "Dagi-raht",
 	["main.khajiit.ohmes"] = "Ohmes",
 	["main.khajiit.ohmes-raht"] = "Ohmes-raht",
 	["main.khajiit.suthay"] = "Suthay",
+	["main.khajiit.suthay-raht"] = "Suthay-raht",
+	["main.khajiit.tojay"] = "Tojay",
 
 	-- Magic Text
 	["magic.summonDevourer"] = "Appel de consummeur",
@@ -96,8 +101,8 @@ return {
 	["magic.boundWarhammerDesc"] = "Ce sort permet d'invoquer un Daedra inférieur lié sous la forme d'un marteau de guerre daedrique, magique et d'une exceptionnelle légèreté. Il apparaît dans la main du lanceur, remplaçant automatiquement celui dont ce dernier était équipé. Quand l'effet prend fin, l'arme disparaît, remplacée par celle dont le personnage était précédemment équipé.",
 	["magic.boundPauldrons"] = "Epaulières liées",
 	["magic.boundPauldronsDesc"] = "Ce sort permet d'invoquer un Daedra inférieur lié sous la forme d'une paire d'épaulières daedriques, magiques et d'une exceptionnelle légèreté. Elles apparaissent directement sur les épaules du lanceur, remplaçant automatiquement les épaulières dont ce dernier était équipé. Quand l'effet prend fin, les épaulières sont remplacées par celles dont le personnage était précédemment équipé.",
-	["magic.boundGreatsword"] = "Espadon lié",
-	["magic.boundGreatswordDesc"] = "Ce sort permet d'invoquer un Daedra inférieur lié sous la forme d'un espadon daedrique, magique et d'une exceptionnelle légèreté. Il apparaît dans la main du lanceur, remplaçant automatiquement celui dont ce dernier était équipé. Quand l'effet prend fin, l'arme disparaît, remplacée par celle dont le personnage était précédemment équipé.",
+	["magic.boundClaymore"] = "Claymore liée",
+	["magic.boundClaymoreDesc"] = "Ce sort permet d'invoquer un Daedra inférieur lié sous la forme d'une claymore daedrique, magique et d'une exceptionnelle légèreté. Elle apparaît dans la main du lanceur, remplaçant automatiquement celle dont ce dernier était équipé. Quand l'effet prend fin, l'arme disparaît, remplacée par celle dont le personnage était précédemment équipé.",
 	["magic.boundThrowingKnives"] = "Couteaux de lancer liés",
 	["magic.boundThrowingKnivesDesc"] = "Ce sort permet d'invoquer un Daedra inférieur lié sous la forme de couteaux de lancer daedriques, magiques et d'une exceptionnelle légèreté. Ils apparaissent directement dans la main du lanceur, remplaçant automatiquement ceux dont ce dernier était équipé. Quand l'effet prend fin, les armes disparaissent, remplacées par celle dont le personnage était précédemment équipé.",
 
@@ -254,7 +259,7 @@ return {
 											"\nCette option risque d'entrer en conflit avec les mods MWSE qui ajoutent de nouveaux types de vêtements.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 	
 	["mcm.creatureBehaviorsLabel"] = "Amélioration des comportements des créatures",
-    ["mcm.creatureBehaviorsDescription"] = "Fait en sorte que les créatures se comportent d'une façon plus intéressante et moins restreinte par les limitations du moteur de jeu. Par exemple, les tanthas dans l'oues de Cyrodil attaqueront le joueur quand un de leurs nids est pillé."..
+    ["mcm.creatureBehaviorsDescription"] = "Fait en sorte que les créatures se comportent d'une façon plus intéressante et moins restreinte par les limitations du moteur de jeu. Par exemple, les tanthas dans l'ouest de Cyrodil attaqueront le joueur quand un de leurs nids est pillé."..
                                         "\nRequiert un rechargement.\n\nPar défaut : activé\n\n", 
 	
 	["mcm.animationFixLabel"] = "Corriger les animations du joueur pour les nouvelles races",
@@ -286,7 +291,7 @@ return {
 	["mcm.khajiitFormCharacterCreationDescription"] = "Nomme les formes de Khajiit dans les menus de création du personnage au lieu de toutes les appeler \"Khajiit\". Un mod tiers comme Races de Tamriel est requis pour que ces races soient disponibles à la création du personnage.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 	
 	["mcm.butterflyMothTooltipLabel"] = "Infobulle des ingrédients pour les papillons et les phalènes",
-	["mcm.butterflyMothTooltipDescription"] = "Affiche les effets alchimiques, le poids et la valeur eds ingrédients qui peuvent être récoltés sur les papillons et les phalènes quand vous les regardez, comme le permet Récolte réaliste quand vous regardez des conteneurs organiques récoltables.\nRequiert un rechargement.\n\nPar défaut : activé, si Récolte réaliste est installé et que sa fonctionnalité pour afficher les infobulles des ingrédients est active\n\n",
+	["mcm.butterflyMothTooltipDescription"] = "Affiche les effets alchimiques, le poids et la valeur des ingrédients qui peuvent être récoltés sur les papillons et les phalènes quand vous les regardez, comme le permet Récolte réaliste quand vous regardez des conteneurs organiques récoltables.\nRequiert un rechargement.\n\nPar défaut : activé, si Récolte réaliste est installé et que sa fonctionnalité pour afficher les infobulles des ingrédients est active\n\n",
 	
 	["mcm.interventionRangeLabel"] = "Limiter la portée des sorts d'Intervention",
 	["mcm.interventionRangeDescription"] = "Restreint la portée jusqu'à laquelle les sorts d'Intervention fonctionnent, vous empêchant de les utiliser pour vous téléporter d'un bout à l'autre de Tamriel." ..

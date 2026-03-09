@@ -95,6 +95,24 @@ local function registerModConfig()
         },
     }
     toggles:createOnOffButton{
+        label = common.i18n("mcm.argonianBloodMagicLabel"),
+        description = common.i18n("mcm.argonianBloodMagicDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "argonianBloodMagic",
+            table = config,
+        },
+    }
+    toggles:createSlider{
+        label = common.i18n("mcm.detectValuablesThresholdLabel"),
+        description = common.i18n("mcm.detectValuablesThresholdDescription"),
+        min = 2000,
+        max = 20000,
+        variable = mwse.mcm.createTableVariable{
+            id = "detectValuablesThreshold",
+            table = config,
+        },
+    }
+    toggles:createOnOffButton{
         label = common.i18n("mcm.magickaExpandedLabel"),
         description = common.i18n("mcm.magickaExpandedDescription"),
         variable = mwse.mcm.createTableVariable{

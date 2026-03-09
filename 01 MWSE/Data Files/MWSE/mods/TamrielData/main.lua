@@ -36,6 +36,7 @@ local item_sounds = {
 	{ "T_Imp_Subst_QuaestoVil_01", "Item Potion Up", "Item Potion Down", "Item Potion Down"},
 	{ "T_Imp_Subst_QuaestoVil_02", "Item Potion Up", "Item Potion Down", "Item Potion Down"},
 	{ "T_Imp_Subst_SiyatCigar_01", "Item Misc Up", "Item Misc Down", "T_SndObj_CigarDrag"},
+	{ "T_Imp_Subst_SloadOil_01", "Item Misc Up", "Item Misc Down", "T_SndObj_Salve"},
 
 	{ "T_IngSpice_OliveOil_01", "Item Potion Up", "Item Potion Down", "Drink"},
 	{ "T_IngFood_Vinegar_01", "Item Potion Up", "Item Potion Down", "Drink"},
@@ -719,14 +720,6 @@ local function restrictRaceEquip(e)
 			end
 		elseif e.reference.mobile.object.race.id == "T_Cyr_Minotaur" then	-- Minotaurs are not able to any helmets/hats; boots/shoes are accounted by them being a beast race
 			if e.item.objectType == tes3.objectType.armor then
-				if e.item.slot == tes3.armorSlot.boots then
-					if e.reference.mobile == tes3.mobilePlayer then
-						tes3ui.showNotifyMenu(common.i18n("main.minotaurShoes"))
-					end
-
-					return false
-				end
-
 				if e.item.slot == tes3.armorSlot.helmet then
 					if e.item.parts[1] and e.item.parts[1].male then
 						if e.reference.mobile == tes3.mobilePlayer then
@@ -739,14 +732,6 @@ local function restrictRaceEquip(e)
 			end
 
 			if e.item.objectType == tes3.objectType.clothing then
-				if e.item.slot == tes3.clothingSlot.shoes then
-					if e.reference.mobile == tes3.mobilePlayer then
-						tes3ui.showNotifyMenu(common.i18n("main.minotaurShoes"))
-					end
-
-					return false
-				end
-
 				if e.item.slot == tes3.clothingSlot.hat then
 					if e.item.parts[1] and e.item.parts[1].male then
 						if e.reference.mobile == tes3.mobilePlayer then
@@ -1259,5 +1244,8 @@ event.register(tes3.event.loaded, function()
 end)
 
 event.register(tes3.event.initialized, function()
-	--tes3.findRace("Argonian").abilities:add("T_Arg_Mys_BloodMagic")	-- This has to be done during initialization or Argonian players won't have the spell upon loading a save
+	if config.miscSpells and config.argonianBloodMagic then
+		tes3.findRace("Argonian").abilities:add("T_Arg_Mys_BloodMagic")	-- This has to be done during initialization or Argonian players won't have the spell upon loading a save
+		tes3.findRace("T_Bm_Naga").abilities:add("T_Arg_Mys_BloodMagic") -- Use T_Com_Mys_BloodMagic instead?
+	end
 end)

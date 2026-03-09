@@ -181,7 +181,7 @@ local td_misc_effects = {
 	{ tes3.effect.T_mysticism_Blink, common.i18n("magic.miscBlink"), 10, "td\\s\\td_s_blink.tga", common.i18n("magic.miscBlinkDesc")},
 	{ tes3.effect.T_restoration_FortifyCasting, common.i18n("magic.miscFortifyCasting"), 1, "td\\s\\td_s_ftfy_cast.tga", common.i18n("magic.miscFortifyCastingDesc")},
 	{ tes3.effect.T_illusion_PrismaticLight, common.i18n("magic.miscPrismaticLight"), 0.4, "td\\s\\td_s_p_light.tga", common.i18n("magic.miscPrismaticLightDesc")},
-	{ tes3.effect.T_mysticism_BloodMagic, common.i18n("magic.miscBloodMagic"), 0, "td\\s\\td_s_blood_magic.tga", common.i18n("magic.miscBloodMagicDesc")},
+	{ tes3.effect.T_mysticism_BloodMagic, common.i18n("magic.miscBloodMagic"), 2, "td\\s\\td_s_blood_magic.tga", common.i18n("magic.miscBloodMagicDesc")},
 	{ tes3.effect.T_conjuration_SanguineRose, common.i18n("magic.miscSanguineRose"), 40, "td\\s\\td_s_sanguine.dds.tga", common.i18n("magic.miscSanguineRoseDesc")},
 	{ tes3.effect.T_mysticism_DetValuables, common.i18n("magic.miscDetectValuables"), 1.5, "td\\s\\td_s_det_value.tga", common.i18n("magic.miscDetectValuablesDesc")},
 	{ tes3.effect.T_mysticism_MagickaWard, common.i18n("magic.miscMagickaWard"), 20, "td\\s\\td_s_magickaward.tga", common.i18n("magic.miscMagickaWardDesc")},
@@ -261,10 +261,10 @@ local td_misc_spells = {
 	{ "T_Com_Mys_Blink", tes3.spellType.spell, common.i18n("magic.miscBlink"), 25, { tes3.effect.T_mysticism_Blink }, tes3.effectRange.self, 0, 0, 50, 50 },
 	--{ "T_Cr_Ab_AuroranLight", tes3.spellType.ability, nil, nil, { tes3.effect.T_illusion_PrismaticLight }, tes3.effectRange.self, 0, 0, 20, 20 },	-- There should be a separate, higher magnitude ability for the radiant Aurorans that will be affected instead
 	{ "T_UNI_SaintTelynBlessing", tes3.spellType.ability, nil, nil, { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 0, 10, 10 },
-	{ "T_Arg_Mys_BloodMagic", tes3.spellType.spell, nil, nil, { tes3.effect.T_mysticism_BloodMagic }, tes3.effectRange.self, 0, 30, 0, 0 },
-	{ "T_Com_Mys_BloodMagic", tes3.spellType.spell, common.i18n("magic.miscBloodMagic"), 0, { tes3.effect.T_mysticism_BloodMagic }, tes3.effectRange.self, 0, 30, 0, 0 },
+	{ "T_Arg_Mys_BloodMagic", tes3.spellType.power, nil, nil, { tes3.effect.T_mysticism_BloodMagic }, tes3.effectRange.self, 0, 90, 0, 0 },
+	{ "T_Com_Mys_BloodMagic", tes3.spellType.spell, common.i18n("magic.miscBloodMagic"), 3, { tes3.effect.T_mysticism_BloodMagic }, tes3.effectRange.self, 0, 30, 0, 0 },
 	{ "T_Com_Mys_DetectValuables", tes3.spellType.spell, common.i18n("magic.miscDetectValuables"), 38, { tes3.effect.T_mysticism_DetValuables }, tes3.effectRange.self, 0, 5, 50, 150 },
-	{ "T_Com_Mys_MagickaWard", tes3.spellType.spell, common.i18n("magic.miscMagickaWard"), 20, { tes3.effect.T_mysticism_MagickaWard }, tes3.effectRange.self, 0, 30, 1, 1 },
+	{ "T_Com_Mys_MagickaWard", tes3.spellType.spell, common.i18n("magic.miscMagickaWard"), 20, { tes3.effect.T_mysticism_MagickaWard }, tes3.effectRange.self, 0, 20, 1, 1 },
 	{ "T_Com_Ilu_Ethereal", tes3.spellType.spell, common.i18n("magic.miscEthereal"), 30, { tes3.effect.T_illusion_Ethereal }, tes3.effectRange.self, 0, 15, 1, 1 },
 	{ "T_Nag_Pow_StalkersShroud", tes3.spellType.power, nil, nil, { tes3.effect.chameleon }, tes3.effectRange.self, 0, 60, 50, 50, { tes3.effect.T_mysticism_DetHuman }, tes3.effectRange.self, 0, 60, 100, 100 },
 }
@@ -736,12 +736,14 @@ local distractedVoiceLines = {
 	{ "T_Els_Ohmes",		false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },
 	{ "T_Els_Ohmes-raht", 	false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },
 	{ "T_Els_Suthay",		false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },
+	{ "T_Els_Tojay",		false, { "vo\\k\\m\\Idl_KM005.mp3", "vo\\k\\m\\Idl_KM006.mp3", "vo\\k\\m\\Idl_KM007.mp3" }, { "vo\\k\\m\\Idl_KM002.mp3", "vo\\k\\m\\Idl_KM003.mp3" } },
 	{ "T_Els_Cathay",		true, { "vo\\k\\f\\Idl_KF005.mp3", "vo\\k\\f\\Idl_KF006.mp3", "vo\\k\\f\\Idl_KF007.mp3" }, { "vo\\k\\f\\Idl_KF002.mp3", "vo\\k\\f\\Idl_KF003.mp3" } },
 	{ "T_Els_Cathay-raht",	true, { "vo\\k\\f\\Idl_KF005.mp3", "vo\\k\\f\\Idl_KF006.mp3", "vo\\k\\f\\Idl_KF007.mp3" }, { "vo\\k\\f\\Idl_KF002.mp3", "vo\\k\\f\\Idl_KF003.mp3" } },
 	{ "T_Els_Dagi-raht",	true, { "vo\\k\\f\\Idl_KF005.mp3", "vo\\k\\f\\Idl_KF006.mp3", "vo\\k\\f\\Idl_KF007.mp3" }, { "vo\\k\\f\\Idl_KF002.mp3", "vo\\k\\f\\Idl_KF003.mp3" } },
 	{ "T_Els_Ohmes",		true, { "vo\\k\\f\\Idl_KF005.mp3", "vo\\k\\f\\Idl_KF006.mp3", "vo\\k\\f\\Idl_KF007.mp3" }, { "vo\\k\\f\\Idl_KF002.mp3", "vo\\k\\f\\Idl_KF003.mp3" } },
 	{ "T_Els_Ohmes-raht",	true, { "vo\\k\\f\\Idl_KF005.mp3", "vo\\k\\f\\Idl_KF006.mp3", "vo\\k\\f\\Idl_KF007.mp3" }, { "vo\\k\\f\\Idl_KF002.mp3", "vo\\k\\f\\Idl_KF003.mp3" } },
 	{ "T_Els_Suthay",		true, { "vo\\k\\f\\Idl_KF005.mp3", "vo\\k\\f\\Idl_KF006.mp3", "vo\\k\\f\\Idl_KF007.mp3" }, { "vo\\k\\f\\Idl_KF002.mp3", "vo\\k\\f\\Idl_KF003.mp3" } },
+	{ "T_Els_Tojay",		true, { "vo\\k\\f\\Idl_KF005.mp3", "vo\\k\\f\\Idl_KF006.mp3", "vo\\k\\f\\Idl_KF007.mp3" }, { "vo\\k\\f\\Idl_KF002.mp3", "vo\\k\\f\\Idl_KF003.mp3" } },
 	{ "Nord", false, { "vo\\n\\m\\Idl_NM001.mp3" }, { "vo\\n\\m\\Idl_NM009.mp3" } },
 	{ "Nord", true, { "vo\\n\\f\\Idl_NF002.mp3", "vo\\n\\f\\Idl_NF004.mp3" }, { "vo\\n\\f\\Idl_NM008.mp3" } },
 	{ "Orc", false, { "vo\\o\\m\\Idl_OM001.mp3", "vo\\o\\m\\Idl_OM002.mp3" }, { "vo\\o\\m\\Idl_OM004.mp3", "vo\\o\\m\\Idl_OM009.mp3" } },
@@ -847,6 +849,7 @@ local raceSkeletonBodyParts = {
 	{ "T_Els_Ohmes", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
 	{ "T_Els_Ohmes-raht", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
 	{ "T_Els_Suthay", "T_B_GazeVeloth_SkeletonKha_02", "T_C_GazeVeloth_SkeletonKha_02" },
+	{ "T_Els_Tojay", "T_B_GazeVeloth_SkeletonKha_02", "T_C_GazeVeloth_SkeletonKha_02" },
 	{ "T_Hr_Riverfolk", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
 	{ "T_Mw_Malahk_Orc", "T_B_GazeVeloth_SkeletonOrc_01", "T_C_GazeVeloth_SkeletonOrc_01" },
 	{ "T_Pya_SeaElf", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
@@ -1135,7 +1138,11 @@ function this.correctSpellTooltipUnit(e)
 					pointUnit = " pts "
 				end
 
-				e.tooltip.children[1].children[2].children[index + 1].children[2].children[1].text = e.tooltip.children[1].children[2].children[index + 1].children[2].children[1].text:gsub(pointUnit, unit, 1)
+				if e.spell.castType == tes3.spellType.spell then
+					e.tooltip.children[1].children[2].children[index + 1].children[2].children[1].text = e.tooltip.children[1].children[2].children[index + 1].children[2].children[1].text:gsub(pointUnit, unit, 1)
+				elseif e.spell.castType == tes3.spellType.power then
+					e.tooltip.children[1].children[2].children[index].children[2].children[1].text = e.tooltip.children[1].children[2].children[index].children[2].children[1].text:gsub(pointUnit, unit, 1)
+				end
 			end
 		end
 	end
@@ -1361,8 +1368,8 @@ function this.magickaWardEffect(e)
 				difficultyTerm = tes3.worldController.difficulty * tes3.findGMST(tes3.gmst.fDifficultyMult).value
 			end
 
-			local trueDamage = e.damage * (1 + difficultyTerm)				-- Should armor be taken into consideration?
-			local magickaDamage = trueDamage * math.clamp((50 / 100), 0, 1)	-- math.clamp is currently used in case magicka ward is set to use a magnitude; anything greater than 100 points will completely block an attack. Right now it doesn't and always blocks 50% of the damage.
+			local trueDamage = e.damage * (1 + difficultyTerm)
+			local magickaDamage = trueDamage * 0.5
 
 			if e.mobile.magicka.current >= magickaDamage then
 				e.damage = (trueDamage - magickaDamage) / (1 + difficultyTerm)
@@ -1380,7 +1387,7 @@ function this.bloodMagicCast(e)
 	local bloodMagicEffects = e.caster.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_BloodMagic })
 	if #bloodMagicEffects > 0 then
 		e.cost = e.cost / 2
-		e.caster.mobile:applyDamage({ damage = e.cost, applyArmor = false, playerAttack = false })	-- If cast chance is improved, then set a data field on the caster so that the cast chance will be affected even if the effect has worn off when the animation finishes?
+		e.caster.mobile:applyDamage({ damage = e.cost, applyArmor = false, playerAttack = false })
 	end
 end
 
@@ -2569,7 +2576,7 @@ function this.detectValuablesTick(e)
 			end
 			totalMagnitude = totalMagnitude * 22.1
 
-			local minValue = 4000	-- The minimum value that an item must be to be detected
+			local minValue = config.detectValuablesThreshold	-- The minimum value that an item must be to be detected
 
 			for _,cell in pairs(tes3.getActiveCells()) do
 				for item in cell:iterateReferences({ tes3.objectType.alchemy, tes3.objectType.ammunition, tes3.objectType.apparatus, tes3.objectType.armor, tes3.objectType.book, tes3.objectType.clothing, tes3.objectType.ingredient, tes3.objectType.light, tes3.objectType.lockpick, tes3.objectType.miscItem, tes3.objectType.probe, tes3.objectType.repairItem, tes3.objectType.weapon }, false) do
@@ -2640,7 +2647,7 @@ end
 ---@param ref tes3reference
 ---@return boolean
 local function detectInvisibilityValid(ref)
-	if ref == tes3.player then return false end
+	if ref == tes3.player or not ref.mobile then return false end
 
 	local obj = ref.baseObject
 
@@ -3357,10 +3364,8 @@ local function banishDaedraEffect(e)
 
 	if magnitude >= (targetLevel / 2) + ((targetLevel / 2) * target.mobile.health.normalized) then
 		for _,v in pairs(target.baseObject.inventory.items) do
-			if v.object.objectType ~= tes3.objectType.leveledItem then
-				if v.object.id ~= "ingred_daedras_heart_01" and v.object.id ~= "ingred_daedra_skin_01" and v.object.id ~= "ingred_scamp_skin_01" and v.object.id ~= "T_IngCrea_DridreaSilk_01" and v.object.id ~= "T_IngCrea_PrismaticDust_01" then	-- Sometimes ingredients are added without being part of a list, so here they are
-					table.insert(uniqueItems, v.object)
-				end
+			if v.object.objectType ~= tes3.objectType.leveledItem and v.object.objectType ~= tes3.objectType.ingredient then	-- Sometimes ingredients are added without being part of a list
+				table.insert(uniqueItems, v.object)
 			end
 		end
 
