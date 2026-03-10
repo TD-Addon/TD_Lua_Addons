@@ -1148,6 +1148,152 @@ function this.correctSpellTooltipUnit(e)
 	end
 end
 
+
+---@param e uiPreEventEventData
+local function modifyCastingChanceMultiFillbar(e)
+	local multiMenu = e.source
+	if not multiMenu then
+		return
+	end
+
+	local fortifyCastingEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_restoration_FortifyCasting })
+	local bloodMagicEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_BloodMagic })
+	if #fortifyCastingEffects > 0 or #bloodMagicEffects > 0 then
+		local magicLayout = multiMenu:findChild("MenuMulti_bottom_row_left"):findChild("MenuMulti_icons"):findChild("MenuMulti_magic_layout")
+		if not magicLayout then
+			return
+		end
+
+		local colorBar = magicLayout:findChild("PartFillbar_colorbar_ptr")
+		local magicIcon = magicLayout:findChild("MenuMulti_magic_icon")
+		if not colorBar or not magicIcon then
+			return
+		end
+
+		local fortifyMagnitude = 0
+		if #fortifyCastingEffects > 0 then
+			for _,v in pairs(fortifyCastingEffects) do
+				fortifyMagnitude = fortifyMagnitude + v.magnitude
+			end
+		end
+
+		local hasBloodMagic = false
+		if #bloodMagicEffects > 0 then hasBloodMagic = true end
+
+		local spell = magicIcon:getPropertyObject("MagicMenu_Spell")
+		if not spell then return end
+		---@cast spell tes3spell
+		local castChance
+
+		if (not hasBloodMagic and spell.magickaCost > tes3.mobilePlayer.magicka.current) or (hasBloodMagic and spell.magickaCost / 2 > tes3.mobilePlayer.magicka.current) then
+			castChance = 0
+		else
+			castChance = spell:calculateCastChance({ caster = tes3.player, checkMagicka = false })
+			castChance = castChance + fortifyMagnitude
+		end
+
+		local width = math.clamp(castChance / 100, .001, 1)
+		colorBar.widthProportional = width
+	end
+end
+
+---@param e uiActivatedEventData
+function this.onMenuMultiActivated(e)
+	e.element:registerAfter(tes3.uiEvent.preUpdate, modifyCastingChanceMultiFillbar)
+end
+
+---@param e uiPreEventEventData
+local function modifyCastingChanceSpellmakingMenu(e)
+	local spellmakingMenu = e.source
+	if not spellmakingMenu then return end
+
+	local fortifyCastingEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_restoration_FortifyCasting })	-- The spellmaking menu does not consider the player's current magicka, so only Fortify Casting is involved here
+	if #fortifyCastingEffects > 0 then
+		local magnitude = 0
+		for _,v in pairs(fortifyCastingEffects) do
+			magnitude = magnitude + v.magnitude
+		end
+
+		local spellChance = spellmakingMenu:findChild("MenuSpellmaking_SpellChance")
+		if not spellChance then return end
+		if not spellChance.text then return end
+
+		local effectProperty = spellChance:getPropertyFloat("MenuSpellmaking_Effect")
+
+		if effectProperty == 0 or effectProperty == 99999 then return end -- This is true if no effects have been added or if all of the previously selected effects have been removed, both of which should give a spellChance of 0
+
+		if effectProperty > 0 then		-- effectProperty appears to have 0.7 added to it when positive and 0.3 subtracted from it when negative, hence the condition and calculations here
+			spellChance.text = math.round(effectProperty - 0.7) + magnitude
+		else
+			spellChance.text = math.round(effectProperty + 0.3) + magnitude
+		end
+	end
+end
+
+---@param e uiActivatedEventData
+function this.onMenuSpellmakingActivated(e)
+	e.element:registerAfter(tes3.uiEvent.preUpdate, modifyCastingChanceSpellmakingMenu)
+end
+
+---@param e uiPreEventEventData
+local function modifyCastingChanceMenuPercents(e)
+	local magicMenu = e.source
+	if not magicMenu then return end
+
+	local spellLayout = magicMenu:findChild("MagicMenu_spell_layout")
+	if not spellLayout then return end
+
+	local spellPercents = spellLayout:findChild("MagicMenu_spell_percents")
+	if not spellPercents then return end
+
+	local fortifyCastingEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_restoration_FortifyCasting })
+	local bloodMagicEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_BloodMagic })
+	if #fortifyCastingEffects > 0 or #bloodMagicEffects > 0 then
+		local fortifyMagnitude = 0
+		if #fortifyCastingEffects > 0 then
+			for _,v in pairs(fortifyCastingEffects) do
+				fortifyMagnitude = fortifyMagnitude + v.magnitude
+			end
+		end
+
+		local hasBloodMagic = false
+		if #bloodMagicEffects > 0 then hasBloodMagic = true end
+
+		for _,percent in ipairs(spellPercents.children) do
+			if percent.text ~= "/100" then
+				local spell = percent:getPropertyObject("MagicMenu_Spell")
+				---@cast spell tes3spell
+				local castChance
+
+				if (not hasBloodMagic and spell.magickaCost > tes3.mobilePlayer.magicka.current) or (hasBloodMagic and spell.magickaCost / 2 > tes3.mobilePlayer.magicka.current) then
+					castChance = 0
+				else
+					castChance = spell:calculateCastChance({ caster = tes3.player, checkMagicka = false })
+					castChance = castChance + fortifyMagnitude
+				end
+
+				if castChance > 0.5 then
+					castChance = math.round(castChance)
+
+					if castChance >= 100 then
+						percent.text = "/100"
+						percent.autoWidth = true
+						--percent.width = 28
+					else
+						percent.text = "/" .. castChance
+						percent.autoWidth = true
+					end
+				end
+			end
+		end
+	end
+end
+
+---@param e uiActivatedEventData
+function this.onMenuMagicActivated(e)
+	e.element:registerAfter(tes3.uiEvent.preUpdate, modifyCastingChanceMenuPercents)
+end
+
 ---@param e equipEventData
 function this.etherealEquipPotion(e)
 	if e.item.objectType == tes3.objectType.alchemy and #e.reference.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_Ethereal }) > 0 then return false end
@@ -1470,139 +1616,6 @@ local function prismaticLightEffect(e)
 			end
 		end
 	end
-end
-
----@param e uiPreEventEventData
-local function fortifyCastingMultiFillbar(e)
-	local multiMenu = e.source
-	if not multiMenu then
-		return
-	end
-
-	local fortifyCastingEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_restoration_FortifyCasting })
-	if #fortifyCastingEffects > 0 then
-		local magicLayout = multiMenu:findChild("MenuMulti_bottom_row_left"):findChild("MenuMulti_icons"):findChild("MenuMulti_magic_layout")
-		if not magicLayout then
-			return
-		end
-
-		local colorBar = magicLayout:findChild("PartFillbar_colorbar_ptr")
-		local magicIcon = magicLayout:findChild("MenuMulti_magic_icon")
-		if not colorBar or not magicIcon then
-			return
-		end
-
-		local magnitude = 0
-		for _,v in pairs(fortifyCastingEffects) do
-			magnitude = magnitude + v.magnitude
-		end
-
-		local spell = magicIcon:getPropertyObject("MagicMenu_Spell")
-		if not spell then return end
-		---@cast spell tes3spell
-		local castChance
-
-		if spell.magickaCost > tes3.mobilePlayer.magicka.current then
-			castChance = 0
-		else
-			castChance = spell:calculateCastChance({ caster = tes3.player, checkMagicka = false })
-			castChance = castChance + magnitude
-		end
-
-		local width = math.clamp(castChance / 100, .001, 1)
-		colorBar.widthProportional = width
-	end
-end
-
----@param e uiActivatedEventData
-function this.onMenuMultiActivated(e)
-	e.element:registerAfter(tes3.uiEvent.preUpdate, fortifyCastingMultiFillbar)
-end
-
----@param e uiPreEventEventData
-local function fortifyCastingSpellmakingMenuChance(e)
-	local spellmakingMenu = e.source
-	if not spellmakingMenu then return end
-
-	local fortifyCastingEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_restoration_FortifyCasting })
-	if #fortifyCastingEffects > 0 then
-		local magnitude = 0
-		for _,v in pairs(fortifyCastingEffects) do
-			magnitude = magnitude + v.magnitude
-		end
-
-		local spellChance = spellmakingMenu:findChild("MenuSpellmaking_SpellChance")
-		if not spellChance then return end
-		if not spellChance.text then return end
-
-		local effectProperty = spellChance:getPropertyFloat("MenuSpellmaking_Effect")
-
-		if effectProperty == 0 or effectProperty == 99999 then return end -- This is true if no effects have been added or if all of the previously selected effects have been removed, both of which should give a spellChance of 0
-
-		if effectProperty > 0 then		-- effectProperty appears to have 0.7 added to it when positive and 0.3 subtracted from it when negative, hence the condition and calculations here
-			spellChance.text = math.round(effectProperty - 0.7) + magnitude
-		else
-			spellChance.text = math.round(effectProperty + 0.3) + magnitude
-		end
-	end
-end
-
----@param e uiActivatedEventData
-function this.onMenuSpellmakingActivated(e)
-	e.element:registerAfter(tes3.uiEvent.preUpdate, fortifyCastingSpellmakingMenuChance)
-end
-
----@param e uiPreEventEventData
-local function fortifyCastingMenuPercents(e)
-	local magicMenu = e.source
-	if not magicMenu then return end
-
-	local spellLayout = magicMenu:findChild("MagicMenu_spell_layout")
-	if not spellLayout then return end
-
-	local spellPercents = spellLayout:findChild("MagicMenu_spell_percents")
-	if not spellPercents then return end
-
-	local fortifyCastingEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_restoration_FortifyCasting })
-	if #fortifyCastingEffects > 0 then
-		local magnitude = 0
-		for _,v in pairs(fortifyCastingEffects) do
-			magnitude = magnitude + v.magnitude
-		end
-
-		for i,percent in ipairs(spellPercents.children) do
-			if percent.text ~= "/100" then
-				local spell = percent:getPropertyObject("MagicMenu_Spell")
-				---@cast spell tes3spell
-				local castChance
-
-				if spell.magickaCost > tes3.mobilePlayer.magicka.current then
-					castChance = 0
-				else
-					castChance = spell:calculateCastChance({ caster = tes3.player, checkMagicka = false })
-					castChance = castChance + magnitude
-				end
-
-				if castChance > 0.5 then
-					castChance = math.round(castChance)
-
-					if castChance >= 100 then
-						percent.text = "/100"
-						percent.autoWidth = true
-						--percent.width = 28
-					else
-						percent.text = "/" .. castChance
-						percent.autoWidth = true
-					end
-				end
-			end
-		end
-	end
-end
-
----@param e uiActivatedEventData
-function this.onMenuMagicActivated(e)
-	e.element:registerAfter(tes3.uiEvent.preUpdate, fortifyCastingMenuPercents)
 end
 
 ---@param e spellCastEventData
@@ -4954,7 +4967,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 	end
 end)
 
--- Replaces spell names, effects, etc. using the spell tables above
+-- Replaces spell names, effects, etc. using the spell tables above; these operations needs to be done during the load event, rather than loaded like in main.lua
 event.register(tes3.event.load, function()
 	if config.summoningSpells then
 		this.replaceSpells(td_summon_spells)
@@ -4971,8 +4984,8 @@ event.register(tes3.event.load, function()
 	if config.miscSpells then
 		this.replaceSpells(td_misc_spells)
 
-		event.unregister(tes3.event.uiActivated, this.onMenuMagicActivated, { filter = "MenuMagic" })	-- unregisterOnLoad isn't an option here of course
-		event.register(tes3.event.uiActivated, this.onMenuMagicActivated, { filter = "MenuMagic" })	-- This needs to be done before the loaded event is triggered
+		event.unregister(tes3.event.uiActivated, this.onMenuMagicActivated, { filter = "MenuMagic" })	-- unregisterOnLoad isn't an option here of course, as the registration needs to be done before loaded
+		event.register(tes3.event.uiActivated, this.onMenuMagicActivated, { filter = "MenuMagic" })
 
 		event.unregister(tes3.event.uiActivated, this.onMenuSpellmakingActivated, { filter = "MenuSpellmaking" })
 		event.register(tes3.event.uiActivated, this.onMenuSpellmakingActivated, { filter = "MenuSpellmaking" })
