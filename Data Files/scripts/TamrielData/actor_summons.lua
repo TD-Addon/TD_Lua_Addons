@@ -90,6 +90,7 @@ return {
         T_MarkSummon = function(data)
             state.caster = data.caster
             state.key = data.key
+            self.type.stats.ai.fight(self).base = 30 -- we should probably be using dedicated creature variants
         end,
         Died = function()
             if state.key ~= nil then

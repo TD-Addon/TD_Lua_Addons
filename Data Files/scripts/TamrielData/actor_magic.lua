@@ -116,7 +116,8 @@ return {
                 state = data
             end
         end,
-        onUpdate = updateEffects
+        onUpdate = updateEffects,
+        onInactive = updateEffects
     },
     interfaceName = 'T_ActorMagic',
     interface = {
