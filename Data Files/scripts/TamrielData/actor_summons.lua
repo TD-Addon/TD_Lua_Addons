@@ -8,37 +8,12 @@ local I = require('openmw.interfaces')
 local nearby = require('openmw.nearby')
 local self = require('openmw.self')
 local util = require('openmw.util')
+local magicData = require('MWSE.mods.TamrielData.magicdata')
 
-local summons = {
-	t_summon_devourer = 't_dae_cre_devourer_01',
-	t_summon_dremarch = 't_dae_cre_drem_arch_01',
-	t_summon_dremcast = 't_dae_cre_drem_cast_01',
-	t_summon_guardian = 't_dae_cre_guardian_01',
-	t_summon_lesserclfr = 't_dae_cre_lesserclfr_01',
-	t_summon_ogrim = 'ogrim',
-	t_summon_seducer = 't_dae_cre_seduc_01',
-	t_summon_seducerdark = 't_dae_cre_seducdark_02',
-	t_summon_vermai = 't_dae_cre_verm_01',
-	t_summon_atrostormmon = 't_dae_cre_monarchst_01',
-	t_summon_icewraith = 't_sky_cre_icewr_01',
-	t_summon_dwespectre = 'dwarven ghost',
-	t_summon_steamcent = 'centurion_steam',
-	t_summon_spidercent = 'centurion_spider',
-	t_summon_welkyndspirit = 't_ayl_cre_welkspr_01',
-	t_summon_auroran = 't_dae_cre_auroran_01',
-	t_summon_herne = 't_dae_cre_herne_01',
-	t_summon_morphoid = 't_dae_cre_morphoid_01',
-	t_summon_draugr = 't_sky_und_drgr_01',
-	t_summon_spriggan = 't_sky_cre_spriggan_01',
-	t_summon_boneldgr = 't_mw_und_boneldgr_01',
-	t_summon_ghost = 't_cyr_und_ghst_01',
-	t_summon_wraith = 't_cyr_und_wrth_01',
-	t_summon_barrowguard = 't_cyr_und_mum_01',
-	t_summon_minobarrowguard = 't_cyr_und_minobarrow_01',
-	t_summon_skeletonchampion = 't_glb_und_skelcmpgls_01',
-	t_summon_atrofrostmon = 't_dae_cre_monarchfr_01',
-	t_summon_spiderdaedra = 't_dae_cre_spiderdae_01',
-}
+local summons = {}
+for _, values in pairs(magicData.td_summon_effects) do
+    summons[values[1]:lower()] = values[3]
+end
 
 local state = {
     summons = {}
