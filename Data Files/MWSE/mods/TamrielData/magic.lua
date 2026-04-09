@@ -108,613 +108,7 @@ if config.miscSpells then
 	tes3.claimSpellEffectId("T_illusion_Ethereal", 2151)
 end
 
--- The effect costs for most summons were initially calculated by mort using a formula (dependent on a creature's health and soul) that is now lost and were then adjusted as seemed reasonable.
--- Calculations have provided a new formula: Effect Cost = (.16 * Health) + (.035 * Soul); most of the old values are in close agreement with the new formula and have thus been left unchanged.
--- effect id, effect name, creature id, effect mana cost, icon, effect description
-local td_summon_effects = {
-	{ tes3.effect.T_summon_Devourer, common.i18n("magic.summonDevourer"), "T_Dae_Cre_Devourer_01", 52, "td\\s\\td_s_summ_dev.dds", common.i18n("magic.summonDevourerDesc")},
-	{ tes3.effect.T_summon_DremArch, common.i18n("magic.summonDremoraArcher"), "T_Dae_Cre_Drem_Arch_01", 33, "td\\s\\td_s_sum_drm_arch.dds", common.i18n("magic.summonDremoraArcherDesc")},
-	{ tes3.effect.T_summon_DremCast, common.i18n("magic.summonDremoraCaster"), "T_Dae_Cre_Drem_Cast_01", 31, "td\\s\\td_s_sum_drm_mage.dds", common.i18n("magic.summonDremoraCasterDesc")},
-	{ tes3.effect.T_summon_Guardian, common.i18n("magic.summonGuardian"), "T_Dae_Cre_Guardian_01", 69, "td\\s\\td_s_sum_guard.dds", common.i18n("magic.summonGuardianDesc")},
-	{ tes3.effect.T_summon_LesserClfr, common.i18n("magic.summonLesserClannfear"), "T_Dae_Cre_LesserClfr_01", 19, "td\\s\\td_s_sum_lsr_clan.dds", common.i18n("magic.summonLesserClannfearDesc")},
-	{ tes3.effect.T_summon_Ogrim, common.i18n("magic.summonOgrim"), "ogrim", 33, "td\\s\\td_s_summ_ogrim.dds", common.i18n("magic.summonOgrimDesc")},
-	{ tes3.effect.T_summon_Seducer, common.i18n("magic.summonSeducer"), "T_Dae_Cre_Seduc_01", 52, "td\\s\\td_s_summ_sed.dds", common.i18n("magic.summonSeducerDesc")},
-	{ tes3.effect.T_summon_SeducerDark, common.i18n("magic.summonSeducerDark"), "T_Dae_Cre_SeducDark_02", 75, "td\\s\\td_s_summ_d_sed.dds", common.i18n("magic.summonSeducerDarkDesc")},
-	{ tes3.effect.T_summon_Vermai, common.i18n("magic.summonVermai"), "T_Dae_Cre_Verm_01", 29, "td\\s\\td_s_summ_vermai.dds", common.i18n("magic.summonVermaiDesc")},
-	{ tes3.effect.T_summon_AtroStormMon, common.i18n("magic.summonStormMonarch"), "T_Dae_Cre_MonarchSt_01", 60, "td\\s\\td_s_sum_stm_monch.dds", common.i18n("magic.summonStormMonarchDesc")},
-	{ tes3.effect.T_summon_IceWraith, common.i18n("magic.summonIceWraith"), "T_Sky_Cre_IceWr_01", 35, "td\\s\\td_s_sum_ice_wrth.dds", common.i18n("magic.summonIceWraithDesc")},
-	{ tes3.effect.T_summon_DweSpectre, common.i18n("magic.summonDweSpectre"), "dwarven ghost", 17, "td\\s\\td_s_sum_dwe_spctre.dds", common.i18n("magic.summonDweSpectreDesc")},
-	{ tes3.effect.T_summon_SteamCent, common.i18n("magic.summonSteamCent"), "centurion_steam", 29, "td\\s\\td_s_sum_dwe_cent.dds", common.i18n("magic.summonSteamCentDesc")},
-	{ tes3.effect.T_summon_SpiderCent, common.i18n("magic.summonSpiderCent"), "centurion_spider", 15, "td\\s\\td_s_sum_dwe_spdr.dds", common.i18n("magic.summonSpiderCentDesc")},
-	{ tes3.effect.T_summon_WelkyndSpirit, common.i18n("magic.summonWelkyndSpirit"), "T_Ayl_Cre_WelkSpr_01", 29, "td\\s\\td_s_sum_welk_srt.dds", common.i18n("magic.summonWelkyndSpiritDesc")},
-	{ tes3.effect.T_summon_Auroran, common.i18n("magic.summonAuroran"), "T_Dae_Cre_Auroran_01", 46, "td\\s\\td_s_sum_auro.dds", common.i18n("magic.summonAuroranDesc")},
-	{ tes3.effect.T_summon_Herne, common.i18n("magic.summonHerne"), "T_Dae_Cre_Herne_01", 18, "td\\s\\td_s_sum_herne.dds", common.i18n("magic.summonHerneDesc")},
-	{ tes3.effect.T_summon_Morphoid, common.i18n("magic.summonMorphoid"), "T_Dae_Cre_Morphoid_01", 21, "td\\s\\td_s_sum_morph.dds", common.i18n("magic.summonMorphoidDesc")},
-	{ tes3.effect.T_summon_Draugr, common.i18n("magic.summonDraugr"), "T_Sky_Und_Drgr_01", 29, "td\\s\\td_s_sum_draugr.dds", common.i18n("magic.summonDraugrDesc")},
-	{ tes3.effect.T_summon_Spriggan, common.i18n("magic.summonSpriggan"), "T_Sky_Cre_Spriggan_01", 48, "td\\s\\td_s_sum_sprig.dds", common.i18n("magic.summonSprigganDesc")},
-	{ tes3.effect.T_summon_BoneldGr, common.i18n("magic.summonGreaterBonelord"), "T_Mw_Und_BoneldGr_01", 71, "td\\s\\td_s_sum_gtr_bnlrd.dds", common.i18n("magic.summonGreaterBonelordDesc")},
-	{ tes3.effect.T_summon_Ghost, common.i18n("magic.summonGhost"), "T_Cyr_Und_Ghst_01", 7, "td\\s\\td_s_summ_ghost.dds", common.i18n("magic.summonGhostDesc")},
-	{ tes3.effect.T_summon_Wraith, common.i18n("magic.summonWraith"), "T_Cyr_Und_Wrth_01", 49, "td\\s\\td_s_summ_wraith.dds", common.i18n("magic.summonWraithDesc")},
-	{ tes3.effect.T_summon_Barrowguard, common.i18n("magic.summonBarrowguard"), "T_Cyr_Und_Mum_01", 11, "td\\s\\td_s_summ_brwgurd.dds", common.i18n("magic.summonBarrowguardDesc")},
-	{ tes3.effect.T_summon_MinoBarrowguard, common.i18n("magic.summonMinoBarrowguard"), "T_Cyr_Und_MinoBarrow_01", 57, "td\\s\\td_s_summ_mintur.dds", common.i18n("magic.summonMinoBarrowguardDesc")},
-	{ tes3.effect.T_summon_SkeletonChampion, common.i18n("magic.summonSkeletonChampion"), "T_Glb_Und_SkelCmpGls_01", 32, "td\\s\\td_s_sum_skele_c.dds", common.i18n("magic.summonSkeletonChampionDesc")},
-	{ tes3.effect.T_summon_AtroFrostMon, common.i18n("magic.summonFrostMonarch"), "T_Dae_Cre_MonarchFr_01", 47, "td\\s\\td_s_sum_fst_monch.dds", common.i18n("magic.summonFrostMonarchDesc")},
-	{ tes3.effect.T_summon_SpiderDaedra, common.i18n("magic.summonSpiderDaedra"), "T_Dae_Cre_SpiderDae_01", 42, "td\\s\\td_s_sum_spidr_dae.dds", common.i18n("magic.summonSpiderDaedraDesc")},
-}
-
--- effect id, effect name, item id, 2nd item ID, effect mana cost, icon, effect description
-local td_bound_effects = {
-	{ tes3.effect.T_bound_Greaves, common.i18n("magic.boundGreaves"), "T_Com_Bound_Greaves_01", "", 2, "td\\s\\td_s_bnd_grves.dds", common.i18n("magic.boundGreavesDesc")},
-	{ tes3.effect.T_bound_Waraxe, common.i18n("magic.boundWarAxe"), "T_Com_Bound_WarAxe_01", "", 2, "td\\s\\td_s_bnd_waxe.dds", common.i18n("magic.boundWarAxeDesc")},
-	{ tes3.effect.T_bound_Warhammer, common.i18n("magic.boundWarhammer"), "T_Com_Bound_Warhammer_01", "", 2, "td\\s\\td_s_bnd_wham.dds", common.i18n("magic.boundWarhammerDesc")},
-	{ tes3.effect.T_bound_HammerResdayn, "", "T_Com_Bound_Warhammer_01", "", 2, "td\\s\\td_s_bnd_res_ham.dds", ""},
-	{ tes3.effect.T_bound_RazorResdayn, "", "bound_dagger", "", 2, "td\\s\\td_s_bnd_red_razor.dds", ""},
-	{ tes3.effect.T_bound_Pauldrons, common.i18n("magic.boundPauldrons"), "T_Com_Bound_PauldronL_01", "T_Com_Bound_PauldronR_01", 2, "td\\s\\td_s_bnd_pldrn.dds", common.i18n("magic.boundPauldronsDesc")},
-	{ tes3.effect.T_bound_Greatsword, common.i18n("magic.boundClaymore"), "T_Com_Bound_Claymore_01", "", 2, "td\\s\\td_s_bnd_clymr.dds", common.i18n("magic.boundClaymoreDesc")},
-	{ tes3.effect.T_bound_ThrowingKnives, common.i18n("magic.boundThrowingKnives"), "T_Com_Bound_ThrowingKnife_01", "", 2, "td\\s\\td_s_bnd_knives.dds", common.i18n("magic.boundThrowingKnivesDesc")},
-}
-
--- effect id, effect name, effect mana cost, icon, effect description
-local td_intervention_effects = {
-	{ tes3.effect.T_intervention_Kyne, common.i18n("magic.interventionKyne"), 150, "td\\s\\td_s_int_kyne.tga", common.i18n("magic.interventionKyneDesc")},
-}
-
--- effect id, effect name, effect mana cost, icon, effect description
-local td_misc_effects = {
-	{ tes3.effect.T_mysticism_Passwall, common.i18n("magic.miscPasswall"), 750, passwallIcon, common.i18n("magic.miscPasswallDesc")},
-	{ tes3.effect.T_mysticism_BanishDae, common.i18n("magic.miscBanish"), 128, "td\\s\\td_s_ban_daedra.tga", common.i18n("magic.miscBanishDesc")},
-	{ tes3.effect.T_mysticism_ReflectDmg, common.i18n("magic.miscReflectDamage"), 20, "td\\s\\td_s_ref_dam.tga", common.i18n("magic.miscReflectDamageDesc")},
-	{ tes3.effect.T_mysticism_DetHuman, common.i18n("magic.miscDetectHumanoid"), .75, "td\\s\\td_s_det_hum.tga", common.i18n("magic.miscDetectHumanoidDesc")},
-	{ tes3.effect.T_alteration_RadShield, common.i18n("magic.miscRadiantShield"), 5, "td\\s\\td_s_radiant_shield.tga", common.i18n("magic.miscRadiantShieldDesc")},
-	{ tes3.effect.T_alteration_Wabbajack, common.i18n("magic.miscWabbajack"), 22, "td\\s\\td_s_wabbajack.tga", common.i18n("magic.miscWabbajackDesc")},
-	{ tes3.effect.T_alteration_WabbajackHelper, common.i18n("magic.miscWabbajack"), 0, "td\\s\\td_s_wabbajack.tga", common.i18n("magic.miscWabbajackDesc")},
-	{ tes3.effect.T_mysticism_Insight, common.i18n("magic.miscInsight"), 10, "td\\s\\td_s_insight.tga", common.i18n("magic.miscInsightDesc")},
-	{ tes3.effect.T_restoration_ArmorResartus, common.i18n("magic.miscArmorResartus"), 60, "td\\s\\td_s_restore_ar.tga", common.i18n("magic.miscArmorResartusDesc")},
-	{ tes3.effect.T_restoration_WeaponResartus, common.i18n("magic.miscWeaponResartus"), 120, "td\\s\\td_s_restore_wpn.tga", common.i18n("magic.miscWeaponResartusDesc")},
-	{ tes3.effect.T_conjuration_Corruption, common.i18n("magic.miscCorruption"), 40, "td\\s\\td_s_skull_corr.tga", common.i18n("magic.miscCorruptionDesc")},
-	{ tes3.effect.T_conjuration_CorruptionSummon, common.i18n("magic.miscCorruption"), 0, "td\\s\\td_s_skull_corr.tga", common.i18n("magic.miscCorruptionDesc")},
-	{ tes3.effect.T_illusion_DistractCreature, common.i18n("magic.miscDistractCreature"), 0.5, "td\\s\\td_s_dist_cre.tga", common.i18n("magic.miscDistractCreatureDesc")},
-	{ tes3.effect.T_illusion_DistractHumanoid, common.i18n("magic.miscDistractHumanoid"), 1, "td\\s\\td_s_dist_hum.tga", common.i18n("magic.miscDistractHumanoidDesc")},
-	{ tes3.effect.T_destruction_GazeOfVeloth, common.i18n("magic.miscGazeOfVeloth"), 80, "td\\s\\td_s_gaze_veloth.tga", common.i18n("magic.miscGazeOfVelothDesc")},
-	{ tes3.effect.T_mysticism_DetEnemy, common.i18n("magic.miscDetectEnemy"), 1, "td\\s\\td_s_det_enemy.tga", common.i18n("magic.miscDetectEnemyDesc")},
-	{ tes3.effect.T_mysticism_DetInvisibility, common.i18n("magic.miscDetectInvisibility"), 1.5, "td\\s\\td_s_det_invisibility.tga", common.i18n("magic.miscDetectInvisibilityDesc")},
-	{ tes3.effect.T_mysticism_Blink, common.i18n("magic.miscBlink"), 10, "td\\s\\td_s_blink.tga", common.i18n("magic.miscBlinkDesc")},
-	{ tes3.effect.T_restoration_FortifyCasting, common.i18n("magic.miscFortifyCasting"), 1, "td\\s\\td_s_ftfy_cast.tga", common.i18n("magic.miscFortifyCastingDesc")},
-	{ tes3.effect.T_illusion_PrismaticLight, common.i18n("magic.miscPrismaticLight"), 0.4, "td\\s\\td_s_p_light.tga", common.i18n("magic.miscPrismaticLightDesc")},
-	{ tes3.effect.T_mysticism_BloodMagic, common.i18n("magic.miscBloodMagic"), 2, "td\\s\\td_s_blood_magic.tga", common.i18n("magic.miscBloodMagicDesc")},
-	{ tes3.effect.T_conjuration_SanguineRose, common.i18n("magic.miscSanguineRose"), 40, "td\\s\\td_s_sanguine.dds.tga", common.i18n("magic.miscSanguineRoseDesc")},
-	{ tes3.effect.T_mysticism_DetValuables, common.i18n("magic.miscDetectValuables"), 1.5, "td\\s\\td_s_det_value.tga", common.i18n("magic.miscDetectValuablesDesc")},
-	{ tes3.effect.T_mysticism_MagickaWard, common.i18n("magic.miscMagickaWard"), 20, "td\\s\\td_s_magickaward.tga", common.i18n("magic.miscMagickaWardDesc")},
-	{ tes3.effect.T_illusion_Ethereal, common.i18n("magic.miscEthereal"), 40, "td\\s\\td_s_ethereal.tga", common.i18n("magic.miscEtherealtDesc")},
-}
-
--- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
-local td_summon_spells = {
-	{ "T_Com_Cnj_SummonDevourer", tes3.spellType.spell, common.i18n("magic.summonDevourer"), 156, { tes3.effect.T_summon_Devourer }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonDremoraArcher", tes3.spellType.spell, common.i18n("magic.summonDremoraArcher"), 98, { tes3.effect.T_summon_DremArch }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonDremoraCaster", tes3.spellType.spell, common.i18n("magic.summonDremoraCaster"), 93, { tes3.effect.T_summon_DremCast }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonGuardian", tes3.spellType.spell, common.i18n("magic.summonGuardian"), 155, { tes3.effect.T_summon_Guardian }, tes3.effectRange.self, 0, 45, 1, 1 },
-	{ "T_Com_Cnj_SummonLesserClannfear", tes3.spellType.spell, common.i18n("magic.summonLesserClannfear"), 57, { tes3.effect.T_summon_LesserClfr }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonOgrim", tes3.spellType.spell, common.i18n("magic.summonOgrim"), 99, { tes3.effect.T_summon_Ogrim }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonSeducer", tes3.spellType.spell, common.i18n("magic.summonSeducer"), 156, { tes3.effect.T_summon_Seducer }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonSeducerDark", tes3.spellType.spell, common.i18n("magic.summonSeducerDark"), 169, { tes3.effect.T_summon_SeducerDark }, tes3.effectRange.self, 0, 45, 1, 1 },
-	{ "T_Com_Cnj_SummonVermai", tes3.spellType.spell, common.i18n("magic.summonVermai"), 88, { tes3.effect.T_summon_Vermai }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonStormMonarch", tes3.spellType.spell, common.i18n("magic.summonStormMonarch"), 180, { tes3.effect.T_summon_AtroStormMon }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Nor_Cnj_SummonIceWraith", tes3.spellType.spell, common.i18n("magic.summonIceWraith"), 105, { tes3.effect.T_summon_IceWraith }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Dwe_Cnj_Uni_SummonDweSpectre", tes3.spellType.spell, common.i18n("magic.summonDweSpectre"), 52, { tes3.effect.T_summon_DweSpectre }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Dwe_Cnj_Uni_SummonSteamCent", tes3.spellType.spell, common.i18n("magic.summonSteamCent"), 88, { tes3.effect.T_summon_SteamCent }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Dwe_Cnj_Uni_SummonSpiderCent", tes3.spellType.spell, common.i18n("magic.summonSpiderCent"), 45, { tes3.effect.T_summon_SpiderCent }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Ayl_Cnj_SummonWelkyndSpirit", tes3.spellType.spell, common.i18n("magic.summonWelkyndSpirit"), 78, { tes3.effect.T_summon_WelkyndSpirit }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonAuroran", tes3.spellType.spell, common.i18n("magic.summonAuroran"), 138, { tes3.effect.T_summon_Auroran }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonHerne", tes3.spellType.spell, common.i18n("magic.summonHerne"), 54, { tes3.effect.T_summon_Herne }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonMorphoid", tes3.spellType.spell, common.i18n("magic.summonMorphoid"), 63, { tes3.effect.T_summon_Morphoid }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Nor_Cnj_SummonDraugr", tes3.spellType.spell, common.i18n("magic.summonDraugr"), 78, { tes3.effect.T_summon_Draugr }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Nor_Cnj_SummonSpriggan", tes3.spellType.spell, common.i18n("magic.summonSpriggan"), 144, { tes3.effect.T_summon_Spriggan }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_De_Cnj_SummonGreaterBonelord", tes3.spellType.spell, common.i18n("magic.summonGreaterBonelord"), 160, { tes3.effect.T_summon_BoneldGr }, tes3.effectRange.self, 0, 45, 1, 1 },
-	{ "T_Cr_Cnj_AylSorcKSummon1", tes3.spellType.spell, nil, 40, { tes3.effect.T_summon_Auroran }, tes3.effectRange.self, 0, 40, 1, 1 },
-	{ "T_Cr_Cnj_AylSorcKSummon3", tes3.spellType.spell, nil, 25, { tes3.effect.T_summon_WelkyndSpirit }, tes3.effectRange.self, 0, 40, 1, 1 },
-	{ "T_Cyr_Cnj_SummonGhost", tes3.spellType.spell, common.i18n("magic.summonGhost"), 21, { tes3.effect.T_summon_Ghost }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Cyr_Cnj_SummonWraith", tes3.spellType.spell, common.i18n("magic.summonWraith"), 147, { tes3.effect.T_summon_Wraith }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Cyr_Cnj_SummonBarrowguard", tes3.spellType.spell, common.i18n("magic.summonBarrowguard"), 33, { tes3.effect.T_summon_Barrowguard }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Cyr_Cnj_SummonMinoBarrowguard", tes3.spellType.spell, common.i18n("magic.summonMinoBarrowguard"), 171, { tes3.effect.T_summon_MinoBarrowguard }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonSkeletonChamp", tes3.spellType.spell, common.i18n("magic.summonSkeletonChampion"), 96, { tes3.effect.T_summon_SkeletonChampion }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonFrostMonarch", tes3.spellType.spell, common.i18n("magic.summonFrostMonarch"), 141, { tes3.effect.T_summon_AtroFrostMon }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_SummonSpiderDaedra", tes3.spellType.spell, common.i18n("magic.summonSpiderDaedra"), 126, { tes3.effect.T_summon_SpiderDaedra }, tes3.effectRange.self, 0, 60, 1, 1 },
-}
-
--- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
-local td_bound_spells = {
-	{ "T_Com_Cnj_BoundGreaves", tes3.spellType.spell, common.i18n("magic.boundGreaves"), 6, { tes3.effect.T_bound_Greaves }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_BoundWarAxe", tes3.spellType.spell, common.i18n("magic.boundWarAxe"), 6, { tes3.effect.T_bound_Waraxe }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_BoundWarhammer", tes3.spellType.spell, common.i18n("magic.boundWarhammer"), 6, { tes3.effect.T_bound_Warhammer }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_De_Cnj_Uni_BoundHammerResdayn", tes3.spellType.spell, nil, 6, { tes3.effect.T_bound_HammerResdayn }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_De_Cnj_Uni_BoundRazorOResdayn", tes3.spellType.spell, nil, 6, { tes3.effect.T_bound_RazorResdayn }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_BoundPauldron", tes3.spellType.spell, common.i18n("magic.boundPauldrons"), 6, { tes3.effect.T_bound_Pauldrons }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Com_Cnj_BoundGreatsword", tes3.spellType.spell, common.i18n("magic.boundGreatsword"), 6, { tes3.effect.T_bound_Greatsword }, tes3.effectRange.self, 0, 60, 1, 1 },
-	--{ "T_Com_Cnj_BoundThrowingKnives", tes3.spellType.spell, common.i18n("magic.boundThrowingKnives"), 6, { tes3.effect.T_bound_ThrowingKnives }, tes3.effectRange.self, 0, 10, 1, 1 },
-}
-
--- spell id, cast type, spell name, spell mana cost, 1st effect id, 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
-local td_intervention_spells = {
-	{ "T_Nor_Mys_KynesIntervention", tes3.spellType.spell, common.i18n("magic.interventionKyne"), 8, { tes3.effect.T_intervention_Kyne }, tes3.effectRange.self, 0, 0, 1, 1 },
-}
-
--- spell id, cast type, spell name, spell mana cost, (1st effect id, attribute id, skill id), 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
-local td_misc_spells = {
-	{ "T_Com_Mys_UNI_Passwall", tes3.spellType.spell, common.i18n("magic.miscPasswall"), 96, { tes3.effect.T_mysticism_Passwall }, tes3.effectRange.touch, 25, 0, 0, 0 },
-	{ "T_Com_Mys_BanishDaedra", tes3.spellType.spell, common.i18n("magic.miscBanish"), 64, { tes3.effect.T_mysticism_BanishDae }, tes3.effectRange.touch, 0, 0, 10, 10 },
-	{ "T_Com_Mys_ReflectDamage", tes3.spellType.spell, common.i18n("magic.miscReflectDamage"), 76, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 5, 10, 20 },
-	{ "T_Com_Mys_DetectHumanoid", tes3.spellType.spell, common.i18n("magic.miscDetectHumanoid"), 19, { tes3.effect.T_mysticism_DetHuman }, tes3.effectRange.self, 0, 5, 50, 150 },
-	--{ "T_Ayl_Alt_RadiantShield", tes3.spellType.spell, common.i18n("magic.miscRadiantShield"), 75, { tes3.effect.T_alteration_RadShield }, tes3.effectRange.self, 0, 30, 10, 10 },	-- Not currently in TD
-	{ "T_Cr_Alt_AuroranShield", tes3.spellType.ability, nil, nil, { tes3.effect.T_alteration_RadShield }, tes3.effectRange.self, 0, 0, 20, 20 },
-	{ "T_Cr_Alt_AylSorcKLightShield", tes3.spellType.spell, common.i18n("magic.miscRadiantShield"), 10, { tes3.effect.T_alteration_RadShield }, tes3.effectRange.self, 0, 12, 10, 10,
-																										{ tes3.effect.light }, tes3.effectRange.self, 0, 12, 20, 20 },
-	{ "T_Com_Mys_Insight", tes3.spellType.spell, common.i18n("magic.miscInsight"), 76, { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 10, 15, 15 },
-	{ "T_Com_Res_ArmorResartus", tes3.spellType.spell, common.i18n("magic.miscArmorResartus"), 90, { tes3.effect.T_restoration_ArmorResartus }, tes3.effectRange.self, 0, 0, 20, 40 },
-	{ "T_Com_Res_WeaponResartus", tes3.spellType.spell, common.i18n("magic.miscWeaponResartus"), 90, { tes3.effect.T_restoration_WeaponResartus }, tes3.effectRange.self, 0, 0, 10, 20 },
-	{ "T_Dae_Cnj_UNI_CorruptionSummon", tes3.spellType.spell, common.i18n("magic.miscCorruption"), 0, { tes3.effect.T_conjuration_CorruptionSummon }, tes3.effectRange.self, 0, 30, 1, 1 },
-	{ "T_Com_Ilu_DistractCreature", tes3.spellType.spell, common.i18n("magic.miscDistractCreature"), 11, { tes3.effect.T_illusion_DistractCreature }, tes3.effectRange.target, 0, 15, 20, 20 },
-	{ "T_Com_Ilu_DistractHumanoid", tes3.spellType.spell, common.i18n("magic.miscDistractHumanoid"), 22, { tes3.effect.T_illusion_DistractHumanoid }, tes3.effectRange.target, 0, 15, 20, 20 },
-	{ "T_Com_Mys_DetectEnemy", tes3.spellType.spell, common.i18n("magic.miscDetectEnemy"), 25, { tes3.effect.T_mysticism_DetEnemy }, tes3.effectRange.self, 0, 5, 50, 150 },
-	{ "T_Dae_Alt_UNI_WabbajackTrans", tes3.spellType.spell, common.i18n("magic.miscWabbajack"), 0, { tes3.effect.T_alteration_WabbajackHelper }, tes3.effectRange.touch, 0, 16, 1, 1 },
-	{ "T_Com_Mys_DetectInvisibility", tes3.spellType.spell, common.i18n("magic.miscDetectInvisibility"), 38, { tes3.effect.T_mysticism_DetInvisibility }, tes3.effectRange.self, 0, 5, 50, 150 },
-	{ "T_Com_Mys_Blink", tes3.spellType.spell, common.i18n("magic.miscBlink"), 25, { tes3.effect.T_mysticism_Blink }, tes3.effectRange.self, 0, 0, 50, 50 },
-	--{ "T_Cr_Ab_AuroranLight", tes3.spellType.ability, nil, nil, { tes3.effect.T_illusion_PrismaticLight }, tes3.effectRange.self, 0, 0, 20, 20 },	-- There should be a separate, higher magnitude ability for the radiant Aurorans that will be affected instead
-	{ "T_UNI_SaintTelynBlessing", tes3.spellType.ability, nil, nil, { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 0, 10, 10 },
-	{ "T_Arg_Mys_BloodMagic", tes3.spellType.power, nil, nil, { tes3.effect.T_mysticism_BloodMagic }, tes3.effectRange.self, 0, 90, 0, 0 },
-	{ "T_Com_Mys_BloodMagic", tes3.spellType.spell, common.i18n("magic.miscBloodMagic"), 3, { tes3.effect.T_mysticism_BloodMagic }, tes3.effectRange.self, 0, 30, 0, 0 },
-	{ "T_Com_Mys_DetectValuables", tes3.spellType.spell, common.i18n("magic.miscDetectValuables"), 38, { tes3.effect.T_mysticism_DetValuables }, tes3.effectRange.self, 0, 5, 50, 150 },
-	{ "T_Com_Mys_MagickaWard", tes3.spellType.spell, common.i18n("magic.miscMagickaWard"), 20, { tes3.effect.T_mysticism_MagickaWard }, tes3.effectRange.self, 0, 20, 1, 1 },
-	{ "T_Com_Ilu_Ethereal", tes3.spellType.spell, common.i18n("magic.miscEthereal"), 30, { tes3.effect.T_illusion_Ethereal }, tes3.effectRange.self, 0, 15, 1, 1 },
-	{ "T_Nag_Pow_StalkersShroud", tes3.spellType.power, nil, nil, { tes3.effect.chameleon }, tes3.effectRange.self, 0, 60, 50, 50, { tes3.effect.T_mysticism_DetHuman }, tes3.effectRange.self, 0, 60, 100, 100 },
-}
-
--- enchantment id, (1st effect id, attribute id, skill id), 1st range type, 1st area, 1st duration, 1st minimum magnitude, 1st maximum magnitude, ...
-local td_enchantments = {
-	{ "T_Once_SummonDremoraArcher60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_DremArch }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonDremoraCaster60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_DremCast }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonGuardian60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Guardian }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonLesserClannfear60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_LesserClfr }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonOgrim60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Ogrim }, tes3.effectRange.self, 0, 60, 1, 1, nil },
-	{ "T_Once_SummonOgrim120", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Ogrim }, tes3.effectRange.self, 0, 120, 1, 1, nil },
-	{ "T_Once_SummonSeducer60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Seducer }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonSeducerDark60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_SeducerDark }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonVermai60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Vermai }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonVermai120", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Vermai }, tes3.effectRange.self, 0, 120, 1, 1 },
-	{ "T_Once_SummonSkeletonChamp120", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_SkeletonChampion }, tes3.effectRange.self, 0, 120, 1, 1 },
-	{ "T_Once_SummonFrostMonarch120", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_AtroFrostMon }, tes3.effectRange.self, 0, 120, 1, 1 },
-	{ "T_Once_SummonStormMonarch60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_AtroStormMon }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonWelkyndSpirit60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_WelkyndSpirit }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonAuroran60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Auroran }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonHerne60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Herne }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonMorphoid60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Morphoid }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_SummonBonelordGr60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_BoneldGr }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_AylDaedricHerald1", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_WelkyndSpirit }, tes3.effectRange.self, 0, 30, 1, 1 },
-	{ "T_Once_AylDaedricHerald2", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Auroran }, tes3.effectRange.self, 0, 30, 1, 1 },
-	{ "T_Once_AylLoreArmor1", tes3.enchantmentType.castOnce, { tes3.effect.T_alteration_RadShield }, tes3.effectRange.self, 0, 30, 20, 20 },
-	--{ "T_Once_AylCavernsTruth", tes3.enchantmentType.castOnce, { tes3.effect.T_illusion_PrismaticLight }, tes3.effectRange.self, 0, 90, 15, 15 },
-	{ "T_Once_KynesIntervention", tes3.enchantmentType.castOnce, { tes3.effect.T_intervention_Kyne }, tes3.effectRange.self, 0, 1, 1, 1 },
-	{ "T_Once_QuelledGeas", tes3.enchantmentType.castOnce, { tes3.effect.T_mysticism_BanishDae }, tes3.effectRange.touch, 0, 1, 10, 15 },
-	{ "T_Once_LordMhasFortress", tes3.enchantmentType.castOnce, { tes3.effect.boundBoots }, tes3.effectRange.self, 0, 90, 1, 1,
-																{ tes3.effect.T_bound_Greaves }, tes3.effectRange.self, 0, 90, 1, 1,
-																{ tes3.effect.boundCuirass }, tes3.effectRange.self, 0, 90, 1, 1,
-																{ tes3.effect.T_bound_Pauldrons }, tes3.effectRange.self, 0, 90, 1, 1,
-																{ tes3.effect.boundGloves }, tes3.effectRange.self, 0, 90, 1, 1,
-																{ tes3.effect.boundHelm }, tes3.effectRange.self, 0, 90, 1, 1,
-																{ tes3.effect.boundShield }, tes3.effectRange.self, 0, 90, 1, 1,
-																{ tes3.effect.T_bound_Warhammer }, tes3.effectRange.self, 0, 90, 1, 1 },
-	{ "T_Once_SummonDremoraAll60", tes3.enchantmentType.castOnce, { tes3.effect.summonDremora }, tes3.effectRange.self, 0, 60, 1, 1,
-																  { tes3.effect.T_summon_DremArch }, tes3.effectRange.self, 0, 60, 1, 1,
-																  { tes3.effect.T_summon_DremCast }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_DaedraBane", tes3.enchantmentType.castOnce, { tes3.effect.T_mysticism_BanishDae }, tes3.effectRange.touch, 0, 1, 10, 15 },
-	{ "T_Once_BlackSpirits", tes3.enchantmentType.castOnce, { tes3.effect.T_mysticism_BanishDae }, tes3.effectRange.target, 25, 1, 10, 40 },
-	{ "T_Once_Diversion", tes3.enchantmentType.castOnce, { tes3.effect.T_illusion_DistractHumanoid }, tes3.effectRange.target, 0, 30, 10, 30 },
-	{ "T_Once_Scent", tes3.enchantmentType.castOnce, { tes3.effect.T_illusion_DistractCreature }, tes3.effectRange.target, 0, 30, 10, 30 },
-	{ "T_Once_DarothrilDisorder", tes3.enchantmentType.castOnce, { tes3.effect.T_illusion_DistractCreature }, tes3.effectRange.target, 20, 20, 50, 50,
-																 { tes3.effect.T_illusion_DistractHumanoid }, tes3.effectRange.target, 20, 20, 50, 50 },
-	{ "T_Once_Revealing", tes3.enchantmentType.castOnce, { tes3.effect.T_mysticism_DetInvisibility }, tes3.effectRange.self, 0, 10, 40, 80, nil },
-	{ "T_Once_GramaryeMirror", tes3.enchantmentType.castOnce, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 30, 20, 20,
-															  { tes3.effect.reflect }, tes3.effectRange.self, 0, 30, 20, 20 },
-	{ "T_Once_DeificChrisom", tes3.enchantmentType.castOnce, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 60, 10, 30,
-															 { tes3.effect.spellAbsorption }, tes3.effectRange.self, 0, 60, 10, 30,
-															 { tes3.effect.sanctuary }, tes3.effectRange.self, 0, 60, 10, 30 },
-	{ "T_Once_Dashing", tes3.enchantmentType.castOnce, { tes3.effect.T_mysticism_Blink }, tes3.effectRange.self, 0, 0, 40, 40 },
-	{ "T_Once_AssassinRush", tes3.enchantmentType.castOnce, { tes3.effect.T_mysticism_Blink }, tes3.effectRange.self, 0, 0, 30, 30,
-															{ tes3.effect.fortifyAttack }, tes3.effectRange.self, 0, 60, 10, 20,
-															{ tes3.effect.fortifySkill, nil, tes3.skill.shortBlade }, tes3.effectRange.self, 0, 60, 10, 20 },
-	{ "T_Once_QorwynnMending", tes3.enchantmentType.castOnce, { tes3.effect.T_restoration_ArmorResartus }, tes3.effectRange.self, 0, 0, 30, 30,
-															  { tes3.effect.T_restoration_WeaponResartus }, tes3.effectRange.self, 0, 0, 30, 30 },
-	{ "T_Once_MoathAuthority", tes3.enchantmentType.castOnce, { tes3.effect.boundBoots }, tes3.effectRange.self, 0, 90, 1, 1,
-															  { tes3.effect.T_bound_Greaves }, tes3.effectRange.self, 0, 90, 1, 1,
-															  { tes3.effect.boundGloves }, tes3.effectRange.self, 0, 90, 1, 1,
-															  { tes3.effect.T_bound_Greatsword }, tes3.effectRange.self, 0, 90, 1, 1 },
-	{ "T_Once_AllSeeing", tes3.enchantmentType.castOnce, { tes3.effect.detectAnimal }, tes3.effectRange.self, 0, 300, 200, 200,
-														 { tes3.effect.T_mysticism_DetHuman }, tes3.effectRange.self, 0, 300, 200, 200,
-														 { tes3.effect.T_mysticism_DetEnemy }, tes3.effectRange.self, 0, 300, 200, 200,
-														 { tes3.effect.T_mysticism_DetInvisibility }, tes3.effectRange.self, 0, 300, 200, 200,
-														 { tes3.effect.detectEnchantment }, tes3.effectRange.self, 0, 300, 200, 200,
-														 { tes3.effect.detectKey }, tes3.effectRange.self, 0, 300, 200, 200 },
-	{ "T_Once_Firmament", tes3.enchantmentType.castOnce, { tes3.effect.fortifyAttack }, tes3.effectRange.self, 0, 120, 40, 40,
-														 { tes3.effect.T_restoration_FortifyCasting }, tes3.effectRange.self, 0, 120, 40, 40,
-														 { tes3.effect.fortifySkill, nil, tes3.skill.sneak }, tes3.effectRange.self, 0, 120, 40, 40 },
-	{ "T_Once_BoethiahService", tes3.enchantmentType.castOnce, { tes3.effect.summonHunger }, tes3.effectRange.self, 0, 120, 1, 1,
-															   { tes3.effect.T_summon_Devourer }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_FourArmsGoingUp", tes3.enchantmentType.castOnce, { tes3.effect.summonScamp }, tes3.effectRange.self, 0, 120, 1, 1,
-															   { tes3.effect.summonDremora }, tes3.effectRange.self, 0, 120, 1, 1,
-															   { tes3.effect.T_summon_Morphoid }, tes3.effectRange.self, 0, 120, 1, 1,
-															   { tes3.effect.T_summon_Herne }, tes3.effectRange.self, 0, 120, 1, 1 },
-	{ "T_Once_Anticipations", tes3.enchantmentType.castOnce, { tes3.effect.summonWingedTwilight }, tes3.effectRange.self, 0, 60, 1, 1,
-															 { tes3.effect.T_summon_SpiderDaedra }, tes3.effectRange.self, 0, 60, 1, 1,
-															 { tes3.effect.summonHunger }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Once_FourCorners", tes3.enchantmentType.castOnce, { tes3.effect.summonGoldenSaint }, tes3.effectRange.self, 0, 60, 1, 1,
-														   { tes3.effect.summonDremora }, tes3.effectRange.self, 0, 60, 1, 1,
-														   { tes3.effect.T_summon_Ogrim }, tes3.effectRange.self, 0, 60, 1, 1,
-														   { tes3.effect.summonDaedroth }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Const_Ring_Namira", tes3.enchantmentType.constant, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 30, 30,
-															{ tes3.effect.reflect }, tes3.effectRange.self, 0, 1, 30, 30 },
-	{ "T_Const_FindersCharm", tes3.enchantmentType.constant, { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 1, 10, 10,
-															 { tes3.effect.detectEnchantment }, tes3.effectRange.self, 0, 1, 120, 120,
-															 { tes3.effect.detectKey }, tes3.effectRange.self, 0, 1, 120, 120 },
-	{ "T_Const_Robe_Reprisal", tes3.enchantmentType.constant, { tes3.effect.frostShield }, tes3.effectRange.self, 0, 1, 50, 50,
-															  { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 10, 10 },
-	{ "T_Const_Onimaru_en", tes3.enchantmentType.constant, { tes3.effect.fortifyAttack }, tes3.effectRange.self, 0, 1, 10, 10,
-														   { tes3.effect.resistMagicka }, tes3.effectRange.self, 0, 1, 20, 20,
-														   { tes3.effect.resistNormalWeapons }, tes3.effectRange.self, 0, 1, 20, 20,
-														   { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 20, 20,
-														   { tes3.effect.summonDremora }, tes3.effectRange.self, 0, 1, 1, 1 },
-	{ "T_Const_NadiaInsight", tes3.enchantmentType.constant, { tes3.effect.T_mysticism_Insight }, tes3.effectRange.self, 0, 1, 30, 30 },
-	{ "T_Use_GuardianRIng", tes3.enchantmentType.onUse, { tes3.effect.boundBoots }, tes3.effectRange.self, 0, 60, 1, 1,						-- The ID's capitalization does match that of the enchantment in the ESM
-														{ tes3.effect.T_bound_Greaves }, tes3.effectRange.self, 0, 60, 1, 1,
-														{ tes3.effect.boundCuirass }, tes3.effectRange.self, 0, 60, 1, 1,
-														{ tes3.effect.T_bound_Pauldrons }, tes3.effectRange.self, 0, 60, 1, 1,
-														{ tes3.effect.boundGloves }, tes3.effectRange.self, 0, 60, 1, 1,
-														{ tes3.effect.boundHelm }, tes3.effectRange.self, 0, 60, 1, 1, },
-	{ "T_Use_WabbajackUni", tes3.enchantmentType.onUse, { tes3.effect.T_alteration_Wabbajack }, tes3.effectRange.target, 0, 1, 1, 1 },
-	{ "T_Use_SkullOfCorruption", tes3.enchantmentType.onUse, { tes3.effect.T_conjuration_Corruption }, tes3.effectRange.target, 0, 0, 1, 1 },
-	{ "T_Use_SummonGuardian60", tes3.enchantmentType.castOnce, { tes3.effect.T_summon_Guardian }, tes3.effectRange.self, 0, 60, 1, 1 },			-- Not on any items?
-	{ "T_Const_VelothsPauld_R", tes3.enchantmentType.constant, { tes3.effect.T_mysticism_ReflectDmg }, tes3.effectRange.self, 0, 1, 30, 30 },
-	{ "T_Strike_StaffVeloth", tes3.enchantmentType.onUse, { tes3.effect.T_destruction_GazeOfVeloth }, tes3.effectRange.target, 0, 1, 1, 1 },
-	{ "T_Const_Spell_Bifurcation", tes3.enchantmentType.constant, { tes3.effect.T_restoration_FortifyCasting }, tes3.effectRange.self, 0, 1, 20, 20 },
-	{ "TR_m1_SanguinesRose_en", tes3.enchantmentType.onUse, { tes3.effect.T_conjuration_SanguineRose }, tes3.effectRange.self, 0, 60, 1, 1 },
-	{ "T_Use_SanguineRose", tes3.enchantmentType.onUse, { tes3.effect.T_conjuration_SanguineRose }, tes3.effectRange.self, 0, 60, 1, 1 },	-- This is for a deprecated weapon rather than the amulet (that is in TR rather and not TD for some absurd reason), but it might as well get the effect too
-	{ "T_Use_Dae_Amulet_Entry", tes3.enchantmentType.onUse, { tes3.effect.T_illusion_Ethereal }, tes3.effectRange.self, 0, 20, 1, 1 },
-}
-
--- ingredient id, 1st effect id, 1st effect attribute id, 1st effect skill id, 2nd effect id, ...
-local td_ingredients = {
-	{ "T_IngFlor_PBloomBulb_01", nil, nil, nil,
-								 tes3.effect.T_mysticism_ReflectDmg, -1, -1,
-								 nil, nil, nil,
-								 nil, nil, nil },
-	{ "T_IngCrea_Eyestar_01", nil, nil, nil,
-							  tes3.effect.T_mysticism_Insight, -1, -1,
-							  nil, nil, nil,
-							  nil, nil, nil },
-	{ "T_IngCrea_EyestarDae_01", nil, nil, nil,
-							  	 tes3.effect.T_mysticism_Insight, -1, -1,
-							  	 nil, nil, nil,
-							  	 nil, nil, nil },
-	{ "TR_m2_q_9_Eyestar_uni", nil, nil, nil,
-							   tes3.effect.T_mysticism_Insight, -1, -1,
-							   nil, nil, nil,
-							   nil, nil, nil },
-	{ "T_IngCrea_BeetleShell_01", nil, nil, nil,
-								  tes3.effect.T_mysticism_Insight, -1, -1 },
-	{ "T_IngCrea_BeetleShell_04", nil, nil, nil,
-								  tes3.effect.T_mysticism_ReflectDmg, -1, -1 },
-	{ "T_IngMine_PearlBlue_01", nil, nil, nil,
-								nil, nil, nil,
-								nil, nil, nil,
-								tes3.effect.T_mysticism_Blink, -1, -1 },
-	{ "T_IngMine_PearlBlueDae_01", nil, nil, nil,
-								   nil, nil, nil,
-								   nil, nil, nil,
-								   tes3.effect.T_mysticism_Blink, -1, -1 },
-	{ "T_IngMine_PearlPink_01", nil, nil, nil,
-								nil, nil, nil,
-								tes3.effect.T_restoration_FortifyCasting, -1, -1,
-								nil, nil, nil },
-	{ "T_IngMine_PearlPinkDae_01", nil, nil, nil,
-								   nil, nil, nil,
-								   tes3.effect.T_restoration_FortifyCasting, -1, -1,
-								   nil, nil, nil },
-	{ "T_IngMine_PearlKardesh_01", nil, nil, nil,
-								   nil, nil, nil,
-								   nil, nil, nil,
-								   tes3.effect.T_restoration_FortifyCasting, -1, -1 },
-	{ "T_IngMine_DiamondRed_01", nil, nil, nil,
-								 nil, nil, nil,
-								 tes3.effect.T_mysticism_ReflectDmg, -1, -1,
-								 nil, nil, nil },
-	{ "T_IngCrea_PrismaticDust_01", tes3.effect.T_mysticism_Blink, -1, -1,
-									tes3.effect.T_mysticism_ReflectDmg, -1, -1,
-									nil, nil, nil,
-									nil, nil, nil },
-	{ "T_IngCrea_MothWingMw_02", nil, nil, nil,
-								 nil, nil, nil,
-								 nil, nil, nil,
-								 tes3.effect.T_mysticism_Insight, -1, -1 },
-	{ "T_IngMine_Amethyst_01", tes3.effect.T_mysticism_DetInvisibility, -1, -1,
-							   nil, nil, nil,
-							   nil, nil, nil,
-							   nil, nil, nil },
-	{ "T_IngMine_AmethystDae_01", tes3.effect.T_mysticism_DetInvisibility, -1, -1,
-								  nil, nil, nil,
-								  nil, nil, nil,
-								  nil, nil, nil },
-	{ "T_IngFood_TGuarHide", nil, nil, nil,
-							 nil, nil, nil,
-							 nil, nil, nil,
-							 tes3.effect.T_mysticism_DetInvisibility, -1, -1 },
-	{ "T_IngCrea_ThresherClaw_01", nil, nil, nil,
-								   nil, nil, nil,
-								   nil, nil, nil,
-								   tes3.effect.T_mysticism_DetEnemy, -1, -1 },
-	{ "T_IngFlor_TempleDome_01", nil, nil, nil,
-								 nil, nil, nil,
-								 tes3.effect.T_mysticism_DetInvisibility, -1, -1,
-								 nil, nil, nil },
-	{ "T_IngCrea_ArmunHide_01", nil, nil, nil,
-								tes3.effect.T_mysticism_DetHuman, -1, -1,
-								nil, nil, nil,
-								nil, nil, nil, },
-	{ "T_IngCrea_RakiTeeth_01", nil, nil, nil,
-								nil, nil, nil,
-								tes3.effect.T_mysticism_DetHuman, -1, -1,
-								nil, nil, nil, },
-	{ "T_IngCrea_Dragonscales_01", nil, nil, nil,
-								   tes3.effect.T_mysticism_DetEnemy, -1, -1,
-								   nil, nil, nil,
-								   nil, nil, nil },
-	{ "T_IngCrea_DridreaSilk_01", nil, nil, nil,
-								  nil, nil, nil,
-								  tes3.effect.T_mysticism_DetEnemy, -1, -1,
-								  nil, nil, nil },
-	{ "T_IngCrea_MothWingCyr_02", nil, nil, nil,
-								  tes3.effect.T_mysticism_DetHuman, -1, -1,
-								  nil, nil, nil,
-								  nil, nil, nil },
-	{ "T_IngCrea_MothWingSky_03", nil, nil, nil,
-								  nil, nil, nil,
-								  tes3.effect.T_mysticism_Blink, -1, -1 },
-	{ "T_IngFood_MeatDolphin_01", nil, nil, nil,
-								  nil, nil, nil,
-								  nil, nil, nil,
-								  tes3.effect.T_mysticism_DetHuman, -1, -1 },
-	{ "T_IngFlor_Indulcet_01", nil, nil, nil,
-							   tes3.effect.T_mysticism_DetInvisibility, -1, -1,
-							   nil, nil, nil,
-							   nil, nil, nil },
-	{ "T_IngFlor_FlaxFlower_01", nil, nil, nil,
-								 tes3.effect.T_mysticism_DetInvisibility, -1, -1,
-								 nil, nil, nil,
-								 nil, nil, nil },
-	{ "T_IngFlor_FlaxFlower_02", nil, nil, nil,
-								 tes3.effect.T_mysticism_DetEnemy, -1, -1,
-								 nil, nil, nil,
-								 nil, nil, nil },
-	{ "T_IngFlor_FlaxFlower_03", nil, nil, nil,
-								 tes3.effect.T_mysticism_DetHuman, -1, -1,
-								 nil, nil, nil,
-								 nil, nil, nil },
-	{ "T_IngFlor_ArrowrootFlower_01", nil, nil, nil,
-									  nil, nil, nil,
-								 	  tes3.effect.T_mysticism_DetEnemy, -1, -1,
-								 	  nil, nil, nil },
-	{ "T_IngFlor_Spiddal_01", nil, nil, nil,
-							  nil, nil, nil,
-							  nil, nil, nil,
-							  tes3.effect.T_mysticism_DetEnemy, -1, -1 },
-	{ "T_IngFlor_Peony_01", nil, nil, nil,
-							nil, nil, nil,
-							nil, nil, nil,
-							tes3.effect.T_mysticism_DetHuman, -1, -1 },
-	{ "T_IngSpice_Curcuma_01", tes3.effect.T_mysticism_ReflectDmg, -1, -1,
-							   nil, nil, nil,
-							   nil, nil, nil,
-							   nil, nil, nil },
-	{ "T_IngCrea_CetaceanMelon", nil, nil, nil,
-							   	 nil, nil, nil,
-							   	 nil, nil, nil,
-							   	 tes3.effect.T_mysticism_ReflectDmg, -1, -1 },
-	{ "T_IngFlor_Siyat_01", tes3.effect.T_mysticism_Insight, -1, -1,
-							nil, nil, nil,
-							nil, nil, nil,
-							nil, nil, nil },
-	{ "T_IngCrea_HagravenFeathers_01", nil, nil, nil,
-									   nil, nil, nil,
-									   nil, nil, nil,
-									   tes3.effect.T_restoration_FortifyCasting, -1, -1 },
-	{ "T_IngSpice_Cinnamon_01", nil, nil, nil,
-								tes3.effect.T_restoration_FortifyCasting, -1, -1,
-								nil, nil, nil },
-	{ "T_IngMine_Spellstone_01", tes3.effect.T_restoration_FortifyCasting, -1, -1,
-								 nil, nil, nil,
-								 nil, nil, nil,
-								 nil, nil, nil },
-	{ "T_IngSpice_Pepper_01", nil, nil, nil,
-							  nil, nil, nil,
-							  nil, nil, nil,
-							  tes3.effect.T_mysticism_Insight, -1, -1 },
-	{ "T_IngFlor_MonksTons_01", tes3.effect.T_mysticism_Insight, -1, -1,
-								nil, nil, nil,
-								nil, nil, nil,
-								nil, nil, nil },
-	{ "T_IngMine_Realgar_01", nil, nil, nil,
-							  tes3.effect.T_mysticism_Blink, -1, -1,
-							  nil, nil, nil,
-							  nil, nil, nil },
-	{ "T_IngDye_WhiteLead_01", nil, nil, nil,
-							   tes3.effect.T_mysticism_DetValuables, -1, -1,
-							   nil, nil, nil,
-							   nil, nil, nil },
-	{ "T_IngFlor_RedrosePetal_01", tes3.effect.T_restoration_FortifyCasting, -1, -1,
-								   nil, nil, nil,
-								   nil, nil, nil,
-								   nil, nil, nil },
-	{ "T_IngFlor_RedrosePetalDae_01", tes3.effect.T_restoration_FortifyCasting, -1, -1,
-									  nil, nil, nil,
-									  nil, nil, nil,
-									  nil, nil, nil },
-	{ "T_IngFlor_ShutagJelly_01", nil, nil, nil,
-								  nil, nil, nil,
-								  nil, nil, nil,
-								  tes3.effect.T_mysticism_Insight, -1, -1 },
-	{ "T_IngMine_Agate_01", nil, nil, nil,
-							nil, nil, nil,
-							tes3.effect.T_mysticism_Blink, -1, -1,
-							nil, nil, nil },
-	{ "T_IngFlor_PilgrimGel_01", nil, nil, nil,
-								 nil, nil, nil,
-								 nil, nil, nil,
-								 tes3.effect.T_mysticism_DetEnemy, -1, -1 },
-	{ "T_IngFlor_PilgrimPetals_01", nil, nil, nil,
-									nil, nil, nil,
-									nil, nil, nil,
-									tes3.effect.T_mysticism_DetInvisibility, -1, -1 },
-	{ "T_IngDye_Vermilion_01", nil, nil, nil,
-							   nil, nil, nil,
-							   nil, nil, nil,
-							   tes3.effect.T_mysticism_DetHuman, -1, -1 },
-	{ "T_IngDye_Verdigris_01", nil, nil, nil,
-							   nil, nil, nil,
-							   nil, nil, nil,
-							   tes3.effect.T_mysticism_DetValuables, -1, -1 },
-	{ "T_IngCrea_HopperAntler_01", nil, nil, nil,
-								   nil, nil, nil,
-								   nil, nil, nil,
-								   tes3.effect.T_mysticism_DetEnemy, -1, -1 },
-	{ "T_IngMine_Antimony_01", nil, nil, nil,
-							   nil, nil, nil,
-							   nil, nil, nil,
-							   tes3.effect.T_mysticism_ReflectDmg, -1, -1 },
-	{ "T_IngFlor_Bloatroot", nil, nil, nil,
-							 tes3.effect.T_restoration_FortifyCasting, -1, -1,
-							 nil, nil, nil,
-							 nil, nil, nil },
-	{ "T_IngSpice_Parsleydown_01", nil, nil, nil,
-							   	   nil, nil, nil,
-							   	   tes3.effect.T_mysticism_Insight, -1, -1,
-								   nil, nil, nil },
-	{ "T_IngCrea_VelkNectarSack_01", tes3.effect.T_mysticism_DetHuman, -1, -1,
-							   	     nil, nil, nil,
-							   	     nil, nil, nil,
-								     nil, nil, nil },
-	{ "T_IngCrea_AebisFeathers_01", nil, nil, nil,
-							  		nil, nil, nil,
-							  		nil, nil, nil,
-							  		tes3.effect.T_mysticism_DetInvisibility, -1, -1 },
-	{ "T_IngSpice_Hibiscus_01", nil, nil, nil,
-								nil, nil, nil,
-								nil, nil, nil,
-								tes3.effect.T_mysticism_Insight, -1, -1 },
-	{ "T_IngSpiceAka_Pepper_01", nil, nil, nil,
-								 nil, nil, nil,
-								 nil, nil, nil,
-								 tes3.effect.T_mysticism_ReflectDmg, -1, -1 },
-	{ "T_IngFood_Fig_01", nil, nil, nil,
-						  nil, nil, nil,
-						  tes3.effect.T_restoration_FortifyCasting, -1, -1,
-						  nil, nil, nil },
-	{ "T_IngCrea_Angelfish_01", nil, nil, nil,
-						  		nil, nil, nil,
-						  		tes3.effect.T_mysticism_DetValuables, -1, -1,
-						  		nil, nil, nil },
-	{ "T_IngFood_Blueberry_01", tes3.effect.T_mysticism_DetValuables, -1, -1,
-						  		nil, nil, nil,
-						  		nil, nil, nil,
-						  		nil, nil, nil },
-	{ "T_IngFood_PoppadGourd_01", nil, nil, nil,
-						  		  tes3.effect.T_mysticism_DetHuman, -1, -1,
-						  		  nil, nil, nil,
-						  		  nil, nil, nil },
-	{ "T_IngFood_Blackberry_01", tes3.effect.T_mysticism_DetInvisibility, -1, -1,
-						  		nil, nil, nil,
-						  		nil, nil, nil,
-						  		nil, nil, nil },
-	{ "T_IngFood_FishSpr_01", tes3.effect.T_mysticism_DetEnemy, -1, -1,
-							  nil, nil, nil,
-							  nil, nil, nil,
-							  nil, nil, nil },
-	{ "T_IngFood_FishLongfinFilet_01", nil, nil, nil,
-						  		  	   tes3.effect.T_mysticism_Insight, -1, -1,
-						  		  	   nil, nil, nil,
-						  		  	   nil, nil, nil },
-	{ "T_IngCrea_SnowraySting_01", nil, nil, nil,
-								   nil, nil, nil,
-								   nil, nil, nil,
-								   tes3.effect.T_restoration_FortifyCasting, -1, -1 },
-	{ "T_IngFood_MeatHorse_01", nil, nil, nil,
-								tes3.effect.T_mysticism_DetEnemy, -1, -1,
-								nil, nil, nil,
-								nil, nil, nil },
-	{ "T_IngFood_MeatVenison_01", nil, nil, nil,
-								tes3.effect.T_mysticism_DetHuman, -1, -1,
-								nil, nil, nil,
-								nil, nil, nil },
-	{ "T_IngFood_Radish_01", nil, nil, nil,
-							 nil, nil, nil,
-							 nil, nil, nil,
-							 tes3.effect.T_mysticism_Blink, -1, -1 },
-	{ "T_IngFood_SilverPalmfruit_01", nil, nil, nil,
-									  nil, nil, nil,
-									  nil, nil, nil,
-									  tes3.effect.T_mysticism_DetInvisibility, -1, -1 },
-	{ "T_IngFood_MeatHorker_01", nil, nil, nil,
-								 nil, nil, nil,
-								 nil, nil, nil,
-								 tes3.effect.T_mysticism_ReflectDmg, -1, -1 },
-	{ "T_IngFlor_HoneyLily_01", tes3.effect.T_mysticism_Insight, -1, -1,
-								nil, nil, nil,
-								nil, nil, nil,
-								nil, nil, nil },
-	{ "T_IngFlor_Jarmush_01", nil, nil, nil,
-						  	  nil, nil, nil,
-						  	  tes3.effect.T_restoration_FortifyCasting, -1, -1,
-						  	  nil, nil, nil },
-	{ "T_IngCrea_BarkHeart_01", nil, nil, nil,
-								nil, nil, nil,
-								nil, nil, nil,
-								tes3.effect.T_mysticism_ReflectDmg, -1, -1 },
-	{ "T_IngFlor_Redpoppy_01", nil, nil, nil,
-								nil, nil, nil,
-								nil, nil, nil,
-								tes3.effect.T_mysticism_Insight, -1, -1 },
-}
-
--- item id, item name, 1st effect id, 1st duration, 1st magnitude, ...
-local td_potions = {
-	{ "T_Com_Potion_ReflectDamage_B", common.i18n("magic.itemPotionReflectDamageB"), tes3.effect.T_mysticism_ReflectDmg, 8, 5 },
-	{ "T_Com_Potion_ReflectDamage_C", common.i18n("magic.itemPotionReflectDamageC"), tes3.effect.T_mysticism_ReflectDmg, 15, 8 },
-	{ "T_Com_Potion_ReflectDamage_S", common.i18n("magic.itemPotionReflectDamageS"), tes3.effect.T_mysticism_ReflectDmg, 30, 10 },
-	{ "T_Com_Potion_ReflectDamage_Q", common.i18n("magic.itemPotionReflectDamageQ"), tes3.effect.T_mysticism_ReflectDmg, 45, 15 },
-	{ "T_Com_Potion_ReflectDamage_E", common.i18n("magic.itemPotionReflectDamageE"), tes3.effect.T_mysticism_ReflectDmg, 60, 20 },
-	{ "T_Com_Potion_Insight_B", common.i18n("magic.itemPotionInsightB"), tes3.effect.T_mysticism_Insight, 8, 5 },
-	{ "T_Com_Potion_Insight_C", common.i18n("magic.itemPotionInsightC"), tes3.effect.T_mysticism_Insight, 15, 8 },
-	{ "T_Com_Potion_Insight_S", common.i18n("magic.itemPotionInsightS"), tes3.effect.T_mysticism_Insight, 30, 10 },
-	{ "T_Com_Potion_Insight_Q", common.i18n("magic.itemPotionInsightQ"), tes3.effect.T_mysticism_Insight, 45, 15 },
-	{ "T_Com_Potion_Insight_E", common.i18n("magic.itemPotionInsightE"), tes3.effect.T_mysticism_Insight, 60, 20 },
-	{ "T_Com_Potion_Detect_Humanoid_S", common.i18n("magic.itemPotionDetectHumanoid"), tes3.effect.T_mysticism_DetHuman, 15, 10 },
-	{ "T_Com_Potion_Detect_Enemy_S", common.i18n("magic.itemPotionDetectEnemy"), tes3.effect.T_mysticism_DetEnemy, 15, 10 },
-	{ "T_Com_Potion_Detect_Invisib_S", common.i18n("magic.itemPotionDetectInvisibility"), tes3.effect.T_mysticism_DetInvisibility, 15, 10 },
-	{ "T_Com_Potion_Eyes", nil, tes3.effect.detectAnimal, 60, 50,
-								tes3.effect.T_mysticism_DetHuman, 60, 50,
-								tes3.effect.detectEnchantment, 60, 50,
-								tes3.effect.detectKey, 60, 50,
-								tes3.effect.nightEye, 60, 50 },
-	{ "T_Com_Potion_FortifyCasting_B", nil, tes3.effect.T_restoration_FortifyCasting, 8, 5 },
-	{ "T_Com_Potion_FortifyCasting_C", nil, tes3.effect.T_restoration_FortifyCasting, 15, 8 },
-	{ "T_Com_Potion_FortifyCasting_S", nil, tes3.effect.T_restoration_FortifyCasting, 30, 10 },
-	{ "T_Com_Potion_FortifyCasting_Q", nil, tes3.effect.T_restoration_FortifyCasting, 45, 15 },
-	{ "T_Com_Potion_FortifyCasting_E", nil, tes3.effect.T_restoration_FortifyCasting, 60, 20 },
-}
-
--- item id, item name, value
-local td_enchanted_items = {
-	{ "T_EnSc_Com_SummonDremoraArcher", common.i18n("magic.itemScSummonDremoraArcher"), 295 },
-	{ "T_EnSc_Com_SummonDremoraCaster", common.i18n("magic.itemScSummonDremoraCaster"), 314 },
-	{ "T_EnSc_Nor_KynesIntervention", common.i18n("magic.itemScKynesIntervention"), nil }
-}
+local magicData = require("TamrielData.magicdata")
 
 -- race id, isFemale, distraction voice files, distraction end voice lines
 local distractedVoiceLines = {
@@ -944,23 +338,24 @@ function this.replaceSpells(table)
 	for _,v in pairs(table) do
 		local overridden_spell = tes3.getObject(v[1])
 		if overridden_spell then
-			overridden_spell.castType = v[2]
-			if v[3] then overridden_spell.name = v[3] end
+			overridden_spell.castType = tes3.spellType[v[2]]
+			if v[3] then overridden_spell.name = common.i18n("magic." .. v[3]) end
 			if v[4] then overridden_spell.magickaCost = v[4] end
 			for i = 1, 8, 1 do
-				if not v[5 + (i - 1) * 6] then
+				local effect_row = v[4 + i]
+				if not effect_row then
 					break	-- This condition exists so that the tables don't have to have dozens of fields if they have less than 8 effects
 				end
 
 				local effect = overridden_spell.effects[i]
-				effect.id = v[5 + (i - 1) * 6][1]
-				effect.attribute = v[5 + (i - 1) * 6][2]
-				effect.skill = v[5 + (i - 1) * 6][3]
-				effect.rangeType = v[6 + (i - 1) * 6]
-				effect.radius = v[7 + (i - 1) * 6]
-				effect.duration = v[8 + (i - 1) * 6]
-				effect.min = v[9 + (i - 1) * 6]
-				effect.max = v[10 + (i - 1) * 6]
+				effect.id = tes3.effect[effect_row.id]
+				effect.attribute = effect_row.attribute
+				effect.skill = effect_row.skill
+				effect.rangeType = tes3.effectRange[effect_row.range]
+				effect.radius = effect_row.area or 0
+				effect.duration = effect_row.duration or 0
+				effect.min = effect_row.min or 0
+				effect.max = effect_row.max or 0
 			end
 		end
 	end
@@ -972,9 +367,10 @@ function this.replaceEnchantments(table)
 		local overridden_enchantment = tes3.getObject(v[1])
 		---@cast overridden_enchantment tes3enchantment
 		if overridden_enchantment then
-			overridden_enchantment.castType = v[2]
+			overridden_enchantment.castType = tes3.enchantmentType[v[2]]
 			for i = 1, 8, 1 do
-				if not v[3 + (i - 1) * 6] then
+				local effect_row = v[2 + i]
+				if not effect_row then
 					for j = i, 8, 1 do
 						local effect = overridden_enchantment.effects[i]
 						effect.id = -1
@@ -986,14 +382,14 @@ function this.replaceEnchantments(table)
 				end
 
 				local effect = overridden_enchantment.effects[i]
-				effect.id = v[3 + (i - 1) * 6][1]
-				effect.attribute = v[3 + (i - 1) * 6][2]
-				effect.skill = v[3 + (i - 1) * 6][3]
-				effect.rangeType = v[4 + (i - 1) * 6]
-				effect.radius = v[5 + (i - 1) * 6]
-				effect.duration = v[6 + (i - 1) * 6]
-				effect.min = v[7 + (i - 1) * 6]
-				effect.max = v[8 + (i - 1) * 6]
+				effect.id = tes3.effect[effect_row.id]
+				effect.attribute = effect_row.attribute
+				effect.skill = effect_row.skill
+				effect.rangeType = tes3.effectRange[effect_row.range]
+				effect.radius = effect_row.area or 0
+				effect.duration = effect_row.duration or 0
+				effect.min = effect_row.min or 0
+				effect.max = effect_row.max or 0
 			end
 		end
 	end
@@ -1005,10 +401,11 @@ function this.replaceIngredientEffects(table)
 		local ingredient = tes3.getObject(v[1])
 		if ingredient then
 			for i = 1, 4, 1 do
-				if v[2 + (i - 1) * 3] then
-					ingredient.effects[i] = v[2 + (i - 1) * 3]
-					ingredient.effectAttributeIds[i] = v[3 + (i - 1) * 3]
-					ingredient.effectSkillIds[i] = v[4 + (i - 1) * 3]
+				local effect_row = v[1 + i]
+				if effect_row then
+					ingredient.effects[i] = effect_row.id
+					ingredient.effectAttributeIds[i] = effect_row.attribute or -1
+					ingredient.effectSkillIds[i] = effect_row.skill or -1
 				end
 			end
 		end
@@ -1020,14 +417,15 @@ function this.replacePotions(table)
 	for _,v in pairs(table) do
 		local potion = tes3.getObject(v[1])
 		if potion then
-			if v[2] then potion.name = v[2] end
+			if v[2] then potion.name = common.i18n("magic." .. v[2]) end
 			for i = 1, 8, 1 do
 				local effect = potion.effects[i]
-				if v[3 + (i - 1) * 3] then
-					effect.id = v[3 + (i - 1) * 3]
-					effect.duration = v[4 + (i - 1) * 3]
-					effect.min = v[5 + (i - 1) * 3]
-					effect.max = v[5 + (i - 1) * 3]
+				local effect_row = v[2 + i]
+				if effect_row then
+					effect.id = tes3.effect[effect_row.id]
+					effect.duration = effect_row.duration or 0
+					effect.min = effect_row.magnitude or 0
+					effect.max = effect_row.magnitude or 0
 				else
 					effect.id = -1
 					effect.duration = -1
@@ -1044,7 +442,7 @@ function this.editItems(table)
 	for _,v in pairs(table) do
 		local overridden_item = tes3.getObject(v[1])
 		if overridden_item then
-			if v[2] then overridden_item.name = v[2] end
+			if v[2] then overridden_item.name = common.i18n("magic." .. v[2]) end
 			if v[3] then overridden_item.value = v[3] end
 		end
 	end
@@ -1058,7 +456,7 @@ local function checkActorSpells(actor, table)
 	local customSpellIndex = 1
 	for _,v in pairs(table) do
 		if actor.object.spells:contains(v[1]) and actor.magicka.current > v[4] then
-			customSpells[customSpellIndex] = { v[1], v[5] }
+			customSpells[customSpellIndex] = { v[1], { tes3.effect[v[5].id] } }
 			customSpellIndex = customSpellIndex + 1
 		end
 	end
@@ -1085,7 +483,7 @@ function this.useCustomSpell(e)
 	local customSpells
 	--if (e.session.selectedAction > 3 and e.session.selectedAction < 7) or e.session.selectedAction == 8 then	-- These conditions require that the actor is already casting a spell, which can't happen if they are unable to cast a non-MWSE spell
 		if config.summoningSpells then
-			customSpells = checkActorSpells(e.session.mobile, td_summon_spells)
+			customSpells = checkActorSpells(e.session.mobile, magicData.td_summon_spells)
 
 			if customSpells then
 				equipActorSpell(e.session, customSpells)
@@ -1094,7 +492,7 @@ function this.useCustomSpell(e)
 		end
 
 		if config.boundSpells then
-			customSpells = checkActorSpells(e.session.mobile, td_bound_spells)
+			customSpells = checkActorSpells(e.session.mobile, magicData.td_bound_spells)
 
 			if customSpells then
 				equipActorSpell(e.session, customSpells)
@@ -3682,12 +3080,12 @@ event.register(tes3.event.magicEffectsResolved, function()
 	if config.summoningSpells then
 		local summonHungerEffect = tes3.getMagicEffect(tes3.effect.summonHunger)
 
-		for _,v in pairs(td_summon_effects) do
+		for _,v in pairs(magicData.td_summon_effects) do
 			local effectID, effectName, creatureID, effectCost, iconPath, effectDescription = unpack(v)
 			tes3.addMagicEffect{
-				id = effectID,
-				name = effectName,
-				description = effectDescription,
+				id = tes3.effect[effectID],
+				name = common.i18n("magic." .. effectName),
+				description = common.i18n("magic." .. effectDescription),
 				school = tes3.magicSchool.conjuration,
 				baseCost = effectCost,
 				speed = summonHungerEffect.speed,
@@ -3732,112 +3130,74 @@ event.register(tes3.event.magicEffectsResolved, function()
 	if config.boundSpells then
 		local boundCuirassEffect = tes3.getMagicEffect(tes3.effect.boundBoots)
 
-		for _,v in pairs(td_bound_effects) do
+		for _,v in pairs(magicData.td_bound_effects) do
 			local effectID, effectName, itemID, itemID_02, effectCost, iconPath, effectDescription = unpack(v)
-			if effectID == tes3.effect.T_bound_ThrowingKnives then
-				tes3.addMagicEffect{
-					id = effectID,
-					name = effectName,
-					description = effectDescription,
-					school = tes3.magicSchool.conjuration,
-					baseCost = effectCost,
-					speed = boundCuirassEffect.speed,
-					allowEnchanting = true,
-					allowSpellmaking = true,
-					appliesOnce = true,
-					canCastSelf = true,
-					canCastTarget = false,
-					canCastTouch = false,
-					casterLinked = boundCuirassEffect.casterLinked,
-					hasContinuousVFX = boundCuirassEffect.hasContinuousVFX,
-					hasNoDuration = boundCuirassEffect.hasNoDuration,
-					hasNoMagnitude = boundCuirassEffect.hasNoMagnitude,
-					illegalDaedra = boundCuirassEffect.illegalDaedra,
-					isHarmful = boundCuirassEffect.isHarmful,
-					nonRecastable = boundCuirassEffect.nonRecastable,
-					targetsAttributes = boundCuirassEffect.targetsAttributes,
-					targetsSkills = boundCuirassEffect.targetsSkills,
-					unreflectable = boundCuirassEffect.unreflectable,
-					usesNegativeLighting = boundCuirassEffect.usesNegativeLighting,
-					icon = iconPath,
-					particleTexture = boundCuirassEffect.particleTexture,
-					castSound = boundCuirassEffect.castSoundEffect.id,
-					castVFX = boundCuirassEffect.castVisualEffect.id,
-					boltSound = boundCuirassEffect.boltSoundEffect.id,
-					boltVFX = boundCuirassEffect.boltVisualEffect.id,
-					hitSound = boundCuirassEffect.hitSoundEffect.id,
-					hitVFX = boundCuirassEffect.hitVisualEffect.id,
-					areaSound = boundCuirassEffect.areaSoundEffect.id,
-					areaVFX = boundCuirassEffect.areaVisualEffect.id,
-					lighting = {x = boundCuirassEffect.lightingRed / 255, y = boundCuirassEffect.lightingGreen / 255, z = boundCuirassEffect.lightingBlue / 255},
-					size = boundCuirassEffect.size,
-					sizeCap = boundCuirassEffect.sizeCap,
-					onTick = boundKnivesEffect,
-					onCollision = nil
-				}
-			else
-				tes3.addMagicEffect{
-					id = effectID,
-					name = effectName,
-					description = effectDescription,
-					school = tes3.magicSchool.conjuration,
-					baseCost = effectCost,
-					speed = boundCuirassEffect.speed,
-					allowEnchanting = true,
-					allowSpellmaking = true,
-					appliesOnce = boundCuirassEffect.appliesOnce,
-					canCastSelf = true,
-					canCastTarget = false,
-					canCastTouch = false,
-					casterLinked = boundCuirassEffect.casterLinked,
-					hasContinuousVFX = boundCuirassEffect.hasContinuousVFX,
-					hasNoDuration = boundCuirassEffect.hasNoDuration,
-					hasNoMagnitude = boundCuirassEffect.hasNoMagnitude,
-					illegalDaedra = boundCuirassEffect.illegalDaedra,
-					isHarmful = boundCuirassEffect.isHarmful,
-					nonRecastable = boundCuirassEffect.nonRecastable,
-					targetsAttributes = boundCuirassEffect.targetsAttributes,
-					targetsSkills = boundCuirassEffect.targetsSkills,
-					unreflectable = boundCuirassEffect.unreflectable,
-					usesNegativeLighting = boundCuirassEffect.usesNegativeLighting,
-					icon = iconPath,
-					particleTexture = boundCuirassEffect.particleTexture,
-					castSound = boundCuirassEffect.castSoundEffect.id,
-					castVFX = boundCuirassEffect.castVisualEffect.id,
-					boltSound = boundCuirassEffect.boltSoundEffect.id,
-					boltVFX = boundCuirassEffect.boltVisualEffect.id,
-					hitSound = boundCuirassEffect.hitSoundEffect.id,
-					hitVFX = boundCuirassEffect.hitVisualEffect.id,
-					areaSound = boundCuirassEffect.areaSoundEffect.id,
-					areaVFX = boundCuirassEffect.areaVisualEffect.id,
-					lighting = {x = boundCuirassEffect.lightingRed / 255, y = boundCuirassEffect.lightingGreen / 255, z = boundCuirassEffect.lightingBlue / 255},
-					size = boundCuirassEffect.size,
-					sizeCap = boundCuirassEffect.sizeCap,
-					onTick = function(eventData)
-						if tes3.getObject(itemID).objectType == tes3.objectType.armor then
-							if itemID_02 == "" then
-								eventData:triggerBoundArmor(itemID)
-							else
-								eventData:triggerBoundArmor(itemID, itemID_02)
-							end
-						elseif tes3.getObject(itemID).objectType == tes3.objectType.weapon then
-							eventData:triggerBoundWeapon(itemID)
-						end
-					end,
-					onCollision = nil
-				}
+			if itemID_02 == "" then
+				itemID_02 = nil
 			end
+			local onTick
+			if effectID == "T_bound_ThrowingKnives" then
+				onTick = boundKnivesEffect
+			else
+				onTick = function(eventData)
+					if tes3.getObject(itemID).objectType == tes3.objectType.armor then
+						eventData:triggerBoundArmor(itemID, itemID_02)
+					elseif tes3.getObject(itemID).objectType == tes3.objectType.weapon then
+						eventData:triggerBoundWeapon(itemID)
+					end
+				end
+			end
+			tes3.addMagicEffect{
+				id = tes3.effect[effectID],
+				name = common.i18n("magic." .. effectName),
+				description = common.i18n("magic." .. effectDescription),
+				school = tes3.magicSchool.conjuration,
+				baseCost = effectCost,
+				speed = boundCuirassEffect.speed,
+				allowEnchanting = true,
+				allowSpellmaking = true,
+				appliesOnce = boundCuirassEffect.appliesOnce,
+				canCastSelf = true,
+				canCastTarget = false,
+				canCastTouch = false,
+				casterLinked = boundCuirassEffect.casterLinked,
+				hasContinuousVFX = boundCuirassEffect.hasContinuousVFX,
+				hasNoDuration = boundCuirassEffect.hasNoDuration,
+				hasNoMagnitude = boundCuirassEffect.hasNoMagnitude,
+				illegalDaedra = boundCuirassEffect.illegalDaedra,
+				isHarmful = boundCuirassEffect.isHarmful,
+				nonRecastable = boundCuirassEffect.nonRecastable,
+				targetsAttributes = boundCuirassEffect.targetsAttributes,
+				targetsSkills = boundCuirassEffect.targetsSkills,
+				unreflectable = boundCuirassEffect.unreflectable,
+				usesNegativeLighting = boundCuirassEffect.usesNegativeLighting,
+				icon = iconPath,
+				particleTexture = boundCuirassEffect.particleTexture,
+				castSound = boundCuirassEffect.castSoundEffect.id,
+				castVFX = boundCuirassEffect.castVisualEffect.id,
+				boltSound = boundCuirassEffect.boltSoundEffect.id,
+				boltVFX = boundCuirassEffect.boltVisualEffect.id,
+				hitSound = boundCuirassEffect.hitSoundEffect.id,
+				hitVFX = boundCuirassEffect.hitVisualEffect.id,
+				areaSound = boundCuirassEffect.areaSoundEffect.id,
+				areaVFX = boundCuirassEffect.areaVisualEffect.id,
+				lighting = {x = boundCuirassEffect.lightingRed / 255, y = boundCuirassEffect.lightingGreen / 255, z = boundCuirassEffect.lightingBlue / 255},
+				size = boundCuirassEffect.size,
+				sizeCap = boundCuirassEffect.sizeCap,
+				onTick = onTick,
+				onCollision = nil
+			}
 		end
 	end
 
 	if config.interventionSpells then
 		local divineInterventionEffect = tes3.getMagicEffect(tes3.effect.divineIntervention)
 
-		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_intervention_effects[1])	-- Kyne's Intervention
+		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_intervention_effects[1])	-- Kyne's Intervention
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.mysticism,
 			baseCost = effectCost,
 			speed = divineInterventionEffect.speed,
@@ -3897,11 +3257,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 		local fortifyAttackEffect = tes3.getMagicEffect(tes3.effect.fortifyAttack)
 		local lightEffect = tes3.getMagicEffect(tes3.effect.light)
 
-		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[1])	-- Passwall
+		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[1])	-- Passwall
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			--magnitudeType = " " .. tes3.findGMST(tes3.gmst.sfeet).value,		-- Passwall is currently set up to not have a magnitude and works off of the effect's area instead
 			--magnitudeTypePlural = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			school = passwallSchool,
@@ -3924,7 +3284,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			targetsSkills = false,
 			unreflectable = true,
 			usesNegativeLighting = passwallBaseEffect.usesNegativeLighting,
-			icon = iconPath,
+			icon = passwallIcon,
 			particleTexture = passwallBaseEffect.particleTexture,
 			castSound = passwallBaseEffect.castSoundEffect.id,
 			castVFX = passwallBaseEffect.castVisualEffect.id,
@@ -3941,11 +3301,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[2])		-- Banish Daedra
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[2])		-- Banish Daedra
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.mysticism,
 			baseCost = effectCost,
 			speed = soultrapEffect.speed,
@@ -3983,11 +3343,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[3])		-- Reflect Damage
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[3])		-- Reflect Damage
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			magnitudeType = tes3.findGMST(tes3.gmst.spercent).value,
 			magnitudeTypePlural = tes3.findGMST(tes3.gmst.spercent).value,
 			school = tes3.magicSchool.mysticism,
@@ -4027,11 +3387,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[4])		-- Detect Humanoid
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[4])		-- Detect Humanoid
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			magnitudeType = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			magnitudeTypePlural = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			school = tes3.magicSchool.mysticism,
@@ -4071,11 +3431,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[5])		-- Radiant Shield
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[5])		-- Radiant Shield
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.alteration,
 			baseCost = effectCost,
 			speed = shieldEffect.speed,
@@ -4113,11 +3473,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[6])		-- Wabbajack
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[6])		-- Wabbajack
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.alteration,
 			baseCost = effectCost,
 			speed = burdenEffect.speed,
@@ -4155,11 +3515,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[7])		-- Wabbajack Helper
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[7])		-- Wabbajack Helper
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.alteration,
 			baseCost = effectCost,
 			speed = burdenEffect.speed,
@@ -4197,11 +3557,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[8])		-- Insight
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[8])		-- Insight
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.mysticism,
 			baseCost = effectCost,
 			speed = reflectEffect.speed,
@@ -4239,11 +3599,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[9])		-- Armor Resartus
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[9])		-- Armor Resartus
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.restoration,
 			baseCost = effectCost,
 			speed = restoreEffect.speed,
@@ -4281,11 +3641,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[10])		-- Weapon Resartus
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[10])		-- Weapon Resartus
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.restoration,
 			baseCost = effectCost,
 			speed = restoreEffect.speed,
@@ -4323,11 +3683,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[11])		-- Corruption
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[11])		-- Corruption
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.conjuration,
 			baseCost = effectCost,
 			speed = summonDremoraEffect.speed,
@@ -4365,11 +3725,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[12])		-- Corruption Summon
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[12])		-- Corruption Summon
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.conjuration,
 			baseCost = effectCost,
 			speed = summonDremoraEffect.speed,
@@ -4409,11 +3769,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[13])		-- Distract Creature
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[13])		-- Distract Creature
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.illusion,
 			baseCost = effectCost,
 			speed = blindEffect.speed,
@@ -4451,11 +3811,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[14])		-- Distract Humanoid
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[14])		-- Distract Humanoid
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.illusion,
 			baseCost = effectCost,
 			speed = blindEffect.speed,
@@ -4493,11 +3853,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[15])		-- Gaze of Veloth
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[15])		-- Gaze of Veloth
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.destruction,
 			baseCost = effectCost,
 			speed = damageHealthEffect.speed,
@@ -4535,11 +3895,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[16])		-- Detect Enemy
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[16])		-- Detect Enemy
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			magnitudeType = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			magnitudeTypePlural = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			school = tes3.magicSchool.mysticism,
@@ -4579,11 +3939,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[17])		-- Detect Invisibility
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[17])		-- Detect Invisibility
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			magnitudeType = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			magnitudeTypePlural = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			school = tes3.magicSchool.mysticism,
@@ -4623,11 +3983,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[18])		-- Blink
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[18])		-- Blink
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			magnitudeType = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			magnitudeTypePlural = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			school = tes3.magicSchool.mysticism,
@@ -4667,11 +4027,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[19])		-- Fortify Casting
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[19])		-- Fortify Casting
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.restoration,
 			baseCost = effectCost,
 			speed = fortifyAttackEffect.speed,
@@ -4709,11 +4069,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[20])		-- Prismatic Light
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[20])		-- Prismatic Light
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.illusion,
 			baseCost = effectCost,
 			speed = lightEffect.speed,
@@ -4751,11 +4111,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[21])		-- Blood Magic
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[21])		-- Blood Magic
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.mysticism,
 			baseCost = effectCost,
 			speed = detectEffect.speed,
@@ -4793,11 +4153,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[22])		-- Sanguine Rose
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[22])		-- Sanguine Rose
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.conjuration,
 			baseCost = effectCost,
 			speed = summonDremoraEffect.speed,
@@ -4837,11 +4197,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[23])		-- Detect Valuable
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[23])		-- Detect Valuable
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			magnitudeType = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			magnitudeTypePlural = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			school = tes3.magicSchool.mysticism,
@@ -4881,11 +4241,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[24])		-- Magicka Ward
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[24])		-- Magicka Ward
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.mysticism,
 			baseCost = effectCost,
 			speed = detectEffect.speed,
@@ -4923,11 +4283,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 			onCollision = nil
 		}
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(td_misc_effects[25])		-- Ethereal
+		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[25])		-- Ethereal
 		tes3.addMagicEffect{
-			id = effectID,
-			name = effectName,
-			description = effectDescription,
+			id = tes3.effect[effectID],
+			name = common.i18n("magic." .. effectName),
+			description = common.i18n("magic." .. effectDescription),
 			school = tes3.magicSchool.illusion,
 			baseCost = effectCost,
 			speed = blindEffect.speed,
@@ -4970,19 +4330,19 @@ end)
 -- Replaces spell names, effects, etc. using the spell tables above; these operations needs to be done during the load event, rather than loaded like in main.lua
 event.register(tes3.event.load, function()
 	if config.summoningSpells then
-		this.replaceSpells(td_summon_spells)
+		this.replaceSpells(magicData.td_summon_spells)
 	end
 
 	if config.boundSpells then
-		this.replaceSpells(td_bound_spells)
+		this.replaceSpells(magicData.td_bound_spells)
 	end
 
 	if config.interventionSpells then
-		this.replaceSpells(td_intervention_spells)
+		this.replaceSpells(magicData.td_intervention_spells)
 	end
 
 	if config.miscSpells then
-		this.replaceSpells(td_misc_spells)
+		this.replaceSpells(magicData.td_misc_spells)
 
 		event.unregister(tes3.event.uiActivated, this.onMenuMagicActivated, { filter = "MenuMagic" })	-- unregisterOnLoad isn't an option here of course, as the registration needs to be done before loaded
 		event.register(tes3.event.uiActivated, this.onMenuMagicActivated, { filter = "MenuMagic" })
@@ -5002,10 +4362,10 @@ event.register(tes3.event.load, function()
 	end
 
 	if config.summoningSpells and config.boundSpells and config.interventionSpells and config.miscSpells then
-		this.replaceEnchantments(td_enchantments)
-		this.replaceIngredientEffects(td_ingredients)
-		this.replacePotions(td_potions)
-		this.editItems(td_enchanted_items)
+		this.replaceEnchantments(magicData.td_enchantments)
+		this.replaceIngredientEffects(magicData.td_ingredients)
+		this.replacePotions(magicData.td_potions)
+		this.editItems(magicData.td_enchanted_items)
 
 		tes3.getObject("T_Dae_UNI_Wabbajack").enchantment = tes3.getObject("T_Use_WabbajackUni")	-- Crashes game when registered to the loaded event with the wabbajack enchantment equipped, so it is here instead
 	end
