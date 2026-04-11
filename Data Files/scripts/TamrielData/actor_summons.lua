@@ -8,20 +8,6 @@ local I = require('openmw.interfaces')
 local nearby = require('openmw.nearby')
 local self = require('openmw.self')
 local util = require('openmw.util')
-local magicData = require('MWSE.mods.TamrielData.magicdata')
-
-local summons = {}
-for _, values in pairs(magicData.td_summon_effects) do
-    summons[values[1]:lower()] = values[3]
-end
-
-local state = {
-    summons = {}
-}
-
-local function toKey(id, index)
-    return id .. ',' .. index
-end
 
 local FRONT = 0
 local BACK = 3
@@ -51,47 +37,15 @@ local function getSafeSpawn()
     return origin
 end
 
-I.T_ActorMagic.addEffectStartHandler(function(spell, effect, track)
-    local creature = summons[effect.id]
-    if creature == nil then
-        return
-    end
-    local id = spell.activeSpellId
-    local index = effect.index
-    local key = toKey(id, index)
-    state.summons[key] = { id = id, index = index }
-    core.sendGlobalEvent('T_Summon', { key = key, creature = creature, caster = self.object, position = getSafeSpawn() })
-    track.ignore = false
-end)
-
-I.T_ActorMagic.addEffectEndHandler(function(id, index)
-    local key = toKey(id, index)
-    local summon = state.summons[key]
-    if summon == nil then
-        return
-    end
-    local creature = summon.creature
-    if creature and creature:isValid() then
-        core.sendGlobalEvent('T_Unsummon', { creature = creature })
-    end
-    state.summons[key] = nil
-end)
+local state = {}
 
 return {
     eventHandlers = {
-        T_Summoned = function(data)
-            local summon = state.summons[data.key]
-            if summon == nil then
-                summon = {}
-                state.summons[data.key] = summon
-            end
-            summon.creature = data.creature
-        end,
-        T_SummonDied = function(data)
-            local summon = state.summons[data.key]
-            if summon ~= nil and summon.id ~= nil and summon.index ~= nil then
-                I.T_ActorMagic.removeEffect(summon.id, summon.index)
-            end
+        T_GetSummonPosition = function(data)
+            local position = getSafeSpawn()
+            data.position = position
+            data.caster = self.object
+            core.sendGlobalEvent('T_Summon', data)
         end,
         T_MarkSummon = function(data)
             state.caster = data.caster
@@ -100,10 +54,7 @@ return {
         end,
         Died = function()
             if state.key ~= nil then
-                core.sendGlobalEvent('T_Unsummon', { creature = self.object })
-                if state.caster:isValid() then
-                    state.caster:sendEvent('T_SummonDied', { key = state.key })
-                end
+                core.sendGlobalEvent('T_Unsummon', { creature = self.object, caster = state.caster, key = state.key })
             end
         end
     },
@@ -112,7 +63,9 @@ return {
             return state
         end,
         onLoad = function(data)
-            state = data
+            if data then
+                state = data
+            end
         end
     }
 }
