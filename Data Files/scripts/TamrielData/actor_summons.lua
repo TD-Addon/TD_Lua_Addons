@@ -51,7 +51,7 @@ local function getSafeSpawn()
     return origin
 end
 
-I.T_ActorMagic.addEffectStartHandler(function(spell, effect)
+I.T_ActorMagic.addEffectStartHandler(function(spell, effect, track)
     local creature = summons[effect.id]
     if creature == nil then
         return
@@ -61,6 +61,7 @@ I.T_ActorMagic.addEffectStartHandler(function(spell, effect)
     local key = toKey(id, index)
     state.summons[key] = { id = id, index = index }
     core.sendGlobalEvent('T_Summon', { key = key, creature = creature, caster = self.object, position = getSafeSpawn() })
+    track.ignore = false
 end)
 
 I.T_ActorMagic.addEffectEndHandler(function(id, index)
