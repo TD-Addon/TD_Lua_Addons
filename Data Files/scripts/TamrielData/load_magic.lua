@@ -1,6 +1,7 @@
 local content = require('openmw.content')
 local core = require('openmw.core')
 local magicData = require('MWSE.mods.TamrielData.magicdata')
+local version_check = require('scripts.TamrielData.utils.version_check')
 
 local l10n = core.l10n('TamrielData')
 
@@ -41,14 +42,16 @@ local function replaceSpells(table)
             row.range = range[row.range]
         end
         local spell = spells[id]
-        if cost then
-            spell.cost = cost
+        if spell then
+            if cost then
+                spell.cost = cost
+            end
+            spell.type = types[type]
+            if name then
+                spell.name = t(name)
+            end
+            spell.effects = effects
         end
-        spell.type = types[type]
-        if name then
-            spell.name = t(name)
-        end
-        spell.effects = effects
     end
 end
 
@@ -66,8 +69,10 @@ end
 return {
     engineHandlers = {
         onContentFilesLoaded = function()
-            addSummons()
-            replaceSpells(magicData.td_summon_spells)
+            if version_check.isFeatureEnabled('summoningSpells') then
+                addSummons()
+                replaceSpells(magicData.td_summon_spells)
+            end
         end
     }
 }

@@ -5,6 +5,8 @@ Settings_TamrielData_page01Main_group01Main_restrictEquipment_Description: "Emp�
 Settings_TamrielData_page01Main_group02Magic: "Magie"
 Settings_TamrielData_page01Main_group02Magic_miscSpells: "Ajout de nouveaux sorts divers"
 Settings_TamrielData_page01Main_group02Magic_miscSpells_Description: "Ajoute de nouveaux sorts qui ne rentrent pas dans les catégories habituelles."
+Settings_TamrielData_page01Main_group02Magic_summoningSpells: "Ajout de nouveaux sorts d'Invocation"
+Settings_TamrielData_page01Main_group02Magic_summoningSpells_Description: "Ajoute de nouveaux sorts d'Invocation utilisant des créatures de Ressources communes de Tamriel comme les consummeurs, les hernes, les sombres séductrices, et les auroriens.\nRequiert un redémarrage.\n\nPar défaut : activé\n\n"
 Settings_TamrielData_page01Main_group99Misc: "Divers"
 Settings_TamrielData_page01Main_group99Misc_debugLogging: "Journalisation des messages de débug"
 Settings_TamrielData_page01Main_group99Misc_debugLogging_Description: "Ajoute plus de logs, par exemple dans les logs d'OpenMW affichés avec la touche F10. Activez cette option si vous souhaitez signaler un problème avec les scripts afin de pouvoir fournir plus d'informations à ce sujet."

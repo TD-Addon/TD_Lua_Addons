@@ -5,6 +5,8 @@ Settings_TamrielData_page01Main_group01Main_restrictEquipment_Description: "Prev
 Settings_TamrielData_page01Main_group02Magic: "Magic"
 Settings_TamrielData_page01Main_group02Magic_miscSpells: "Add New Miscellaneous Spells"
 Settings_TamrielData_page01Main_group02Magic_miscSpells_Description: "Adds new spells that do not fit into usual categories."
+Settings_TamrielData_page01Main_group02Magic_summoningSpells: "Add New Summoning Spells"
+Settings_TamrielData_page01Main_group02Magic_summoningSpells_Description: "Adds new summoning spells using creatures added by Tamriel Data, such as Devourers, Herne, Dark Seducers, and Aurorans.\nRequires restart.\n\nDefault: On\n\n"
 Settings_TamrielData_page01Main_group99Misc: "Miscellaneous"
 Settings_TamrielData_page01Main_group99Misc_debugLogging: "Debug Logging"
 Settings_TamrielData_page01Main_group99Misc_debugLogging_Description: "Adds more logs, for example in F10 OpenMW logs. Enable this if you want to report an issue with the scripts, so that you can provide more information about it."

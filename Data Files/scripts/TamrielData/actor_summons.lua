@@ -1,6 +1,6 @@
 local core = require('openmw.core')
 
-if core.API_REVISION < 125 then
+if not core.magic.effects.records['T_summon_Devourer'] then
     return
 end
 

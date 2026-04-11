@@ -1,5 +1,8 @@
 TamrielData_main_imgaHelm: "Samce Imga nie mogą nosić hełmów."
 
+Settings_TamrielData_page01Main_group02Magic_summoningSpells: "Nowe Zaklęcia Przywołania"
+Settings_TamrielData_page01Main_group02Magic_summoningSpells_Description: "Dodaje nowe zaklęcia przywołania używające istoty dodane w Tamriel Data, takie jak Pożeracze, Herny, Mroczne Uwodzicielki czy Auroranie.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n"
+
 Magic_summonDevourer: "Przywołanie Pożeracza"
 Magic_summonDevourerDesc: "Przywołuje z Otchłani pożeracza. Stworzenie pojawi się sześć stóp przed magiem i będzie atakowało każdą zagrażającą mu istotę, póki nie minie czas trwania efektu lub póki samo nie zostanie zabite. W obydwu przypadkach przywołana istota znika, powracając do Otchłani. Pamiętaj, że jeśli przywołasz istotę z innego wymiaru wewnątrz miasta, miejska straż rzuci się na ciebie bez ostrzeżenia!"
 Magic_summonDremoraArcher: "Przywołanie Dremory-Łucznika"
