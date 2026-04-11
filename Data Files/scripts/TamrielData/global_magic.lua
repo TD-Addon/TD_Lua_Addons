@@ -33,6 +33,8 @@ local STATE_ACTIVE = 1
 local STATE_ONCE = 2
 local STATE_IGNORE = 3
 
+local MAX_WAIT = 0.25
+
 local appliedOnce = {}
 for _, effect in pairs(core.magic.effects.records) do
     if effect.isAppliedOnce then
@@ -55,7 +57,7 @@ local function initActorState(actor, state)
         state.spells[spell.activeSpellId] = effects
     end
     return {
-        waited = math.random(),
+        waited = math.random() * MAX_WAIT,
         activeSpells = activeSpells
     }
 end
@@ -75,13 +77,14 @@ local function getActorState(actor, init)
         end
         state = {
             delayUpdateChecks = true,
-            spells = {}
+            spells = {},
+            actor = actor
         }
         persistentState.actors[id] = state
         tempState[id] = initActorState(actor, state)
     elseif not tempState[id] then
         tempState[id] = {
-            waited = math.random(),
+            waited = math.random() * MAX_WAIT,
             activeSpells = types.Actor.activeSpells(actor)
         }
     end
@@ -122,6 +125,8 @@ local function updateEffects(actor, state, tempState)
                     s = STATE_ACTIVE
                     effects[index] = s
                 end
+            elseif s == STATE_ONCE then
+                canDiscard = false
             end
             if s == STATE_ACTIVE then
                 if onEffectUpdate(actor, spell, effect) then
@@ -154,8 +159,6 @@ local function updateEffects(actor, state, tempState)
     return canDiscard
 end
 
-local MAX_WAIT = 0.25
-
 local function waitOrUpdate(actor, dt)
     local state, tempState = getActorState(actor, true)
     if state.delayUpdateChecks then
@@ -179,6 +182,13 @@ return {
         onLoad = function(data)
             if data then
                 persistentState = data
+                local actors = {}
+                for id, actorData in pairs(data.actors) do
+                    if actorData.actor:isValid() then
+                        actors[actorData.actor.id] = actorData
+                    end
+                end
+                persistentState.actors = actors
             end
         end,
         onUpdate = function(dt)

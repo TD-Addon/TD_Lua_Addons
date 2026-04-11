@@ -32,7 +32,7 @@ I.T_ActorMagic.addEffectStartHandler(function(caster, spell, effect, track)
     local id = spell.activeSpellId
     local index = effect.index
     local key = toKey(caster, id, index)
-    state.summons[key] = { id = id, index = index, creatureId = creature }
+    state.summons[key] = { id = id, index = index, creatureId = creature, actor = caster }
     caster:sendEvent('T_GetSummonPosition', { key = key })
     track.ignore = false
 end)
@@ -56,6 +56,22 @@ I.T_ActorMagic.addEffectEndHandler(function(actor, id, index)
 end)
 
 return {
+    engineHandlers = {
+        onSave = function()
+            return state
+        end,
+        onLoad = function(data)
+            if data then
+                state = data
+                local summons = {}
+                for _, actorData in pairs(data.summons) do
+                    local key = toKey(actorData.actor, actorData.id, actorData.index)
+                    summons[key] = actorData
+                end
+                state.summons = summons
+            end
+        end
+    },
     eventHandlers = {
         T_Summon = function(data)
             local effect = state.summons[data.key]
@@ -63,19 +79,20 @@ return {
                 return
             end
             local creature = world.createObject(effect.creatureId)
-            local caster = data.caster
+            local caster = effect.actor
             creature:teleport(caster.cell.name, data.position, { onGround = true })
             creature:sendEvent('StartAIPackage', { type = 'Follow', target = caster })
-            creature:sendEvent('T_MarkSummon', { key = data.key, caster = caster })
+            creature:sendEvent('T_MarkSummon', { index = effect.index, id = effect.id, caster = caster })
             creature:sendEvent('AddVfx', { model = startVfx })
             effect.creatureId = nil
             effect.creature = creature
         end,
         T_Unsummon = function(data)
             unsummon(data.creature)
-            local effect = state.summons[data.key]
+            local key = toKey(data.caster, data.id, data.index)
+            local effect = state.summons[key]
             if effect then
-                state.summons[data.key] = nil
+                state.summons[key] = nil
                 I.T_ActorMagic.removeEffect(data.caster, effect.id, effect.index)
             end
         end

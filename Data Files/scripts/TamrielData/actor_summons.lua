@@ -44,17 +44,17 @@ return {
         T_GetSummonPosition = function(data)
             local position = getSafeSpawn()
             data.position = position
-            data.caster = self.object
             core.sendGlobalEvent('T_Summon', data)
         end,
         T_MarkSummon = function(data)
             state.caster = data.caster
-            state.key = data.key
+            state.id = data.id
+            state.index = data.index
             self.type.stats.ai.fight(self).base = 30 -- we should probably be using dedicated creature variants
         end,
         Died = function()
-            if state.key ~= nil then
-                core.sendGlobalEvent('T_Unsummon', { creature = self.object, caster = state.caster, key = state.key })
+            if state.caster ~= nil then
+                core.sendGlobalEvent('T_Unsummon', { creature = self.object, caster = state.caster, id = state.id, index = state.index })
             end
         end
     },

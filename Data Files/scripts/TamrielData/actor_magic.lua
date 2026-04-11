@@ -1,4 +1,5 @@
 local core = require('openmw.core')
+local self = require('openmw.self')
 
 return {
     engineHandlers = {
