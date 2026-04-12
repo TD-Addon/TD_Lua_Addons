@@ -38,8 +38,10 @@ I.T_ActorMagic.addEffectStartHandler(function(caster, spell, effect, track)
 end)
 
 local function unsummon(creature)
-    creature.enabled = false
-    world.vfx.spawn(startVfx, creature.position)
+    if creature:isValid() then
+        world.vfx.spawn(startVfx, creature.position)
+        creature:remove()
+    end
 end
 
 I.T_ActorMagic.addEffectEndHandler(function(actor, id, index)
@@ -49,7 +51,7 @@ I.T_ActorMagic.addEffectEndHandler(function(actor, id, index)
         return
     end
     local creature = summon.creature
-    if creature and creature:isValid() then
+    if creature then
         unsummon(creature)
     end
     state.summons[key] = nil
@@ -65,8 +67,12 @@ return {
                 state = data
                 local summons = {}
                 for _, actorData in pairs(data.summons) do
-                    local key = toKey(actorData.actor, actorData.id, actorData.index)
-                    summons[key] = actorData
+                    if actorData.actor:isValid() then
+                        local key = toKey(actorData.actor, actorData.id, actorData.index)
+                        summons[key] = actorData
+                    elseif actorData.creature then
+                        unsummon(actorData.creature)
+                    end
                 end
                 state.summons = summons
             end
