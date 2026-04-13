@@ -238,7 +238,10 @@ return {
 	
 	["mcm.blinkIndicatorLabel"] = "Indicateur pour l'effet de Transfert",
 	["mcm.blinkIndicatorDescription"] = "Indique où l'effet magique de Transfert du mod vous téléportera quand vous le lancerez.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
-
+	
+	["mcm.argonianBloodMagicLabel"] = "Magie du sang pour les races argoniennes",
+	["mcm.argonianBloodMagicDescription"] = "Donne aux joueurs argoniens le pouvoir racial Magie du sang.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+	
 	["mcm.magickaExpandedLabel"] = "Remplacer les effets de Magie étendue",
 	["mcm.magickaExpandedDescription"] = "Remplace certains effets magiques de Magie étendue avec ceux implémentés par Ressources communes de Tamriel pour être consistant, comme Bannissement de Daedra et Appel de vermaï." ..
 											"\nCette option n'aura d'effet que si les packs correspondants de Magie étendue sont installés et que les paramètres de Ressources communes de Tamriel ajoutant les nouveaux sorts correspondants sont activés.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
@@ -276,6 +279,7 @@ return {
 	["mcm.restrictEquipmentDescription"] = "Empêche les nouvelles races du mod de porter certains types d'équipement lorsque cela serait physiquement impossible ou poserait problème techniquement.\nRequiert un rechargement.\n\nRaces et équipement affectés :" ..
 											"\n- Empêche les Imgas mâles d'équiper des casques et tous les Imgas d'équiper des bottes ou chaussures.\n\n" ..
 											"\n- Empêche les Tsaescis d'équiper des jambières, pantalons, et bottes ou chaussures." ..
+											"\n- Empêche les Nagas d'équiper des casques." ..
 											"Par défaut : activé\n\n",
 	
 	["mcm.itemSoundsLabel"] = "Améliorer les sons des objets",

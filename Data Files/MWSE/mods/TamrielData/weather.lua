@@ -353,6 +353,7 @@ local function changeWeatherSound(weather, newSoundID)
 			weather.ambientLoopSound:stop()
 		end
 
+		weather.ambientLoopSoundId = nil
 		weather.ambientLoopSoundId = newSoundID
 	end
 end

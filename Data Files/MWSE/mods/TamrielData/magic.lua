@@ -2639,22 +2639,26 @@ function this.replaceInterventionMarkers(cellTable, markerID)
 	end
 end
 
----@param e tes3magicEffectTickEventData
-local function kynesInterventionEffect(e)
-	if (not e:trigger()) then
-		return
-	end
-
+---@param caster tes3reference
+---@param markerID string
+local function interventionEffect(caster, markerID)
 	if not tes3.worldController.flagTeleportingDisabled then
-		local caster = e.sourceInstance.caster
-		local marker = tes3.findClosestExteriorReferenceOfObject({ object = "T_Aid_KyneInterventionMarker" })
+		local marker = tes3.findClosestExteriorReferenceOfObject({ object = markerID })
 		if marker then
 			tes3.positionCell({ reference = caster, position = marker.position, orientation = marker.orientation, teleportCompanions = false })
 		end
 	else
 		tes3ui.showNotifyMenu(tes3.findGMST(tes3.gmst.sTeleportDisabled).value)
 	end
+end
 
+---@param e tes3magicEffectTickEventData
+local function kynesInterventionEffect(e)
+	if (not e:trigger()) then
+		return
+	end
+
+	interventionEffect(e.sourceInstance.caster, "T_Aid_KyneInterventionMarker")
 	e.effectInstance.state = tes3.spellState.retired
 end
 
@@ -2784,7 +2788,7 @@ local function banishDaedraEffect(e)
 		--target.mobile:kill()
 		target:setActionFlag(tes3.actionFlag.onDeath)
 		tes3.incrementKillCount({ actor = target.object })
-		local soundSource = tes3.createReference({ object = "T_VFX_Empty", position = target.position + tes3vector3.new(0, 0, target.mobile.height/2) , orientation = target.orientation, cell = target.cell })
+		local soundSource = tes3.createReference({ object = "T_VFX_Empty", position = target.position + tes3vector3.new(0, 0, target.mobile.height/2) , orientation = target.orientation, cell = target.cell })		-- Since the creature is being removed from the cell, a different reference needs to be used for the effect's sound
 		tes3.playSound{ sound = "mysticism hit", reference = soundSource }
 		local vfx = tes3.createVisualEffect({ object = "T_VFX_Banish", lifespan = 1.5, position = target.position })
 
@@ -2812,7 +2816,13 @@ local function banishDaedraEffect(e)
 					end
 				end
 
-				tes3.positionCell({ reference = target, position = { 0, 0, 0 }, cell = "T_BanishTemp" })	-- This has to be put after the item transfers for them to work, rather than before the delays where it really belongs
+				if target.isRespawn then
+					target.mobile:kill()
+					target.position.z = target.position.z - 1000	-- Moving a respawnable creature to another cell, disabling it, or simply moving it too far causes problems with respawning it, so this will have to do
+				else
+					tes3.positionCell({ reference = target, position = { 0, 0, 0 }, cell = "T_BanishTemp" })	-- This has to be put after the item transfers for them to work, rather than before the delays where it really belongs
+				end
+
 			end)
 		end)
 	else
