@@ -148,8 +148,8 @@ local function replaceIngredients(table)
                 if row and implementedEffects[row.id] then
                     local effect = ingredient.effects[i]
                     effect.id = row.id
-                    effect.affectedAttribute = row.attribute or ''
-                    effect.affectedSkill = row.skill or ''
+                    effect.affectedAttribute = row.attribute
+                    effect.affectedSkill = row.skill
                 end
             end
         end
