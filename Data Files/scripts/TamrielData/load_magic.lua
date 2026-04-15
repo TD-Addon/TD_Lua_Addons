@@ -159,7 +159,7 @@ end
 local function addSummons()
     local effects = content.magicEffects.records
     for _, values in pairs(magicData.td_summon_effects) do
-        local id, name, creature, cost, icon, description, template = unpack(values)
+        local id, name, creature, cost, icon, desc, template = unpack(values)
         if template == 'callBear' then
             template = 'summonbear'
         end
