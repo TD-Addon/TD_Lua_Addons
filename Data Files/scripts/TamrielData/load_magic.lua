@@ -32,7 +32,14 @@ local function parseEffects(values, offset)
             break
         end
         effects[i] = row
-        row.range = RANGE[row.range]
+        if row.id == 'T_mysticism_Passwall' then
+            row.range = RANGE.self
+            row.magnitudeMin = row.area
+            row.magnitudeMax = row.area
+            row.area = nil
+        else
+            row.range = RANGE[row.range]
+        end
     end
     return implemented, effects
 end
@@ -168,13 +175,32 @@ local function addSummons()
     end
 end
 
+local function addMiscEffects()
+    local effects = content.magicEffects.records
+    local function addMiscEffect(id, params)
+        local name, cost, icon, desc, template = unpack(magicData.td_misc_effects[id])
+        params.name = t(name)
+        params.cost = cost
+        params.icon = icon
+        params.description = t(desc)
+        params.template = effects[template]
+        effects[id] = params
+        implementedEffects[id] = true
+    end
+    addMiscEffect('T_mysticism_Passwall', { onTarget = false, onTouch = false, hasDuration = false })
+end
+
 return {
     engineHandlers = {
         onContentFilesLoaded = function()
             if version_check.isFeatureEnabled('summoningSpells') then
                 addSummons()
             end
+            if version_check.isFeatureEnabled('miscSpells') then
+                addMiscEffects()
+            end
             replaceSpells(magicData.td_summon_spells)
+            replaceSpells(magicData.td_misc_spells)
             replaceEnchantments(magicData.td_enchantments)
             editItems(magicData.td_enchanted_items)
             replacePotions(magicData.td_potions)

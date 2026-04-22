@@ -1,10 +1,15 @@
-if not require("scripts.TamrielData.utils.version_check").isFeatureSupported("miscSpells") then
+local core = require('openmw.core')
+local passwallEffect = core.magic.effects.records['T_mysticism_Passwall']
+
+if not passwallEffect then
     return
 end
 
+local I = require('openmw.interfaces')
 local types = require('openmw.types')
 local world = require('openmw.world')
-local crimes = require('openmw.interfaces').Crimes
+
+local passwall_target_effect_model = types.Static.records[passwallEffect.hitStatic].model
 
 local function triggerCrimeIfTrespassing(data)
     if not data.targetObject or not data.targetObject.owner or not types.Lockable.isLocked(data.targetObject) then
@@ -25,7 +30,7 @@ local function triggerCrimeIfTrespassing(data)
         (ownerData.factionId and types.NPC.getFactionRank(data.player, ownerData.factionId) < (ownerData.factionRank or 1))
 
     if isTrespassing then
-        crimes.commitCrime(
+        I.Crimes.commitCrime(
             data.player,
             {
                 faction = ownerData.factionId,
@@ -40,9 +45,24 @@ local function teleportPlayer(data)
 
     triggerCrimeIfTrespassing(data)
 
-    local passwall_target_effect_model = types.Static.records[data.vfxStatic].model
     world.vfx.spawn(passwall_target_effect_model, data.position)
 end
+
+local onStart = {
+    t_mysticism_passwall = function(caster, spell, effect, track)
+        if types.Player.objectIsInstance(caster) then
+            track.ignore = false
+            caster:sendEvent('T_Passwall_Cast', effect.magnitudeThisFrame)
+        end
+    end
+}
+
+I.T_ActorMagic.addEffectStartHandler(function(caster, spell, effect, track)
+    local handler = onStart[effect.id]
+    if handler then
+        handler(caster, spell, effect, track)
+    end
+end)
 
 return {
     eventHandlers = {

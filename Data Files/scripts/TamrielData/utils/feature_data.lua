@@ -13,7 +13,7 @@ features["restrictEquipment"] = {
     settingsKey = "Settings_TamrielData_page01Main_group01Main_restrictEquipment"
 }
 features["miscSpells"] = {
-    requiredLuaApi = 71,
+    requiredLuaApi = 129,
     settingsPlayerSectionStorageId = "Settings_TamrielData_page01Main_group02Magic",
     settingsEnabledByDefault = true,
     settingsKey = "Settings_TamrielData_page01Main_group02Magic_miscSpells"

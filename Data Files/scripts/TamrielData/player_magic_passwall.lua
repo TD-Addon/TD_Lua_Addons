@@ -1,7 +1,3 @@
-if not require("scripts.TamrielData.utils.version_check").isFeatureSupported("miscSpells") then
-    return
-end
-
 local self = require('openmw.self')
 local ambient = require('openmw.ambient')
 local async = require('openmw.async')
@@ -15,11 +11,10 @@ local l10n = core.l10n("TamrielData")
 local debug = require("scripts.TamrielData.utils.debug_logging")
 
 local FT_TO_UNITS = 22.1
-local maxSpellDistance = 25 * FT_TO_UNITS -- 25ft is a default Passwall spell range in the MWSE version
-local maxSpellDistanceSquared = maxSpellDistance * maxSpellDistance
 local veryCloseSquared = 11 * 11 -- an arbitrary value representing a close enough object that no wall is between
 local passwallSpellId = "t_com_mys_uni_passwall"
-local passwallFailureSound = core.stats.Skill.records[core.magic.spells.records[passwallSpellId].effects[1].effect.school].school.failureSound
+local passwallFailureSound = core.stats.Skill.records[core.magic.effects.records.T_mysticism_Passwall.school].school.failureSound
+local activationDistance = core.getGMST("iMaxActivateDist") + 0.1
 
 local function calculatePlayerHeight()
     local playerRecord = types.NPC.record(self)
@@ -38,17 +33,11 @@ local function getActivationVector()
     return util.vector3(cameraVector.x, cameraVector.y, 0.0):normalize()
 end
 
-local function getActivationDistance()
-    return core.getGMST("iMaxActivateDist") + 0.1
-end
-
 local function getRaycastingInputData()
     local activationVector = getActivationVector()
-    local activateDistance = getActivationDistance()
     return {
         startPos = self.position + util.vector3(0, 0, calculatePlayerHeight() * 0.7), -- castPosition as in MWSE version
-        directionVector = activationVector,
-        activateDistance = activateDistance
+        directionVector = activationVector
     }
 end
 
@@ -59,8 +48,7 @@ local function startTeleporting(newPosition, newCell, newRotation, targetObject)
         position = newPosition,
         cell = newCell,
         rotation = newRotation,
-        targetObject = targetObject,
-        vfxStatic = core.magic.spells.records[passwallSpellId].effects[1].effect.hitStatic
+        targetObject = targetObject
     })
 end
 
@@ -186,7 +174,7 @@ local function isBlockedByIllegalActivator(object)
     return false
 end
 
-local function isThereAReachableItemFromPosition(startPosition)
+local function isThereAReachableItemFromPosition(startPosition, maxSpellDistanceSquared)
     -- If no other check passed until now, then perhaps there is nothing of interest except items in that area.
     -- In that case a reachable item hopefully is close by, so no need for far checks.
 
@@ -203,7 +191,7 @@ local function isThereAReachableItemFromPosition(startPosition)
     return false
 end
 
-local function isCalculatedPositionIntendedForThePlayer(position)
+local function isCalculatedPositionIntendedForThePlayer(position, range)
     if not position then
         return false
     end
@@ -231,7 +219,7 @@ local function isCalculatedPositionIntendedForThePlayer(position)
             return true
         end
     end
-    return isThereAReachableItemFromPosition(position)
+    return isThereAReachableItemFromPosition(position, range * range)
 end
 
 local function isRayHitOnBlocker(rayHit)
@@ -239,7 +227,7 @@ local function isRayHitOnBlocker(rayHit)
     return isBlockedByWard(object) or isBlockedByIllegalActivator(object)
 end
 
-local function calculatePasswallPosition(intermediateRayHits, limitingPosition, directionVector)
+local function calculatePasswallPosition(intermediateRayHits, limitingPosition, directionVector, range)
     local rayTestOffset = 19 -- We could say that a 2*19 square is enough to fit the player in
     local minDistanceSquared = 108 * 108 -- minDistance from the MWSE version but squared
     local maxZDifference = 105 -- upCoord from the MWSE version
@@ -300,7 +288,7 @@ local function calculatePasswallPosition(intermediateRayHits, limitingPosition, 
 
                 local isIntendedForThePlayer = isPositionNotTooClose and isPositionNotTooHighOrLow and isPositionNotTooFar
                 if isIntendedForThePlayer then
-                    isIntendedForThePlayer = isCalculatedPositionIntendedForThePlayer(navMeshPosition)
+                    isIntendedForThePlayer = isCalculatedPositionIntendedForThePlayer(navMeshPosition, range)
                 end
                 if isIntendedForThePlayer then
                     return navMeshPosition
@@ -319,10 +307,10 @@ local function calculatePasswallPosition(intermediateRayHits, limitingPosition, 
     return nil
 end
 
-local function gatherAllRayHitsAndLimitingPosition(raycastingInputData, firstRaycastHit)
-    local remainingTeleportDistance = maxSpellDistance
+local function gatherAllRayHitsAndLimitingPosition(raycastingInputData, firstRaycastHit, range)
+    local remainingTeleportDistance = range
     local intermediateRayHits = {firstRaycastHit}
-    local limitingPosition = firstRaycastHit.hitPos + raycastingInputData.directionVector * maxSpellDistance
+    local limitingPosition = firstRaycastHit.hitPos + raycastingInputData.directionVector * range
 
     local previousRaycastSourceObjects = {}
     while remainingTeleportDistance > 0 do
@@ -348,7 +336,8 @@ end
 
 local PSW = {}
 
-function PSW.onCastPasswall()
+function PSW.onCastPasswall(magnitude)
+    local range = math.max(magnitude, 0) * FT_TO_UNITS + activationDistance
     debug.log(
         string.format(
             "START: pos:%s, cell:%s, rotation:%s, race:%s, isMale:%s, navHalfExtents:%s, navShapeType:%s",
@@ -375,7 +364,7 @@ function PSW.onCastPasswall()
     end
 
     local raycastingInputData = getRaycastingInputData()
-    local raycastingEnd = raycastingInputData.startPos + raycastingInputData.directionVector * raycastingInputData.activateDistance
+    local raycastingEnd = raycastingInputData.startPos + raycastingInputData.directionVector * activationDistance
 
     local firstRaycastHit = nearby.castRay(
         raycastingInputData.startPos,
@@ -411,11 +400,11 @@ function PSW.onCastPasswall()
         return onPasswallFail()
     end
 
-    local intermediateRayHits, limitingPosition = gatherAllRayHitsAndLimitingPosition(raycastingInputData, firstRaycastHit)
+    local intermediateRayHits, limitingPosition = gatherAllRayHitsAndLimitingPosition(raycastingInputData, firstRaycastHit, range)
     -- intermediateRayHits include the first raycast hit (a spell target object, i.e. wall) as element [1]
     -- limitingPosition is the max distance the spell could reach: should be farther from the player than (or as far as) all intermediateRayHits
 
-    local finalTeleportPosition = calculatePasswallPosition(intermediateRayHits, limitingPosition, raycastingInputData.directionVector)
+    local finalTeleportPosition = calculatePasswallPosition(intermediateRayHits, limitingPosition, raycastingInputData.directionVector, range)
 
     if finalTeleportPosition then
         startTeleporting(finalTeleportPosition, self.cell.name, self.rotation, targetObject)
