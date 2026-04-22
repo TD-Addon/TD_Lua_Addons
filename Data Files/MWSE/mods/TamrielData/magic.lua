@@ -3238,42 +3238,55 @@ event.register(tes3.event.magicEffectsResolved, function()
 
 	if config.miscSpells then
 		local passwallBaseEffect = tes3.getMagicEffect(tes3.effect.detectAnimal)
-		local passwallSchool = tes3.magicSchool.mysticism
 
 		if passwallAlteration then
 			passwallBaseEffect = tes3.getMagicEffect(tes3.effect.levitate)
-			passwallSchool = tes3.magicSchool.alteration
 		end
 
-		local soultrapEffect = tes3.getMagicEffect(tes3.effect.soultrap)
-		local reflectEffect = tes3.getMagicEffect(tes3.effect.reflect)
-		local detectEffect = tes3.getMagicEffect(tes3.effect.detectAnimal)
 		local shieldEffect = tes3.getMagicEffect(tes3.effect.shield)
-		local burdenEffect = tes3.getMagicEffect(tes3.effect.burden)
-		local restoreEffect = tes3.getMagicEffect(tes3.effect.fortifyHealth)	-- The fortify VFX feels more appropriate for the resartus effects, but perhaps it should still be restoration?
-		local summonDremoraEffect = tes3.getMagicEffect(tes3.effect.summonDremora)
-		local blindEffect = tes3.getMagicEffect(tes3.effect.blind)
-		local damageHealthEffect = tes3.getMagicEffect(tes3.effect.damageHealth)
-		local fortifyAttackEffect = tes3.getMagicEffect(tes3.effect.fortifyAttack)
-		local lightEffect = tes3.getMagicEffect(tes3.effect.light)
 
-		local effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[1])	-- Passwall
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
+		local function addMiscEffect(effectID, params, templateOverride)
+			local effectName, effectCost, iconPath, effectDescription, templateId = unpack(magicData.td_misc_effects[effectID])
+			params.id = tes3.effect[effectID]
+			params.name = common.i18n("magic." .. effectName)
+			params.description = common.i18n("magic." .. effectDescription)
+			params.baseCost = effectCost
+			if not params.icon then
+				params.icon = iconPath
+			end
+			local template = templateOverride or tes3.getMagicEffect(tes3.effect[templateId])
+			if template then
+				for _, key in pairs({ "school", "speed", "casterLinked", "usesNegativeLighting", "particleTexture",
+					"size", "sizeCap", "hasContinuousVFX", "illegalDaedra", "targetsAttributes", "targetsSkills",
+					"allowEnchanting", "allowSpellmaking", "appliesOnce", "canCastSelf", "canCastTarget", "canCastTouch",
+					"hasNoDuration", "hasNoMagnitude", "isHarmful", "nonRecastable", "unreflectable" }) do
+					if params[key] == nil then
+						params[key] = template[key]
+					end
+				end
+				if not params.lighting then
+					params.lighting = {x = template.lightingRed / 255, y = template.lightingGreen / 255, z = template.lightingBlue / 255}
+				end
+				for key1, key2 in pairs({ boltSound = "boltSoundEffect", boltVFX = "boltVisualEffect", hitSound = "hitSoundEffect",
+					hitVFX = "hitVisualEffect", areaSound = "areaSoundEffect", areaVFX = "areaVisualEffect", castSound = "castSoundEffect",
+					castVFX = "castVisualEffect" }) do
+					if params[key1] == nil then
+						params[key1] = template[key2].id
+					end
+				end
+			end
+			tes3.addMagicEffect(params)
+		end
+
+		addMiscEffect("T_mysticism_Passwall", {
 			--magnitudeType = " " .. tes3.findGMST(tes3.gmst.sfeet).value,		-- Passwall is currently set up to not have a magnitude and works off of the effect's area instead
 			--magnitudeTypePlural = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
-			school = passwallSchool,
-			baseCost = effectCost,
-			speed = passwallBaseEffect.speed,
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = true,
 			canCastSelf = false,
 			canCastTarget = false,
 			canCastTouch = true,
-			casterLinked = passwallBaseEffect.casterLinked,
 			hasContinuousVFX = false,
 			hasNoDuration = true,
 			hasNoMagnitude = true,
@@ -3283,265 +3296,107 @@ event.register(tes3.event.magicEffectsResolved, function()
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = true,
-			usesNegativeLighting = passwallBaseEffect.usesNegativeLighting,
 			icon = passwallIcon,
-			particleTexture = passwallBaseEffect.particleTexture,
-			castSound = passwallBaseEffect.castSoundEffect.id,
-			castVFX = passwallBaseEffect.castVisualEffect.id,
 			boltSound = "T_SndObj_Silence",
 			boltVFX = "T_VFX_Empty",
 			hitSound = "T_SndObj_Silence",
 			hitVFX = "T_VFX_Empty",							-- Currently has to use VFX because otherwise Morrowind crashes when casting the effect on some actors despite this parameter being "optional"
 			areaSound = "T_SndObj_Silence",
 			areaVFX = "T_VFX_Empty",							-- Problems can apparently still arise from missing boltVFX and areaVFX for some people
-			lighting = {x = passwallBaseEffect.lightingRed / 255, y = passwallBaseEffect.lightingGreen / 255, z = passwallBaseEffect.lightingBlue / 255},
-			size = passwallBaseEffect.size,
-			sizeCap = passwallBaseEffect.sizeCap,
 			onTick = function(eventData) eventData:trigger() end,
 			onCollision = nil
-		}
+		}, passwallBaseEffect)
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[2])		-- Banish Daedra
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.mysticism,
-			baseCost = effectCost,
-			speed = soultrapEffect.speed,
+		addMiscEffect("T_mysticism_BanishDae", {
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = true,
 			canCastSelf = false,
 			canCastTarget = true,
 			canCastTouch = true,
-			casterLinked = soultrapEffect.casterLinked,
-			hasContinuousVFX = soultrapEffect.hasContinuousVFX,
 			hasNoDuration = true,
 			hasNoMagnitude = false,
-			illegalDaedra = soultrapEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = true,
-			targetsAttributes = soultrapEffect.targetsAttributes,
-			targetsSkills = soultrapEffect.targetsSkills,
 			unreflectable = true,
-			usesNegativeLighting = soultrapEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = soultrapEffect.particleTexture,
-			castSound = soultrapEffect.castSoundEffect.id,
-			castVFX = soultrapEffect.castVisualEffect.id,
-			boltSound = soultrapEffect.boltSoundEffect.id,
-			boltVFX = soultrapEffect.boltVisualEffect.id,
 			hitSound = "T_SndObj_Silence",
 			hitVFX = "T_VFX_Empty",
 			areaSound = "T_SndObj_Silence",
 			areaVFX = "T_VFX_Empty",
-			lighting = {x = soultrapEffect.lightingRed / 255, y = soultrapEffect.lightingGreen / 255, z = soultrapEffect.lightingBlue / 255},
-			size = soultrapEffect.size,
-			sizeCap = soultrapEffect.sizeCap,
 			onTick = banishDaedraEffect,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[3])		-- Reflect Damage
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
+		addMiscEffect("T_mysticism_ReflectDmg", {
 			magnitudeType = tes3.findGMST(tes3.gmst.spercent).value,
 			magnitudeTypePlural = tes3.findGMST(tes3.gmst.spercent).value,
-			school = tes3.magicSchool.mysticism,
-			baseCost = effectCost,
-			speed = reflectEffect.speed,
-			allowEnchanting = reflectEffect.allowEnchanting,
-			allowSpellmaking = reflectEffect.allowSpellmaking,
-			appliesOnce = reflectEffect.appliesOnce,
-			canCastSelf = reflectEffect.canCastSelf,
-			canCastTarget = reflectEffect.canCastTarget,
-			canCastTouch = reflectEffect.canCastTouch,
-			casterLinked = reflectEffect.casterLinked,
-			hasContinuousVFX = reflectEffect.hasContinuousVFX,
-			hasNoDuration = reflectEffect.hasNoDuration,
-			hasNoMagnitude = reflectEffect.hasNoMagnitude,
-			illegalDaedra = reflectEffect.illegalDaedra,
-			isHarmful = reflectEffect.isHarmful,
-			nonRecastable = reflectEffect.nonRecastable,
-			targetsAttributes = reflectEffect.targetsAttributes,
-			targetsSkills = reflectEffect.targetsSkills,
-			unreflectable = reflectEffect.unreflectable,
-			usesNegativeLighting = reflectEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = reflectEffect.particleTexture,
-			castSound = reflectEffect.castSoundEffect.id,
-			castVFX = reflectEffect.castVisualEffect.id,
-			boltSound = reflectEffect.boltSoundEffect.id,
-			boltVFX = reflectEffect.boltVisualEffect.id,
-			hitSound = reflectEffect.hitSoundEffect.id,
-			hitVFX = reflectEffect.hitVisualEffect.id,
-			areaSound = reflectEffect.areaSoundEffect.id,
-			areaVFX = reflectEffect.areaVisualEffect.id,
-			lighting = {x = reflectEffect.lightingRed / 255, y = reflectEffect.lightingGreen / 255, z = reflectEffect.lightingBlue / 255},
-			size = reflectEffect.size,
-			sizeCap = reflectEffect.sizeCap,
 			onTick = nil,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[4])		-- Detect Humanoid
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
+		addMiscEffect("T_mysticism_DetHuman", {
 			magnitudeType = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			magnitudeTypePlural = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
-			school = tes3.magicSchool.mysticism,
-			baseCost = effectCost,
-			speed = detectEffect.speed,
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = true,
 			canCastSelf = true,
 			canCastTarget = false,
 			canCastTouch = false,
-			casterLinked = detectEffect.casterLinked,
-			hasContinuousVFX = detectEffect.hasContinuousVFX,
 			hasNoDuration = false,
 			hasNoMagnitude = false,
-			illegalDaedra = detectEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			usesNegativeLighting = detectEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = detectEffect.particleTexture,
-			castSound = detectEffect.castSoundEffect.id,
-			castVFX = detectEffect.castVisualEffect.id,
-			boltSound = detectEffect.boltSoundEffect.id,
-			boltVFX = detectEffect.boltVisualEffect.id,
-			hitSound = detectEffect.hitSoundEffect.id,
-			hitVFX = detectEffect.hitVisualEffect.id,
-			areaSound = detectEffect.areaSoundEffect.id,
-			areaVFX = detectEffect.areaVisualEffect.id,
-			lighting = {x = detectEffect.lightingRed / 255, y = detectEffect.lightingGreen / 255, z = detectEffect.lightingBlue / 255},
-			size = detectEffect.size,
-			sizeCap = detectEffect.sizeCap,
 			onTick = nil,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[5])		-- Radiant Shield
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.alteration,
-			baseCost = effectCost,
-			speed = shieldEffect.speed,
-			allowEnchanting = shieldEffect.allowEnchanting,
-			allowSpellmaking = shieldEffect.allowSpellmaking,
-			appliesOnce = shieldEffect.appliesOnce,
-			canCastSelf = shieldEffect.canCastSelf,
-			canCastTarget = shieldEffect.canCastTarget,
-			canCastTouch = shieldEffect.canCastTouch,
-			casterLinked = shieldEffect.casterLinked,
-			hasContinuousVFX = shieldEffect.hasContinuousVFX,
-			hasNoDuration = shieldEffect.hasNoDuration,
-			hasNoMagnitude = shieldEffect.hasNoMagnitude,
-			illegalDaedra = shieldEffect.illegalDaedra,
-			isHarmful = shieldEffect.isHarmful,
-			nonRecastable = shieldEffect.nonRecastable,
-			targetsAttributes = shieldEffect.targetsAttributes,
-			targetsSkills = shieldEffect.targetsSkills,
-			unreflectable = shieldEffect.unreflectable,
-			usesNegativeLighting = shieldEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = shieldEffect.particleTexture,
-			castSound = shieldEffect.castSoundEffect.id,
-			castVFX = shieldEffect.castVisualEffect.id,
-			boltSound = shieldEffect.boltSoundEffect.id,
-			boltVFX = shieldEffect.boltVisualEffect.id,
-			hitSound = shieldEffect.hitSoundEffect.id,
+		addMiscEffect("T_alteration_RadShield", {
 			hitVFX = "T_VFX_RadiantShieldHit",
-			areaSound = shieldEffect.areaSoundEffect.id,
-			areaVFX = shieldEffect.areaVisualEffect.id,
 			lighting = {x = 128, y = 128, z = 128},
-			size = shieldEffect.size,
-			sizeCap = shieldEffect.sizeCap,
 			onTick = radiantShieldEffect,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[6])		-- Wabbajack
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.alteration,
-			baseCost = effectCost,
-			speed = burdenEffect.speed,
+		addMiscEffect("T_alteration_Wabbajack", {
 			allowEnchanting = false,
 			allowSpellmaking = false,
 			appliesOnce = true,
 			canCastSelf = false,
 			canCastTarget = true,
 			canCastTouch = false,
-			casterLinked = burdenEffect.casterLinked,
-			hasContinuousVFX = burdenEffect.hasContinuousVFX,
 			hasNoDuration = true,
 			hasNoMagnitude = true,
-			illegalDaedra = burdenEffect.illegalDaedra,
 			isHarmful = true,
 			nonRecastable = true,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = true,
-			usesNegativeLighting = burdenEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = burdenEffect.particleTexture,
-			castSound = burdenEffect.castSoundEffect.id,
-			castVFX = burdenEffect.castVisualEffect.id,
-			boltSound = burdenEffect.boltSoundEffect.id,
-			boltVFX = burdenEffect.boltVisualEffect.id,
 			hitSound = "T_SndObj_Silence",
 			hitVFX = "T_VFX_Empty",
 			areaSound = "T_SndObj_Silence",
 			areaVFX = "T_VFX_Empty",
-			lighting = {x = burdenEffect.lightingRed / 255, y = burdenEffect.lightingGreen / 255, z = burdenEffect.lightingBlue / 255},
-			size = burdenEffect.size,
-			sizeCap = burdenEffect.sizeCap,
 			onTick = wabbajackEffect,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[7])		-- Wabbajack Helper
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.alteration,
-			baseCost = effectCost,
-			speed = burdenEffect.speed,
+		addMiscEffect("T_alteration_WabbajackHelper", {
 			allowEnchanting = false,
 			allowSpellmaking = false,
 			appliesOnce = true,
 			canCastSelf = false,
 			canCastTarget = true,
 			canCastTouch = true,
-			casterLinked = burdenEffect.casterLinked,
-			hasContinuousVFX = burdenEffect.hasContinuousVFX,
 			hasNoDuration = false,
 			hasNoMagnitude = true,
-			illegalDaedra = burdenEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = true,
-			usesNegativeLighting = burdenEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = burdenEffect.particleTexture,
 			castSound = "T_SndObj_Silence",
 			castVFX = "T_VFX_Empty",
 			boltSound = "T_SndObj_Silence",
@@ -3550,780 +3405,335 @@ event.register(tes3.event.magicEffectsResolved, function()
 			hitVFX = "T_VFX_Empty",
 			areaSound = "T_SndObj_Silence",
 			areaVFX = "T_VFX_Empty",
-			lighting = {x = burdenEffect.lightingRed / 255, y = burdenEffect.lightingGreen / 255, z = burdenEffect.lightingBlue / 255},
-			size = burdenEffect.size,
-			sizeCap = burdenEffect.sizeCap,
 			onTick = wabbajackHelperEffect,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[8])		-- Insight
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.mysticism,
-			baseCost = effectCost,
-			speed = reflectEffect.speed,
+		addMiscEffect("T_mysticism_Insight", {
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = true,
 			canCastSelf = true,
 			canCastTarget = false,
 			canCastTouch = false,
-			casterLinked = reflectEffect.casterLinked,
-			hasContinuousVFX = reflectEffect.hasContinuousVFX,
 			hasNoDuration = false,
 			hasNoMagnitude = false,
-			illegalDaedra = reflectEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			usesNegativeLighting = reflectEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = reflectEffect.particleTexture,
-			castSound = reflectEffect.castSoundEffect.id,
-			castVFX = reflectEffect.castVisualEffect.id,
-			boltSound = reflectEffect.boltSoundEffect.id,
-			boltVFX = reflectEffect.boltVisualEffect.id,
-			hitSound = reflectEffect.hitSoundEffect.id,
-			hitVFX = reflectEffect.hitVisualEffect.id,
-			areaSound = reflectEffect.areaSoundEffect.id,
-			areaVFX = reflectEffect.areaVisualEffect.id,
-			lighting = {x = reflectEffect.lightingRed / 255, y = reflectEffect.lightingGreen / 255, z = reflectEffect.lightingBlue / 255},
-			size = reflectEffect.size,
-			sizeCap = reflectEffect.sizeCap,
 			onTick = nil,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[9])		-- Armor Resartus
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.restoration,
-			baseCost = effectCost,
-			speed = restoreEffect.speed,
+		addMiscEffect("T_restoration_ArmorResartus", {
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = true,
 			canCastSelf = true,
 			canCastTarget = false,
 			canCastTouch = false,
-			casterLinked = restoreEffect.casterLinked,
-			hasContinuousVFX = restoreEffect.hasContinuousVFX,
 			hasNoDuration = true,
 			hasNoMagnitude = false,
-			illegalDaedra = restoreEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			usesNegativeLighting = restoreEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = restoreEffect.particleTexture,
-			castSound = restoreEffect.castSoundEffect.id,
-			castVFX = restoreEffect.castVisualEffect.id,
-			boltSound = restoreEffect.boltSoundEffect.id,
-			boltVFX = restoreEffect.boltVisualEffect.id,
-			hitSound = restoreEffect.hitSoundEffect.id,
-			hitVFX = restoreEffect.hitVisualEffect.id,
-			areaSound = restoreEffect.areaSoundEffect.id,
-			areaVFX = restoreEffect.areaVisualEffect.id,
-			lighting = {x = restoreEffect.lightingRed / 255, y = restoreEffect.lightingGreen / 255, z = restoreEffect.lightingBlue / 255},
-			size = restoreEffect.size,
-			sizeCap = restoreEffect.sizeCap,
 			onTick = armorResartusEffect,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[10])		-- Weapon Resartus
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.restoration,
-			baseCost = effectCost,
-			speed = restoreEffect.speed,
+		addMiscEffect("T_restoration_WeaponResartus", {
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = true,
 			canCastSelf = true,
 			canCastTarget = false,
 			canCastTouch = false,
-			casterLinked = restoreEffect.casterLinked,
-			hasContinuousVFX = restoreEffect.hasContinuousVFX,
 			hasNoDuration = true,
 			hasNoMagnitude = false,
-			illegalDaedra = restoreEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			usesNegativeLighting = restoreEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = restoreEffect.particleTexture,
-			castSound = restoreEffect.castSoundEffect.id,
-			castVFX = restoreEffect.castVisualEffect.id,
-			boltSound = restoreEffect.boltSoundEffect.id,
-			boltVFX = restoreEffect.boltVisualEffect.id,
-			hitSound = restoreEffect.hitSoundEffect.id,
-			hitVFX = restoreEffect.hitVisualEffect.id,
-			areaSound = restoreEffect.areaSoundEffect.id,
-			areaVFX = restoreEffect.areaVisualEffect.id,
-			lighting = {x = restoreEffect.lightingRed / 255, y = restoreEffect.lightingGreen / 255, z = restoreEffect.lightingBlue / 255},
-			size = restoreEffect.size,
-			sizeCap = restoreEffect.sizeCap,
 			onTick = weaponResartusEffect,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[11])		-- Corruption
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.conjuration,
-			baseCost = effectCost,
-			speed = summonDremoraEffect.speed,
+		addMiscEffect("T_conjuration_Corruption", {
 			allowEnchanting = false,
 			allowSpellmaking = false,
 			appliesOnce = true,
 			canCastSelf = false,
 			canCastTarget = true,
 			canCastTouch = false,
-			casterLinked = summonDremoraEffect.casterLinked,
-			hasContinuousVFX = summonDremoraEffect.hasContinuousVFX,
 			hasNoDuration = false,
 			hasNoMagnitude = true,
-			illegalDaedra = summonDremoraEffect.illegalDaedra,
 			isHarmful = true,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = true,
-			usesNegativeLighting = summonDremoraEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = summonDremoraEffect.particleTexture,
-			castSound = summonDremoraEffect.castSoundEffect.id,
-			castVFX = summonDremoraEffect.castVisualEffect.id,
-			boltSound = summonDremoraEffect.boltSoundEffect.id,
-			boltVFX = summonDremoraEffect.boltVisualEffect.id,
-			hitSound = summonDremoraEffect.hitSoundEffect.id,
-			hitVFX = summonDremoraEffect.hitVisualEffect.id,
-			areaSound = summonDremoraEffect.areaSoundEffect.id,
-			areaVFX = summonDremoraEffect.areaVisualEffect.id,
-			lighting = {x = summonDremoraEffect.lightingRed / 255, y = summonDremoraEffect.lightingGreen / 255, z = summonDremoraEffect.lightingBlue / 255},
-			size = summonDremoraEffect.size,
-			sizeCap = summonDremoraEffect.sizeCap,
 			onTick = corruptionEffect,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[12])		-- Corruption Summon
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.conjuration,
-			baseCost = effectCost,
-			speed = summonDremoraEffect.speed,
+		addMiscEffect("T_conjuration_CorruptionSummon", {
 			allowEnchanting = false,
 			allowSpellmaking = false,
 			appliesOnce = true,
 			canCastSelf = true,
 			canCastTarget = false,
 			canCastTouch = false,
-			casterLinked = summonDremoraEffect.casterLinked,
-			hasContinuousVFX = summonDremoraEffect.hasContinuousVFX,
 			hasNoDuration = false,
 			hasNoMagnitude = true,
-			illegalDaedra = summonDremoraEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
-			unreflectable = summonDremoraEffect.unreflectable,
-			usesNegativeLighting = summonDremoraEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = summonDremoraEffect.particleTexture,
-			castSound = summonDremoraEffect.castSoundEffect.id,
-			castVFX = summonDremoraEffect.castVisualEffect.id,
-			boltSound = summonDremoraEffect.boltSoundEffect.id,
-			boltVFX = summonDremoraEffect.boltVisualEffect.id,
-			hitSound = summonDremoraEffect.hitSoundEffect.id,
-			hitVFX = summonDremoraEffect.hitVisualEffect.id,
-			areaSound = summonDremoraEffect.areaSoundEffect.id,
-			areaVFX = summonDremoraEffect.areaVisualEffect.id,
-			lighting = {x = summonDremoraEffect.lightingRed / 255, y = summonDremoraEffect.lightingGreen / 255, z = summonDremoraEffect.lightingBlue / 255},
-			size = summonDremoraEffect.size,
-			sizeCap = summonDremoraEffect.sizeCap,
 			onTick = function(eventData)
 				eventData:triggerSummon(corruptionActorID)
 			end,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[13])		-- Distract Creature
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.illusion,
-			baseCost = effectCost,
-			speed = blindEffect.speed,
+		addMiscEffect("T_illusion_DistractCreature", {
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = true,
 			canCastSelf = false,
 			canCastTarget = true,	-- The GUI for making custom magic effects doesn't like just having an effect only work at target range, so the distract spells also work at touch range for now
 			canCastTouch = true,
-			casterLinked = blindEffect.casterLinked,
-			hasContinuousVFX = blindEffect.hasContinuousVFX,
 			hasNoDuration = false,
 			hasNoMagnitude = false,
-			illegalDaedra = blindEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = true,
-			usesNegativeLighting = blindEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = blindEffect.particleTexture,
-			castSound = blindEffect.castSoundEffect.id,
-			castVFX = blindEffect.castVisualEffect.id,
-			boltSound = blindEffect.boltSoundEffect.id,
-			boltVFX = blindEffect.boltVisualEffect.id,
-			hitSound = blindEffect.hitSoundEffect.id,
-			hitVFX = blindEffect.hitVisualEffect.id,
-			areaSound = blindEffect.areaSoundEffect.id,
-			areaVFX = blindEffect.areaVisualEffect.id,
-			lighting = {x = blindEffect.lightingRed / 255, y = blindEffect.lightingGreen / 255, z = blindEffect.lightingBlue / 255},
-			size = blindEffect.size,
-			sizeCap = blindEffect.sizeCap,
 			onTick = distractCreatureEffect,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[14])		-- Distract Humanoid
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.illusion,
-			baseCost = effectCost,
-			speed = blindEffect.speed,
+		addMiscEffect("T_illusion_DistractHumanoid", {
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = true,
 			canCastSelf = false,
 			canCastTarget = true,
 			canCastTouch = true,
-			casterLinked = blindEffect.casterLinked,
-			hasContinuousVFX = blindEffect.hasContinuousVFX,
 			hasNoDuration = false,
 			hasNoMagnitude = false,
-			illegalDaedra = blindEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = true,
-			usesNegativeLighting = blindEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = blindEffect.particleTexture,
-			castSound = blindEffect.castSoundEffect.id,
-			castVFX = blindEffect.castVisualEffect.id,
-			boltSound = blindEffect.boltSoundEffect.id,
-			boltVFX = blindEffect.boltVisualEffect.id,
-			hitSound = blindEffect.hitSoundEffect.id,
-			hitVFX = blindEffect.hitVisualEffect.id,
-			areaSound = blindEffect.areaSoundEffect.id,
-			areaVFX = blindEffect.areaVisualEffect.id,
-			lighting = {x = blindEffect.lightingRed / 255, y = blindEffect.lightingGreen / 255, z = blindEffect.lightingBlue / 255},
-			size = blindEffect.size,
-			sizeCap = blindEffect.sizeCap,
 			onTick = distractHumanoidEffect,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[15])		-- Gaze of Veloth
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.destruction,
-			baseCost = effectCost,
-			speed = damageHealthEffect.speed,
+		addMiscEffect("T_destruction_GazeOfVeloth", {
 			allowEnchanting = false,
 			allowSpellmaking = false,
 			appliesOnce = true,
 			canCastSelf = false,
 			canCastTarget = true,
 			canCastTouch = true,
-			casterLinked = damageHealthEffect.casterLinked,
-			hasContinuousVFX = damageHealthEffect.hasContinuousVFX,
 			hasNoDuration = true,
 			hasNoMagnitude = true,
-			illegalDaedra = damageHealthEffect.illegalDaedra,
 			isHarmful = true,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = true,
-			usesNegativeLighting = damageHealthEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = damageHealthEffect.particleTexture,
-			castSound = damageHealthEffect.castSoundEffect.id,
-			castVFX = damageHealthEffect.castVisualEffect.id,
-			boltSound = damageHealthEffect.boltSoundEffect.id,
-			boltVFX = damageHealthEffect.boltVisualEffect.id,
-			hitSound = damageHealthEffect.hitSoundEffect.id,
-			hitVFX = damageHealthEffect.hitVisualEffect.id,
-			areaSound = damageHealthEffect.areaSoundEffect.id,
-			areaVFX = damageHealthEffect.areaVisualEffect.id,
-			lighting = {x = damageHealthEffect.lightingRed / 255, y = damageHealthEffect.lightingGreen / 255, z = damageHealthEffect.lightingBlue / 255},
-			size = damageHealthEffect.size,
-			sizeCap = damageHealthEffect.sizeCap,
 			onTick = gazeOfVelothEffect,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[16])		-- Detect Enemy
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
+		addMiscEffect("T_mysticism_DetEnemy", {
 			magnitudeType = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			magnitudeTypePlural = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
-			school = tes3.magicSchool.mysticism,
-			baseCost = effectCost,
-			speed = detectEffect.speed,
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = true,
 			canCastSelf = true,
 			canCastTarget = false,
 			canCastTouch = false,
-			casterLinked = detectEffect.casterLinked,
-			hasContinuousVFX = detectEffect.hasContinuousVFX,
 			hasNoDuration = false,
 			hasNoMagnitude = false,
-			illegalDaedra = detectEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			usesNegativeLighting = detectEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = detectEffect.particleTexture,
-			castSound = detectEffect.castSoundEffect.id,
-			castVFX = detectEffect.castVisualEffect.id,
-			boltSound = detectEffect.boltSoundEffect.id,
-			boltVFX = detectEffect.boltVisualEffect.id,
-			hitSound = detectEffect.hitSoundEffect.id,
-			hitVFX = detectEffect.hitVisualEffect.id,
-			areaSound = detectEffect.areaSoundEffect.id,
-			areaVFX = detectEffect.areaVisualEffect.id,
-			lighting = {x = detectEffect.lightingRed / 255, y = detectEffect.lightingGreen / 255, z = detectEffect.lightingBlue / 255},
-			size = detectEffect.size,
-			sizeCap = detectEffect.sizeCap,
 			onTick = nil,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[17])		-- Detect Invisibility
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
+		addMiscEffect("T_mysticism_DetInvisibility", {
 			magnitudeType = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			magnitudeTypePlural = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
-			school = tes3.magicSchool.mysticism,
-			baseCost = effectCost,
-			speed = detectEffect.speed,
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = true,
 			canCastSelf = true,
 			canCastTarget = false,
 			canCastTouch = false,
-			casterLinked = detectEffect.casterLinked,
-			hasContinuousVFX = detectEffect.hasContinuousVFX,
 			hasNoDuration = false,
 			hasNoMagnitude = false,
-			illegalDaedra = detectEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			usesNegativeLighting = detectEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = detectEffect.particleTexture,
-			castSound = detectEffect.castSoundEffect.id,
-			castVFX = detectEffect.castVisualEffect.id,
-			boltSound = detectEffect.boltSoundEffect.id,
-			boltVFX = detectEffect.boltVisualEffect.id,
-			hitSound = detectEffect.hitSoundEffect.id,
-			hitVFX = detectEffect.hitVisualEffect.id,
-			areaSound = detectEffect.areaSoundEffect.id,
-			areaVFX = detectEffect.areaVisualEffect.id,
-			lighting = {x = detectEffect.lightingRed / 255, y = detectEffect.lightingGreen / 255, z = detectEffect.lightingBlue / 255},
-			size = detectEffect.size,
-			sizeCap = detectEffect.sizeCap,
 			onTick = nil,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[18])		-- Blink
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
+		addMiscEffect("T_mysticism_Blink", {
 			magnitudeType = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			magnitudeTypePlural = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
-			school = tes3.magicSchool.mysticism,
-			baseCost = effectCost,
-			speed = detectEffect.speed,
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = true,
 			canCastSelf = true,
 			canCastTarget = false,
 			canCastTouch = false,
-			casterLinked = detectEffect.casterLinked,
-			hasContinuousVFX = detectEffect.hasContinuousVFX,
 			hasNoDuration = true,
 			hasNoMagnitude = false,
-			illegalDaedra = detectEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			usesNegativeLighting = detectEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = detectEffect.particleTexture,
-			castSound = detectEffect.castSoundEffect.id,
-			castVFX = detectEffect.castVisualEffect.id,
-			boltSound = detectEffect.boltSoundEffect.id,
-			boltVFX = detectEffect.boltVisualEffect.id,
 			hitSound = "T_SndObj_BlinkHit",
 			hitVFX = "T_VFX_Empty",
-			areaSound = detectEffect.areaSoundEffect.id,
-			areaVFX = detectEffect.areaVisualEffect.id,
-			lighting = {x = detectEffect.lightingRed / 255, y = detectEffect.lightingGreen / 255, z = detectEffect.lightingBlue / 255},
-			size = detectEffect.size,
-			sizeCap = detectEffect.sizeCap,
 			onTick = blinkEffect,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[19])		-- Fortify Casting
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.restoration,
-			baseCost = effectCost,
-			speed = fortifyAttackEffect.speed,
+		addMiscEffect("T_restoration_FortifyCasting", {
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = true,
 			canCastSelf = true,
 			canCastTarget = false,
 			canCastTouch = false,
-			casterLinked = fortifyAttackEffect.casterLinked,
-			hasContinuousVFX = fortifyAttackEffect.hasContinuousVFX,
 			hasNoDuration = false,
 			hasNoMagnitude = false,
-			illegalDaedra = fortifyAttackEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			usesNegativeLighting = fortifyAttackEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = fortifyAttackEffect.particleTexture,
-			castSound = fortifyAttackEffect.castSoundEffect.id,
-			castVFX = fortifyAttackEffect.castVisualEffect.id,
-			boltSound = fortifyAttackEffect.boltSoundEffect.id,
-			boltVFX = fortifyAttackEffect.boltVisualEffect.id,
-			hitSound = fortifyAttackEffect.hitSoundEffect.id,
-			hitVFX = fortifyAttackEffect.hitVisualEffect.id,
-			areaSound = fortifyAttackEffect.areaSoundEffect.id,
-			areaVFX = fortifyAttackEffect.areaVisualEffect.id,
-			lighting = {x = fortifyAttackEffect.lightingRed / 255, y = fortifyAttackEffect.lightingGreen / 255, z = fortifyAttackEffect.lightingBlue / 255},
-			size = fortifyAttackEffect.size,
-			sizeCap = fortifyAttackEffect.sizeCap,
 			onTick = nil,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[20])		-- Prismatic Light
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.illusion,
-			baseCost = effectCost,
-			speed = lightEffect.speed,
-			allowEnchanting = lightEffect.allowEnchanting,
-			allowSpellmaking = lightEffect.allowSpellmaking,
-			appliesOnce = lightEffect.appliesOnce,
-			canCastSelf = lightEffect.canCastSelf,
-			canCastTarget = lightEffect.canCastTarget,
-			canCastTouch = lightEffect.canCastTouch,
-			casterLinked = lightEffect.casterLinked,
-			hasContinuousVFX = lightEffect.hasContinuousVFX,
-			hasNoDuration = lightEffect.hasNoDuration,
-			hasNoMagnitude = lightEffect.hasNoMagnitude,
-			illegalDaedra = lightEffect.illegalDaedra,
-			isHarmful = lightEffect.isHarmful,
-			nonRecastable = lightEffect.nonRecastable,
-			targetsAttributes = lightEffect.targetsAttributes,
-			targetsSkills = lightEffect.targetsSkills,
-			unreflectable = lightEffect.unreflectable,
-			usesNegativeLighting = lightEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = lightEffect.particleTexture,
-			castSound = lightEffect.castSoundEffect.id,
-			castVFX = lightEffect.castVisualEffect.id,
-			boltSound = lightEffect.boltSoundEffect.id,
-			boltVFX = lightEffect.boltVisualEffect.id,
-			hitSound = lightEffect.hitSoundEffect.id,
-			hitVFX = lightEffect.hitVisualEffect.id,
-			areaSound = lightEffect.areaSoundEffect.id,
-			areaVFX = lightEffect.areaVisualEffect.id,
-			lighting = {x = lightEffect.lightingRed / 255, y = lightEffect.lightingGreen / 255, z = lightEffect.lightingBlue / 255},
-			size = lightEffect.size,
-			sizeCap = lightEffect.sizeCap,
+		addMiscEffect("T_illusion_PrismaticLight", {
 			onTick = prismaticLightEffect,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[21])		-- Blood Magic
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.mysticism,
-			baseCost = effectCost,
-			speed = detectEffect.speed,
+		addMiscEffect("T_mysticism_BloodMagic", {
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = false,
 			canCastSelf = true,
 			canCastTarget = false,
 			canCastTouch = false,
-			casterLinked = detectEffect.casterLinked,
-			hasContinuousVFX = detectEffect.hasContinuousVFX,
 			hasNoDuration = false,
 			hasNoMagnitude = true,
-			illegalDaedra = detectEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			usesNegativeLighting = detectEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = detectEffect.particleTexture,
-			castSound = detectEffect.castSoundEffect.id,
-			castVFX = detectEffect.castVisualEffect.id,
-			boltSound = detectEffect.boltSoundEffect.id,
-			boltVFX = detectEffect.boltVisualEffect.id,
-			hitSound = detectEffect.hitSoundEffect.id,
-			hitVFX = detectEffect.hitVisualEffect.id,
-			areaSound = detectEffect.areaSoundEffect.id,
-			areaVFX = detectEffect.areaVisualEffect.id,
-			lighting = {x = detectEffect.lightingRed / 255, y = detectEffect.lightingGreen / 255, z = detectEffect.lightingBlue / 255},
-			size = detectEffect.size,
-			sizeCap = detectEffect.sizeCap,
 			onTick = nil,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[22])		-- Sanguine Rose
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.conjuration,
-			baseCost = effectCost,
-			speed = summonDremoraEffect.speed,
+		addMiscEffect("T_conjuration_SanguineRose", {
 			allowEnchanting = false,
 			allowSpellmaking = false,
 			appliesOnce = true,
 			canCastSelf = true,
 			canCastTarget = false,
 			canCastTouch = false,
-			casterLinked = summonDremoraEffect.casterLinked,
-			hasContinuousVFX = summonDremoraEffect.hasContinuousVFX,
 			hasNoDuration = false,
 			hasNoMagnitude = true,
-			illegalDaedra = summonDremoraEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
-			unreflectable = summonDremoraEffect.unreflectable,
-			usesNegativeLighting = summonDremoraEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = summonDremoraEffect.particleTexture,
-			castSound = summonDremoraEffect.castSoundEffect.id,
-			castVFX = summonDremoraEffect.castVisualEffect.id,
-			boltSound = summonDremoraEffect.boltSoundEffect.id,
-			boltVFX = summonDremoraEffect.boltVisualEffect.id,
-			hitSound = summonDremoraEffect.hitSoundEffect.id,
-			hitVFX = summonDremoraEffect.hitVisualEffect.id,
-			areaSound = summonDremoraEffect.areaSoundEffect.id,
-			areaVFX = summonDremoraEffect.areaVisualEffect.id,
-			lighting = {x = summonDremoraEffect.lightingRed / 255, y = summonDremoraEffect.lightingGreen / 255, z = summonDremoraEffect.lightingBlue / 255},
-			size = summonDremoraEffect.size,
-			sizeCap = summonDremoraEffect.sizeCap,
 			onTick = function(eventData)
 				eventData:triggerSummon(sanguineRoseDaedra[math.random(#sanguineRoseDaedra)])
 			end,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[23])		-- Detect Valuable
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
+		addMiscEffect("T_mysticism_DetValuables", {
 			magnitudeType = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			magnitudeTypePlural = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
-			school = tes3.magicSchool.mysticism,
-			baseCost = effectCost,
-			speed = detectEffect.speed,
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = true,
 			canCastSelf = true,
 			canCastTarget = false,
 			canCastTouch = false,
-			casterLinked = detectEffect.casterLinked,
-			hasContinuousVFX = detectEffect.hasContinuousVFX,
 			hasNoDuration = false,
 			hasNoMagnitude = false,
-			illegalDaedra = detectEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			usesNegativeLighting = detectEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = detectEffect.particleTexture,
-			castSound = detectEffect.castSoundEffect.id,
-			castVFX = detectEffect.castVisualEffect.id,
-			boltSound = detectEffect.boltSoundEffect.id,
-			boltVFX = detectEffect.boltVisualEffect.id,
-			hitSound = detectEffect.hitSoundEffect.id,
-			hitVFX = detectEffect.hitVisualEffect.id,
-			areaSound = detectEffect.areaSoundEffect.id,
-			areaVFX = detectEffect.areaVisualEffect.id,
-			lighting = {x = detectEffect.lightingRed / 255, y = detectEffect.lightingGreen / 255, z = detectEffect.lightingBlue / 255},
-			size = detectEffect.size,
-			sizeCap = detectEffect.sizeCap,
 			onTick = nil,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[24])		-- Magicka Ward
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.mysticism,
-			baseCost = effectCost,
-			speed = detectEffect.speed,
+		addMiscEffect("T_mysticism_MagickaWard", {
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = false,
 			canCastSelf = true,
 			canCastTarget = false,
 			canCastTouch = false,
-			casterLinked = detectEffect.casterLinked,
 			hasContinuousVFX = shieldEffect.hasContinuousVFX,
 			hasNoDuration = false,
 			hasNoMagnitude = true,
-			illegalDaedra = detectEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			usesNegativeLighting = detectEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = detectEffect.particleTexture,
-			castSound = detectEffect.castSoundEffect.id,
-			castVFX = detectEffect.castVisualEffect.id,
-			boltSound = detectEffect.boltSoundEffect.id,
-			boltVFX = detectEffect.boltVisualEffect.id,
-			hitSound = detectEffect.hitSoundEffect.id,
 			hitVFX = shieldEffect.hitVisualEffect.id,
-			areaSound = detectEffect.areaSoundEffect.id,
-			areaVFX = detectEffect.areaVisualEffect.id,
 			lighting = {x = shieldEffect.lightingRed / 255, y = shieldEffect.lightingGreen / 255, z = shieldEffect.lightingBlue / 255},
-			size = detectEffect.size,
-			sizeCap = detectEffect.sizeCap,
 			onTick = nil,
 			onCollision = nil
-		}
+		})
 
-		effectID, effectName, effectCost, iconPath, effectDescription = unpack(magicData.td_misc_effects[25])		-- Ethereal
-		tes3.addMagicEffect{
-			id = tes3.effect[effectID],
-			name = common.i18n("magic." .. effectName),
-			description = common.i18n("magic." .. effectDescription),
-			school = tes3.magicSchool.illusion,
-			baseCost = effectCost,
-			speed = blindEffect.speed,
+		addMiscEffect("T_illusion_Ethereal", {
 			allowEnchanting = true,
 			allowSpellmaking = true,
 			appliesOnce = true,
 			canCastSelf = true,
 			canCastTarget = false,
 			canCastTouch = false,
-			casterLinked = blindEffect.casterLinked,
-			hasContinuousVFX = blindEffect.hasContinuousVFX,
 			hasNoDuration = false,
 			hasNoMagnitude = true,
-			illegalDaedra = blindEffect.illegalDaedra,
 			isHarmful = false,
 			nonRecastable = true,
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			usesNegativeLighting = blindEffect.usesNegativeLighting,
-			icon = iconPath,
-			particleTexture = blindEffect.particleTexture,
-			castSound = blindEffect.castSoundEffect.id,
-			castVFX = blindEffect.castVisualEffect.id,
-			boltSound = blindEffect.boltSoundEffect.id,
-			boltVFX = blindEffect.boltVisualEffect.id,
-			hitSound = blindEffect.hitSoundEffect.id,
-			hitVFX = blindEffect.hitVisualEffect.id,
-			areaSound = blindEffect.areaSoundEffect.id,
-			areaVFX = blindEffect.areaVisualEffect.id,
-			lighting = {x = blindEffect.lightingRed / 255, y = blindEffect.lightingGreen / 255, z = blindEffect.lightingBlue / 255},
-			size = blindEffect.size,
-			sizeCap = blindEffect.sizeCap,
 			onTick = etherealEffect,
 			onCollision = nil
-		}
+		})
 	end
 end)
 
