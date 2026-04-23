@@ -39,7 +39,11 @@ local function parseEffects(values, offset)
             row.area = nil
         else
             row.range = RANGE[row.range]
+            row.magnitudeMin = row.min
+            row.magnitudeMax = row.max
         end
+        row.min = nil
+        row.max = nil
     end
     return implemented, effects
 end
@@ -180,14 +184,19 @@ local function addMiscEffects()
     local function addMiscEffect(id, params)
         local name, cost, icon, desc, template = unpack(magicData.td_misc_effects[id])
         params.name = t(name)
-        params.cost = cost
+        params.cost = params.cost or cost
         params.icon = icon
         params.description = t(desc)
         params.template = effects[template]
         effects[id] = params
         implementedEffects[id] = true
     end
-    addMiscEffect('T_mysticism_Passwall', { onTarget = false, onTouch = false, hasDuration = false })
+    addMiscEffect('T_mysticism_Passwall', {
+        onTarget = false, onTouch = false, hasDuration = false,
+        cost = magicData.td_misc_effects.T_mysticism_Passwall[2] * 0.5 -- compensate for MWSE using area instead of magnitude
+    })
+    --addMiscEffect('T_mysticism_BanishDae', {})
+    addMiscEffect('T_mysticism_ReflectDmg', {})
 end
 
 return {

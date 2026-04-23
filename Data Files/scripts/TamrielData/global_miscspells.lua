@@ -54,7 +54,10 @@ local onStart = {
             track.ignore = false
             caster:sendEvent('T_Passwall_Cast', effect.magnitudeThisFrame)
         end
-    end
+    end,
+    t_mysticism_reflectdmg = function(caster, spell, effect, track)
+        track.ignore = false
+    end,
 }
 
 I.T_ActorMagic.addEffectStartHandler(function(caster, spell, effect, track)
