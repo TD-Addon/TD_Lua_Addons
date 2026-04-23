@@ -48,26 +48,84 @@ local function teleportPlayer(data)
     world.vfx.spawn(passwall_target_effect_model, data.position)
 end
 
+local function toKey(actor, id, index)
+    return actor.id .. ',' .. id .. ',' .. index
+end
+
+local state = {
+    effects = {}
+}
+
+local function store(target, spell, effect)
+    local id = spell.activeSpellId
+    local index = effect.index
+    local key = toKey(target, id, index)
+    state.effects[key] = { id = id, index = index, actor = target, magnitude = effect.magnitudeThisFrame, effect = effect.id }
+end
+
 local onStart = {
-    t_mysticism_passwall = function(caster, spell, effect, track)
-        if types.Player.objectIsInstance(caster) then
+    t_mysticism_passwall = function(target, spell, effect, track)
+        if types.Player.objectIsInstance(target) then
             track.ignore = false
-            caster:sendEvent('T_Passwall_Cast', effect.magnitudeThisFrame)
+            target:sendEvent('T_Passwall_Cast', effect.magnitudeThisFrame)
         end
     end,
-    t_mysticism_reflectdmg = function(caster, spell, effect, track)
+    t_mysticism_reflectdmg = function(target, spell, effect, track)
+        track.ignore = false
+    end,
+    t_restoration_fortifycasting = function(target, spell, effect, track)
+        local activeEffects = target.type.activeEffects(target)
+        activeEffects:modify(-effect.magnitudeThisFrame, 'sound')
+        store(target, spell, effect)
         track.ignore = false
     end,
 }
 
-I.T_ActorMagic.addEffectStartHandler(function(caster, spell, effect, track)
+local onEnd = {
+    t_restoration_fortifycasting = function(effect)
+        local activeEffects = effect.actor.type.activeEffects(effect.actor)
+        activeEffects:modify(effect.magnitude, 'sound')
+    end
+}
+
+I.T_ActorMagic.addEffectStartHandler(function(target, spell, effect, track)
     local handler = onStart[effect.id]
     if handler then
-        handler(caster, spell, effect, track)
+        handler(target, spell, effect, track)
+    end
+end)
+
+I.T_ActorMagic.addEffectEndHandler(function(actor, id, index)
+    local key = toKey(actor, id, index)
+    local effect = state.effects[key]
+    if effect then
+        local handler = onEnd[effect.effect]
+        if handler then
+            handler(effect)
+        end
+        state.effects[key] = nil
     end
 end)
 
 return {
+    engineHandlers = {
+        onSave = function()
+            return state
+        end,
+        onLoad = function(data)
+            if data then
+                state = data
+                local effects = {}
+                for _, actorData in pairs(data.effects) do
+                    if actorData.actor:isValid() then
+                        local key = toKey(actorData.actor, actorData.id, actorData.index)
+                        effects[key] = actorData
+                    end
+                end
+                state.effects = effects
+            end
+        end
+    },
     eventHandlers = {
         T_Passwall_teleportPlayer = teleportPlayer,
     }

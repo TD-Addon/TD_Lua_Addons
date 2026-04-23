@@ -39,11 +39,12 @@ local function parseEffects(values, offset)
             row.area = nil
         else
             row.range = RANGE[row.range]
-            row.magnitudeMin = row.min
-            row.magnitudeMax = row.max
+            row.magnitudeMin = row.min or row.magnitude
+            row.magnitudeMax = row.max or row.magnitude
         end
         row.min = nil
         row.max = nil
+        row.magnitude = nil
     end
     return implemented, effects
 end
@@ -195,8 +196,11 @@ local function addMiscEffects()
         onTarget = false, onTouch = false, hasDuration = false,
         cost = magicData.td_misc_effects.T_mysticism_Passwall[2] * 0.5 -- compensate for MWSE using area instead of magnitude
     })
-    --addMiscEffect('T_mysticism_BanishDae', {})
+    --addMiscEffect('T_mysticism_BanishDae', {}) -- Requires a way to trigger death without waiting for the animation
     addMiscEffect('T_mysticism_ReflectDmg', {})
+    --addMiscEffect('T_mysticism_DetHuman', {}) -- Requires map dehardcoding
+    --addMiscEffect('T_alteration_RadShield', {}) -- Requires a (more elegant) way of applying variable magnitude blind effects
+    addMiscEffect('T_restoration_FortifyCasting', {})
 end
 
 return {
