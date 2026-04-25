@@ -8,8 +8,16 @@ end
 local I = require('openmw.interfaces')
 local types = require('openmw.types')
 local world = require('openmw.world')
+local magicData = require('MWSE.mods.TamrielData.magicdata')
 
 local passwall_target_effect_model = types.Static.records[passwallEffect.hitStatic].model
+local distractedVoices = {}
+for _, line in pairs(magicData.distractedVoiceLines) do
+    local raceID, isFemale, voicesStart, voicesEnd = unpack(line)
+    raceID = raceID:lower()
+    distractedVoices[raceID] = distractedVoices[raceID] or {}
+    distractedVoices[raceID][isFemale and "female" or "male"] = { voicesStart, voicesEnd }
+end
 
 local function triggerCrimeIfTrespassing(data)
     if not data.targetObject or not data.targetObject.owner or not types.Lockable.isLocked(data.targetObject) then
@@ -106,6 +114,22 @@ local function resartusEquipment(actor, magnitude, type)
     end
 end
 
+local function playDistractedVoiceLine(data)
+    local record = data.actor.type.records[data.actor.recordId]
+    local race = distractedVoices[record.race]
+    if not race then
+        return
+    end
+    local lines = race[record.isMale and "male" or "female"]
+    if lines then
+        local files = data.isEnd and lines[2] or lines[1]
+        local path = files and files[math.random(#files)]
+        if path then
+            core.sound.say('sound/' .. path, data.actor)
+        end
+    end
+end
+
 local function toKey(actor, id, index)
     return actor.id .. ',' .. id .. ',' .. index
 end
@@ -119,6 +143,18 @@ local function store(target, spell, effect)
     local index = effect.index
     local key = toKey(target, id, index)
     state.effects[key] = { id = id, index = index, actor = target, magnitude = effect.magnitudeThisFrame, effect = effect.id }
+end
+
+local function distract(type)
+    return function(target, spell, effect, track)
+        if type.objectIsInstance(target) and not types.Player.objectIsInstance(target) then
+            target:sendEvent('T_Distract', { magnitude = effect.magnitudeThisFrame, caster = spell.caster })
+            store(target, spell, effect)
+            track.ignore = false
+        else
+            target.type.activeEffects(target):remove(effect.id)
+        end
+    end
 end
 
 local onStart = {
@@ -139,6 +175,8 @@ local onStart = {
         resartusEquipment(target, effect.magnitudeThisFrame, types.Weapon)
         track.ignore = false
     end,
+    t_illusion_distractcreature = distract(types.Creature),
+    t_illusion_distracthumanoid = distract(types.NPC),
     t_restoration_fortifycasting = function(target, spell, effect, track)
         local activeEffects = target.type.activeEffects(target)
         activeEffects:modify(-effect.magnitudeThisFrame, 'sound')
@@ -151,6 +189,12 @@ local onEnd = {
     t_restoration_fortifycasting = function(effect)
         local activeEffects = effect.actor.type.activeEffects(effect.actor)
         activeEffects:modify(effect.magnitude, 'sound')
+    end,
+    t_illusion_distractcreature = function(effect)
+        effect.actor:sendEvent('T_DistractFinished', effect.effect)
+    end,
+    t_illusion_distracthumanoid = function(effect)
+        effect.actor:sendEvent('T_DistractFinished', effect.effect)
     end
 }
 
@@ -194,5 +238,6 @@ return {
     },
     eventHandlers = {
         T_Passwall_teleportPlayer = teleportPlayer,
+        T_DistractVoice = playDistractedVoiceLine,
     }
 }
