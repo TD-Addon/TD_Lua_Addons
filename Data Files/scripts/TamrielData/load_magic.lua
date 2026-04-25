@@ -200,6 +200,8 @@ local function addMiscEffects()
     addMiscEffect('T_mysticism_ReflectDmg', {})
     --addMiscEffect('T_mysticism_DetHuman', {}) -- Requires map dehardcoding
     --addMiscEffect('T_alteration_RadShield', {}) -- Requires a (more elegant) way of applying variable magnitude blind effects
+    addMiscEffect('T_restoration_ArmorResartus', { hasDuration = false })
+    addMiscEffect('T_restoration_WeaponResartus', { hasDuration = false })
     addMiscEffect('T_restoration_FortifyCasting', {})
 end
 

@@ -48,6 +48,64 @@ local function teleportPlayer(data)
     world.vfx.spawn(passwall_target_effect_model, data.position)
 end
 
+local function resartusEquipment(actor, magnitude, type)
+    if magnitude <= 0 then
+        return
+    end
+    local equipment = actor.type.getEquipment(actor)
+    local toFix = {}
+    for slot, item in pairs(equipment) do
+        if type.objectIsInstance(item) then
+            local data = types.Item.itemData(item)
+            local record = item.type.records[item.recordId]
+            local maxHealth = record.health
+            local maxCharge = 0
+            if record.enchant then
+                local enchantment = core.magic.enchantments.records[record.enchant]
+                if enchantment then
+                    -- FIXME: this is incorrect for autocalc
+                    maxCharge = enchantment.charge
+                end
+            end
+            local hasDamage = data.condition and data.condition < maxHealth
+            local missingCharge = data.enchantmentCharge and data.enchantmentCharge < maxCharge
+            if hasDamage or missingCharge then
+                table.insert(toFix, {
+                    data = data,
+                    hasDamage = hasDamage,
+                    missingCharge = missingCharge,
+                    maxHealth = maxHealth,
+                    maxCharge = maxCharge
+                })
+            end
+        end
+    end
+    local healthRemaining = magnitude
+    local chargeRemaining = magnitude
+    while healthRemaining > 0 and chargeRemaining > 0 do
+        local changed = false
+        for _, data in pairs(toFix) do
+            if data.hasDamage and healthRemaining > 0 then
+                local health = math.min(data.data.condition + 1, data.maxHealth)
+                data.hasDamage = health ~= data.maxHealth
+                data.data.condition = health
+                healthRemaining = healthRemaining - 1
+                changed = true
+            end
+            if data.missingCharge and chargeRemaining > 0 then
+                local charge = math.min(data.data.enchantmentCharge + 1, data.maxCharge)
+                data.missingCharge = charge ~= data.maxCharge
+                data.data.enchantmentCharge = charge
+                chargeRemaining = chargeRemaining - 1
+                changed = true
+            end
+        end
+        if not changed then
+            break
+        end
+    end
+end
+
 local function toKey(actor, id, index)
     return actor.id .. ',' .. id .. ',' .. index
 end
@@ -71,6 +129,14 @@ local onStart = {
         end
     end,
     t_mysticism_reflectdmg = function(target, spell, effect, track)
+        track.ignore = false
+    end,
+    t_restoration_armorresartus = function(target, spell, effect, track)
+        resartusEquipment(target, effect.magnitudeThisFrame, types.Armor)
+        track.ignore = false
+    end,
+    t_restoration_weaponresartus = function(target, spell, effect, track)
+        resartusEquipment(target, effect.magnitudeThisFrame, types.Weapon)
         track.ignore = false
     end,
     t_restoration_fortifycasting = function(target, spell, effect, track)
