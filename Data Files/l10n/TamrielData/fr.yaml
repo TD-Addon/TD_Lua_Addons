@@ -24,6 +24,8 @@ TamrielData_magic_passwallAlpha: "Vous ne pouvez pas passer à travers ceci."
 TamrielData_magic_passwallExterior: "Vous devez vous trouver dans un espace confiné."
 TamrielData_magic_passwallDoorExterior: "Vous ne pouvez pas quitter un espace confiné."
 TamrielData_magic_passwallUnderwater: "Vous ne pouvez pas vous trouver sous l'eau."
+Magic_corruptionScript: "{target} ne peut être corrompu."
+Magic_corruptionSummon: "Vous ne pouvez corrompre un être invoqué par le Crâne de Corruption."
 
 Magic_summonDevourer: "Appel de consummeur"
 Magic_summonDevourerDesc: "Cet effet permet d'invoquer un consummeur des Royaumes extérieurs. Il apparaît à 2 mètres du lanceur et attaque toute entité hostile à son maître jusqu'à ce que le sort prenne fin ou qu'il soit tué. Quand il meurt ou que le sort prend fin, il disparaît et retourne dans les Royaumes extérieurs. En cas d'invocation en ville, les gardes vous attaqueront, vous et votre invocation."

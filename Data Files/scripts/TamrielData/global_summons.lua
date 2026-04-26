@@ -17,35 +17,41 @@ local startVfx = types.Static.records['VFX_Summon_Start'].model
 local endVfx = types.Static.records['VFX_Summon_End'].model
 
 local state = {
-    summons = {}
+    summons = {},
+    corruption = {},
+    corruptionSummons = {}
 }
 
 local function toKey(actor, id, index)
     return actor.id .. ',' .. id .. ',' .. index
 end
 
-local function getSummon(effectId)
+local function getSummon(effectId, caster)
     if effectId == 't_conjuration_sanguinerose' then
         return magicData.sanguineRoseDaedra[math.random(#magicData.sanguineRoseDaedra)]
+    elseif effectId == 't_conjuration_corruptionsummon' then
+        local target = state.corruption[caster.id]
+        return target and target.id or 'T_Glb_Cre_Gremlin_01', effectId
     end
     return summons[effectId]
 end
 
 I.T_ActorMagic.addEffectStartHandler(function(caster, spell, effect, track)
-    local creature = getSummon(effect.id)
+    local creature, tag = getSummon(effect.id, caster)
     if not creature then
         return
     end
     local id = spell.activeSpellId
     local index = effect.index
     local key = toKey(caster, id, index)
-    state.summons[key] = { id = id, index = index, creatureId = creature, actor = caster }
+    state.summons[key] = { id = id, index = index, creatureId = creature, actor = caster, tag = tag }
     caster:sendEvent('T_GetSummonPosition', { key = key })
     track.ignore = false
 end)
 
 local function unsummon(creature)
     if creature:isValid() then
+        state.corruptionSummons[creature.id] = nil
         world.vfx.spawn(startVfx, creature.position)
         creature:remove()
     end
@@ -63,6 +69,10 @@ I.T_ActorMagic.addEffectEndHandler(function(actor, id, index)
     end
     state.summons[key] = nil
 end)
+
+local function blockActivation()
+    return false
+end
 
 return {
     engineHandlers = {
@@ -82,6 +92,20 @@ return {
                     end
                 end
                 state.summons = summons
+                local corruption = {}
+                for _, actorData in pairs(data.corruption) do
+                    if actorData.actor:isValid() then
+                        corruption[actorData.actor.id] = actorData
+                    end
+                end
+                state.corruption = corruption
+                local corruptionSummons = {}
+                for _, actor in pairs(data.corruptionSummons) do
+                    if actor:isValid() then
+                        corruptionSummons[actor.id] = actor
+                    end
+                end
+                state.corruptionSummons = corruptionSummons
             end
         end
     },
@@ -95,10 +119,14 @@ return {
             local caster = effect.actor
             creature:teleport(caster.cell.name, data.position, { onGround = true })
             creature:sendEvent('StartAIPackage', { type = 'Follow', target = caster })
-            creature:sendEvent('T_MarkSummon', { index = effect.index, id = effect.id, caster = caster })
+            creature:sendEvent('T_MarkSummon', { index = effect.index, id = effect.id, caster = caster, tag = effect.tag })
             creature:sendEvent('AddVfx', { model = startVfx })
             effect.creatureId = nil
             effect.creature = creature
+            if effect.tag == 't_conjuration_corruptionsummon' then
+                state.corruptionSummons[creature.id] = creature
+                I.Activation.addHandlerForObject(creature, blockActivation)
+            end
         end,
         T_Unsummon = function(data)
             unsummon(data.creature)
@@ -108,6 +136,20 @@ return {
                 state.summons[key] = nil
                 I.T_ActorMagic.removeEffect(data.caster, effect.id, effect.index)
             end
+        end
+    },
+    interfaceName = 'T_SummonMagic',
+    interface = {
+        version = 1,
+        setCorruptedId = function(caster, id)
+            if id then
+                state.corruption[caster.id] = { actor = caster, id = id }
+            else
+                state.corruption[caster.id] = nil
+            end
+        end,
+        isCorruptionSummon = function(actor)
+            return state.corruptionSummons[actor.id] or false
         end
     }
 }

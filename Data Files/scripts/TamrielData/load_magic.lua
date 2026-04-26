@@ -202,6 +202,8 @@ local function addMiscEffects()
     --addMiscEffect('T_alteration_RadShield', {}) -- Requires a (more elegant) way of applying variable magnitude blind effects
     addMiscEffect('T_restoration_ArmorResartus', { hasDuration = false })
     addMiscEffect('T_restoration_WeaponResartus', { hasDuration = false })
+    addMiscEffect('T_conjuration_Corruption', { allowsSpellmaking = false, allowsEnchanting = false, hasDuration = false, onSelf = false, onTarget = true, onTouch = true, harmful = true, unreflectable = true })
+    addMiscEffect('T_conjuration_CorruptionSummon', { allowsSpellmaking = false, allowsEnchanting = false })
     addMiscEffect('T_illusion_DistractCreature', { unreflectable = true, onSelf = false, harmful = false })
     addMiscEffect('T_illusion_DistractHumanoid', { unreflectable = true, onSelf = false, harmful = false })
     addMiscEffect('T_restoration_FortifyCasting', {})

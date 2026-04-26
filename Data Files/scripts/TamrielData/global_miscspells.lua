@@ -8,6 +8,7 @@ end
 local I = require('openmw.interfaces')
 local types = require('openmw.types')
 local world = require('openmw.world')
+local l10n = core.l10n('TamrielData')
 local magicData = require('MWSE.mods.TamrielData.magicdata')
 
 local passwall_target_effect_model = types.Static.records[passwallEffect.hitStatic].model
@@ -17,6 +18,10 @@ for _, line in pairs(magicData.distractedVoiceLines) do
     raceID = raceID:lower()
     distractedVoices[raceID] = distractedVoices[raceID] or {}
     distractedVoices[raceID][isFemale and "female" or "male"] = { voicesStart, voicesEnd }
+end
+local safeScripts = {}
+for k, v in pairs(magicData.safeScripts) do
+    safeScripts[k:lower()] = v
 end
 
 local function triggerCrimeIfTrespassing(data)
@@ -130,6 +135,34 @@ local function playDistractedVoiceLine(data)
     end
 end
 
+local function canBeCorrupted(target)
+    if types.Player.objectIsInstance(target) then
+        return false
+    end
+    local record = target.type.records[target.recordId]
+    local script = record.mwscript
+    if script and not (script:find("t_scnpc") and not script:find("_were") or safeScripts[script]) then
+        return false
+    end
+    for _, item in pairs(target.type.inventory(target):getAll()) do
+        if item.type.records[item.recordId].mwscript then
+            return false
+        end
+    end
+    return true
+end
+
+local function restoreCharge(item, caster)
+    --TODO !3029
+    if not item or not I.SpellCasting then
+        return
+    end
+    local charge = I.SpellCasting.getCostCharge(item, caster)
+    local data = types.Item.itemData(item)
+    --TODO cap
+    data.enchantmentCharge = data.enchantmentCharge + charge
+end
+
 local function toKey(actor, id, index)
     return actor.id .. ',' .. id .. ',' .. index
 end
@@ -174,6 +207,29 @@ local onStart = {
     t_restoration_weaponresartus = function(target, spell, effect, track)
         resartusEquipment(target, effect.magnitudeThisFrame, types.Weapon)
         track.ignore = false
+    end,
+    t_conjuration_corruption = function(target, spell, effect, track)
+        if not spell.caster or not spell.caster:isValid() then
+            return
+        end
+        if I.T_SummonMagic.isCorruptionSummon(target) then
+            if types.Player.objectIsInstance(spell.caster) then
+                spell.caster:sendEvent('ShowMessage', { message = l10n('Magic_corruptionSummon') })
+            end
+            target.type.activeEffects(target):remove(effect.id)
+            restoreCharge(spell.item, spell.caster)
+        elseif canBeCorrupted(target) then
+            I.T_SummonMagic.setCorruptedId(spell.caster, target.recordId)
+            track.ignore = false
+            types.Actor.activeSpells(spell.caster):add({ id = 'T_Dae_Cnj_UNI_CorruptionSummon', effects = { 0 }, ignoreResistances = true, ignoreSpellAbsorption = true, ignoreReflect = true, caster = spell.caster })
+        else
+            if types.Player.objectIsInstance(spell.caster) then
+                local record = target.type.records[target.recordId]
+                spell.caster:sendEvent('ShowMessage', { message = l10n('Magic_corruptionScript', { target = record.name or record.id }) })
+            end
+            target.type.activeEffects(target):remove(effect.id)
+            restoreCharge(spell.item, spell.caster)
+        end
     end,
     t_illusion_distractcreature = distract(types.Creature),
     t_illusion_distracthumanoid = distract(types.NPC),

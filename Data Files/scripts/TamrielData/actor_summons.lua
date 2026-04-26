@@ -51,6 +51,11 @@ return {
             state.id = data.id
             state.index = data.index
             self.type.stats.ai.fight(self).base = 30 -- we should probably be using dedicated creature variants
+            if data.tag == 't_conjuration_corruptionsummon' then
+                self.type.stats.ai.alarm(self).base = 0
+                self.type.stats.ai.flee(self).base = 0
+                self.type.stats.ai.hello(self).base = 0
+            end
         end,
         Died = function()
             if state.caster ~= nil then

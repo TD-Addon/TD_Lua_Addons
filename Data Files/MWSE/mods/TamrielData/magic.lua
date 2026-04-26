@@ -235,48 +235,6 @@ local gazeOfVelothImmuneActors = {
 	["Sky_qRe_KWMG6_Azra"] = true,
 }
 
--- script id
-local safeScripts = {
-	["nolore"] = true,
-	["slaveScript"] = true,
-	["fortloreboozeScript"] = true,
-	["TR_m3_Kha_Methats_sc"] = true,
-	["TR_m3_NPC_OE_commonNoLore"] = true,
-	["TR_m3_NPC_OE_poorNoLore"] = true,
-	["TR_m3_NPC_OE_richNoLore"] = true,
-	["TR_m3_NPC_OE_towerNoLore"] = true,
-	["TR_m4_AA_Vf_NPC_NoLoresc"] = true,
-	["TR_m7_NPC_RuddyEggsNoLore"] = true,
-	["TR_m7_Ns_KhanVolnyr_sc"] = true,
-	["TR_m3_q_kharg"] = true,
-	["TR_m3_Kha_AtroLordDis_sc"] = true,
-	["TR_m3_Kha_Black_Heart_Script"] = true,
-	["TR_m3_Kha_ClannLordDis_sc"] = true,
-	["TR_m3_Kha_FireScamp_sc"] = true,
-	["TR_m1_Lornie_Slave_scpt"] = true,
-	["TR_m4_OranSlave_Sc"] = true,
-	["TR_m1_T_CouncilorSc"] = true,
-	["TR_m2_T_CouncilorSc"] = true,
-	["TR_NecMQ_MovingNPCScript"] = true,
-	["TR_m1_FW_TG3_HrongalDrink"] = true,
-	["TR_m1_MinTalScript"] = true,
-	["TR_m1_NPC_DiceGambler"] = true,
-	["TR_m2_NPC_DiceGambler"] = true,
-	["TR_m3_NPC_DiceGambler"] = true,
-	["TR_m3_NPC_DiceGamblerNoLore"] = true,
-	["TR_m3_NPC_DiceGamblerOECom"] = true,
-	["TR_m3_NPC_DiceGamblerOEPoor"] = true,
-	["TR_m4_NPC_DiceGambler"] = true,
-	["TR_m5_NPC_DiceGambler"] = true,
-	["TR_m6_NPC_DiceGambler"] = true,
-	["TR_m7_NPC_DiceGambler"] = true,
-	["TR_m1_NPC_Fervas_Shulisa"] = true,
-	["TR_m1_NPC_Gilen_Indothan"] = true,
-	["TR_m1_NPC_Malvas_Relvani"] = true,
-	["TR_m1_T_Seducer"] = true,
-	["TR_m3_q_vampambush"] = true,
-}
-
 ---@param table table
 function this.replaceSpells(table)
 	for _,v in pairs(table) do
@@ -1707,7 +1665,7 @@ local function corruptionEffect(e)
 	local target = e.effectInstance.target
 
 	if target.id ~= tes3.player.data.tamrielData.corruptionReferenceID then	-- Memory errors can be reported if the effect is applied to the summon and doing so is weird anyways
-		if target.baseObject.script and (not ((target.baseObject.script.id:find("T_ScNpc") and not target.baseObject.script.id:find("_Were")) or safeScripts[target.baseObject.script.id]) or hasScriptedItem(target.mobile.inventory)) then	-- Checks whether the target has a scripted item or a script that is not known to be safely cloneable
+		if target.baseObject.script and (not ((target.baseObject.script.id:find("T_ScNpc") and not target.baseObject.script.id:find("_Were")) or magicData.safeScripts[target.baseObject.script.id]) or hasScriptedItem(target.mobile.inventory)) then	-- Checks whether the target has a scripted item or a script that is not known to be safely cloneable
 			tes3ui.showNotifyMenu(common.i18n("magic.corruptionScript", { target.object.name }))
 			e.effectInstance.state = tes3.spellState.retired
 			restoreCharge(e.sourceInstance)
