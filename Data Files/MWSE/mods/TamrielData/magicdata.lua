@@ -75,7 +75,7 @@ local td_misc_effects = {
 	T_restoration_FortifyCasting = { "miscFortifyCasting", 1, "td\\s\\td_s_ftfy_cast.tga", "miscFortifyCastingDesc", "fortifyAttack" },
 	T_illusion_PrismaticLight = { "miscPrismaticLight", 0.4, "td\\s\\td_s_p_light.tga", "miscPrismaticLightDesc", "light" },
 	T_mysticism_BloodMagic = { "miscBloodMagic", 2, "td\\s\\td_s_blood_magic.tga", "miscBloodMagicDesc", "detectAnimal" },
-	T_conjuration_SanguineRose = { "miscSanguineRose", 40, "td\\s\\td_s_sanguine.dds.tga", "miscSanguineRoseDesc", "summonDremora" },
+	T_conjuration_SanguineRose = { "miscSanguineRose", 40, "td\\s\\td_s_sanguine.tga", "miscSanguineRoseDesc", "summonDremora" },
 	T_mysticism_DetValuables = { "miscDetectValuables", 1.5, "td\\s\\td_s_det_value.tga", "miscDetectValuablesDesc", "detectAnimal" },
 	T_mysticism_MagickaWard = { "miscMagickaWard", 20, "td\\s\\td_s_magickaward.tga", "miscMagickaWardDesc", "detectAnimal" },
 	T_illusion_Ethereal = { "miscEthereal", 40, "td\\s\\td_s_ethereal.tga", "miscEtherealtDesc", "blind" },
@@ -648,6 +648,24 @@ local distractedVoiceLines = {
 	{ "Wood Elf", true, { "vo\\w\\f\\Idl_WF006.mp3", "vo\\w\\f\\Idl_WF009.mp3" }, { "vo\\w\\f\\Idl_WF003.mp3", "vo\\w\\f\\Idl_WF007.mp3" } },
 }
 
+local sanguineRoseDaedra = {
+	"dremora_summon",
+	"T_Dae_Cre_Seduc_01",
+	"atronach_flame",
+	"atronach_frost",
+	"atronach_storm",
+	"scamp_summon",
+	"T_Dae_Cre_Verm_01",
+	"clannfear_summon",
+	"T_Dae_Cre_Herne_01",
+	"T_Dae_Cre_Morphoid_01",
+	"T_Dae_Cre_SpiderDae_01",
+	"hunger_summon",
+	"winged twilight_summon",
+	"golden saint_summon",
+	"daedroth_summon",
+}
+
 return {
 	td_summon_effects = td_summon_effects,
 	td_bound_effects = td_bound_effects,
@@ -662,4 +680,5 @@ return {
 	td_enchanted_items = td_enchanted_items,
 	td_ingredients = td_ingredients,
 	distractedVoiceLines = distractedVoiceLines,
+	sanguineRoseDaedra = sanguineRoseDaedra,
 }

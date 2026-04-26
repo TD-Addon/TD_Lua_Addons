@@ -1,6 +1,6 @@
 local core = require('openmw.core')
 
-if not core.magic.effects.records['T_summon_Devourer'] then
+if not core.magic.effects.records['T_summon_Devourer'] and not core.magic.effects.records['T_conjuration_SanguineRose'] then
     return
 end
 

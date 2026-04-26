@@ -225,24 +225,6 @@ local wabbajackCreatures = {
 	"golden saint"
 }
 
-local sanguineRoseDaedra = {
-	"dremora_summon",
-	"T_Dae_Cre_Seduc_01",
-	"atronach_flame",
-	"atronach_frost",
-	"atronach_storm",
-	"scamp_summon",
-	"T_Dae_Cre_Verm_01",
-	"clannfear_summon",
-	"T_Dae_Cre_Herne_01",
-	"T_Dae_Cre_Morphoid_01",
-	"T_Dae_Cre_SpiderDae_01",
-	"hunger_summon",
-	"winged twilight_summon",
-	"golden saint_summon",
-	"daedroth_summon",
-}
-
 -- actor id
 local gazeOfVelothImmuneActors = {
 	["vivec_god"] = true,
@@ -3633,7 +3615,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			targetsAttributes = false,
 			targetsSkills = false,
 			onTick = function(eventData)
-				eventData:triggerSummon(sanguineRoseDaedra[math.random(#sanguineRoseDaedra)])
+				eventData:triggerSummon(magicData.sanguineRoseDaedra[math.random(#magicData.sanguineRoseDaedra)])
 			end,
 			onCollision = nil
 		})

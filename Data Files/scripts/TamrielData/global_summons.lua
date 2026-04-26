@@ -1,6 +1,6 @@
 local core = require('openmw.core')
 
-if not core.magic.effects.records['T_summon_Devourer'] then
+if not core.magic.effects.records['T_summon_Devourer'] and not core.magic.effects.records['T_conjuration_SanguineRose'] then
     return
 end
 
@@ -24,8 +24,15 @@ local function toKey(actor, id, index)
     return actor.id .. ',' .. id .. ',' .. index
 end
 
+local function getSummon(effectId)
+    if effectId == 't_conjuration_sanguinerose' then
+        return magicData.sanguineRoseDaedra[math.random(#magicData.sanguineRoseDaedra)]
+    end
+    return summons[effectId]
+end
+
 I.T_ActorMagic.addEffectStartHandler(function(caster, spell, effect, track)
-    local creature = summons[effect.id]
+    local creature = getSummon(effect.id)
     if not creature then
         return
     end

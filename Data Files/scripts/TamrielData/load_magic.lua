@@ -205,6 +205,7 @@ local function addMiscEffects()
     addMiscEffect('T_illusion_DistractCreature', { unreflectable = true, onSelf = false, harmful = false })
     addMiscEffect('T_illusion_DistractHumanoid', { unreflectable = true, onSelf = false, harmful = false })
     addMiscEffect('T_restoration_FortifyCasting', {})
+    addMiscEffect('T_conjuration_SanguineRose', { allowsSpellmaking = false, allowsEnchanting = false })
 end
 
 return {
