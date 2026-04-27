@@ -196,18 +196,32 @@ local function addMiscEffects()
         onTarget = false, onTouch = false, hasDuration = false,
         cost = magicData.td_misc_effects.T_mysticism_Passwall[2] * 0.5 -- compensate for MWSE using area instead of magnitude
     })
-    --addMiscEffect('T_mysticism_BanishDae', {}) -- Requires a way to trigger death without waiting for the animation
+    addMiscEffect('T_mysticism_BanishDae', {
+        hasDuration = false, hasMagnitude = true, unreflectable = true, hitSound = 'T_SndObj_Silence',
+        hitStatic = 'T_VFX_Empty', areaSound = 'T_SndObj_Silence', areaStatic = 'T_VFX_Empty'
+    }) -- Requires a way to trigger death without waiting for the animation
     addMiscEffect('T_mysticism_ReflectDmg', {})
     --addMiscEffect('T_mysticism_DetHuman', {}) -- Requires map dehardcoding
     --addMiscEffect('T_alteration_RadShield', {}) -- Requires a (more elegant) way of applying variable magnitude blind effects
-    addMiscEffect('T_alteration_Wabbajack', { allowsSpellmaking = false, allowsEnchanting = false, hasDuration = false, onSelf = false, onTarget = true, onTouch = true, harmful = true, unreflectable = true, hitSound = 'T_SndObj_Silence', hitStatic = 'T_VFX_Empty', areaSound = 'T_SndObj_Silence', areaStatic = 'T_VFX_Empty' })
-    addMiscEffect('T_alteration_WabbajackHelper', { isAppliedOnce = false, allowsSpellmaking = false, allowsEnchanting = false, onSelf = false, onTarget = true, onTouch = true, unreflectable = true, hitSound = 'T_SndObj_Silence', hitStatic = 'T_VFX_Empty' })
+    addMiscEffect('T_alteration_Wabbajack', {
+        allowsSpellmaking = false, allowsEnchanting = false, hasDuration = false, onSelf = false, onTarget = true,
+        onTouch = true, harmful = true, unreflectable = true, hitSound = 'T_SndObj_Silence', hitStatic = 'T_VFX_Empty',
+        areaSound = 'T_SndObj_Silence', areaStatic = 'T_VFX_Empty'
+    })
+    addMiscEffect('T_alteration_WabbajackHelper', {
+        isAppliedOnce = false, allowsSpellmaking = false, allowsEnchanting = false, onSelf = false, onTarget = true,
+        onTouch = true, unreflectable = true, hitSound = 'T_SndObj_Silence', hitStatic = 'T_VFX_Empty'
+    })
     addMiscEffect('T_restoration_ArmorResartus', { hasDuration = false })
     addMiscEffect('T_restoration_WeaponResartus', { hasDuration = false })
-    addMiscEffect('T_conjuration_Corruption', { allowsSpellmaking = false, allowsEnchanting = false, hasDuration = false, onSelf = false, onTarget = true, onTouch = true, harmful = true, unreflectable = true })
+    addMiscEffect('T_conjuration_Corruption', {
+        allowsSpellmaking = false, allowsEnchanting = false, hasDuration = false, onSelf = false,
+        onTarget = true, onTouch = true, harmful = true, unreflectable = true
+    })
     addMiscEffect('T_conjuration_CorruptionSummon', { allowsSpellmaking = false, allowsEnchanting = false })
     addMiscEffect('T_illusion_DistractCreature', { unreflectable = true, onSelf = false, harmful = false })
     addMiscEffect('T_illusion_DistractHumanoid', { unreflectable = true, onSelf = false, harmful = false })
+    --addMiscEffect('T_mysticism_Blink', { hasDuration = false, hitSound = 'T_SndObj_BlinkHit', hitStatic = 'T_VFX_Empty' }) -- Requires the ability to check if levitation is disabled
     addMiscEffect('T_restoration_FortifyCasting', {})
     addMiscEffect('T_conjuration_SanguineRose', { allowsSpellmaking = false, allowsEnchanting = false })
 end

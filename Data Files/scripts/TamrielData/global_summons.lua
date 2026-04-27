@@ -117,7 +117,7 @@ return {
             end
             local creature = world.createObject(effect.creatureId)
             local caster = effect.actor
-            creature:teleport(caster.cell.name, data.position, { onGround = true })
+            creature:teleport(caster.cell, data.position, { onGround = true })
             creature:sendEvent('StartAIPackage', { type = 'Follow', target = caster })
             creature:sendEvent('T_MarkSummon', { index = effect.index, id = effect.id, caster = caster, tag = effect.tag })
             creature:sendEvent('AddVfx', { model = startVfx })

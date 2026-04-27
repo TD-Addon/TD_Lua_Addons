@@ -137,6 +137,33 @@ local function playDistractedVoiceLine(data)
     end
 end
 
+local function banishCorpse(data)
+    local actor = data.actor
+    local items = {}
+    for _, item in pairs(actor.type.inventory(actor):getAll()) do
+        -- TODO: filter items. Don't copy MWSE, it doesn't account for scripted items
+        table.insert(items, item)
+    end
+    if #items > 0 then
+        local container = world.createObject('T_Glb_BanishDae_Empty')
+        for _, item in pairs(items) do
+            item:moveInto(container)
+        end
+        local rotation = util.transform.rotateZ(actor.rotation:getYaw())
+        local position = actor.position + util.vector3(0, 0, data.height)
+        container:teleport(actor.cell, position, rotation)
+        local light = world.createObject('T_Glb_BanishDae_Light')
+        light:teleport(actor.cell, position, rotation)
+        container:addScript('scripts/TamrielData/container_banish.lua', light)
+    end
+    actor:teleport('T_Banish', util.vector3(0, 0, 0))
+end
+
+local function banishContainer(data)
+    data.container:remove()
+    data.light:remove()
+end
+
 local function canBeCorrupted(target)
     if types.Player.objectIsInstance(target) then
         return false
@@ -208,6 +235,17 @@ local onStart = {
             target:sendEvent('T_Passwall_Cast', effect.magnitudeThisFrame)
         end
     end,
+    t_mysticism_banishdae = function(target, spell, effect, track)
+        if types.Creature.objectIsInstance(target) and not state.wabbajack[target.id] then
+            local record = types.Creature.records[target.recordId]
+            if record.type == types.Creature.TYPE.Daedra then
+                track.ignore = false
+                target:sendEvent('T_AttemptBanish', { caster = spell.caster, magnitude = effect.magnitudeThisFrame })
+                return
+            end
+        end
+        target.type.activeEffects(target):remove(effect.id)
+    end,
     t_mysticism_reflectdmg = function(target, spell, effect, track)
         track.ignore = false
     end,
@@ -248,7 +286,7 @@ local onStart = {
         local creature = world.createObject(magicData.wabbajackCreatures[math.random(#magicData.wabbajackCreatures)])
         data = { name = getName(record), target = target, duration = duration, actor = creature, caster = spell.caster }
         state.wabbajack[creature.id] = data
-        creature:teleport(target.cell.name, target.position, target.rotation)
+        creature:teleport(target.cell, target.position, target.rotation)
         local event = { caster = spell.caster }
         local dynamic = types.Actor.stats.dynamic
         for _, key in pairs({ 'health', 'magicka', 'fatigue' }) do
@@ -342,7 +380,7 @@ local onEnd = {
         state.wabbajack[creature.id] = nil
         local target = data.target
         if target:isValid() then
-            target:teleport(creature.cell.name, creature.position, creature.rotation)
+            target:teleport(creature.cell, creature.position, creature.rotation)
             local event = { caster = data.caster }
             local dynamic = types.Actor.stats.dynamic
             for _, key in pairs({ 'health', 'magicka', 'fatigue' }) do
@@ -411,5 +449,7 @@ return {
     eventHandlers = {
         T_Passwall_teleportPlayer = teleportPlayer,
         T_DistractVoice = playDistractedVoiceLine,
+        T_BanishCorpse = banishCorpse,
+        T_BanishContainer = banishContainer,
     }
 }

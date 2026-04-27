@@ -1,3 +1,4 @@
+local animation = require('openmw.animation')
 local core = require('openmw.core')
 local I = require('openmw.interfaces')
 local nearby = require('openmw.nearby')
@@ -158,6 +159,10 @@ return {
     eventHandlers = {
         Died = function()
             state.distract = nil
+            if state.banish then
+                core.sendGlobalEvent('T_BanishCorpse', { actor = self.object, height = state.banish })
+                state.banish = nil
+            end
         end,
         T_Distract = function(data)
             local active = I.AI.getActivePackage()
@@ -243,6 +248,38 @@ return {
                     successful = true
                 })
             end
+        end,
+        T_AttemptBanish = function(data)
+            for _, actor in pairs(I.AI.getTargets('Follow')) do -- Could check Escort as well, I guess
+                if actor == data.caster then
+                    return
+                end
+            end
+            local targetLevel = types.Actor.stats.level(self).current
+            local health = types.Actor.stats.dynamic.health(self)
+            if data.magnitude < targetLevel / 2 * (1 + health.current / math.max(health.base, 1)) then
+                I.AI.startPackage('Combat', { target = data.caster })
+                if types.Player.objectIsInstance(data.caster) then
+                    local record = self.type.records[self.recordId]
+                    local name = record.name
+                    if not name or name == '' then
+                        name = record.id
+                    end
+                    data.caster:sendEvent('ShowMessage', { message = l10n('Magic_banishFailure', { target = name }) })
+                end
+                return
+            end
+            activeEffects:remove('soultrap')
+            state.banish = self:getBoundingBox().halfSize.z * 2 -- get height before collapsing
+            I.AnimationController.addPlayBlendedAnimationHandler(function(groupName, options)
+                if groupName:find('death') then
+                    options.speed = 100
+                end
+            end)
+            health.current = 0
+            local model = types.Static.records['T_VFX_Banish'].model
+            core.sendGlobalEvent('SpawnVfx', { model = model, position = self.position })
+            core.sound.playSound3d('mysticism hit', self) -- TODO !3029
         end
     }
 }

@@ -8,6 +8,7 @@ TamrielData_magic_passwallAlpha: "Nie możesz przez to przeniknąć."
 TamrielData_magic_passwallExterior: "Musisz być w zamkniętej przestrzeni."
 TamrielData_magic_passwallDoorExterior: "Musisz pozostać w zamkniętej przestrzeni."
 TamrielData_magic_passwallUnderwater: "Nie możesz być pod wodą."
+Magic_banishFailure: "Cel: {target} nie może zostać wypędzony, zaklęcie jest zbyt słabe!"
 Magic_wabbajackFailure: "Cel: {target} jest zbyt potężny, nie może być poddany efektowi Łabadżaka!"
 Magic_wabbajackAlready: "Cel: {target} jest już pod wpływem efektu Łabadżaka!"
 
