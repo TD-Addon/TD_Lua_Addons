@@ -26,6 +26,8 @@ TamrielData_magic_passwallDoorExterior: "You cannot leave a confined space."
 TamrielData_magic_passwallUnderwater: "You cannot be underwater."
 Magic_corruptionScript: "{target} cannot be corrupted."
 Magic_corruptionSummon: "You cannot corrupt a being summoned by the Skull of Corruption."
+Magic_wabbajackFailure: "{target} is too strong to be Wabbajacked!"
+Magic_wabbajackAlready: "{target} is already Wabbajacked!"
 
 Magic_summonDevourer: "Summon Devourer"
 Magic_summonDevourerDesc: "This effect summons a devourer from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight."

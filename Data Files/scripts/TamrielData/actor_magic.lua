@@ -206,6 +206,43 @@ return {
                     I.AI.startPackage({ type = 'Travel', destPosition = state.distract.origin, cancelOther = true, isRepeat = false })
                 end
             end
+        end,
+        T_MarkWabbajack = function(data)
+            local dynamic = types.Actor.stats.dynamic
+            for _, key in pairs({ 'health', 'magicka', 'fatigue' }) do
+                local stat = dynamic[key](self)
+                local v = stat.base * data[key]
+                if v < 2 and key == 'health' then
+                    v = 2
+                end
+                stat.current = v
+            end
+            core.sound.playSound3d('alteration hit', self, { loop = false })
+            activeSpells:add({ id = 'T_Dae_Alt_UNI_WabbajackTrans', effects = { 0 }, ignoreResistances = true, ignoreSpellAbsorption = true, ignoreReflect = true, caster = data.caster })
+        end,
+        T_EndWabbajack = function(data)
+            local dynamic = types.Actor.stats.dynamic
+            local kill = false
+            for _, key in pairs({ 'health', 'magicka', 'fatigue' }) do
+                local stat = dynamic[key](self)
+                local v = stat.base * data[key]
+                if key == 'health' and v < 2 then
+                    kill = data[key] <= 0
+                    v = 2
+                end
+                stat.current = v
+            end
+            core.sound.playSound3d('alteration hit', self, { loop = false })
+            if kill then
+                -- makes crime work
+                -- TODO: !5302
+                types.Actor._onHit(self, {
+                    damage = { health = 999 },
+                    sourceType = I.Combat.ATTACK_SOURCE_TYPES.Unspecified,
+                    attacker = data.caster,
+                    successful = true
+                })
+            end
         end
     }
 }

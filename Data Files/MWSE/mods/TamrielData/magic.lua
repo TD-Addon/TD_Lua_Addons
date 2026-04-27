@@ -214,17 +214,6 @@ local raceSkeletonBodyParts = {
 	{ "T_Yne_Ynesai", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },		-- Imga and Tsaesci skeletons will take more effort
 }
 
-local wabbajackCreatures = {
-	"T_Mw_UNI_GrahlWabbajack",	-- This version of the Grahl does not have fireregenScript attached to it; I saw a crash occur while it was being executed, but I am not sure why.
-	"scamp",
-	"T_Glb_Cre_LandDreu_01",
-	"T_Glb_Cre_TrollCave_03",
-	"mudcrab",
-	"T_Ham_Fau_Goat_01",
-	"Rat",
-	"golden saint"
-}
-
 -- actor id
 local gazeOfVelothImmuneActors = {
 	["vivec_god"] = true,
@@ -2416,7 +2405,7 @@ local function wabbajackEffect(e)
 				local targetFatigue = target.mobile.fatigue.normalized
 				local targetMagicka = target.mobile.magicka.normalized
 
-				local transformCreature = tes3.getObject(wabbajackCreatures[math.random(#wabbajackCreatures)])
+				local transformCreature = tes3.getObject(magicData.wabbajackCreatures[math.random(#magicData.wabbajackCreatures)])
 
 				local transformedTarget = tes3.createReference({ object = transformCreature, position = target.position, orientation = target.orientation, cell = target.cell })	-- Could this setup and the WabbajackTrans effect actually be done through a summon like the Corruption effect does?
 				transformedTarget.data.tamrielData = transformedTarget.data.tamrielData or {}

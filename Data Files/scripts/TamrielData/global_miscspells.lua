@@ -7,6 +7,7 @@ end
 
 local I = require('openmw.interfaces')
 local types = require('openmw.types')
+local util = require('openmw.util')
 local world = require('openmw.world')
 local l10n = core.l10n('TamrielData')
 local magicData = require('MWSE.mods.TamrielData.magicdata')
@@ -23,6 +24,7 @@ local safeScripts = {}
 for k, v in pairs(magicData.safeScripts) do
     safeScripts[k:lower()] = v
 end
+local wabbajackVfx = types.Static.records['T_VFX_Wabbajack'].model
 
 local function triggerCrimeIfTrespassing(data)
     if not data.targetObject or not data.targetObject.owner or not types.Lockable.isLocked(data.targetObject) then
@@ -168,7 +170,8 @@ local function toKey(actor, id, index)
 end
 
 local state = {
-    effects = {}
+    effects = {},
+    wabbajack = {}
 }
 
 local function store(target, spell, effect)
@@ -190,6 +193,14 @@ local function distract(type)
     end
 end
 
+local function getName(record)
+    local name = record.name
+    if not name or name == '' then
+        return record.id
+    end
+    return name
+end
+
 local onStart = {
     t_mysticism_passwall = function(target, spell, effect, track)
         if types.Player.objectIsInstance(target) then
@@ -198,6 +209,61 @@ local onStart = {
         end
     end,
     t_mysticism_reflectdmg = function(target, spell, effect, track)
+        track.ignore = false
+    end,
+    t_alteration_wabbajack = function(target, spell, effect, track)
+        local record = target.type.records[target.recordId]
+        if types.Creature.objectIsInstance(target) and not record.canWalk and not record.isBiped or types.Player.objectIsInstance(target) then
+            target.type.activeEffects(target):remove(effect.id)
+            restoreCharge(spell.item, spell.caster)
+            return
+        end
+        local level = target.type.stats.level(target).current
+        if level >= 30 then
+            if spell.caster and types.Player.objectIsInstance(spell.caster) then
+                spell.caster:sendEvent('ShowMessage', { message = l10n('Magic_wabbajackFailure', { target = getName(record) }) })
+                core.sound.playSound3d('Spell Failure Alteration', target, { loop = false })
+            end
+            target.type.activeEffects(target):remove(effect.id)
+            restoreCharge(spell.item, spell.caster)
+            return
+        end
+        local data = state.wabbajack[target.id]
+        if data then
+            if spell.caster and types.Player.objectIsInstance(spell.caster) then
+                spell.caster:sendEvent('ShowMessage', { message = l10n('Magic_wabbajackAlready', { target = data.name }) })
+                core.sound.playSound3d('Spell Failure Alteration', target, { loop = false })
+            end
+            target.type.activeEffects(target):remove(effect.id)
+            restoreCharge(spell.item, spell.caster)
+            return
+        end
+        local maxDuration = 16
+        local minDuration = 4
+        local effectiveLevel = 0
+        if level > 5 then
+            effectiveLevel = level - 5
+        end
+        local duration = maxDuration - (maxDuration - minDuration) * (effectiveLevel / 24)
+        local creature = world.createObject(magicData.wabbajackCreatures[math.random(#magicData.wabbajackCreatures)])
+        data = { name = getName(record), target = target, duration = duration, actor = creature, caster = spell.caster }
+        state.wabbajack[creature.id] = data
+        creature:teleport(target.cell.name, target.position, target.rotation)
+        local event = { caster = spell.caster }
+        local dynamic = types.Actor.stats.dynamic
+        for _, key in pairs({ 'health', 'magicka', 'fatigue' }) do
+            local stat = dynamic[key](target)
+            event[key] = stat.current / math.max(stat.base, 1)
+        end
+        creature:sendEvent('T_MarkWabbajack', event)
+        creature:sendEvent('StartAIPackage', { type = 'Follow', target = target }) -- Makes the guards ignore the creature
+        creature:sendEvent('StartAIPackage', { type = 'Combat', target = spell.caster, cancelOther = false })
+        creature:sendEvent('AddVfx', { model = wabbajackVfx })
+        target:teleport('T_Wabbajack', util.vector3(0, 0, 53.187))
+        track.ignore = false
+    end,
+    t_alteration_wabbajackhelper = function(target, spell, effect, track)
+        store(target, spell, effect)
         track.ignore = false
     end,
     t_restoration_armorresartus = function(target, spell, effect, track)
@@ -225,7 +291,7 @@ local onStart = {
         else
             if types.Player.objectIsInstance(spell.caster) then
                 local record = target.type.records[target.recordId]
-                spell.caster:sendEvent('ShowMessage', { message = l10n('Magic_corruptionScript', { target = record.name or record.id }) })
+                spell.caster:sendEvent('ShowMessage', { message = l10n('Magic_corruptionScript', { target = getName(record) }) })
             end
             target.type.activeEffects(target):remove(effect.id)
             restoreCharge(spell.item, spell.caster)
@@ -241,6 +307,21 @@ local onStart = {
     end,
 }
 
+local onUpdate = {
+    t_alteration_wabbajackhelper = function(target, spell, effect, dt, track)
+        -- TODO: replace this with a regular duration when possible and make the affect apply once
+        local data = state.wabbajack[target.id]
+        if data then
+            data.duration = data.duration - dt
+            if data.duration <= 0 then
+                target.type.activeEffects(target):remove(effect.id)
+            end
+        else
+            track.ignore = true
+        end
+    end
+}
+
 local onEnd = {
     t_restoration_fortifycasting = function(effect)
         local activeEffects = effect.actor.type.activeEffects(effect.actor)
@@ -251,6 +332,27 @@ local onEnd = {
     end,
     t_illusion_distracthumanoid = function(effect)
         effect.actor:sendEvent('T_DistractFinished', effect.effect)
+    end,
+    t_alteration_wabbajackhelper = function(effect)
+        local creature = effect.actor
+        local data = state.wabbajack[creature.id]
+        if not data then
+            return
+        end
+        state.wabbajack[creature.id] = nil
+        local target = data.target
+        if target:isValid() then
+            target:teleport(creature.cell.name, creature.position, creature.rotation)
+            local event = { caster = data.caster }
+            local dynamic = types.Actor.stats.dynamic
+            for _, key in pairs({ 'health', 'magicka', 'fatigue' }) do
+                local stat = dynamic[key](creature)
+                event[key] = stat.current / math.max(stat.base, 1)
+            end
+            target:sendEvent('T_EndWabbajack', event)
+            target:sendEvent('AddVfx', { model = wabbajackVfx })
+        end
+        creature:remove()
     end
 }
 
@@ -258,6 +360,13 @@ I.T_ActorMagic.addEffectStartHandler(function(target, spell, effect, track)
     local handler = onStart[effect.id]
     if handler then
         handler(target, spell, effect, track)
+    end
+end)
+
+I.T_ActorMagic.addEffectUpdateHandler(function(target, spell, effect, dt, track)
+    local handler = onUpdate[effect.id]
+    if handler then
+        handler(target, spell, effect, dt, track)
     end
 end)
 
@@ -289,6 +398,13 @@ return {
                     end
                 end
                 state.effects = effects
+                local wabbajack = {}
+                for _, actorData in pairs(data.wabbajack) do
+                    if actorData.actor:isValid() then
+                        wabbajack[actor.id] = actorData
+                    end
+                end
+                state.wabbajack = wabbajack
             end
         end
     },

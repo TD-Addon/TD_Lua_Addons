@@ -200,6 +200,8 @@ local function addMiscEffects()
     addMiscEffect('T_mysticism_ReflectDmg', {})
     --addMiscEffect('T_mysticism_DetHuman', {}) -- Requires map dehardcoding
     --addMiscEffect('T_alteration_RadShield', {}) -- Requires a (more elegant) way of applying variable magnitude blind effects
+    addMiscEffect('T_alteration_Wabbajack', { allowsSpellmaking = false, allowsEnchanting = false, hasDuration = false, onSelf = false, onTarget = true, onTouch = true, harmful = true, unreflectable = true, hitSound = 'T_SndObj_Silence', hitStatic = 'T_VFX_Empty', areaSound = 'T_SndObj_Silence', areaStatic = 'T_VFX_Empty' })
+    addMiscEffect('T_alteration_WabbajackHelper', { isAppliedOnce = false, allowsSpellmaking = false, allowsEnchanting = false, onSelf = false, onTarget = true, onTouch = true, unreflectable = true, hitSound = 'T_SndObj_Silence', hitStatic = 'T_VFX_Empty' })
     addMiscEffect('T_restoration_ArmorResartus', { hasDuration = false })
     addMiscEffect('T_restoration_WeaponResartus', { hasDuration = false })
     addMiscEffect('T_conjuration_Corruption', { allowsSpellmaking = false, allowsEnchanting = false, hasDuration = false, onSelf = false, onTarget = true, onTouch = true, harmful = true, unreflectable = true })

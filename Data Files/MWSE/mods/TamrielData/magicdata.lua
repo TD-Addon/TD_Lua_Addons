@@ -708,6 +708,17 @@ local safeScripts = {
 	["TR_m3_q_vampambush"] = true,
 }
 
+local wabbajackCreatures = {
+	"T_Mw_UNI_GrahlWabbajack",	-- This version of the Grahl does not have fireregenScript attached to it; I saw a crash occur while it was being executed, but I am not sure why.
+	"scamp",
+	"T_Glb_Cre_LandDreu_01",
+	"T_Glb_Cre_TrollCave_03",
+	"mudcrab",
+	"T_Ham_Fau_Goat_01",
+	"Rat",
+	"golden saint"
+}
+
 return {
 	td_summon_effects = td_summon_effects,
 	td_bound_effects = td_bound_effects,
@@ -724,4 +735,5 @@ return {
 	distractedVoiceLines = distractedVoiceLines,
 	sanguineRoseDaedra = sanguineRoseDaedra,
 	safeScripts = safeScripts,
+	wabbajackCreatures = wabbajackCreatures,
 }

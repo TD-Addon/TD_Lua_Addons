@@ -18,9 +18,9 @@ local function onEffectStart(actor, spell, effect)
     return track.ignore
 end
 
-local function onEffectUpdate(actor, spell, effect)
+local function onEffectUpdate(actor, spell, effect, dt)
     local track = { ignore = false }
-    auxUtil.callEventHandlers(effectUpdateHandlers, actor, spell, effect, track)
+    auxUtil.callEventHandlers(effectUpdateHandlers, actor, spell, effect, dt, track)
     return track.ignore
 end
 
@@ -92,7 +92,7 @@ local function getActorState(actor, init)
 end
 
 -- This should all be replaced with built in OpenMW stuff, but that doesn't exist yet. This code cannot track effect lifecycles properly
-local function updateEffects(actor, state, tempState)
+local function updateEffects(actor, state, tempState, dt)
     local canDiscard = true
     state.delayUpdateChecks = true
     local active = {}
@@ -129,7 +129,7 @@ local function updateEffects(actor, state, tempState)
                 canDiscard = false
             end
             if s == STATE_ACTIVE then
-                if onEffectUpdate(actor, spell, effect) then
+                if onEffectUpdate(actor, spell, effect, dt) then
                     effects[index] = STATE_IGNORE
                 else
                     state.delayUpdateChecks = false
@@ -169,7 +169,7 @@ local function waitOrUpdate(actor, dt)
             tempState.waited = tempState.waited - MAX_WAIT
         end
     end
-    updateEffects(actor, state, tempState)
+    updateEffects(actor, state, tempState, dt)
 end
 
 local activeActors = world.activeActors
@@ -203,7 +203,7 @@ return {
             if not state then
                 return
             end
-            local discard = updateEffects(actor, state, tempState)
+            local discard = updateEffects(actor, state, tempState, 0)
             if discard then
                 deleteActorState(actor)
             end
