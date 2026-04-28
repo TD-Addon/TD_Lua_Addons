@@ -139,10 +139,15 @@ end
 
 local function banishCorpse(data)
     local actor = data.actor
+    if not actor.type.isDead(actor) then
+        return -- Somehow Palpascamp returned
+    end
     local items = {}
     for _, item in pairs(actor.type.inventory(actor):getAll()) do
-        -- TODO: filter items. Don't copy MWSE, it doesn't account for scripted items
-        table.insert(items, item)
+        -- TODO: filter items. Don't copy MWSE, it doesn't account for script added items
+        if not types.Ingredient.objectIsInstance(item) then
+            table.insert(items, item)
+        end
     end
     if #items > 0 then
         local container = world.createObject('T_Glb_BanishDae_Empty')

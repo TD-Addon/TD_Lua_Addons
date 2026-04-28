@@ -5,6 +5,7 @@ local nearby = require('openmw.nearby')
 local self = require('openmw.self')
 local types = require('openmw.types')
 local auxUtil = require('openmw_aux.util')
+local l10n = core.l10n('TamrielData')
 
 local FT_TO_UNITS = 22.1
 
@@ -258,7 +259,7 @@ return {
             local targetLevel = types.Actor.stats.level(self).current
             local health = types.Actor.stats.dynamic.health(self)
             if data.magnitude < targetLevel / 2 * (1 + health.current / math.max(health.base, 1)) then
-                I.AI.startPackage('Combat', { target = data.caster })
+                I.AI.startPackage({ type = 'Combat', target = data.caster })
                 if types.Player.objectIsInstance(data.caster) then
                     local record = self.type.records[self.recordId]
                     local name = record.name

@@ -175,7 +175,7 @@ local function addSummons()
         if template == 'callBear' then
             template = 'summonbear'
         end
-        effects[id] = { template = effects[template], cost = cost, icon = icon, name = t(name), description = t(desc), allowsSpellmaking = true, allowsEnchanting = true }
+        effects[id] = { template = effects[template], baseCost = cost, icon = icon, name = t(name), description = t(desc), allowsSpellmaking = true, allowsEnchanting = true }
         implementedEffects[id] = true
     end
 end
@@ -185,7 +185,7 @@ local function addMiscEffects()
     local function addMiscEffect(id, params)
         local name, cost, icon, desc, template = unpack(magicData.td_misc_effects[id])
         params.name = t(name)
-        params.cost = params.cost or cost
+        params.baseCost = params.baseCost or cost
         params.icon = icon
         params.description = t(desc)
         params.template = effects[template]
@@ -194,12 +194,12 @@ local function addMiscEffects()
     end
     addMiscEffect('T_mysticism_Passwall', {
         onTarget = false, onTouch = false, hasDuration = false,
-        cost = magicData.td_misc_effects.T_mysticism_Passwall[2] * 0.5 -- compensate for MWSE using area instead of magnitude
+        baseCost = magicData.td_misc_effects.T_mysticism_Passwall[2] * 0.5 -- compensate for MWSE using area instead of magnitude
     })
     addMiscEffect('T_mysticism_BanishDae', {
         hasDuration = false, hasMagnitude = true, unreflectable = true, hitSound = 'T_SndObj_Silence',
-        hitStatic = 'T_VFX_Empty', areaSound = 'T_SndObj_Silence', areaStatic = 'T_VFX_Empty'
-    }) -- Requires a way to trigger death without waiting for the animation
+        hitStatic = 'T_VFX_Empty', areaSound = 'T_SndObj_Silence', areaStatic = 'T_VFX_Empty', harmful = false
+    })
     addMiscEffect('T_mysticism_ReflectDmg', {})
     --addMiscEffect('T_mysticism_DetHuman', {}) -- Requires map dehardcoding
     --addMiscEffect('T_alteration_RadShield', {}) -- Requires a (more elegant) way of applying variable magnitude blind effects
