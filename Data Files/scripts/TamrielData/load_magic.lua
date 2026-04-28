@@ -221,7 +221,7 @@ local function addMiscEffects()
     addMiscEffect('T_conjuration_CorruptionSummon', { allowsSpellmaking = false, allowsEnchanting = false })
     addMiscEffect('T_illusion_DistractCreature', { unreflectable = true, onSelf = false, harmful = false })
     addMiscEffect('T_illusion_DistractHumanoid', { unreflectable = true, onSelf = false, harmful = false })
-    --addMiscEffect('T_mysticism_Blink', { hasDuration = false, hitSound = 'T_SndObj_BlinkHit', hitStatic = 'T_VFX_Empty' }) -- Requires the ability to check if levitation is disabled
+    addMiscEffect('T_mysticism_Blink', { hasDuration = false, hitSound = 'T_SndObj_BlinkHit', hitStatic = 'T_VFX_Empty' })
     addMiscEffect('T_restoration_FortifyCasting', {})
     addMiscEffect('T_conjuration_SanguineRose', { allowsSpellmaking = false, allowsEnchanting = false })
 end

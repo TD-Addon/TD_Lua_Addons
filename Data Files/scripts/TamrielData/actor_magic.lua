@@ -4,10 +4,12 @@ local I = require('openmw.interfaces')
 local nearby = require('openmw.nearby')
 local self = require('openmw.self')
 local types = require('openmw.types')
+local util = require('openmw.util')
 local auxUtil = require('openmw_aux.util')
 local l10n = core.l10n('TamrielData')
 
 local FT_TO_UNITS = 22.1
+local BLINK_COLLISION = nearby.COLLISION_TYPE.AnyPhysical + nearby.COLLISION_TYPE.VisualOnly - nearby.COLLISION_TYPE.Water
 
 local activeEffects = self.type.activeEffects(self)
 local activeSpells = self.type.activeSpells(self)
@@ -281,6 +283,25 @@ return {
             local model = types.Static.records['T_VFX_Banish'].model
             core.sendGlobalEvent('SpawnVfx', { model = model, position = self.position })
             core.sound.playSound3d('mysticism hit', self) -- TODO !3029
+        end,
+        T_Blink = function(magnitude)
+            -- TODO: check if levitation is disabled
+            local range = magnitude * FT_TO_UNITS
+            local halfExtents = self.type.getPathfindingAgentBounds(self).halfExtents
+            local start = self.position + util.vector3(0, 0, halfExtents.z * 1.4)
+            local destination = start + self.rotation * util.vector3(0, range, 0)
+            local result = nearby.castRay(start, destination, { ignore = self, collisionType = BLINK_COLLISION })
+            local options
+            if result.hit then
+                destination = result.hitPos - self.rotation * util.vector3(0, halfExtents.y + 16, 0)
+            end
+            if self.cell.isExterior then
+                local height = core.land.getHeightAt(destination, self.cell)
+                if destination.z < height then
+                    options = { onGround = true }
+                end
+            end
+            core.sendGlobalEvent('T_Teleport', { object = self.object, cell = self.cell.id, position = destination, options = options })
         end
     }
 }

@@ -342,6 +342,10 @@ local onStart = {
     end,
     t_illusion_distractcreature = distract(types.Creature),
     t_illusion_distracthumanoid = distract(types.NPC),
+    t_mysticism_blink = function(target, spell, effect, track)
+        target:sendEvent('T_Blink', effect.magnitudeThisFrame)
+        track.ignore = false
+    end,
     t_restoration_fortifycasting = function(target, spell, effect, track)
         local activeEffects = target.type.activeEffects(target)
         activeEffects:modify(-effect.magnitudeThisFrame, 'sound')
@@ -456,5 +460,8 @@ return {
         T_DistractVoice = playDistractedVoiceLine,
         T_BanishCorpse = banishCorpse,
         T_BanishContainer = banishContainer,
+        T_Teleport = function(data)
+            data.object:teleport(world.getCellById(data.cell), data.position, data.options or data.rotation)
+        end
     }
 }
