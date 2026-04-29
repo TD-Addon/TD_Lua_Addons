@@ -273,7 +273,7 @@ return {
                 return
             end
             activeEffects:remove('soultrap')
-            state.banish = self:getBoundingBox().halfSize.z * 2 -- get height before collapsing
+            state.banish = self.type.getPathfindingAgentBounds(self).halfExtents.z * 2 -- yields better results than getBoundingBox
             I.AnimationController.addPlayBlendedAnimationHandler(function(groupName, options)
                 if groupName:find('death') then
                     options.speed = 100
