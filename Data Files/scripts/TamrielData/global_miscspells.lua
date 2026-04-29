@@ -462,6 +462,15 @@ return {
         T_BanishContainer = banishContainer,
         T_Teleport = function(data)
             data.object:teleport(world.getCellById(data.cell), data.position, data.options or data.rotation)
+        end,
+        T_BlinkIndicator = function(data)
+            local vfxId = 'T_BlinkIndicator' .. data.actor.id
+            world.vfx.remove(vfxId)
+            if data.position then
+                local options = { vfxId = vfxId, loop = true }
+                world.vfx.spawn('meshes/td/td_vfx_blink_indicator.nif', data.position, options)
+                world.vfx.spawn('meshes/td/td_vfx_blink_ground.nif', data.groundPos or data.position, options)
+            end
         end
     }
 }

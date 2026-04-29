@@ -7,9 +7,9 @@ local types = require('openmw.types')
 local util = require('openmw.util')
 local auxUtil = require('openmw_aux.util')
 local l10n = core.l10n('TamrielData')
+local helpers = require('scripts.TamrielData.actor_magic_blink')
 
 local FT_TO_UNITS = 22.1
-local BLINK_COLLISION = nearby.COLLISION_TYPE.AnyPhysical + nearby.COLLISION_TYPE.VisualOnly - nearby.COLLISION_TYPE.Water
 
 local activeEffects = self.type.activeEffects(self)
 local activeSpells = self.type.activeSpells(self)
@@ -286,21 +286,8 @@ return {
         end,
         T_Blink = function(magnitude)
             -- TODO: check if levitation is disabled
-            local range = magnitude * FT_TO_UNITS
-            local halfExtents = self.type.getPathfindingAgentBounds(self).halfExtents
-            local start = self.position + util.vector3(0, 0, halfExtents.z * 1.4)
-            local destination = start + self.rotation * util.vector3(0, range, 0)
-            local result = nearby.castRay(start, destination, { ignore = self, collisionType = BLINK_COLLISION })
-            local options
-            if result.hit then
-                destination = result.hitPos - self.rotation * util.vector3(0, halfExtents.y + 16, 0)
-            end
-            if self.cell.isExterior then
-                local height = core.land.getHeightAt(destination, self.cell)
-                if destination.z < height then
-                    options = { onGround = true }
-                end
-            end
+            local destination, options = helpers.getBlinkDestination(magnitude)
+            -- TODO: don't use teleportation and preserve momentum
             core.sendGlobalEvent('T_Teleport', { object = self.object, cell = self.cell.id, position = destination, options = options })
         end
     }
