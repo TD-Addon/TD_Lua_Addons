@@ -71,10 +71,13 @@ local function showBlinkIndicator()
             if ground then
                 groundPos = util.vector3(destination.x, destination.y, ground + 6)
             else
-                local result = nearby.castRay(destination, util.vector3(destination.x, destination.y, destination.z - 7168), { ignore = self })
-                groundPos = result.hitPos + util.vector3(0, 0, 6)
+                groundPos = util.vector3(destination.x, destination.y, destination.z - 7168)
+                local result = nearby.castRay(destination, groundPos, { ignore = self })
+                if result.hitPos then
+                    groundPos = result.hitPos + util.vector3(0, 0, 6)
+                end
             end
-            local position = util.vector3(destination.x, destination.y, destination.z + 24)
+            local position = util.vector3(destination.x, destination.y, (ground or destination.z) + 24)
             core.sendGlobalEvent('T_BlinkIndicator', { position = position, groundPos = groundPos, actor = self })
             blinkOn = true
             return true

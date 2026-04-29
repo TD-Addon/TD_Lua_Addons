@@ -11,11 +11,23 @@ local function getBlinkDestination(magnitude)
     local halfExtents = self.type.getPathfindingAgentBounds(self).halfExtents
     local start = self.position + util.vector3(0, 0, halfExtents.z * 1.4)
     local destination = start + self.rotation * util.vector3(0, range, 0)
-    local result = nearby.castRay(start, destination, { ignore = self, collisionType = BLINK_COLLISION })
+    local rayOptions = { ignore = self, collisionType = BLINK_COLLISION }
+    local result = nearby.castRay(start, destination, rayOptions)
     local options
     local ground
     if result.hit then
         destination = result.hitPos - self.rotation * util.vector3(0, halfExtents.y + 16, 0)
+    end
+    local height = util.vector3(0, 0, halfExtents.z * 2)
+    result = nearby.castRay(destination, destination + height, rayOptions)
+    if result.hit then -- bumped into the ceiling
+        local floor = result.hitPos - height
+        result = nearby.castRay(result.hitPos, floor, rayOptions)
+        if result.hit then -- bumped into the floor; no room here
+            destination = self.position
+        else
+            destination = floor
+        end
     end
     if self.cell.isExterior then
         local height = core.land.getHeightAt(destination, self.cell)
