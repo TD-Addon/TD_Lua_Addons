@@ -22,6 +22,7 @@ local function getBlinkDestination(magnitude)
     result = nearby.castRay(destination, destination + height, rayOptions)
     if result.hit then -- bumped into the ceiling
         local floor = result.hitPos - height
+        rayOptions.ignore = result.hitObject
         result = nearby.castRay(result.hitPos, floor, rayOptions)
         if result.hit then -- bumped into the floor; no room here
             destination = self.position
