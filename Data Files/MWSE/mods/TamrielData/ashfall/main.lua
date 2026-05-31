@@ -3316,6 +3316,7 @@ event.register(tes3.event.initialized, function()
 			t_ingcrea_silverspademeat_01 = types.meat,
 			t_ingcrea_tanthaegg_01 = types.egg,
 			t_ingcrea_clammeat = types.meat,
+			t_ingcrea_ashfowltongue_01 = types.meat,
 
 			t_ingflor_arrowroot_01 = types.herb,
 			t_ingflor_macefruit_01 = types.vegetable,
@@ -3493,6 +3494,20 @@ event.register(tes3.event.initialized, function()
 			t_ingflor_widowkisspowder_01 = types.herb,
 			t_ingflor_wormwood_01 = types.herb,
 			t_ingflor_wtlillypurple_01 = types.herb,
+			t_ingflor_bluetooth_01 = types.mushroom,
+			t_ingflor_buttercol_01 = types.mushroom,
+			t_ingflor_dephilti_01 = types.herb,
+			t_ingflor_honeyarm_01 = types.mushroom,
+			t_ingflor_lhomapod_01 = types.herb,
+			t_ingflor_loverslemma_01 = types.herb,
+			t_ingflor_pattyloment_01 = types.herb,
+			t_ingflor_trametes_01 = types.mushroom,
+			t_ingflor_wurrina_01 = types.herb,
+			t_ingflor_dustbush_01 = types.herb,
+			t_ingflor_sabe_01 = types.herb,
+			t_ingflor_sharptah_01 = types.herb,
+			t_ingflor_hogweed_01 = types.herb,
+			t_ingflor_ancestmushskin_01 = types.mushroom,
 
 			t_ingfood_almond_01 = types.food,
 			t_ingfood_altachipear_01 = types.vegetable,
@@ -3662,6 +3677,7 @@ event.register(tes3.event.initialized, function()
 			t_ingfood_wasabiroot_01 = types.vegetable,
 			t_ingfood_wheat_01 = types.vegetable,
 			t_ingfood_yogurt_01 = types.food,
+			t_ingfood_spikefruit_01 = types.vegetable,
 
 			t_ingmine_salt_01 = types.seasoning,
 
