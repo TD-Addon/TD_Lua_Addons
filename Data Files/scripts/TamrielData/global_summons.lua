@@ -102,7 +102,7 @@ return {
                 state.corruption = corruption
                 local corruptionSummons = {}
                 for _, actor in pairs(data.corruptionSummons) do
-                    if actor:isValid() and isInstance(actorData.actor) then
+                    if actor:isValid() and isInstance(actor) then
                         corruptionSummons[actor.id] = actor
                     end
                 end

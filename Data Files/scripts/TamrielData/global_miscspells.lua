@@ -449,7 +449,7 @@ return {
                 local wabbajack = {}
                 for _, actorData in pairs(data.wabbajack) do
                     if actorData.actor:isValid() and isInstance(actorData.actor) then
-                        wabbajack[actor.id] = actorData
+                        wabbajack[actorData.actor.id] = actorData
                     end
                 end
                 state.wabbajack = wabbajack
