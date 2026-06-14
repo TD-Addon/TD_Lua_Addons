@@ -436,10 +436,11 @@ return {
         end,
         onLoad = function(data)
             if data then
+                local isInstance = types.Actor.objectIsInstance
                 state = data
                 local effects = {}
                 for _, actorData in pairs(data.effects) do
-                    if actorData.actor:isValid() then
+                    if actorData.actor:isValid() and isInstance(actorData.actor) then
                         local key = toKey(actorData.actor, actorData.id, actorData.index)
                         effects[key] = actorData
                     end
@@ -447,7 +448,7 @@ return {
                 state.effects = effects
                 local wabbajack = {}
                 for _, actorData in pairs(data.wabbajack) do
-                    if actorData.actor:isValid() then
+                    if actorData.actor:isValid() and isInstance(actorData.actor) then
                         wabbajack[actor.id] = actorData
                     end
                 end

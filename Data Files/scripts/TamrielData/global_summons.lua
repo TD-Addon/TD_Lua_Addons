@@ -81,10 +81,11 @@ return {
         end,
         onLoad = function(data)
             if data then
+                local isInstance = types.Actor.objectIsInstance
                 state = data
                 local summons = {}
                 for _, actorData in pairs(data.summons) do
-                    if actorData.actor:isValid() then
+                    if actorData.actor:isValid() and isInstance(actorData.actor) then
                         local key = toKey(actorData.actor, actorData.id, actorData.index)
                         summons[key] = actorData
                     elseif actorData.creature then
@@ -94,14 +95,14 @@ return {
                 state.summons = summons
                 local corruption = {}
                 for _, actorData in pairs(data.corruption) do
-                    if actorData.actor:isValid() then
+                    if actorData.actor:isValid() and isInstance(actorData.actor) then
                         corruption[actorData.actor.id] = actorData
                     end
                 end
                 state.corruption = corruption
                 local corruptionSummons = {}
                 for _, actor in pairs(data.corruptionSummons) do
-                    if actor:isValid() then
+                    if actor:isValid() and isInstance(actorData.actor) then
                         corruptionSummons[actor.id] = actor
                     end
                 end

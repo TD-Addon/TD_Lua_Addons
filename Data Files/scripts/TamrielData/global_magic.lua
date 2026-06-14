@@ -181,10 +181,11 @@ return {
         end,
         onLoad = function(data)
             if data then
+                local isInstance = types.Actor.objectIsInstance
                 persistentState = data
                 local actors = {}
                 for id, actorData in pairs(data.actors) do
-                    if actorData.actor:isValid() then
+                    if actorData.actor:isValid() and isInstance(actorData.actor) then
                         actors[actorData.actor.id] = actorData
                     end
                 end
