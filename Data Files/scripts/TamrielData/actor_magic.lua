@@ -77,7 +77,7 @@ local function getDistractDestination(caster, range)
     local selfPos = self.position
     local agentBounds = self.type.getPathfindingAgentBounds(self)
 
-    local function getCasterPenalty(candidate)
+    local function getAvoidCasterBonus(candidate)
         if not casterPos then
             return 0
         end
@@ -101,7 +101,7 @@ local function getDistractDestination(caster, range)
     for i = 1, SAMPLES do
         local candidate = nearby.findRandomPointAroundCircle(selfPos, range, { agentBounds = agentBounds })
         if candidate and math.abs(candidate.z - selfPos.z) < 384 then
-            local score = getCasterPenalty(candidate) + (candidate - selfPos):length() * 0.5
+            local score = getAvoidCasterBonus(candidate) + (candidate - selfPos):length() * 0.5
             if score > bestScore then
                 bestScore = score
                 bestPos = candidate

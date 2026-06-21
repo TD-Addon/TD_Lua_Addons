@@ -19,6 +19,10 @@ local cachedMagnitude = {
     item = {}
 }
 
+local INDICATOR_GROUND_HEIGHT = 6
+local INDICATOR_TARGET_HEIGHT = 24
+local MAX_VIEW = 7168
+
 local function getBlinkMagnitude()
     local spell = Actor.getSelectedSpell(self)
     local effects
@@ -69,15 +73,15 @@ local function showBlinkIndicator()
             local destination, _, ground = magic_blink.getBlinkDestination(magnitude)
             local groundPos
             if ground then
-                groundPos = util.vector3(destination.x, destination.y, ground + 6)
+                groundPos = util.vector3(destination.x, destination.y, ground + INDICATOR_GROUND_HEIGHT)
             else
-                groundPos = util.vector3(destination.x, destination.y, destination.z - 7168)
+                groundPos = util.vector3(destination.x, destination.y, destination.z - MAX_VIEW)
                 local result = nearby.castRay(destination, groundPos, { ignore = self })
                 if result.hitPos then
-                    groundPos = result.hitPos + util.vector3(0, 0, 6)
+                    groundPos = result.hitPos + util.vector3(0, 0, INDICATOR_GROUND_HEIGHT)
                 end
             end
-            local position = util.vector3(destination.x, destination.y, (ground or destination.z) + 24)
+            local position = util.vector3(destination.x, destination.y, (ground or destination.z) + INDICATOR_TARGET_HEIGHT)
             core.sendGlobalEvent('T_BlinkIndicator', { position = position, groundPos = groundPos, actor = self })
             blinkOn = true
             return true
