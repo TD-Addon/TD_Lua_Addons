@@ -21,10 +21,12 @@ local function calculateReflect(health, fatigue)
         for _, effect in pairs(spell.effects) do
             if effect.id == 't_mysticism_reflectdmg' then
                 local mult = effect.magnitudeThisFrame / 100
-                reflectedHealth = reflectedHealth + health * mult
-                health = health * (1 - mult)
-                reflectedFatigue = reflectedFatigue + fatigue * mult
-                fatigue = fatigue * (1 - mult)
+                local healthChange = health * mult
+                local fatigueChange = fatigue * mult
+                reflectedHealth = reflectedHealth + healthChange
+                health = health - healthChange
+                reflectedFatigue = reflectedFatigue + fatigueChange
+                fatigue = fatigue - fatigueChange
             end
         end
     end
@@ -116,6 +118,15 @@ function playDistractedVoiceLine(isEnd)
         -- Handling this in a global script so we only need one instance of the voice lines table in memory
         core.sendGlobalEvent('T_DistractVoice', { actor = self.object, isEnd = isEnd })
     end
+end
+
+local function isHostileSummon(summoner)
+    for _, possibleAttackActor in pairs(I.AI.getTargets('Combat')) do
+        if possibleAttackActor == summoner then
+            return true
+        end
+    end
+    return false
 end
 
 local state = {}
@@ -243,25 +254,31 @@ return {
             core.sound.playSound3d('alteration hit', self, { loop = false })
             if kill then
                 -- makes crime work
-                -- TODO: !5302
-                types.Actor._onHit(self, {
+                local params = {
                     damage = { health = 999 },
                     sourceType = I.Combat.ATTACK_SOURCE_TYPES.Unspecified,
                     attacker = data.caster,
-                    successful = true
-                })
+                    successful = true,
+                    ignoreArmor = true,
+                    ignoreDifficulty = true
+                }
+                if I.Combat.version <= 1 then
+                    types.Actor._onHit(self, params)
+                else
+                    I.Combat.onHit(params)
+                end
             end
         end,
         T_AttemptBanish = function(data)
             for _, actor in pairs(I.AI.getTargets('Follow')) do -- Could check Escort as well, I guess
-                if actor == data.caster then
+                if actor == data.caster and not isHostileSummon(data.caster) then
                     return
                 end
             end
             local targetLevel = types.Actor.stats.level(self).current
             local health = types.Actor.stats.dynamic.health(self)
+            I.AI.startPackage({ type = 'Combat', target = data.caster })
             if data.magnitude < targetLevel / 2 * (1 + health.current / math.max(health.base, 1)) then
-                I.AI.startPackage({ type = 'Combat', target = data.caster })
                 if types.Player.objectIsInstance(data.caster) then
                     local record = self.type.records[self.recordId]
                     local name = record.name

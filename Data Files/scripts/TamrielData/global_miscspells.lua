@@ -69,7 +69,7 @@ local function resartusEquipment(actor, magnitude, type)
     end
     local equipment = actor.type.getEquipment(actor)
     local toFix = {}
-    for slot, item in pairs(equipment) do
+    for _, item in pairs(equipment) do
         if type.objectIsInstance(item) then
             local data = types.Item.itemData(item)
             local record = item.type.records[item.recordId]
