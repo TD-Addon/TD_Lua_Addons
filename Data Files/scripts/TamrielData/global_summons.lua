@@ -118,9 +118,9 @@ return {
             end
             local creature = world.createObject(effect.creatureId)
             local caster = effect.actor
+            creature:addScript('scripts/TamrielData/actor_summons.lua', { index = effect.index, id = effect.id, caster = caster, tag = effect.tag })
             creature:teleport(caster.cell, data.position, { onGround = true })
             creature:sendEvent('StartAIPackage', { type = 'Follow', target = caster })
-            creature:sendEvent('T_MarkSummon', { index = effect.index, id = effect.id, caster = caster, tag = effect.tag })
             creature:sendEvent('AddVfx', { model = startVfx })
             effect.creatureId = nil
             effect.creature = creature

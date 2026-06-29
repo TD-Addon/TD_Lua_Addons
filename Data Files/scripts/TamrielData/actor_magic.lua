@@ -10,9 +10,36 @@ local l10n = core.l10n('TamrielData')
 local helpers = require('scripts.TamrielData.actor_magic_blink')
 
 local FT_TO_UNITS = 22.1
+local FRONT = 0
+local BACK = 3
+local LEFT = 2
+local RIGHT = 1
+local SPAWN_COLLISION = nearby.COLLISION_TYPE.World + nearby.COLLISION_TYPE.Door
 
 local activeEffects = self.type.activeEffects(self)
 local activeSpells = self.type.activeSpells(self)
+
+local function getSafeSpawn()
+    local origin = self.position + util.vector3(0, 0, 20)
+    local rotation = util.transform.rotateZ(self.rotation:getYaw())
+    for direction = FRONT,BACK do
+        local spawn
+        if direction == FRONT then
+            spawn = origin + rotation:apply(util.vector3(0, 120, 10))
+        elseif direction == BACK then
+            spawn = origin - rotation:apply(util.vector3(0, 120, 10))
+        elseif direction == LEFT then
+            spawn = origin - rotation:apply(util.vector3(120, 0, 10))
+        elseif direction == RIGHT then
+            spawn = origin + rotation:apply(util.vector3(120, 0, 10))
+        end
+        local result = nearby.castRay(spawn, origin, { collisionType = SPAWN_COLLISION })
+        if not result.hit then
+            return spawn
+        end
+    end
+    return origin
+end
 
 local function calculateReflect(health, fatigue)
     local reflectedHealth = 0
@@ -178,6 +205,11 @@ return {
                 state.banish = nil
             end
         end,
+        T_GetSummonPosition = function(data)
+            local position = getSafeSpawn()
+            data.position = position
+            core.sendGlobalEvent('T_Summon', data)
+        end,
         T_Distract = function(data)
             local active = I.AI.getActivePackage()
             if active and active.type ~= 'Wander' then
@@ -302,7 +334,7 @@ return {
             core.sound.playSound3d('mysticism hit', self) -- TODO !3029
         end,
         T_Blink = function(magnitude)
-            -- TODO: check if levitation is disabled
+            -- TODO: check if levitation is disabled #9163
             local destination, options = helpers.getBlinkDestination(magnitude)
             -- TODO: don't use teleportation and preserve momentum
             core.sendGlobalEvent('T_Teleport', { object = self.object, cell = self.cell.id, position = destination, options = options })
