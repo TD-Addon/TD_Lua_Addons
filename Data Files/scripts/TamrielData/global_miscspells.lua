@@ -63,6 +63,18 @@ local function teleportPlayer(data)
     world.vfx.spawn(passwall_target_effect_model, data.position)
 end
 
+local function getItemEnchantmentMaxCharge(item)
+	local record = item.type.records[item.recordId]
+	if record.enchant then
+		local enchantment = core.magic.enchantments.records[record.enchant]
+		if enchantment then
+			-- FIXME: this is incorrect for autocalc
+			return enchantment.charge
+		end
+	end
+	return 0
+end
+
 local function resartusEquipment(actor, magnitude, type)
     if magnitude <= 0 then
         return
@@ -72,16 +84,8 @@ local function resartusEquipment(actor, magnitude, type)
     for _, item in pairs(equipment) do
         if type.objectIsInstance(item) then
             local data = types.Item.itemData(item)
-            local record = item.type.records[item.recordId]
             local maxHealth = record.health
-            local maxCharge = 0
-            if record.enchant then
-                local enchantment = core.magic.enchantments.records[record.enchant]
-                if enchantment then
-                    -- FIXME: this is incorrect for autocalc
-                    maxCharge = enchantment.charge
-                end
-            end
+            local maxCharge = getItemEnchantmentMaxCharge(item)
             local hasDamage = data.condition and data.condition < maxHealth
             local missingCharge = data.enchantmentCharge and data.enchantmentCharge < maxCharge
             if hasDamage or missingCharge then
@@ -137,6 +141,17 @@ local function playDistractedVoiceLine(data)
     end
 end
 
+local daedraBits = {
+    ingred_daedras_heart_01 = true,
+    ingred_daedra_skin_01 = true,
+    ingred_scamp_skin_01 = true,
+    t_ingcrea_dridreasilk_01 = true,
+    t_ingcrea_prismaticdust_01 = true,
+    ingred_void_salts_01 = true,
+    ingred_fire_salts_01 = true,
+    ingred_frost_salts_01 = true
+}
+
 local function banishCorpse(data)
     local actor = data.actor
     if not actor.type.isDead(actor) then
@@ -144,8 +159,8 @@ local function banishCorpse(data)
     end
     local items = {}
     for _, item in pairs(actor.type.inventory(actor):getAll()) do
-        -- TODO: filter items. Don't copy MWSE, it doesn't account for script added items
-        if not types.Ingredient.objectIsInstance(item) then
+        -- This doesn't copy MWSE as it doesn't account for script added items
+        if not daedraBits[item.recordId] then
             table.insert(items, item)
         end
     end
@@ -175,7 +190,7 @@ local function canBeCorrupted(target)
     end
     local record = target.type.records[target.recordId]
     local script = record.mwscript
-    if script and not (script:find("t_scnpc") and not script:find("_were") or safeScripts[script]) then
+    if script and not ((script:find("t_scnpc") and not script:find("_were")) or safeScripts[script]) then
         return false
     end
     for _, item in pairs(target.type.inventory(target):getAll()) do
@@ -187,14 +202,18 @@ local function canBeCorrupted(target)
 end
 
 local function restoreCharge(item, caster)
-    --TODO !3029
-    if not item or not I.SpellCasting then
+    if not item then
         return
     end
+    --TODO !3029
+    --[[
     local charge = I.SpellCasting.getCostCharge(item, caster)
+    local maxCharge = getItemEnchantmentMaxCharge(item)
     local data = types.Item.itemData(item)
-    --TODO cap
-    data.enchantmentCharge = data.enchantmentCharge + charge
+    if data.enchantmentCharge < maxCharge then
+        data.enchantmentCharge = math.min(data.enchantmentCharge + charge, maxCharge)
+    end
+    ]]
 end
 
 local function toKey(actor, id, index)
@@ -388,7 +407,7 @@ local onEnd = {
         end
         state.wabbajack[creature.id] = nil
         local target = data.target
-        if target:isValid() then
+        if target:isValid() and target.count > 0 then
             target:teleport(creature.cell, creature.position, creature.rotation)
             local event = { caster = data.caster }
             local dynamic = types.Actor.stats.dynamic

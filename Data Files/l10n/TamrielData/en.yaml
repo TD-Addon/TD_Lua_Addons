@@ -4,7 +4,7 @@ Settings_TamrielData_page01Main_group01Main_restrictEquipment: "Restrict Equipme
 Settings_TamrielData_page01Main_group01Main_restrictEquipment_Description: "Prevents races added by Tamriel Data from wearing certain kinds of equipment when doing so would be physically implausible or technically problematic.\nAffected races and equipment:\n- Stops male Imga from equipping helmets and all Imga from equipping footwear."
 Settings_TamrielData_page01Main_group02Magic: "Magic"
 Settings_TamrielData_page01Main_group02Magic_miscSpells: "Add New Miscellaneous Spells"
-Settings_TamrielData_page01Main_group02Magic_miscSpells_Description: "Adds new spells that do not fit into usual categories."
+Settings_TamrielData_page01Main_group02Magic_miscSpells_Description: "Adds new spells that do not fit into usual categories.\nRequires restart."
 Settings_TamrielData_page01Main_group02Magic_summoningSpells: "Add New Summoning Spells"
 Settings_TamrielData_page01Main_group02Magic_summoningSpells_Description: "Adds new summoning spells using creatures added by Tamriel Data, such as Devourers, Herne, Dark Seducers, and Aurorans.\nRequires restart."
 Settings_TamrielData_page01Main_group02Magic_miscSpellsBlinkIndicator: "Indicator for Blink"

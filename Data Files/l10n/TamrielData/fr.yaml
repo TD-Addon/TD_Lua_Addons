@@ -4,7 +4,7 @@ Settings_TamrielData_page01Main_group01Main_restrictEquipment: "Restriction d'é
 Settings_TamrielData_page01Main_group01Main_restrictEquipment_Description: "Empêche les nouvelles races du mod de porter certains types d'équipement lorsque cela serait physiquement impossible ou poserait problème techniquement.\nRaces et équipement affectés :\n- Empêche les Imgas mâles d'équiper des casques et tous les Imgas d'équiper des bottes ou chaussures."
 Settings_TamrielData_page01Main_group02Magic: "Magie"
 Settings_TamrielData_page01Main_group02Magic_miscSpells: "Ajout de nouveaux sorts divers"
-Settings_TamrielData_page01Main_group02Magic_miscSpells_Description: "Ajoute de nouveaux sorts qui ne rentrent pas dans les catégories habituelles."
+Settings_TamrielData_page01Main_group02Magic_miscSpells_Description: "Ajoute de nouveaux sorts qui ne rentrent pas dans les catégories habituelles.\nRequiert un redémarrage."
 Settings_TamrielData_page01Main_group02Magic_summoningSpells: "Ajout de nouveaux sorts d'Invocation"
 Settings_TamrielData_page01Main_group02Magic_summoningSpells_Description: "Ajoute de nouveaux sorts d'Invocation utilisant des créatures de Ressources communes de Tamriel comme les consummeurs, les hernes, les sombres séductrices, et les auroriens.\nRequiert un redémarrage."
 Settings_TamrielData_page01Main_group02Magic_miscSpellsBlinkIndicator: "Indicateur pour l'effet de Transfert"
