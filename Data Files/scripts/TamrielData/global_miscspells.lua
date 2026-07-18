@@ -174,7 +174,7 @@ local function banishCorpse(data)
         container:teleport(actor.cell, position, rotation)
         local light = world.createObject('T_Glb_BanishDae_Light')
         light:teleport(actor.cell, position, rotation)
-        container:addScript('scripts/TamrielData/container_banish.lua', light)
+        container:addScript('scripts/TamrielData/lib/container_banish.lua', light)
     end
     actor:teleport('T_Banish', util.vector3(0, 0, 0))
 end

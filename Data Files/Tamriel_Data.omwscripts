@@ -9,5 +9,5 @@ GLOBAL: scripts/TamrielData/global_miscspells.lua
 GLOBAL: scripts/TamrielData/global_summons.lua
 PLAYER, NPC, CREATURE: scripts/TamrielData/actor_magic.lua
 LOAD: scripts/TamrielData/load_magic.lua
-CUSTOM: scripts/TamrielData/actor_summons.lua
-CUSTOM: scripts/TamrielData/container_banish.lua
+CUSTOM: scripts/TamrielData/lib/actor_summons.lua
+CUSTOM: scripts/TamrielData/lib/container_banish.lua

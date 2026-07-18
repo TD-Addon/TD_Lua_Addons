@@ -10,8 +10,8 @@ local util = require('openmw.util')
 local Actor = types.Actor
 
 local version_check = require('scripts.TamrielData.utils.version_check')
-local magic_passwall = require('scripts.TamrielData.player_magic_passwall')
-local magic_blink = require('scripts.TamrielData.actor_magic_blink')
+local magic_passwall = require('scripts.TamrielData.lib.player_magic_passwall')
+local magic_blink = require('scripts.TamrielData.lib.actor_magic_blink')
 
 local blinkOn = false
 local cachedMagnitude = {

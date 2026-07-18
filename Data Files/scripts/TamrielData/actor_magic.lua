@@ -7,7 +7,7 @@ local types = require('openmw.types')
 local util = require('openmw.util')
 local auxUtil = require('openmw_aux.util')
 local l10n = core.l10n('TamrielData')
-local helpers = require('scripts.TamrielData.actor_magic_blink')
+local helpers = require('scripts.TamrielData.lib.actor_magic_blink')
 
 local FT_TO_UNITS = 22.1
 local FRONT = 0
