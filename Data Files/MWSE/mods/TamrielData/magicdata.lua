@@ -272,6 +272,12 @@ local td_enchantments = {
 	{ "TR_m1_SanguinesRose_en", "onUse", { id = "T_conjuration_SanguineRose", range = "self", duration = 60, min = 1, max = 1 } },
 	{ "T_Use_SanguineRose", "onUse", { id = "T_conjuration_SanguineRose", range = "self", duration = 60, min = 1, max = 1 } },	-- This is for a deprecated weapon rather than the amulet (that is in TR rather and not TD for some absurd reason), but it might as well get the effect too
 	{ "T_Use_Dae_Amulet_Entry", "onUse", { id = "T_illusion_Ethereal", range = "self", duration = 20, min = 1, max = 1 } },
+	{ "TR_m3_Ord_Doc2_Amulet_en", "onUse", { id = "T_bound_Greatsword", range = "self", duration = 30, min = 1, max = 1 },
+										{ id = "fortifyAttribute", attribute = "agility", range = "self", duration = 30, min = 10, max = 15 },
+										{ id = "fortifyAttribute", attribute = "willpower", range = "self", duration = 30, min = 10, max = 15 } },
+	{ "TR_m7_Re_MG_scrollen", "castOnce", { id = "T_summon_Auroran", range = "self", duration = 150, min = 1, max = 1 },
+										{ id = "T_summon_Auroran", range = "self", duration = 150, min = 1, max = 1 },
+										{ id = "T_summon_Auroran", range = "self", duration = 150, min = 1, max = 1 } },
 }
 
 -- item id, item name, 1st effect, ...
