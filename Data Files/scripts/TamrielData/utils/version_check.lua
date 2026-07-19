@@ -9,8 +9,16 @@ function V.isFeatureSupported(featureName)
 end
 
 function V.isFeatureEnabled(featureName)
-    local featureSettingsStorage = feature_data[featureName] and storage.playerSection(feature_data[featureName].settingsPlayerSectionStorageId)
-    return featureSettingsStorage and featureSettingsStorage:get(feature_data[featureName].settingsKey)
+    local feature = feature_data[featureName]
+    if not feature then
+        return
+    end
+    local featureSettingsStorage = storage.playerSection(feature.settingsPlayerSectionStorageId)
+    local value = featureSettingsStorage and featureSettingsStorage:get(feature.settingsKey)
+    if value == nil then
+        return feature.settingsEnabledByDefault
+    end
+    return value
 end
 
 return V
