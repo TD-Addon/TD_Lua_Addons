@@ -274,8 +274,8 @@ function this.replaceEnchantments(table)
 
 				local effect = overridden_enchantment.effects[i]
 				effect.id = tes3.effect[effect_row.id]
-				effect.attribute = effect_row.attribute
-				effect.skill = effect_row.skill
+				effect.attribute = tes3.attribute[effect_row.attribute]
+				effect.skill = tes3.skill[effect_row.skill]
 				effect.rangeType = tes3.effectRange[effect_row.range]
 				effect.radius = effect_row.area or 0
 				effect.duration = effect_row.duration or 0

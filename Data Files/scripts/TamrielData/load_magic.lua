@@ -27,7 +27,7 @@ local function parseEffects(values, offset)
         if not row then
             break
         end
-        if not implementedEffects[row.id] then
+        if row.id:find('T_') == 1 and not implementedEffects[row.id] then
             implemented = false
             break
         end
@@ -42,6 +42,10 @@ local function parseEffects(values, offset)
             row.magnitudeMin = row.min or row.magnitude
             row.magnitudeMax = row.max or row.magnitude
         end
+        row.affectedSkill = row.skill
+        row.affectedAttribute = row.attribute
+        row.skill = nil
+        row.attribute = nil
         row.min = nil
         row.max = nil
         row.magnitude = nil
@@ -157,7 +161,7 @@ local function replaceIngredients(table)
         if ingredient then
             for i = 1,4 do
                 local row = values[i + 1]
-                if row and implementedEffects[row.id] then
+                if row.id:find('T_') == 1 and not implementedEffects[row.id] then
                     local effect = ingredient.effects[i]
                     effect.id = row.id
                     effect.affectedAttribute = row.attribute
