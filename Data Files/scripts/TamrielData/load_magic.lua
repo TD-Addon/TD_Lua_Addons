@@ -161,7 +161,7 @@ local function replaceIngredients(table)
         if ingredient then
             for i = 1,4 do
                 local row = values[i + 1]
-                if row.id:find('T_') == 1 and not implementedEffects[row.id] then
+                if row and row.id:find('T_') == 1 and not implementedEffects[row.id] then
                     local effect = ingredient.effects[i]
                     effect.id = row.id
                     effect.affectedAttribute = row.attribute
