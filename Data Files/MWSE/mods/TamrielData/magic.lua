@@ -274,8 +274,8 @@ function this.replaceEnchantments(table)
 
 				local effect = overridden_enchantment.effects[i]
 				effect.id = tes3.effect[effect_row.id]
-				effect.attribute = effect_row.attribute
-				effect.skill = effect_row.skill
+				effect.attribute = tes3.attribute[effect_row.attribute]
+				effect.skill = tes3.skill[effect_row.skill]
 				effect.rangeType = tes3.effectRange[effect_row.range]
 				effect.radius = effect_row.area or 0
 				effect.duration = effect_row.duration or 0
@@ -2470,9 +2470,9 @@ end
 local function reflectDamageCalculateMagnitude(reflectDamageEffects)
 	local magnitude = 1
 	for _,v in pairs(reflectDamageEffects) do
-		magnitude = magnitude * (1 - (v.magnitude / 100))	-- This effect is multiplicative like Morrowind's reflect rather than additive like Oblivion's reflect effects and as such is capped to 100%
+		magnitude = magnitude * math.clamp((1 - (v.magnitude / 100)), 0, 1)	-- This effect is multiplicative like Morrowind's reflect rather than additive like Oblivion's reflect effects and as such is capped to 100%
 	end
-	return math.clamp(1 - magnitude, 0, 1)
+	return 1 - magnitude
 end
 
 ---@param reflectDamageEffects tes3activeMagicEffect[]
