@@ -18,17 +18,22 @@ local function registerModConfig()
     local credits = preferences.sidebar:createCategory{label=common.i18n("mcm.credits")}
     credits:createHyperlink{
         text = common.i18n("mcm.Kynesifnar"),
-        url = "https://www.nexusmods.com/users/56893332?tab=user+files",
+        url = "https://www.nexusmods.com/profile/Kynesifnar/mods",
     }
-    credits:createInfo{
-        text = common.i18n("mcm.Stele")
+    credits:createHyperlink{
+        text = common.i18n("mcm.EvilEye"),
+        url = "https://www.nexusmods.com/profile/Assumeru/mods",
     }
     credits:createHyperlink{
         text = common.i18n("mcm.mort"),
-        url = "https://www.nexusmods.com/morrowind/users/4138441/?tab=user+files",
+        url = "https://www.nexusmods.com/profile/mortimermcmire/mods",
     }
     credits:createInfo{
         text = common.i18n("mcm.Rakanishu")
+    }
+    credits:createHyperlink{
+        text = common.i18n("mcm.Stele"),
+        url = "https://www.nexusmods.com/profile/tanstele/mods",
     }
     credits:createHyperlink{
         text = common.i18n("mcm.chef"),
@@ -36,15 +41,15 @@ local function registerModConfig()
     }
     credits:createHyperlink{
         text = common.i18n("mcm.Cicero"),
-        url = "https://www.nexusmods.com/morrowind/users/64610026?tab=user+files",
+        url = "https://www.nexusmods.com/profile/CiceroTR/mods",
     }
     credits:createHyperlink{
         text = common.i18n("mcm.NullCascade"),
-        url = "https://www.nexusmods.com/morrowind/users/26153919?tab=user+files",
+        url = "https://www.nexusmods.com/profile/NullCascade/mods",
     }
     credits:createHyperlink{
         text = common.i18n("mcm.Hrnchamd"),
-        url = "https://www.nexusmods.com/morrowind/users/843673?tab=user+files",
+        url = "https://www.nexusmods.com/profile/Hrnchamd/mods",
     }
 
     -- Feature Toggles
