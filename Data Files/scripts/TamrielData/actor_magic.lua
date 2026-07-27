@@ -47,7 +47,7 @@ local function calculateReflect(health, fatigue)
     for _, spell in pairs(activeSpells) do
         for _, effect in pairs(spell.effects) do
             if effect.id == 't_mysticism_reflectdmg' then
-                local mult = effect.magnitudeThisFrame / 100
+                local mult = util.clamp(effect.magnitudeThisFrame / 100, 0, 1)
                 local healthChange = health * mult
                 local fatigueChange = fatigue * mult
                 reflectedHealth = reflectedHealth + healthChange
