@@ -1,6 +1,6 @@
 --[[
 	Tamriel Data MWSE-Lua Addon v2.3
-	By Kynesifnar, mort, and Rakanishu
+	By Kynesifnar, Evil Eye, Stele, mort, and Rakanishu
 ]]
 
 if not tes3.isModActive("Tamriel_Data.esm") then return end
@@ -75,99 +75,6 @@ local item_sounds = {
 	{ "T_EnSc_Ayl_Wisdom2", "Item Misc Up", "Item Misc Down", "scroll" },
 }
 
--- region id, xcell left bound, xcell right bound, ycell top bound, ycell bottom bound
-local almsivi_intervention_regions = {
-	{ "Aanthirin Region", nil, nil, nil, nil },
-	{ "Alt Orethan Region", nil, nil, nil, nil },
-	{ "Armun Ashlands Region", nil, nil, nil, nil },
-	{ "Arnesian Jungle Region", nil, nil, nil, nil },
-	{ "Ascadian Isles Region", nil, nil, nil, nil },
-	{ "Ashlands Region", nil, nil, nil, nil },
-	{ "Azura's Coast Region", nil, nil, nil, nil },
-	{ "Bitter Coast Region", nil, nil, nil, nil },
-	{ "Boethiah's Spine Region", nil, nil, nil, nil },
-	{ "Clambering Moor Region", nil, nil, nil, nil },
-	{ "Dagon Urul Region", nil, nil, nil, nil },
-	{ "Deshaan Plains Region", nil, nil, nil, nil },
-	{ "Grazelands Region", nil, nil, nil, nil },
-	{ "Grey Meadows Region", nil, nil, nil, nil },
-	{ "Julan-Shar Region", nil, nil, nil, nil },
-	{ "Kragen Moor Region", nil, nil, nil, nil },
-	{ "Lan Orethan Region", nil, nil, nil, nil },
-	{ "Mephalan Vales Region", nil, nil, nil, nil },
-	{ "Molag Mar Region", nil, nil, nil, nil },
-	{ "Molag Ruhn Region", nil, nil, nil, nil },
-	{ "Molagreahd Region", nil, nil, nil, nil },
-	{ "Mournhold Region", nil, nil, nil, nil },
-	{ "Mudflats Region", nil, nil, nil, nil },
-	{ "Nedothril Region", nil, nil, nil, nil },
-	{ "Old Ebonheart Region", nil, nil, nil, nil },
-	{ "Othreleth Woods Region", nil, nil, nil, nil },
-	{ "Red Mountain Region", nil, nil, nil, nil },
-	{ "Roth Roryn Region", nil, nil, nil, nil },
-	{ "Sacred Lands Region", nil, nil, nil, nil },
-	{ "Salt Marsh Region", nil, nil, nil, nil },
-	{ "Sheogorad", nil, nil, nil, nil },
-	{ "Shipal-Shin Region", nil, nil, nil, nil },
-	{ "Sundered Scar Region", nil, nil, nil, nil },
-	{ "Telvanni Isles Region", nil, nil, nil, nil },
-	{ "Thirr Valley Region", nil, nil, nil, nil },
-	{ "Uld Vraech Region", nil, nil, nil, nil },
-	{ "Velothi Mountains Region", nil, nil, nil, nil },
-	{ "West Gash Region", nil, nil, nil, nil },
-	{ "Sea of Ghosts Region", -40, 58, 17, 33 },
-	{ "Padomaic Ocean Region", 30, 58, -61, 30 },
-	{ nil, -40, 58 , -61, 33 },
-	{ "Brodir Grove Region", nil, nil, nil, nil },
-	{ "Felsaad Coast Region", nil, nil, nil, nil },
-	{ "Hirstaang Forest Region", nil, nil, nil, nil },
-	{ "Moesring Mountains Region", nil, nil, nil, nil },
-	{ "Isinfier Plains Region", nil, nil, nil, nil },
-	{ "Thirsk Region", nil, nil, nil, nil }
-}
-
--- region id, xcell left bound, xcell right bound, ycell top bound, ycell bottom bound
-local kyne_intervention_regions = {
-	{ "Colovian Barrowlands Region", nil, nil, nil, nil },
-	{ "Drajkmyr Marsh Region", nil, nil, nil, nil },
-	{ "Druadach Highlands Region", nil, nil, nil, nil },
-	{ "Falkheim Region", nil, nil, nil, nil },
-	{ "Gorvigh Mountains Region", nil, nil, nil, nil },
-	{ "Hrimbald Plateau Region", nil, nil, nil, nil },
-	{ "Hirsing Forest Region", nil, nil, nil, nil },
-	{ "Jerall Mountains Region", nil, nil, nil, nil },
-	{ "Kilkreath Mountains Region", nil, nil, nil, nil },
-	{ "Kreathi Vale Region", nil, nil, nil, nil },
-	{ "Lorchwuir Heath Region", nil, nil, nil, nil },
-	{ "Mhorkren Hills Region", nil, nil, nil, nil },
-	{ "Midkarth Region", nil, nil, nil, nil },
-	{ "Northshore Region", nil, nil, nil, nil },
-	{ "Reaver's Shore Region", nil, nil, nil, nil },
-	{ "Rift Valley Region", nil, nil, nil, nil },
-	{ "Skaldring Mountains Region", nil, nil, nil, nil },
-	{ "Solitude Forest Region", nil, nil, nil, nil },
-	{ "Solitude Forest Region S", nil, nil, nil, nil },
-	{ "Sundered Hills Region", nil, nil, nil, nil },
-	{ "Throat of the World Region", nil, nil, nil, nil },
-	{ "Troll's Teeth Mountains Region", nil, nil, nil, nil },
-	{ "Uld Vraech Region", nil, nil, nil, nil },
-	{ "Valstaag Highlands Region", nil, nil, nil, nil },
-	{ "Velothi Mountains Region", -41, -18, -8, 20 },
-	{ "Vorndgad Forest Region", nil, nil, nil, nil },
-	{ "White Plains Region", nil, nil, nil, nil },
-	{ "Wuurthal Dale Region", nil, nil, nil, nil },
-	{ "Ysheim Region", nil, nil, nil, nil },
-	{ "Sea of Ghosts Region", -116, -20, 21, 40 },
-	{ "Sea of Ghosts Region N", -116, -10, 21, 40 },
-	{ nil, -116, -20, 21, 40 },
-	{ "Brodir Grove Region", nil, nil, nil, nil },
-	{ "Felsaad Coast Region", nil, nil, nil, nil },
-	{ "Hirstaang Forest Region", nil, nil, nil, nil },
-	{ "Moesring Mountains Region", nil, nil, nil, nil },
-	{ "Isinfier Plains Region", nil, nil, nil, nil },
-	{ "Thirsk Region", nil, nil, nil, nil }
-}
-
 -- xcell coordinate, ycell coordinate
 local kyne_intervention_cells = {
 	--{-112, 11} -- Taurus Hall, as an example
@@ -182,80 +89,80 @@ local travel_actor_prices = {
 
 -- bodypart id
 local hats = {
-	"T_A_ImpEpHat02_Hr",
-	"T_C_BreCmHat01a_Hr",
-	"T_C_BreCmHat01b_Hr",
-	"T_C_BreCmHat02_Hr",
-	"T_C_BreCmHat03_Hr",
-	"T_C_BreCmHat04a_Hr",
-	"T_C_BreCmHat04b_Hr",
-	"T_C_BreCmHat04c_Hr",
-	"T_C_BreCmHat05a_Hr",
-	"T_C_BreCmHat05b_Hr",
-	"T_C_BreCmHat06_Hr",
-	"T_C_BreCmHatChef_01_Hr",
-	"T_C_BreEpHat01_Hr",
-	"T_C_BreEpHat02_Hr",
-	"T_C_BreEpHat03_Hr",
-	"T_C_BreEpHat04_Hr",
-	"T_C_BreEpHat05_Hr",
-	"T_C_BreEpHat06a_Hr",
-	"T_C_BreEpHat06b_Hr",
-	"T_C_BreEpHat07_Hr",
-	"T_C_BreEpHat08a_Hr",
-	"T_C_BreEpHat08b_Hr",
-	"T_C_BreEpHatOst01_Hr",
-	"T_C_BreEpHatWizard01_Hr",
-	"T_C_BreEpHatWizard02_Hr",
-	"T_C_BreEtHat01_Hr",
-	"T_C_BreEtHat02_Hr",
-	"T_C_BreEtHat03_Hr",
-	"T_C_BreExHat01_Hr",
-	"T_C_BreExHat02_Hr",
-	"T_C_ComCmHat01_Hr",
-	"T_C_ComCmHat02_Hr",
-	"T_C_ComCmHat03_Hr",
-	"T_C_ComCmHat04_Hr",
-	"T_C_ComCmHat05_Hr",
-	"T_C_ComCmHat06_Hr",
-	"T_C_ComEqHat01_Hr",
-	"T_C_ComEtHat01_Hr",
-	"T_C_ComEtHat02_Hr",
-	"T_C_ComEtHat03_Hr",
-	"T_C_ComEtHat04_Hr",
-	"T_C_ComEtHat05_Hr",
-	"T_C_ComFoolsHat01_Hr",
-	"T_C_ComFoolsHat02_Hr",
-	"T_C_ComCmCoif01_Hr",
-	"T_C_ComCmCoif02_Hr",
-	"T_C_ComEtClothCoif_Hr",
-	"T_C_DeCmHatTelv01_Hr",
-	"T_C_DeCmHatTelv02_Hr",
-	"T_C_DeCmHatTelv03_Hr",
-	"T_C_DeCmHatTelv04_Hr",
-	"T_C_DeCmHatTelv05_Hr",
-	"T_C_DeEpHatTelv01_Hr",
-	"T_C_DeEpHatTelv02_Hr",
-	"T_C_DeEpHatTelv03_Hr",
-	"T_C_DeEtHatTelv01_Hr",
-	"T_C_DeEtHatTelv02_Hr",
-	"T_C_DeExHatTelv01_Hr",
-	"T_C_DeExHatTelv02_Hr",
-	"T_C_ImpCmHatColWest01_Hr",
-	"T_C_ImpCmHatColWest02_Hr",
-	"T_C_ImpEpColHat01_Hr",
-	"T_C_ImpEpColHat02_Hr",
-	"T_C_ImpEpHatColWest01_Hr",
-	"T_C_ImpEpHatColWest02_Hr",
-	"T_C_ImpEtHatColNorth01_Hr",
-	"T_C_ImpEtHatColNorth02_Hr",
-	"T_C_ImpEtHatColNorth03_Hr",
-	"T_C_ImpEtHatColNorth04_Hr",
-	"T_C_ImpEtHatColNorth05_Hr",
-	"T_A_ReaLeatherHat01_Hr",
-	"T_C_RgaCmHat01_Hr",
-	"T_C_RgaCmHat02_Hr",
-	"T_C_RgaCmHat03_Hr",
+	["T_A_ImpEpHat02_Hr"] = true,
+	["T_C_BreCmHat01a_Hr"] = true,
+	["T_C_BreCmHat01b_Hr"] = true,
+	["T_C_BreCmHat02_Hr"] = true,
+	["T_C_BreCmHat03_Hr"] = true,
+	["T_C_BreCmHat04a_Hr"] = true,
+	["T_C_BreCmHat04b_Hr"] = true,
+	["T_C_BreCmHat04c_Hr"] = true,
+	["T_C_BreCmHat05a_Hr"] = true,
+	["T_C_BreCmHat05b_Hr"] = true,
+	["T_C_BreCmHat06_Hr"] = true,
+	["T_C_BreCmHatChef_01_Hr"] = true,
+	["T_C_BreEpHat01_Hr"] = true,
+	["T_C_BreEpHat02_Hr"] = true,
+	["T_C_BreEpHat03_Hr"] = true,
+	["T_C_BreEpHat04_Hr"] = true,
+	["T_C_BreEpHat05_Hr"] = true,
+	["T_C_BreEpHat06a_Hr"] = true,
+	["T_C_BreEpHat06b_Hr"] = true,
+	["T_C_BreEpHat07_Hr"] = true,
+	["T_C_BreEpHat08a_Hr"] = true,
+	["T_C_BreEpHat08b_Hr"] = true,
+	["T_C_BreEpHatOst01_Hr"] = true,
+	["T_C_BreEpHatWizard01_Hr"] = true,
+	["T_C_BreEpHatWizard02_Hr"] = true,
+	["T_C_BreEtHat01_Hr"] = true,
+	["T_C_BreEtHat02_Hr"] = true,
+	["T_C_BreEtHat03_Hr"] = true,
+	["T_C_BreExHat01_Hr"] = true,
+	["T_C_BreExHat02_Hr"] = true,
+	["T_C_ComCmHat01_Hr"] = true,
+	["T_C_ComCmHat02_Hr"] = true,
+	["T_C_ComCmHat03_Hr"] = true,
+	["T_C_ComCmHat04_Hr"] = true,
+	["T_C_ComCmHat05_Hr"] = true,
+	["T_C_ComCmHat06_Hr"] = true,
+	["T_C_ComEqHat01_Hr"] = true,
+	["T_C_ComEtHat01_Hr"] = true,
+	["T_C_ComEtHat02_Hr"] = true,
+	["T_C_ComEtHat03_Hr"] = true,
+	["T_C_ComEtHat04_Hr"] = true,
+	["T_C_ComEtHat05_Hr"] = true,
+	["T_C_ComFoolsHat01_Hr"] = true,
+	["T_C_ComFoolsHat02_Hr"] = true,
+	["T_C_ComCmCoif01_Hr"] = true,
+	["T_C_ComCmCoif02_Hr"] = true,
+	["T_C_ComEtClothCoif_Hr"] = true,
+	["T_C_DeCmHatTelv01_Hr"] = true,
+	["T_C_DeCmHatTelv02_Hr"] = true,
+	["T_C_DeCmHatTelv03_Hr"] = true,
+	["T_C_DeCmHatTelv04_Hr"] = true,
+	["T_C_DeCmHatTelv05_Hr"] = true,
+	["T_C_DeEpHatTelv01_Hr"] = true,
+	["T_C_DeEpHatTelv02_Hr"] = true,
+	["T_C_DeEpHatTelv03_Hr"] = true,
+	["T_C_DeEtHatTelv01_Hr"] = true,
+	["T_C_DeEtHatTelv02_Hr"] = true,
+	["T_C_DeExHatTelv01_Hr"] = true,
+	["T_C_DeExHatTelv02_Hr"] = true,
+	["T_C_ImpCmHatColWest01_Hr"] = true,
+	["T_C_ImpCmHatColWest02_Hr"] = true,
+	["T_C_ImpEpColHat01_Hr"] = true,
+	["T_C_ImpEpColHat02_Hr"] = true,
+	["T_C_ImpEpHatColWest01_Hr"] = true,
+	["T_C_ImpEpHatColWest02_Hr"] = true,
+	["T_C_ImpEtHatColNorth01_Hr"] = true,
+	["T_C_ImpEtHatColNorth02_Hr"] = true,
+	["T_C_ImpEtHatColNorth03_Hr"] = true,
+	["T_C_ImpEtHatColNorth04_Hr"] = true,
+	["T_C_ImpEtHatColNorth05_Hr"] = true,
+	["T_A_ReaLeatherHat01_Hr"] = true,
+	["T_C_RgaCmHat01_Hr"] = true,
+	["T_C_RgaCmHat02_Hr"] = true,
+	["T_C_RgaCmHat03_Hr"] = true,
 }
 
 -- clothing id
@@ -410,13 +317,13 @@ end
 ---@param e bodyPartAssignedEventData
 local function hideWerewolfBodyParts(e)
 	local werewolfBodyParts = {
-		"WerewolfHair",
-		"WerewolfHead",
-		"WerewolfSkin",
-		"WerewolfSkin.1st"
+		["WerewolfHair"] = true,
+		["WerewolfHead"] = true,
+		["WerewolfSkin"] = true,
+		["WerewolfSkin.1st"] = true
 	}
 
-	if e.bodyPart and table.contains(werewolfBodyParts, e.bodyPart.id) and not (tes3.getGlobal("T_Glob_WereInfected") == 0 or tes3.getGlobal("T_Glob_WereInfected") == 2) then return false end
+	if e.bodyPart and werewolfBodyParts[e.bodyPart.id] and not (tes3.getGlobal("T_Glob_WereInfected") == 0 or tes3.getGlobal("T_Glob_WereInfected") == 2) then return false end
 end
 
 ---@param e equippedEventData
@@ -488,8 +395,8 @@ local function createHatObjects()
 		if armor.slot == tes3.armorSlot.helmet and not armor.isClosedHelmet then	-- Closed helmets are not going to be hats by definition
 			if common.isFromTD(armor, false) or common.isFromPTR(armor, false) then -- Only affect TD hats or unique variants from PTR
 				if armor.id:find("Hat") or armor.name:find("Hat") or armor.icon:lower():find("hat") or armor.id:find("Hood") or armor.name:find("Hood") or armor.icon:lower():find("hood") then	-- Check whether these conditions are actually worth having
-					for _,v in pairs(hats) do
-						if armor.parts[1] and armor.parts[1].male and armor.parts[1].male.id == v and #(armor.id .. "H") < 32 then
+					for hatArmorID in pairs(hats) do
+						if armor.parts[1] and armor.parts[1].male and armor.parts[1].male.id == hatArmorID and #(armor.id .. "H") < 32 then
 							local hat = tes3.createObject({ objectType = tes3.objectType.clothing, id = armor.id .. "H", getIfExists = true })
 							hat.name = armor.name
 							hat.value = armor.value
@@ -650,7 +557,7 @@ local function restrictRaceEquip(e)
 
 				if e.item.slot == tes3.armorSlot.helmet then
 					if not e.reference.mobile.object.female then
-						if e.item.parts[1] and e.item.parts[1].male and not table.contains(male_imga_helmets, e.item.parts[1].male.id) then
+						if e.item.parts[1] and e.item.parts[1].male and not male_imga_helmets[e.item.parts[1].male.id] then
 							if e.reference.mobile == tes3.mobilePlayer then
 								tes3ui.showNotifyMenu(common.i18n("main.imgaHelm"))
 							end
@@ -672,7 +579,7 @@ local function restrictRaceEquip(e)
 
 				if e.item.slot == tes3.clothingSlot.hat then
 					if not e.reference.mobile.object.female then
-						if e.item.parts[1] and e.item.parts[1].male and not table.contains(male_imga_helmets, e.item.parts[1].male.id) then
+						if e.item.parts[1] and e.item.parts[1].male and not male_imga_helmets[e.item.parts[1].male.id] then
 							if e.reference.mobile == tes3.mobilePlayer then
 								tes3ui.showNotifyMenu(common.i18n("main.imgaHat"))
 							end
@@ -742,7 +649,7 @@ local function restrictRaceEquip(e)
 					end
 				end
 			end
-		elseif e.reference.mobile.object.race.id == "T_Arg_Naga" then		-- Naga are not able to wear any helmets/hats; boots/shoes are accounted by them being a beast race
+		elseif e.reference.mobile.object.race.id == "T_Bkm_Naga" then		-- Naga are not able to wear any helmets/hats; boots/shoes are accounted by them being a beast race
 			if e.item.objectType == tes3.objectType.armor then
 				if e.item.slot == tes3.armorSlot.helmet then
 					if e.item.parts[1] and e.item.parts[1].male then
@@ -765,6 +672,20 @@ local function restrictRaceEquip(e)
 						return false
 					end
 				end
+			end
+		end
+
+		if e.reference.mobile.object.female or e.reference.mobile.object.race.id ~= "T_Val_Imga" then	-- Actors who are not male Imga should not be able to wear headwear made for them
+			if e.item.parts and e.item.parts[1] and e.item.parts[1].male and male_imga_helmets[e.item.parts[1].male.id] then
+				if e.reference.mobile == tes3.mobilePlayer then
+					if e.item.objectType == tes3.objectType.armor and e.item.slot == tes3.armorSlot.helmet then
+						tes3ui.showNotifyMenu(common.i18n("main.maleImgaHelmet"))
+					elseif e.item.objectType == tes3.objectType.clothing and e.item.slot == tes3.clothingSlot.hat then
+						tes3ui.showNotifyMenu(common.i18n("main.maleImgaHat"))
+					end
+				end
+
+				return false
 			end
 		end
 	end
@@ -929,65 +850,12 @@ local function moveReactCellItems(e)
 	end
 end
 
----@param cell tes3cell
----@param regionTable table
----@return boolean
-local function isInterventionCell(cell, regionTable)
-	for k,v in pairs(regionTable) do
-		local regionID, xLeft, xRight, yBottom, yTop = unpack(v, 1, 5)
-			if (cell.region and cell.region.id == regionID) or cell.region == regionID then
-				if not xLeft then -- Checks whether cell boundaries are being used; if xLeft is nil, then all of the others should be too
-					return true
-				else
-					if (cell.gridX >= xLeft) and (cell.gridX <= xRight) and (cell.gridY >= yBottom) and (cell.gridY <= yTop) then
-						return true
-					else
-						return false
-					end
-				end
-			end
-	end
-
-	return false
-end
-
----@param e magicCastedEventData
-local function limitInterventionMessage(e)
-	for k,v in pairs(e.source.effects) do
-		if v.id == tes3.effect.almsiviIntervention then
-			local extCell = common.getExteriorCell(e.caster.cell)
-
-			if not extCell or not isInterventionCell(extCell, almsivi_intervention_regions) then
-				tes3ui.showNotifyMenu(common.i18n("main.rangeAlmsivi"))
-			end
-		elseif v.id == tes3.effect.T_intervention_Kyne then
-			local extCell = common.getExteriorCell(e.caster.cell)
-
-			if not extCell or not isInterventionCell(extCell, kyne_intervention_regions) then
-				tes3ui.showNotifyMenu(common.i18n("main.rangeKyne"))
-			end
-		end
-	end
-end
-
----@param e spellTickEventData
-local function limitIntervention(e)
-	for _,v in pairs(e.source.effects) do
-		if v.id == tes3.effect.almsiviIntervention then
-			local cellVisitTable = { e.caster.cell }
-			local extCell = common.getExteriorCell(e.caster.cell, cellVisitTable)
-
-			if not extCell or not isInterventionCell(extCell, almsivi_intervention_regions) then
-				return false
-			end
-		elseif v.id == tes3.effect.T_intervention_Kyne then
-			local cellVisitTable = { e.caster.cell }
-			local extCell = common.getExteriorCell(e.caster.cell, cellVisitTable)
-
-			if not extCell or not isInterventionCell(extCell, kyne_intervention_regions) then
-				return false
-			end
-		end
+---@param e magicEffectAddedEventData
+local function limitAlmsiviIntervention(e)
+	local extCell = common.getExteriorCell(e.caster.cell)
+	if not extCell or not common.isInterventionCell(extCell, common.almsivi_intervention_regions) then
+		tes3.removeEffects({ reference = tes3.player, effect = tes3.effect.almsiviIntervention, removeSpell = false })
+		tes3ui.showNotifyMenu(common.i18n("main.rangeAlmsivi"))
 	end
 end
 
@@ -1010,7 +878,6 @@ end
 dofile("TamrielData.mcm")
 
 event.register(tes3.event.loaded, function()
-
 	-- Initialize player data
 	local data = tes3.player.data
     data.tamrielData = data.tamrielData or {}
@@ -1051,9 +918,9 @@ event.register(tes3.event.loaded, function()
 
 		event.register(tes3.event.spellMagickaUse, magic.bloodMagicCast, { unregisterOnLoad = true })
 
-		timer.start{ duration = 0.0166667, iterations = -1, type = timer.simulate, callback = magic.prismaticLightTick }
-		event.register(tes3.event.referenceActivated, magic.onPrismaticLightReferenceActivated, { unregisterOnLoad = true })
+		timer.start{ duration = config.prismaticLightPeriod / 360, iterations = -1, type = timer.simulate, callback = magic.prismaticLightTick }
 		event.register(tes3.event.referenceDeactivated, magic.onPrismaticLightReferenceDeactivated, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.prismaticLightRemoved, { filter = tes3.effect.T_illusion_PrismaticLight, unregisterOnLoad = true })
 
 		event.register(tes3.event.spellCast, magic.fortifyCastingOnSpellCast, { unregisterOnLoad = true })
 
@@ -1063,7 +930,7 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.simulated, magic.blinkFallDamageSmallJump, { unregisterOnLoad = true })
 		event.register(tes3.event.damage, magic.blinkFallDamage, { unregisterOnLoad = true })
 
-		tes3.getObject("T_B_GazeVeloth_Skeleton_01").partType = tes3.activeBodyPartLayer.base		-- I don't want these body parts to be associated with a race, so I set them to be base layer here rather than in the CS; the race name of the body part needs to be removed from the ESP that will be merged though
+		tes3.getObject("T_B_GazeVeloth_Skeleton_01").partType = tes3.activeBodyPartLayer.base		-- These body parts should not be associated with a race, so they are set to base layer here rather than in the CS; the race name of the body part needs to be removed from the ESP used to create body parts like these before being merged however
 		tes3.getObject("T_B_GazeVeloth_SkeletonArg_01").partType = tes3.activeBodyPartLayer.base
 		tes3.getObject("T_B_GazeVeloth_SkeletonKha_01").partType = tes3.activeBodyPartLayer.base
 		tes3.getObject("T_B_GazeVeloth_SkeletonKha_02").partType = tes3.activeBodyPartLayer.base
@@ -1074,37 +941,32 @@ event.register(tes3.event.loaded, function()
 		timer.start{ duration = 1, iterations = -1, type = timer.simulate, callback = magic.distractedReturnTick }
 		event.register(tes3.event.referenceActivated, magic.onDistractedReferenceActivated, { unregisterOnLoad = true })
 		event.register(tes3.event.referenceDeactivated, magic.onDistractedReferenceDeactivated, { unregisterOnLoad = true })
-		event.register(tes3.event.magicEffectRemoved, magic.distractRemovedEffect, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.distractRemovedEffect, { filter = tes3.effect.T_illusion_DistractCreature, unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.distractRemovedEffect, { filter = tes3.effect.T_illusion_DistractHumanoid, unregisterOnLoad = true })
 
 		event.register(tes3.event.activate, magic.corruptionBlockActivation, { unregisterOnLoad = true })
 		event.register(tes3.event.mobileActivated, magic.corruptionSummoned, { unregisterOnLoad = true })
 
 		timer.start{ duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectValuablesTick }
-		event.register(tes3.event.magicCasted, magic.detectValuablesTick, { unregisterOnLoad = true })
-		event.register(tes3.event.magicEffectRemoved, magic.detectValuablesTick, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.detectValuablesTick, { filter = tes3.effect.T_mysticism_DetValuables, unregisterOnLoad = true })
 
 		timer.start{ duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectInvisibilityTick }
-		event.register(tes3.event.magicCasted, magic.detectInvisibilityTick, { unregisterOnLoad = true })
-		event.register(tes3.event.magicEffectRemoved, magic.detectInvisibilityTick, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.detectInvisibilityTick, { filter = tes3.effect.T_mysticism_DetInvisibility, unregisterOnLoad = true })
 		event.register(tes3.event.calcHitChance, magic.detectInvisibilityHitChance, { filter = tes3.player.baseObject, unregisterOnLoad = true })
 		event.register(tes3.event.simulate, magic.detectInvisibilityOpacity, { unregisterOnLoad = true })
-		event.register(tes3.event.magicEffectRemoved, magic.invisibilityRemovedEffect, { unregisterOnLoad = true })
-		event.register(tes3.event.spellTick, magic.invisibilityAppliedEffect, { unregisterOnLoad = true })
-		event.register(tes3.event.mobileActivated, magic.onInvisibleMobileActivated, { unregisterOnLoad = true })
-		event.register(tes3.event.mobileDeactivated, magic.onInvisibleMobileDeactivated, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectDeactivated, magic.onInvisibilityEffectDeactivated, { filter = tes3.effect.chameleon, unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectDeactivated, magic.onInvisibilityEffectDeactivated, { filter = tes3.effect.invisibility, unregisterOnLoad = true })
 
 		timer.start{ duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectEnemyTick }
-		event.register(tes3.event.magicCasted, magic.detectEnemyTick, { unregisterOnLoad = true })
-		event.register(tes3.event.magicEffectRemoved, magic.detectEnemyTick, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.detectEnemyTick, { filter = tes3.effect.T_mysticism_DetEnemy, unregisterOnLoad = true })
 
 		timer.start{ duration = tes3.findGMST("fMagicDetectRefreshRate").value, iterations = -1, type = timer.simulate, callback = magic.detectHumanoidTick }
-		event.register(tes3.event.magicCasted, magic.detectHumanoidTick, { unregisterOnLoad = true })
-		event.register(tes3.event.magicEffectRemoved, magic.detectHumanoidTick, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.detectHumanoidTick, { filter = tes3.effect.T_mysticism_DetHuman, unregisterOnLoad = true })
 
 		event.register(tes3.event.leveledItemPicked, magic.insightEffect, { unregisterOnLoad = true })
 
 		event.register(tes3.event.spellResist, magic.radiantShieldSpellResist, { unregisterOnLoad = true })
-		event.register(tes3.event.magicEffectRemoved, magic.radiantShieldBlindnessRemoved, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.radiantShieldBlindnessRemoved, { filter = tes3.effect.blind, unregisterOnLoad = true })
 		event.register(tes3.event.damaged, magic.radiantShieldDamaged, { unregisterOnLoad = true })
 
 		event.register(tes3.event.damaged, magic.reflectDamageStun, { unregisterOnLoad = true })
@@ -1237,15 +1099,23 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.limitIntervention then
-		event.register(tes3.event.magicCasted, limitInterventionMessage, { unregisterOnLoad = true })
-		event.register(tes3.event.spellTick, limitIntervention, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectAdded, limitAlmsiviIntervention, { filter = tes3.effect.almsiviIntervention, unregisterOnLoad = true })	-- I would prefer that limitAlmsiviIntervention be expanded and registered for different TD intervention effects, but that doesn't seem to be working anymore
 	end
-
 end)
 
 event.register(tes3.event.initialized, function()
-	if config.miscSpells and config.argonianBloodMagic then
-		tes3.findRace("Argonian").abilities:add("T_Arg_Mys_BloodMagic")	-- This has to be done during initialization or Argonian players won't have the spell upon loading a save
-		tes3.findRace("T_Bm_Naga").abilities:add("T_Arg_Mys_BloodMagic") -- Use T_Com_Mys_BloodMagic instead?
+	if config.miscSpells then
+		event.register(tes3.event.magicEffectActivated, magic.prismaticLightActivated, { filter = tes3.effect.T_illusion_PrismaticLight })		-- magicEffectActivated is triggered before loaded is; NullCascade recommended registering functions for it before load as well
+		event.register(tes3.event.magicEffectActivated, magic.detectValuablesTick, { filter = tes3.effect.T_mysticism_DetValuables })
+		event.register(tes3.event.magicEffectActivated, magic.detectInvisibilityTick, { filter = tes3.effect.T_mysticism_DetInvisibility })
+		event.register(tes3.event.magicEffectActivated, magic.onInvisibilityEffectActivated, { filter = tes3.effect.chameleon })
+		event.register(tes3.event.magicEffectActivated, magic.onInvisibilityEffectActivated, { filter = tes3.effect.invisibility })
+		event.register(tes3.event.magicEffectActivated, magic.detectEnemyTick, { filter = tes3.effect.T_mysticism_DetInvisibility })
+		event.register(tes3.event.magicEffectActivated, magic.detectHumanoidTick, { filter = tes3.effect.T_mysticism_DetHuman })
+
+		if config.argonianBloodMagic then
+			tes3.findRace("Argonian").abilities:add("T_Arg_Mys_BloodMagic")	-- This has to be done during initialization or Argonian players won't have the spell upon loading a save
+			tes3.findRace("T_Bkm_Naga").abilities:add("T_Arg_Mys_BloodMagic")
+		end
 	end
 end)

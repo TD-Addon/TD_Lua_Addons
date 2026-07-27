@@ -2,6 +2,7 @@ local this = {}
 
 local common = require("TamrielData.common")
 local config = require("TamrielData.config")
+local magicData = require("TamrielData.magicdata")
 
 local passwallAlteration = config.passwallAlteration	-- Magic effects are resolved when the game begins, but just checking config.passwallAlteration would cause the hit sound and VFX to change even if the game is not restarted
 local passwallIcon = "td\\s\\td_s_passwall.tga"
@@ -108,13 +109,12 @@ if config.miscSpells then
 	tes3.claimSpellEffectId("T_illusion_Ethereal", 2151)
 end
 
-local magicData = require("TamrielData.magicdata")
-
 local prismaticReferences = {}
 
 local distractedReferences = {}	-- Should probably decide on a consistent naming scheme for tables
 
 local invisibleReferences = {}
+local invisibleOpacityModifiedReferences = {}
 
 local etherealReferences = {}
 
@@ -274,8 +274,8 @@ function this.replaceEnchantments(table)
 
 				local effect = overridden_enchantment.effects[i]
 				effect.id = tes3.effect[effect_row.id]
-				effect.attribute = tes3.attribute[effect_row.attribute]
-				effect.skill = tes3.skill[effect_row.skill]
+				effect.attribute = effect_row.attribute
+				effect.skill = effect_row.skill
 				effect.rangeType = tes3.effectRange[effect_row.range]
 				effect.radius = effect_row.area or 0
 				effect.duration = effect_row.duration or 0
@@ -436,7 +436,6 @@ function this.correctSpellTooltipUnit(e)
 		end
 	end
 end
-
 
 ---@param e uiPreEventEventData
 local function modifyCastingChanceMultiFillbar(e)
@@ -826,85 +825,95 @@ function this.bloodMagicCast(e)
 	end
 end
 
+---@param target tes3reference
+---@param color niColor
+---@param magnitude number
+local function updatePrismaticLight(target, color, magnitude)
+	target.mobile:setLightEffectDiffuseColor(color)
+	target.mobile:setLightEffectFalloff(magnitude * 44)	-- 44 is used as the constant rather than 22.1 to match how MCP's light fix changes the falloff of the vanilla light effect
+	--target.mobile.object.inventory:updateInternalLight(target.mobile)		-- Now this seems to delete lightEffectData, preventing the light from appearing at all
+
+	if target.mobile.lightEffectData then
+		target.mobile.lightEffectData.light:update()
+		target.mobile.dynamicLightingValid = false
+	end
+end
+
+---@param target tes3reference
+---@return table< number, number >
+local function getAppliedLightMagnitudes(target)
+	local prismaticMagnitude = 0
+	for _,v in pairs(target.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_PrismaticLight })) do
+		if v.effectInstance then
+			prismaticMagnitude = prismaticMagnitude + v.effectInstance.magnitude
+		end
+	end
+
+	local vanillaMagnitude = 0
+	for _,v in pairs(target.mobile:getActiveMagicEffects({ effect = tes3.effect.light })) do
+		if v.effectInstance then
+			vanillaMagnitude = vanillaMagnitude + v.effectInstance.magnitude
+		end
+	end
+
+	local totalMagnitude = prismaticMagnitude + vanillaMagnitude
+
+	return {prismaticMagnitude, totalMagnitude}
+end
+
 function this.prismaticLightTick()
 	for ref in pairs(prismaticReferences) do
 		---@cast ref tes3reference
-		local lightNode = ref:getAttachedDynamicLight()
-		lightNode.light.diffuse = common.hsvToRGB(ref.data.tamrielData.prismaticLightHue, .3, 1)
-
 		ref.data.tamrielData.prismaticLightHue = ref.data.tamrielData.prismaticLightHue + 1
 		if ref.data.tamrielData.prismaticLightHue > 359 then ref.data.tamrielData.prismaticLightHue = 0 end
+
+		local prismaticMagnitude, totalMagnitude = unpack(getAppliedLightMagnitudes(ref))
+
+		updatePrismaticLight(ref, common.hsvToRGB(ref.data.tamrielData.prismaticLightHue, config.prismaticLightSaturation * prismaticMagnitude / totalMagnitude, 1), totalMagnitude)
 	end
 end
 
----@param e referenceActivatedEventData
-function this.onPrismaticLightReferenceActivated(e)
-	if e.reference.mobile then
-		local prismaticLightEffects = e.reference.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_PrismaticLight })
-
-		if #prismaticLightEffects > 0 then	-- Just replace this with a check for prismaticLightHue?
-			prismaticReferences[e.reference] = true
-		end
-	end
-end
-
----@param e referenceActivatedEventData
+---@param e referenceDeactivatedEventData
 function this.onPrismaticLightReferenceDeactivated(e)
 	prismaticReferences[e.reference] = nil
 end
 
----@param e tes3magicEffectTickEventData
-local function prismaticLightEffect(e)
-	if (not e:trigger()) then
-		return
-	end
+---@param e magicEffectRemovedEventData
+function this.prismaticLightRemoved(e)
+	local prismaticMagnitude, totalMagnitude = unpack(getAppliedLightMagnitudes(e.target))
 
-	local target = e.effectInstance.target
-	local prismaticLightEffects = target.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_PrismaticLight })
-
-	if e.effectInstance.state < tes3.spellState.ending then
-		prismaticReferences[target] = true
-
-		local lightNode = target:getOrCreateAttachedDynamicLight()
-
-		if lightNode.light.name == "prismaticLightAttachment" then		-- True if an instance of prismatic light is being applied to an actor that already has one or more
-			local totalMagnitude = 0
-
-			for _,v in pairs(prismaticLightEffects) do
-				totalMagnitude = totalMagnitude + v.effectInstance.effectiveMagnitude
-			end
-
-			lightNode.light:setRadius(totalMagnitude * 22.1)
-		else
-			lightNode.light.name = "prismaticLightAttachment"
-			target.data.tamrielData = target.data.tamrielData or {}
-			target.data.tamrielData.prismaticLightHue = math.random(0, 359)
-			lightNode.light.diffuse = common.hsvToRGB(target.data.tamrielData.prismaticLightHue, .3, 1)
-			lightNode.light:setRadius(e.effectInstance.effectiveMagnitude * 22.1)
-			lightNode.light.translation = lightNode.light.translation + tes3vector3.new(0, 0, 0.5 * tes3.mobilePlayer.height)
-		end
+	if prismaticMagnitude > 0 then
+		-- Effect being removed from an actor that has other prismatic light effects
+		updatePrismaticLight(e.target, common.hsvToRGB(e.target.data.tamrielData.prismaticLightHue, config.prismaticLightSaturation * prismaticMagnitude / totalMagnitude, 1), totalMagnitude)
 	else
-		prismaticReferences[target] = nil
-
-		local lightNode = target:getOrCreateAttachedDynamicLight()
-
-		if lightNode.light.name == "prismaticLightAttachment" then	-- If this is not true, then some other MWSE addon has replaced the light and it should not be removed here
-			if #prismaticLightEffects > 1 then	-- 1 is checked rather than 0 because the effect being removed will still be counted here
-				local totalMagnitude = 0
-
-				for _,v in pairs(prismaticLightEffects) do
-					totalMagnitude = totalMagnitude + v.effectInstance.effectiveMagnitude
-				end
-
-				totalMagnitude = totalMagnitude - e.effectInstance.effectiveMagnitude	-- The radius is rounded to the nearest whole number, so doing these calculations ensures that it will be correct afterwards
-
-				lightNode.light:setRadius(totalMagnitude * 22.1)
-			else
-				target.data.tamrielData.prismaticLightHue = nil
-				target:deleteDynamicLightAttachment(true)
-			end
+		prismaticReferences[e.target] = nil
+		e.target.data.tamrielData.prismaticLightHue = nil
+		if totalMagnitude > 0 then
+			-- Effect being removed from an actor that does not have other prismatic light effects, but does have one or more vanilla light effects
+			updatePrismaticLight(e.target, niColor.new(1, 0.98039221763611, 0.91764712333679), totalMagnitude)
+		else
+			-- Effect being removed from an actor that does not have other light effects
+			updatePrismaticLight(e.target, niColor.new(0, 0, 0), 0)
 		end
 	end
+end
+
+---@param e magicEffectActivatedEventData
+function this.prismaticLightActivated(e)
+	local prismaticMagnitude, totalMagnitude = unpack(getAppliedLightMagnitudes(e.target))
+	prismaticMagnitude = prismaticMagnitude + e.effectInstance.magnitude
+	totalMagnitude = totalMagnitude + e.effectInstance.magnitude
+
+	if not (e.target.data.tamrielData and e.target.data.tamrielData.prismaticLightHue) then
+		e.target.data.tamrielData = e.target.data.tamrielData or {}
+		e.target.data.tamrielData.prismaticLightHue = math.random(0, 359)
+	end
+
+	prismaticReferences[e.target] = true
+
+	timer.delayOneFrame(function()		-- Loading a game with prismatic light already on an actor results in a crash when setLightEffectDiffuseColor is called, so updatePrismaticLight is delayed here to prevent that from happening
+		updatePrismaticLight(e.target, common.hsvToRGB(e.target.data.tamrielData.prismaticLightHue, config.prismaticLightSaturation * prismaticMagnitude / totalMagnitude, 1), totalMagnitude)
+	end)
 end
 
 ---@param e spellCastEventData
@@ -1395,11 +1404,9 @@ end
 
 ---@param e magicEffectRemovedEventData
 function this.distractRemovedEffect(e)
-	if e.effect.id == tes3.effect.T_illusion_DistractCreature or e.effect.id == tes3.effect.T_illusion_DistractHumanoid then
-		if e.reference and e.reference.data.tamrielData and e.reference.data.tamrielData.distract then
-			if math.random() < 0.45 then playDistractedVoiceLine(e.reference, true) end
-			tes3.setAITravel({ reference = e.reference, destination = e.reference.data.tamrielData.distract.position })
-		end
+	if e.target and e.target.data.tamrielData and e.target.data.tamrielData.distract then
+		if math.random() < 0.45 then playDistractedVoiceLine(e.target, true) end
+		tes3.setAITravel({ reference = e.target, destination = e.target.data.tamrielData.distract.position })
 	end
 end
 
@@ -1457,6 +1464,11 @@ end
 ---@param e tes3magicEffectTickEventData
 local function distractEffect(e)
 	local target = e.effectInstance.target
+	if not target or target.mobile.isDead or target.mobile.inCombat or target.mobile.isPlayerDetected or (target.data.tamrielData and target.data.tamrielData.distract) then
+		e.effectInstance.state = tes3.spellState.retired
+		return
+	end
+
 	local range = e.effectInstance.magnitude * 22.1
 
 	local activePackage = target.mobile.aiPlanner:getActivePackage()
@@ -1479,7 +1491,7 @@ local function distractEffect(e)
 						local pathExists = common.pathGridBFS(threeClosestNodes[1], node)	-- pathGridBFS is used here to check whether a path actually exists because it is quicker than pathGridDijkstra
 						if pathExists then
 							finalPlayerDistance = tes3.player.position:distance(node.position)
-							if math.abs(tes3.player.position.z - node.position.z) > 160 then finalPlayerDistance = finalPlayerDistance * 4 end	-- This condition makes actors prefer to travel to a above or below the player. 4 was chosen as a constant arbitrarily and adjusting it may be beneficial.
+							if math.abs(tes3.player.position.z - node.position.z) > 160 then finalPlayerDistance = finalPlayerDistance * 4 end	-- This condition makes actors prefer to travel to a node above or below the player. 4 was chosen as a constant arbitrarily and adjusting it may be beneficial.
 
 							local shortestPathDistance = math.huge
 							local shortestPath
@@ -1576,20 +1588,12 @@ local function distractHumanoidEffect(e)
 		return
 	end
 
-	local target = e.effectInstance.target	-- Level restriction? Tied to magnitude?
-
-	if not target or target.mobile.actorType ~= tes3.actorType.npc or target.mobile.isDead or target.mobile.inCombat or target.mobile.isPlayerDetected or (target.data.tamrielData and target.data.tamrielData.distract) then
-		e.effectInstance.state = tes3.spellState.retired	-- This condition seems to be hit when the effect expires
-		return
+	if e.effectInstance.target.mobile.actorType == tes3.actorType.npc then
+		distractEffect(e)
+	else
+		e.effectInstance.state = tes3.spellState.retired
 	end
 
-	--	if target.mobile.isPlayerDetected then
-	--		tes3.triggerCrime({ type = tes3.crimeType.trespass })
-	--		e.effectInstance.state = tes3.spellState.retired
-	--		return
-	--	end
-
-	distractEffect(e)
 end
 
 ---@param e tes3magicEffectTickEventData
@@ -1598,14 +1602,11 @@ local function distractCreatureEffect(e)
 		return
 	end
 
-	local target = e.effectInstance.target	-- Level restriction? Tied to magnitude?
-
-	if not target or target.mobile.actorType ~= tes3.actorType.creature or target.mobile.isDead or target.mobile.inCombat or target.mobile.isPlayerDetected or (target.data.tamrielData and target.data.tamrielData.distract) then	-- Require player to sneak?
+	if e.effectInstance.target.mobile.actorType == tes3.actorType.creature then
+		distractEffect(e)
+	else
 		e.effectInstance.state = tes3.spellState.retired
-		return
 	end
-
-	distractEffect(e)
 end
 
 -- Stop the player from talking to the summon and the summon from talking to the player (just in case)
@@ -1777,20 +1778,10 @@ local function calculateMapValues(mapPane, multiPane)
 		local xNorm = xShift * northMarkerCos + yShift * northMarkerSin
 		local yNorm = yShift * northMarkerCos - xShift * northMarkerSin
 
-		local newInteriorMapOriginX = mapPlayerMarker.positionX + xNorm / (8192 / mapWidth)
-		local newInteriorMapOriginY = mapPlayerMarker.positionY - yNorm / (8192 / mapHeight)
-		local newInteriorMultiOriginX = -multiPane.parent.positionX + multiPlayerMarker.positionX + xNorm / (8192 / multiWidth)
-		local newInteriorMultiOriginY = -multiPane.parent.positionY + multiPlayerMarker.positionY - yNorm / (8192 / multiHeight)
-
-		if not (math.isclose(interiorMapOriginX, newInteriorMapOriginX, 2) and (math.isclose(interiorMapOriginY, newInteriorMapOriginY, 2))) then
-			interiorMapOriginX = newInteriorMapOriginX
-			interiorMapOriginY = newInteriorMapOriginY
-		end
-
-		if not (math.isclose(interiorMultiOriginX, newInteriorMapOriginX, 2) and (math.isclose(interiorMultiOriginY, newInteriorMapOriginY, 2))) then
-			interiorMultiOriginX = newInteriorMultiOriginX
-			interiorMultiOriginY = newInteriorMultiOriginY
-		end
+		interiorMapOriginX = mapPlayerMarker.positionX + xNorm / (8192 / mapWidth)
+		interiorMapOriginY = mapPlayerMarker.positionY - yNorm / (8192 / mapHeight)
+		interiorMultiOriginX = -multiPane.parent.positionX + multiPlayerMarker.positionX + xNorm / (8192 / multiWidth)
+		interiorMultiOriginY = -multiPane.parent.positionY + multiPlayerMarker.positionY - yNorm / (8192 / multiHeight)
 	else
 		-- It seems as though this is not being updated exactly when it should be; exterior markers will briefly move across cells as the player moves around.
 		local mapLayout = mapPane:findChild("MenuMap_map_layout")
@@ -1854,9 +1845,7 @@ local function deleteDetections(pane, name)
 	end
 end
 
----@param e magicEffectRemovedEventData
-function this.detectValuablesTick(e)
-	if e.reference and e.reference ~= tes3.player then return end	-- I would just use a filter, but that triggers a warning for some reason
+function this.detectValuablesTick()
 	local mapMenu = tes3ui.findMenu("MenuMap")
 	local multiMenu = tes3ui.findMenu("MenuMulti")
 	local mapPane, multiPane
@@ -1971,101 +1960,59 @@ local function detectInvisibilityValid(ref)
 		end
 	end
 
-	for _,effect in pairs(ref.mobile.activeMagicEffectList)do
-		if effect.effectId == tes3.effect.chameleon or effect.effectId == tes3.effect.invisibility then return true end
-	end
-
-	return false
+	return true
 end
 
----@param e mobileActivatedEventData
-function this.onInvisibleMobileActivated(e)
-	if detectInvisibilityValid(e.reference) then	-- This kind of approach should be reliable until someone makes an addon that allows for the AI to use chameleon and invisibility effects.
-		local chameleonEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.chameleon })		-- Might as well get these values here
-		local chameleonMagnitude = 0
-		if #chameleonEffects > 0 then
-			for _,v in pairs(chameleonEffects) do
-				chameleonMagnitude = chameleonMagnitude + v.magnitude
-			end
-
-			chameleonMagnitude = math.clamp(chameleonMagnitude / 100, 0, 1)
-		end
-
-		local invisibilityMagnitude = 0
-		if #e.mobile:getActiveMagicEffects({ effect = tes3.effect.invisibility }) > 0 then
-			invisibilityMagnitude = 1
-		end
-
-		invisibleReferences[e.reference] = { chameleon = chameleonMagnitude, invisibility = invisibilityMagnitude }		-- The magnitudes are saved so that the effects do not have to be iterated through for every invisible reference every frame in the opacity function
-	end
-end
-
----@param e spellTickEventData
-function this.invisibilityAppliedEffect(e)
-	if e.target and e.target ~= tes3.player and (e.effect.id == tes3.effect.chameleon or e.effect.id == tes3.effect.invisibility) and not invisibleReferences[e.target] then	-- Could this miss another effect being applied to an actor that is already "invisible"? Yes, but I don't really care at the moment.
-		this.onInvisibleMobileActivated({ claim = false, mobile = e.target.mobile, reference = e.target })
-	end
-end
-
----@param e mobileDeactivatedEventData
-function this.onInvisibleMobileDeactivated(e)
-	invisibleReferences[e.reference] = nil
-end
-
----@param e magicEffectRemovedEventData
-function this.invisibilityRemovedEffect(e)
-	if e.target and e.target ~= tes3.player and e.effect.id == tes3.effect.chameleon or e.effect.id == tes3.effect.invisibility then
-		if detectInvisibilityValid(e.reference) then															-- The actor might (but probably won't) still have other acceptable effects
-			local chameleonEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.chameleon })
-			local chameleonMagnitude = 0
-			if #chameleonEffects > 0 then
-				for _,v in pairs(chameleonEffects) do
-					chameleonMagnitude = chameleonMagnitude + v.magnitude
-				end
-
-				chameleonMagnitude = math.clamp(chameleonMagnitude / 100, 0, 1)
-			end
-
-			local invisibilityMagnitude = 0
-			if #e.mobile:getActiveMagicEffects({ effect = tes3.effect.invisibility }) > 0 then
-				invisibilityMagnitude = 1
-			end
-
-			invisibleReferences[e.reference] = { chameleon = chameleonMagnitude, invisibility = invisibilityMagnitude }
-		else
-			invisibleReferences[e.reference] = nil
+---@param e magicEffectActivatedEventData
+function this.onInvisibilityEffectActivated(e)
+	if e.target and e.target ~= tes3.player and not invisibleReferences[e.target] then
+		if detectInvisibilityValid(e.target) then
+			invisibleReferences[e.target] = true
 		end
 	end
 end
 
---- @param e simulateEventData
+---@param e magicEffectDeactivatedEventData
+function this.onInvisibilityEffectDeactivated(e)
+	if invisibleReferences[e.target] then
+		if e.target.mobile.chameleon <= 0 and e.target.mobile.invisibility <= 0 then
+			invisibleReferences[e.target] = nil
+			invisibleOpacityModifiedReferences[e.target] = nil
+			--if invisibleOpacityModifiedReferences[e.target] then
+				--e.target.mobile.animationController.opacity = 0.99999	-- A value of 1 is naturally not supported by the engine, so it is set to 0.99999 until MWSE's developers fix that bug
+			--end
+		end
+	end
+end
+
+---@param e simulateEventData
 function this.detectInvisibilityOpacity(e)
-	for actor,magnitudes in pairs(invisibleReferences) do		-- Should the other parts of Detect Invisibility rely on invisibleReferences too?
+	if table.size(invisibleReferences) > 0 then
+		local detectMagnitude = 0
 		local detectInvisibilityEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetInvisibility })
-		local undetectable = false
-		if #detectInvisibilityEffects > 0 then
-			local detectMagnitude = 0
-			for _,v in pairs(detectInvisibilityEffects) do
-				if v.magnitude > detectMagnitude then detectMagnitude = detectMagnitude + v.magnitude end
-			end
-
-			if tes3.player.position:distance(actor.position) <= detectMagnitude * 22.1 then
-				local opacity = math.clamp((1 - .375 * magnitudes.chameleon) * (1 - magnitudes.invisibility), 0.5, 0.99999)
-				actor.mobile.animationController.opacity = opacity
-				actor.data.tamrielData = actor.data.tamrielData or {}
-				actor.data.tamrielData.invisibilityDetected = true
-			else
-				undetectable = true
-			end
-		else
-			undetectable = true
+		for _,v in pairs(detectInvisibilityEffects) do
+			detectMagnitude = detectMagnitude + v.magnitude
 		end
 
+		for actor in pairs(invisibleReferences) do
+			---@cast actor tes3reference
+			local undetected = false
+			local chameleonMagnitude = math.clamp(actor.mobile.chameleon / 100, 0, 1)
+			if #detectInvisibilityEffects > 0 then
+				if tes3.player.position:distance(actor.position) <= detectMagnitude * 22.1 then
+					actor.mobile.animationController.opacity = math.clamp((1 - .375 * chameleonMagnitude) * (1 - actor.mobile.invisibility), 0.5, 0.99999)
+					invisibleOpacityModifiedReferences[actor] = true
+				else
+					undetected = true
+				end
+			else
+				undetected = true
+			end
 
-		if undetectable and actor.data.tamrielData and actor.data.tamrielData.invisibilityDetected then
-			local opacity = math.clamp((1 - .75 * magnitudes.chameleon) * (1 - magnitudes.invisibility), 0, 0.99999)	-- A value of 1 is naturally not supported by the engine, so it is set to 0.99999 until MWSE's developers fix that bug
-			actor.mobile.animationController.opacity = opacity
-			actor.data.tamrielData.invisibilityDetected = false
+			if undetected and invisibleOpacityModifiedReferences[actor] then
+				actor.mobile.animationController.opacity = math.clamp((1 - .75 * chameleonMagnitude) * (1 - actor.mobile.invisibility), 0, 0.99999)
+				invisibleOpacityModifiedReferences[actor] = nil
+			end
 		end
 	end
 end
@@ -2074,46 +2021,17 @@ end
 function this.detectInvisibilityHitChance(e)
 	local fCombatInvisoMult = tes3.findGMST(tes3.gmst.fCombatInvisoMult).value
 
-	local detectInvisibilityEffects = e.attackerMobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetInvisibility })
-	if #detectInvisibilityEffects > 0 then
-		local detectMagnitude = 0
-		for _,v in pairs(detectInvisibilityEffects) do
-			if v.magnitude > detectMagnitude then detectMagnitude = detectMagnitude + v.magnitude end
-		end
+	if e.target and e.targetMobile and invisibleOpacityModifiedReferences[e.target] and not table.contains(tes3.player.mobile.friendlyActors, e.targetMobile) then -- If the target is in invisibleOpacityModifiedReferences, then the player must have Detect Invisibility active and be close enough for the target to be affected
+		local chameleonMagnitude = e.targetMobile.chameleon
+		if chameleonMagnitude > 100 then chameleonMagnitude = 100 end
+		local reducedChameleonMagnitude = math.clamp(chameleonMagnitude - 50, 0, 50)
 
-		if e.target and e.targetMobile and e.attacker.position:distance(e.target.position) <= detectMagnitude * 22.1 and not table.contains(tes3.player.mobile.friendlyActors, e.targetMobile) then
-			if detectInvisibilityValid(e.target) then
-				local chameleonEffects = e.targetMobile:getActiveMagicEffects({ effect = tes3.effect.chameleon })
-				local chameleonMagnitude = 0
-				local reducedChameleonMagnitude = 0
-				if #chameleonEffects > 0 then
-					for _,v in pairs(chameleonEffects) do
-						chameleonMagnitude = chameleonMagnitude + v.magnitude
-					end
-
-					if chameleonMagnitude > 100 then chameleonMagnitude = 100 end
-
-					reducedChameleonMagnitude = chameleonMagnitude - 50
-					if reducedChameleonMagnitude < 0 then reducedChameleonMagnitude = 0 end
-				end
-
-				local invisibilityEffects = e.targetMobile:getActiveMagicEffects({ effect = tes3.effect.invisibility })
-				local invisibilityMagnitude = 0
-				if #invisibilityEffects > 0 then
-					invisibilityMagnitude = 1		-- It doesn't look as though invisibility has much effect on hitchance as per https://wiki.openmw.org/index.php?title=Research:Combat and my own testing. In the calculation, invisibility's magnitude will be evaluated as 1 and multiplied by fCombatInvisoMult (.2).
-				end
-
-				e.hitChance = e.hitChance + fCombatInvisoMult * (chameleonMagnitude - reducedChameleonMagnitude)
-				e.hitChance = e.hitChance + fCombatInvisoMult * invisibilityMagnitude / 2
-			end
-		end
+		e.hitChance = e.hitChance + fCombatInvisoMult * (chameleonMagnitude - reducedChameleonMagnitude)
+		e.hitChance = e.hitChance + fCombatInvisoMult * e.attackerMobile.invisibility / 2  -- It doesn't look as though invisibility has much effect on hitchance as per https://wiki.openmw.org/index.php?title=Research:Combat and my own testing. In the calculation, invisibility's magnitude will be evaluated as 1 and multiplied by fCombatInvisoMult (.2).
 	end
 end
 
---- @param e magicEffectRemovedEventData
-function this.detectInvisibilityTick(e)
-	if e.reference and e.reference ~= tes3.player then return end	-- I would just use a filter, but that triggers a warning for some reason
-
+function this.detectInvisibilityTick()
 	local mapMenu = tes3ui.findMenu("MenuMap")
 	local multiMenu = tes3ui.findMenu("MenuMulti")
 	local mapPane, multiPane
@@ -2135,7 +2053,7 @@ function this.detectInvisibilityTick(e)
 			end
 
 			for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = totalMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua 
-				if detectInvisibilityValid(actor.reference) then
+				if detectInvisibilityValid(actor.reference) and (actor.chameleon > 0 or actor.invisibility > 0) then
 					local mapX, mapY, multiX, multiY
 					if tes3.player.cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(actor.position)
 					else mapX, mapY, multiX, multiY = calcExteriorPos(actor.position) end
@@ -2148,10 +2066,7 @@ function this.detectInvisibilityTick(e)
 	end
 end
 
---- @param e magicEffectRemovedEventData
-function this.detectEnemyTick(e)
-	if e.reference and e.reference ~= tes3.player then return end	-- I would just use a filter, but that triggers a warning for some reason
-
+function this.detectEnemyTick()
 	local mapMenu = tes3ui.findMenu("MenuMap")
 	local multiMenu = tes3ui.findMenu("MenuMulti")
 	local mapPane, multiPane
@@ -2198,10 +2113,7 @@ function this.detectEnemyTick(e)
 	end
 end
 
---- @param e magicEffectRemovedEventData
-function this.detectHumanoidTick(e)
-	if e.reference and e.reference ~= tes3.player then return end	-- I would just use a filter, but that triggers a warning for some reason
-
+function this.detectHumanoidTick()
 	local mapMenu = tes3ui.findMenu("MenuMap")
 	local multiMenu = tes3ui.findMenu("MenuMulti")
 	local mapPane, multiPane
@@ -2463,8 +2375,8 @@ end
 
 ---@param e magicEffectRemovedEventData
 function this.radiantShieldBlindnessRemoved(e)
-	if e.effect.id == tes3.effect.blind and e.source.name == common.i18n("magic.miscRadiantShieldBlindness") then
-		local blindEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.blind })
+	if e.source.name == common.i18n("magic.miscRadiantShieldBlindness") then
+		local blindEffects = e.target.mobile:getActiveMagicEffects({ effect = tes3.effect.blind })
 		if #blindEffects > 0 then
 			local blindingRadianceCount = 0
 			for _,v in pairs(blindEffects) do
@@ -2532,8 +2444,18 @@ end
 
 ---@param caster tes3reference
 ---@param markerID string
-local function interventionEffect(caster, markerID)
+---@param regionTable table
+---@param limitMessageID string
+local function interventionEffect(caster, markerID, regionTable, limitMessageID)
 	if not tes3.worldController.flagTeleportingDisabled then
+		if config.limitIntervention then
+			local extCell = common.getExteriorCell(caster.cell)
+			if not extCell or not common.isInterventionCell(extCell, regionTable) then
+				tes3ui.showNotifyMenu(common.i18n(limitMessageID))
+				return
+			end
+		end
+
 		local marker = tes3.findClosestExteriorReferenceOfObject({ object = markerID })
 		if marker then
 			tes3.positionCell({ reference = caster, position = marker.position, orientation = marker.orientation, teleportCompanions = false })
@@ -2543,14 +2465,26 @@ local function interventionEffect(caster, markerID)
 	end
 end
 
----@param e tes3magicEffectTickEventData
-local function kynesInterventionEffect(e)
-	if (not e:trigger()) then
-		return
+---@param reflectDamageEffects tes3activeMagicEffect[]
+---@return number
+local function reflectDamageCalculateMagnitude(reflectDamageEffects)
+	local magnitude = 1
+	for _,v in pairs(reflectDamageEffects) do
+		magnitude = magnitude * (1 - (v.magnitude / 100))	-- This effect is multiplicative like Morrowind's reflect rather than additive like Oblivion's reflect effects and as such is capped to 100%
 	end
+	return math.clamp(1 - magnitude, 0, 1)
+end
 
-	interventionEffect(e.sourceInstance.caster, "T_Aid_KyneInterventionMarker")
-	e.effectInstance.state = tes3.spellState.retired
+---@param reflectDamageEffects tes3activeMagicEffect[]
+---@param damage number
+---@return number, number
+local function reflectDamageCalculateDamage(reflectDamageEffects, damage)
+	local magnitude = reflectDamageCalculateMagnitude(reflectDamageEffects)
+
+	local reflectedDamage = damage * magnitude
+	damage = damage - reflectedDamage
+
+	return damage, reflectedDamage
 end
 
 ---@param e damagedEventData
@@ -2558,11 +2492,8 @@ function this.reflectDamageStun(e)
 	if e.source == tes3.damageSource.attack and e.attacker then
 		local reflectDamageEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_ReflectDmg })
 		if #reflectDamageEffects > 0 then
-			local magnitude = 1
-			for _,v in pairs(reflectDamageEffects) do
-				magnitude = magnitude * (1 - (v.magnitude / 100))
-			end
-			magnitude = 1 - magnitude
+			local magnitude = reflectDamageCalculateMagnitude(reflectDamageEffects)
+
 			local defenderStunned = e.mobile.isHitStunned or e.mobile.isKnockedDown
 
 			if math.random() < magnitude then		-- Chance of preventing a hit stun or knockdown increases with the strength of the reflect damage effect(s)
@@ -2575,31 +2506,12 @@ function this.reflectDamageStun(e)
 	end
 end
 
----@param reflectDamageEffects tes3activeMagicEffect[]
----@param damage number
----@return number, number
-local function reflectDamageCalculate(reflectDamageEffects, damage)
-	local percentMagnitude
-	local reflectedDamage = 0
-	for _,v in pairs(reflectDamageEffects) do -- This effect is multiplicative like Morrowind's reflect rather than additive like Oblivion's reflect damage
-		percentMagnitude = v.magnitude / 100
-		reflectedDamage = reflectedDamage + (damage * percentMagnitude)
-		damage = damage * (1 - percentMagnitude)
-	end
-
-	if damage < 0 then
-		damage = 0		-- Make sure that the effect can't heal the defender
-	end
-
-	return damage, reflectedDamage
-end
-
 ---@param e damageEventData
 function this.reflectDamageEffect(e)
 	if e.attacker and e.source == tes3.damageSource.attack and e.damage > 0 then
 		local reflectDamageEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_ReflectDmg })
 		if #reflectDamageEffects > 0 then
-			local damage, reflectedDamage = reflectDamageCalculate(reflectDamageEffects, e.damage)
+			local damage, reflectedDamage = reflectDamageCalculateDamage(reflectDamageEffects, e.damage)
 			e.attacker:applyDamage({ damage = reflectedDamage, playerAttack = true })
 			e.damage = damage
 		end
@@ -2611,7 +2523,7 @@ function this.reflectDamageHHEffect(e)
 	if e.attacker and e.source == tes3.damageSource.attack and e.fatigueDamage > 0 then
 		local reflectDamageEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_ReflectDmg })
 		if #reflectDamageEffects > 0 then
-			local damage, reflectedDamage = reflectDamageCalculate(reflectDamageEffects, e.fatigueDamage)
+			local damage, reflectedDamage = reflectDamageCalculateDamage(reflectDamageEffects, e.fatigueDamage)
 			e.attacker:applyFatigueDamage(reflectedDamage, 0, false)
 			e.fatigueDamage = damage
 		end
@@ -2671,7 +2583,7 @@ local function banishDaedraEffect(e)
 	if magnitude >= (targetLevel / 2) + ((targetLevel / 2) * target.mobile.health.normalized) then
 		for _,v in pairs(target.baseObject.inventory.items) do
 			if v.object.objectType ~= tes3.objectType.leveledItem and v.object.objectType ~= tes3.objectType.ingredient then	-- Sometimes ingredients are added without being part of a list
-				table.insert(uniqueItems, v.object)
+				uniqueItems[v.object] = true
 			end
 		end
 
@@ -2692,28 +2604,29 @@ local function banishDaedraEffect(e)
 
 				local target = targetHandle:getObject()
 
-				if #uniqueItems > 0 then	-- Don't bother if there is definitely not going to be loot
-					local container = tes3.createReference({ object = "T_Glb_BanishDae_Empty", position = target.position + tes3vector3.new(0, 0, target.mobile.height) , orientation = target.orientation, cell = target.cell })
-					for _,v in pairs(target.mobile.inventory) do
-						if table.contains(uniqueItems, v.object) then
-							tes3.transferItem({ from = target, to = container, item = v.object, count = 999, limitCapacity = false })	-- This setup can account for how Dregas Volar's items are given to the player, so that they don't end up with two of both
+				if target then
+					if #uniqueItems > 0 then	-- Don't bother if there is definitely not going to be loot
+						local container = tes3.createReference({ object = "T_Glb_BanishDae_Empty", position = target.position + tes3vector3.new(0, 0, target.mobile.height) , orientation = target.orientation, cell = target.cell })
+						for _,v in pairs(target.mobile.inventory) do
+							if uniqueItems[v.object] then
+								tes3.transferItem({ from = target, to = container, item = v.object, count = 999, limitCapacity = false })	-- This setup can account for how Dregas Volar's items are given to the player, so that they don't end up with two of both
+							end
+						end
+
+						if #container.object.inventory == 0 then	-- Just in case
+							container:delete()
+						else
+							tes3.createReference({ object = "T_Glb_BanishDae_Light", position = target.position + tes3vector3.new(0, 0, target.mobile.height) , orientation = target.orientation, cell = target.cell })
 						end
 					end
 
-					if #container.object.inventory == 0 then	-- Just in case
-						container:delete()
+					if target.isRespawn then
+						target.mobile:kill()
+						target.position.z = target.position.z - 1000	-- Moving a respawnable creature to another cell, disabling it, or simply moving it too far causes problems with respawning it, so this will have to do
 					else
-						tes3.createReference({ object = "T_Glb_BanishDae_Light", position = target.position + tes3vector3.new(0, 0, target.mobile.height) , orientation = target.orientation, cell = target.cell })
+						tes3.positionCell({ reference = target, position = { 0, 0, 0 }, cell = "T_BanishTemp" })	-- This has to be put after the item transfers for them to work, rather than before the delays where it really belongs
 					end
 				end
-
-				if target.isRespawn then
-					target.mobile:kill()
-					target.position.z = target.position.z - 1000	-- Moving a respawnable creature to another cell, disabling it, or simply moving it too far causes problems with respawning it, so this will have to do
-				else
-					tes3.positionCell({ reference = target, position = { 0, 0, 0 }, cell = "T_BanishTemp" })	-- This has to be put after the item transfers for them to work, rather than before the delays where it really belongs
-				end
-
 			end)
 		end)
 	else
@@ -2766,11 +2679,11 @@ local function passwallCalculate(targetPosition, forward, right, up, range)
 	local bestDistance = range
 	local bestPosition = nil
 
-	local checkedNodes = { }
+	local checkedNodes = {}
 
 	for _,node in pairs(nodeArr) do
 		for _,connectedNode in pairs(node.connectedNodes) do
-			if not (table.contains(checkedNodes, node) or table.contains(checkedNodes, connectedNode)) then			-- Only check each connection once
+			if not checkedNodes[node] or checkedNodes[connectedNode] then			-- Only check each connection once
 				if (startPosition:distance(node.position) <= range and startPosition:distance(connectedNode.position) <= range) or (endPosition:distance(node.position) <= range and endPosition:distance(connectedNode.position) <= range) then
 					local increment = (connectedNode.position - node.position) / 15
 
@@ -2804,7 +2717,7 @@ local function passwallCalculate(targetPosition, forward, right, up, range)
 			end
 		end
 
-		table.insert(checkedNodes, node)
+		checkedNodes[node] = true
 	end
 
 	return bestPosition, bestDistance
@@ -3132,7 +3045,13 @@ event.register(tes3.event.magicEffectsResolved, function()
 			lighting = {x = divineInterventionEffect.lightingRed / 255, y = divineInterventionEffect.lightingGreen / 255, z = divineInterventionEffect.lightingBlue / 255},
 			size = divineInterventionEffect.size,
 			sizeCap = divineInterventionEffect.sizeCap,
-			onTick = kynesInterventionEffect,
+			onTick = function(eventData)
+				if (not eventData:trigger()) then
+					return
+				end
+				interventionEffect(eventData.sourceInstance.caster, "T_Aid_KyneInterventionMarker", common.kyne_intervention_regions, "main.rangeKyne")
+				eventData.effectInstance.state = tes3.spellState.retired
+			end,
 			onCollision = nil
 		}
 	end
@@ -3155,9 +3074,10 @@ event.register(tes3.event.magicEffectsResolved, function()
 			if not params.icon then
 				params.icon = iconPath
 			end
+
 			local template = templateOverride or tes3.getMagicEffect(tes3.effect[templateId])
 			if template then
-				for _, key in pairs({ "school", "speed", "casterLinked", "usesNegativeLighting", "particleTexture",
+				for _,key in pairs({ "school", "speed", "casterLinked", "usesNegativeLighting", "particleTexture",
 					"size", "sizeCap", "hasContinuousVFX", "illegalDaedra", "targetsAttributes", "targetsSkills",
 					"allowEnchanting", "allowSpellmaking", "appliesOnce", "canCastSelf", "canCastTarget", "canCastTouch",
 					"hasNoDuration", "hasNoMagnitude", "isHarmful", "nonRecastable", "unreflectable" }) do
@@ -3165,9 +3085,11 @@ event.register(tes3.event.magicEffectsResolved, function()
 						params[key] = template[key]
 					end
 				end
+
 				if not params.lighting then
 					params.lighting = {x = template.lightingRed / 255, y = template.lightingGreen / 255, z = template.lightingBlue / 255}
 				end
+
 				for key1, key2 in pairs({ boltSound = "boltSoundEffect", boltVFX = "boltVisualEffect", hitSound = "hitSoundEffect",
 					hitVFX = "hitVisualEffect", areaSound = "areaSoundEffect", areaVFX = "areaVisualEffect", castSound = "castSoundEffect",
 					castVFX = "castVisualEffect" }) do
@@ -3176,6 +3098,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 					end
 				end
 			end
+
 			tes3.addMagicEffect(params)
 		end
 
@@ -3201,7 +3124,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			boltSound = "T_SndObj_Silence",
 			boltVFX = "T_VFX_Empty",
 			hitSound = "T_SndObj_Silence",
-			hitVFX = "T_VFX_Empty",							-- Currently has to use VFX because otherwise Morrowind crashes when casting the effect on some actors despite this parameter being "optional"
+			hitVFX = "T_VFX_Empty",								-- Currently has to use VFX because otherwise Morrowind crashes when casting the effect on some actors despite this parameter being "optional"
 			areaSound = "T_SndObj_Silence",
 			areaVFX = "T_VFX_Empty",							-- Problems can apparently still arise from missing boltVFX and areaVFX for some people
 			onTick = function(eventData) eventData:trigger() end,
@@ -3638,7 +3561,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 	end
 end)
 
--- Replaces spell names, effects, etc. using the spell tables above; these operations needs to be done during the load event, rather than loaded like in main.lua
+-- Replaces spell names, effects, etc. using the spell tables above and handles functions tied to uiActivated and magicEffectActivated; these operations need to before their loaded event
 event.register(tes3.event.load, function()
 	if config.summoningSpells then
 		this.replaceSpells(magicData.td_summon_spells)

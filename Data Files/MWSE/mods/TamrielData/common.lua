@@ -10,6 +10,99 @@ local PTRMasterFiles = {
     "TR_Mainland.esm",
 }
 
+-- region id, xcell left bound, xcell right bound, ycell top bound, ycell bottom bound
+this.almsivi_intervention_regions = {
+	{ "Aanthirin Region", nil, nil, nil, nil },
+	{ "Alt Orethan Region", nil, nil, nil, nil },
+	{ "Armun Ashlands Region", nil, nil, nil, nil },
+	{ "Arnesian Jungle Region", nil, nil, nil, nil },
+	{ "Ascadian Isles Region", nil, nil, nil, nil },
+	{ "Ashlands Region", nil, nil, nil, nil },
+	{ "Azura's Coast Region", nil, nil, nil, nil },
+	{ "Bitter Coast Region", nil, nil, nil, nil },
+	{ "Boethiah's Spine Region", nil, nil, nil, nil },
+	{ "Clambering Moor Region", nil, nil, nil, nil },
+	{ "Dagon Urul Region", nil, nil, nil, nil },
+	{ "Deshaan Plains Region", nil, nil, nil, nil },
+	{ "Grazelands Region", nil, nil, nil, nil },
+	{ "Grey Meadows Region", nil, nil, nil, nil },
+	{ "Julan-Shar Region", nil, nil, nil, nil },
+	{ "Kragen Moor Region", nil, nil, nil, nil },
+	{ "Lan Orethan Region", nil, nil, nil, nil },
+	{ "Mephalan Vales Region", nil, nil, nil, nil },
+	{ "Molag Mar Region", nil, nil, nil, nil },
+	{ "Molag Ruhn Region", nil, nil, nil, nil },
+	{ "Molagreahd Region", nil, nil, nil, nil },
+	{ "Mournhold Region", nil, nil, nil, nil },
+	{ "Mudflats Region", nil, nil, nil, nil },
+	{ "Nedothril Region", nil, nil, nil, nil },
+	{ "Old Ebonheart Region", nil, nil, nil, nil },
+	{ "Othreleth Woods Region", nil, nil, nil, nil },
+	{ "Red Mountain Region", nil, nil, nil, nil },
+	{ "Roth Roryn Region", nil, nil, nil, nil },
+	{ "Sacred Lands Region", nil, nil, nil, nil },
+	{ "Salt Marsh Region", nil, nil, nil, nil },
+	{ "Sheogorad", nil, nil, nil, nil },
+	{ "Shipal-Shin Region", nil, nil, nil, nil },
+	{ "Sundered Scar Region", nil, nil, nil, nil },
+	{ "Telvanni Isles Region", nil, nil, nil, nil },
+	{ "Thirr Valley Region", nil, nil, nil, nil },
+	{ "Uld Vraech Region", nil, nil, nil, nil },
+	{ "Velothi Mountains Region", nil, nil, nil, nil },
+	{ "West Gash Region", nil, nil, nil, nil },
+	{ "Sea of Ghosts Region", -40, 58, 17, 33 },
+	{ "Padomaic Ocean Region", 30, 58, -61, 30 },
+	{ nil, -40, 58 , -61, 33 },
+	{ "Brodir Grove Region", nil, nil, nil, nil },
+	{ "Felsaad Coast Region", nil, nil, nil, nil },
+	{ "Hirstaang Forest Region", nil, nil, nil, nil },
+	{ "Moesring Mountains Region", nil, nil, nil, nil },
+	{ "Isinfier Plains Region", nil, nil, nil, nil },
+	{ "Thirsk Region", nil, nil, nil, nil }
+}
+
+-- region id, xcell left bound, xcell right bound, ycell top bound, ycell bottom bound
+this.kyne_intervention_regions = {
+	{ "Colovian Barrowlands Region", nil, nil, nil, nil },
+	{ "Drajkmyr Marsh Region", nil, nil, nil, nil },
+	{ "Druadach Highlands Region", nil, nil, nil, nil },
+	{ "Falkheim Region", nil, nil, nil, nil },
+	{ "Gorvigh Mountains Region", nil, nil, nil, nil },
+	{ "Hrimbald Plateau Region", nil, nil, nil, nil },
+	{ "Hirsing Forest Region", nil, nil, nil, nil },
+	{ "Jerall Mountains Region", nil, nil, nil, nil },
+	{ "Kilkreath Mountains Region", nil, nil, nil, nil },
+	{ "Kreathi Vale Region", nil, nil, nil, nil },
+	{ "Lorchwuir Heath Region", nil, nil, nil, nil },
+	{ "Mhorkren Hills Region", nil, nil, nil, nil },
+	{ "Midkarth Region", nil, nil, nil, nil },
+	{ "Northshore Region", nil, nil, nil, nil },
+	{ "Reaver's Shore Region", nil, nil, nil, nil },
+	{ "Rift Valley Region", nil, nil, nil, nil },
+	{ "Skaldring Mountains Region", nil, nil, nil, nil },
+	{ "Solitude Forest Region", nil, nil, nil, nil },
+	{ "Solitude Forest Region S", nil, nil, nil, nil },
+	{ "Sundered Hills Region", nil, nil, nil, nil },
+	{ "Throat of the World Region", nil, nil, nil, nil },
+	{ "Troll's Teeth Mountains Region", nil, nil, nil, nil },
+	{ "Uld Vraech Region", nil, nil, nil, nil },
+	{ "Valstaag Highlands Region", nil, nil, nil, nil },
+	{ "Velothi Mountains Region", -41, -18, -8, 20 },
+	{ "Vorndgad Forest Region", nil, nil, nil, nil },
+	{ "White Plains Region", nil, nil, nil, nil },
+	{ "Wuurthal Dale Region", nil, nil, nil, nil },
+	{ "Ysheim Region", nil, nil, nil, nil },
+	{ "Sea of Ghosts Region", -116, -20, 21, 40 },
+	{ "Sea of Ghosts Region N", -116, -10, 21, 40 },
+	{ nil, -116, -20, 21, 40 },
+	{ "Brodir Grove Region", nil, nil, nil, nil },
+	{ "Felsaad Coast Region", nil, nil, nil, nil },
+	{ "Hirstaang Forest Region", nil, nil, nil, nil },
+	{ "Moesring Mountains Region", nil, nil, nil, nil },
+	{ "Isinfier Plains Region", nil, nil, nil, nil },
+	{ "Thirsk Region", nil, nil, nil, nil }
+}
+
 ---@param cell tes3cell
 ---@param cellVisitTable table<tes3cell, boolean>|nil
 ---@return tes3cell?
@@ -33,6 +126,28 @@ function this.getExteriorCell(cell, cellVisitTable)
 			end
 		end
 	end
+end
+
+---@param cell tes3cell
+---@param regionTable table
+---@return boolean
+function this.isInterventionCell(cell, regionTable)
+	for _,v in pairs(regionTable) do
+		local regionID, xLeft, xRight, yBottom, yTop = unpack(v, 1, 5)
+			if (cell.region and cell.region.id == regionID) or cell.region == regionID then
+				if not xLeft then -- Checks whether cell boundaries are being used; if xLeft is nil, then all of the others should be too
+					return true
+				else
+					if (cell.gridX >= xLeft) and (cell.gridX <= xRight) and (cell.gridY >= yBottom) and (cell.gridY <= yTop) then
+						return true
+					else
+						return false
+					end
+				end
+			end
+	end
+
+	return false
 end
 
 function this.initQueue()

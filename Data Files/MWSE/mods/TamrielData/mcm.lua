@@ -20,6 +20,9 @@ local function registerModConfig()
         text = common.i18n("mcm.Kynesifnar"),
         url = "https://www.nexusmods.com/users/56893332?tab=user+files",
     }
+    credits:createInfo{
+        text = common.i18n("mcm.Stele")
+    }
     credits:createHyperlink{
         text = common.i18n("mcm.mort"),
         url = "https://www.nexusmods.com/morrowind/users/4138441/?tab=user+files",
@@ -107,8 +110,36 @@ local function registerModConfig()
         description = common.i18n("mcm.detectValuablesThresholdDescription"),
         min = 2000,
         max = 20000,
+        step = 100,
+        jump = 1000,
         variable = mwse.mcm.createTableVariable{
             id = "detectValuablesThreshold",
+            table = config,
+        },
+    }
+    toggles:createSlider{
+        label = common.i18n("mcm.prismaticLightSaturationLabel"),
+        description = common.i18n("mcm.prismaticLightSaturationDescription"),
+        min = 0.2,
+        max = 0.6,
+        step = 0.01,
+        jump = 0.05,
+        decimalPlaces = 2,
+        variable = mwse.mcm.createTableVariable{
+            id = "prismaticLightSaturation",
+            table = config,
+        },
+    }
+    toggles:createSlider{
+        label = common.i18n("mcm.prismaticLightPeriodLabel"),
+        description = common.i18n("mcm.prismaticLightPeriodDescription"),
+        min = 3,
+        max = 12,
+        step = 0.2,
+        jump = 1,
+        decimalPlaces = 1,
+        variable = mwse.mcm.createTableVariable{
+            id = "prismaticLightPeriod",
             table = config,
         },
     }

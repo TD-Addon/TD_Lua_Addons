@@ -152,7 +152,7 @@ local td_misc_spells = {
 	{ "T_Dae_Alt_UNI_WabbajackTrans", "spell", "miscWabbajack", 0, { id = "T_alteration_WabbajackHelper", range = "touch", duration = 16, min = 1, max = 1 } },
 	{ "T_Com_Mys_DetectInvisibility", "spell", "miscDetectInvisibility", 38, { id = "T_mysticism_DetInvisibility", range = "self", duration = 5, min = 50, max = 150 } },
 	{ "T_Com_Mys_Blink", "spell", "miscBlink", 25, { id = "T_mysticism_Blink", range = "self", min = 50, max = 50 } },
-	--{ "T_Cr_Ab_AuroranLight", "ability", nil, nil, { id = "T_illusion_PrismaticLight", range = "self", min = 20, max = 20 } },	-- There should be a separate, higher magnitude ability for the radiant Aurorans that will be affected instead
+	{ "T_Cr_Ab_AuroranPrismaticLight", "ability", nil, nil, { id = "T_illusion_PrismaticLight", range = "self", min = 20, max = 20 } },
 	{ "T_UNI_SaintTelynBlessing", "ability", nil, nil, { id = "T_mysticism_Insight", range = "self", min = 10, max = 10 } },
 	{ "T_Arg_Mys_BloodMagic", "power", nil, nil, { id = "T_mysticism_BloodMagic", range = "self", duration = 90 } },
 	{ "T_Com_Mys_BloodMagic", "spell", "miscBloodMagic", 3, { id = "T_mysticism_BloodMagic", range = "self", duration = 30 } },
@@ -186,7 +186,7 @@ local td_enchantments = {
 	{ "T_Once_AylDaedricHerald1", "castOnce", { id = "T_summon_WelkyndSpirit", range = "self", duration = 30, min = 1, max = 1 } },
 	{ "T_Once_AylDaedricHerald2", "castOnce", { id = "T_summon_Auroran", range = "self", duration = 30, min = 1, max = 1 } },
 	{ "T_Once_AylLoreArmor1", "castOnce", { id = "T_alteration_RadShield", range = "self", duration = 30, min = 20, max = 20 } },
-	--{ "T_Once_AylCavernsTruth", "castOnce", { id = "T_illusion_PrismaticLight", range = "self", duration = 90, min = 15, max = 15 } },
+	{ "T_Once_AylCavernsTruth", "castOnce", { id = "T_illusion_PrismaticLight", range = "self", duration = 90, min = 15, max = 15 } },
 	{ "T_Once_KynesIntervention", "castOnce", { id = "T_intervention_Kyne", range = "self", duration = 1, min = 1, max = 1 } },
 	{ "T_Once_QuelledGeas", "castOnce", { id = "T_mysticism_BanishDae", range = "touch", duration = 1, min = 10, max = 15 } },
 	{ "T_Once_LordMhasFortress", "castOnce", { id = "boundBoots", range = "self", duration = 90, min = 1, max = 1 },

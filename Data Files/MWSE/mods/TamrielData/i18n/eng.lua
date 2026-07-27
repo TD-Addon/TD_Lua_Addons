@@ -4,6 +4,8 @@ return {
 	["main.imgaShoes"] = "Imga cannot wear shoes.",
 	["main.imgaHelm"] = "Male Imga cannot wear helmets.",
 	["main.imgaHat"] = "Male Imga cannot wear hats.",
+	["main.maleImgaHelmet"] = "Only male Imga can wear helmets made for them.",
+	["main.maleImgaHat"] = "Only male Imga can wear hats made for them.",
 	["main.tsaesciBoots"] = "Tsaesci cannot wear boots.",
 	["main.tsaesciShoes"] = "Tsaesci cannot wear shoes.",
 	["main.tsaesciGreaves"] = "Tsaesci cannot wear greaves.",
@@ -244,6 +246,12 @@ return {
 
 	["mcm.detectValuablesThresholdLabel"] = "Detect Valuables Threshold",
 	["mcm.detectValuablesThresholdDescription"] = "The minimum value that items must be in order for them to be detected by Detect Valuables.\n\nDefault: 4000\n\n",
+
+	["mcm.prismaticLightSaturationLabel"] = "Prismatic Light Saturation",
+	["mcm.prismaticLightSaturationDescription"] = "The value that determines how colorful prismatic light is.\n\nDefault: 0.4\n\n",
+
+	["mcm.prismaticLightPeriodLabel"] = "Prismatic Light Period",
+	["mcm.prismaticLightPeriodDescription"] = "The number of seconds that it takes for prismatic light to cycle through all of the colors.\nRequires reload.\n\nDefault: 6\n\n",
 
 	["mcm.magickaExpandedLabel"] = "Overwrite Magicka Expanded Effects",
 	["mcm.magickaExpandedDescription"] = "Replaces some magic effects from Magicka Expanded with ones that are also implemented by Tamriel Data for the sake of consistency, such as Banish Daedra and Summon Vermai." ..
