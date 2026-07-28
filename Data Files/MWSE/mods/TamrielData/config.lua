@@ -21,6 +21,7 @@ local defaultConfig = {
 	fixPlayerRaceAnimations = true,
 	hideWerewolfMesh = true,
 	restrictEquipment = true,
+	femaleArgoniansUseMaleEquipment = tes3.hasCodePatchFeature(tes3.codePatchFeature.argonianClothingChoice),
 	fixVampireHeads = true,
 	improveItemSounds = true,
 	adjustTravelPrices = true,

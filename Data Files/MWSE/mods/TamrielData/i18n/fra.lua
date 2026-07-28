@@ -7,7 +7,7 @@ return {
 	["main.tsaesciBoots"] = "Les Tsaescis ne peuvent porter de bottes.",
 	["main.tsaesciShoes"] = "Les Tsaescis ne peuvent porter de chaussures.",
 	["main.tsaesciGreaves"] = "Les Tsaescis ne peuvent porter de jambières.",
-        ["main.tsaesciPants"] = "Les Tsaescis ne peuvent porter de pantalon.",
+	["main.tsaesciPants"] = "Les Tsaescis ne peuvent porter de pantalon.",
 	["main.minotaurHelm"] = "Les minotaures ne peuvent porter de casque.",
 	["main.minotaurHat"] = "Les minotaures ne peuvent porter de chapeau.",
 	["main.nagaHelm"] = "Les Nagas ne peuvent porter de casque.",
@@ -210,7 +210,7 @@ return {
 	-- MCM Text
 	["mcm.name"] = "Ressources communes de Tamriel",
 	["mcm.preferences"] = "Préférences",
-	["mcm.preferencesInfo"] = "Ressources communes de Tamriel MWSE-Lua v2.3",
+	["mcm.version"] = "Ressources communes de Tamriel MWSE-Lua v2.3",
 	["mcm.credits"] = "Crédits :",
 	["mcm.Kynesifnar"] = "Kynesifnar - Scripting",
 	["mcm.mort"] = "mort - Scripting",
@@ -219,7 +219,6 @@ return {
 	["mcm.Cicero"] = "Cicero - Icônes",
 	["mcm.NullCascade"] = "NullCascade - Support de MWSE",
 	["mcm.Hrnchamd"] = "Hrnchamd - Support de MWSE",
-	["mcm.settings"] = "Paramètres",
 
 	["mcm.summonSpellsLabel"] = "Ajout de nouveaux sorts d'Invocation",
 	["mcm.summonSpellsDescription"] = "Ajoute de nouveaux sorts d'Invocation utilisant des créatures de Ressources communes de Tamriel comme les consummeurs, les hernes, les sombres séductrices, et les auroriens.\nRequiert un redémarrage.\n\nPar défaut : activé\n\n",
@@ -250,7 +249,7 @@ return {
 	["mcm.provincialReputationDescription"] = "Modifie l'interface pour afficher la réputation du joueur dans différentes régions de Tamriel au lieu d'utiliser une unique valeur globale. Les chances du joueur de parvenir à admirer, intimider ou insulter quelqu'un sont également influencées par ces valeurs." ..
 											"\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 											
-	["mcm.provincialFactionsUI"] = "Interface de factions provinciales",
+	["mcm.provincialFactionsUILabel"] = "Interface de factions provinciales",
 	["mcm.provincialFactionsUIDescription"] = "Modifie l'interface pour que les factions dont le joueur fait partie soient organisées par province.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 
 	["mcm.weatherChangesLabel"] = "Nouvelles météos",

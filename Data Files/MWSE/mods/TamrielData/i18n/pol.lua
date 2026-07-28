@@ -177,7 +177,7 @@ return {
 	-- MCM Text
 	["mcm.name"] = "Tamriel Data",
 	["mcm.preferences"] = "Preferencje",
-	["mcm.preferencesInfo"] = "Tamriel Data MWSE-Lua v2.2",
+	["mcm.version"] = "Tamriel Data MWSE-Lua v2.2",
 	["mcm.credits"] = "Autorzy:",
 	["mcm.Kynesifnar"] = "Kynesifnar - Oskryptowanie",
 	["mcm.mort"] = "mort - Oskryptowanie",
@@ -186,7 +186,6 @@ return {
 	["mcm.Cicero"] = "Cicero - Ikony",
 	["mcm.NullCascade"] = "NullCascade - Wsparcie MWSE",
 	["mcm.Hrnchamd"] = "Hrnchamd - Wsparcie MWSE",
-	["mcm.settings"] = "Ustawienia",
 
 	["mcm.summonSpellsLabel"] = "Nowe Zaklęcia Przywołania",
 	["mcm.summonSpellsDescription"] = "Dodaje nowe zaklęcia przywołania używające istoty dodane w Tamriel Data, takie jak Pożeracze, Herny, Mroczne Uwodzicielki czy Auroranie.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
@@ -211,7 +210,7 @@ return {
 	["mcm.provincialReputationDescription"] = "Modyfikuje interfejs użytkownika, wyświetlając reputację gracza w poszczególnych częściach Tamriel zamiast pojedynczej ogólnej wartości. Wartości te wpływają również na szansę powodzenia w przypadku pochlebstwa, groźby czy znieważenia." ..
 											"\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
 
-	["mcm.provincialFactionsUI"] = "Prowincjonalne Frakcje",
+	["mcm.provincialFactionsUILabel"] = "Prowincjonalne Frakcje",
 	["mcm.provincialFactionsUIDescription"] = "Modyfikuje interfejs użytkownika, segregując frakcje dołączone przez gracza według prowincji. Ponadto usuwa nazwy prowincji z nazw frakcji w interfejsie.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
 
 	["mcm.weatherChangesLabel"] = "Nowe Efekty Pogodowych",

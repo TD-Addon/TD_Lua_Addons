@@ -10,6 +10,11 @@ local PTRMasterFiles = {
     "TR_Mainland.esm",
 }
 
+-- race id
+this.td_argonian_races = {
+	["T_Bkm_Naga"] = true
+}
+
 -- region id, xcell left bound, xcell right bound, ycell top bound, ycell bottom bound
 this.almsivi_intervention_regions = {
 	{ "Aanthirin Region", nil, nil, nil, nil },

@@ -211,8 +211,11 @@ return {
 
 	-- MCM Text
 	["mcm.name"] = "Tamriel Data",
-	["mcm.preferences"] = "Preferences",
-	["mcm.preferencesInfo"] = "Tamriel Data MWSE-Lua v2.3",
+	["mcm.magic"] = "Magic",
+	["mcm.equipment"] = "Equipment",
+	["mcm.fixes"] = "Fixes",
+	["mcm.miscellaneous"] = "Miscellaneous",
+	["mcm.version"] = "Tamriel Data MWSE-Lua v2.3",
 	["mcm.credits"] = "Credits:",
 	["mcm.Kynesifnar"] = "Kynesifnar - Scripting",
 	["mcm.EvilEye"] = "Evil Eye - Scripting",
@@ -223,7 +226,6 @@ return {
 	["mcm.Cicero"] = "Cicero - Icons",
 	["mcm.NullCascade"] = "NullCascade - MWSE Support",
 	["mcm.Hrnchamd"] = "Hrnchamd - MWSE Support",
-	["mcm.settings"] = "Settings",
 
 	["mcm.summonSpellsLabel"] = "Add New Summoning Spells",
 	["mcm.summonSpellsDescription"] = "Adds new summoning spells using creatures added by Tamriel Data, such as Devourers, Herne, Dark Seducers, and Aurorans.\nRequires restart.\n\nDefault: On\n\n",
@@ -263,7 +265,7 @@ return {
 	["mcm.provincialReputationDescription"] = "Modifies the GUI to display the player's reputation in different parts of Tamriel rather than just a single global value. The player's chances of successfully admiring, intimidating, or taunting someone are also affected by these values." ..
 											"\nRequires reload.\n\nDefault: On\n\n",
 
-	["mcm.provincialFactionsUI"] = "Provincial Factions",
+	["mcm.provincialFactionsUILabel"] = "Provincial Factions",
 	["mcm.provincialFactionsUIDescription"] = "Modifies the GUI so that joined factions are organized by province. This also removes the province names from the faction names in the UI.\nRequires reload.\n\nDefault: On\n\n",
 
 	["mcm.weatherChangesLabel"] = "New Weathers",
@@ -294,6 +296,9 @@ return {
 											"\n- Stops Tsaesci from equipping greaves and footwear." ..
 											"\n- Stops Naga from equipping helmets." ..
 											"\n\nDefault: On\n\n",
+
+	["mcm.femaleArgoniansUseMaleEquipmentLabel"] = "Female Tamriel Data Argonians Use Male Equipment",
+	["mcm.femaleArgoniansUseMaleEquipmentDescription"] = "Makes female Argonians who are of the races added by Tamriel Data (such as the Naga) wear male armor and clothes.\nRequires reload.\n\nDefault: On, if Morrowind Code Patch's Argonian Clothing Choice feature is enabled\n\n",
 
 	["mcm.itemSoundsLabel"] = "Improve Item Sounds",
 	["mcm.itemSoundsDescription"] = "Gives some items from Tamriel Data, such as perfume and wasabi paste, more reasonable sounds when they are used or added to/removed from one's inventory.\nRequires reload.\n\nDefault: On\n\n",
