@@ -280,6 +280,10 @@ return {
     ["mcm.creatureBehaviorsDescription"] = "Fait en sorte que les créatures se comportent d'une façon plus intéressante et moins restreinte par les limitations du moteur de jeu. Par exemple, les tanthas dans l'ouest de Cyrodil attaqueront le joueur quand un de leurs nids est pillé."..
                                         "\nRequiert un rechargement.\n\nPar défaut : activé\n\n", 
 	
+	["mcm.creatureSoundsLabel"] = "Extension des sons pour les créatures",
+	["mcm.creatureSoundsDescription"] = "Permet à certaines créatures de Ressources communes de Tamriel d'avoir plus de bruitages associés que le jeu ne supporte habituellement, par exemple des bruitages d'attaque."..
+											"\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+	
 	["mcm.animationFixLabel"] = "Corriger les animations du joueur pour les nouvelles races",
 	["mcm.animationFixDescription"] = "Corrige les animations lorsque vous jouez un Khajiit Ohmes-raht ou Suthay via un plugin tiers.\nRequiert un rechargement. Votre queue peut disparaître jusqu'au rechargement quand des animations d'autres addons MWSE sont appliquées au joueur." ..
 										"\nSi vous utilisez un replacer d'animations qui ajoute des os pour la queue au fichier base_anim.nif, cette fonctionnalité ne sera probablement pas nécessaire.\n\nPar défaut : activé\n\n",
