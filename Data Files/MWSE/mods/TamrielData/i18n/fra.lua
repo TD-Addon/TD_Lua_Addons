@@ -4,6 +4,8 @@ return {
 	["main.imgaShoes"] = "Les Imgas ne peuvent porter de chaussures.",
 	["main.imgaHelm"] = "Les Imgas mâles ne peuvent porter de casque.",
 	["main.imgaHat"] = "Les Imgas mâles ne peuvent porter de chapeau.",
+	["main.maleImgaHelmet"] = "Seuls les Imgas mâles peuvent porter des casques conçus pour eux.",
+	["main.maleImgaHat"] = "Seuls les Imgas mâles peuvent porter des chapeaux conçus pour eux.",
 	["main.tsaesciBoots"] = "Les Tsaescis ne peuvent porter de bottes.",
 	["main.tsaesciShoes"] = "Les Tsaescis ne peuvent porter de chaussures.",
 	["main.tsaesciGreaves"] = "Les Tsaescis ne peuvent porter de jambières.",
@@ -209,12 +211,17 @@ return {
 
 	-- MCM Text
 	["mcm.name"] = "Ressources communes de Tamriel",
-	["mcm.preferences"] = "Préférences",
+	["mcm.magic"] = "Magie",
+	["mcm.equipment"] = "Equipment",
+	["mcm.fixes"] = "Correctifs",
+	["mcm.miscellaneous"] = "Divers",
 	["mcm.version"] = "Ressources communes de Tamriel MWSE-Lua v2.3",
 	["mcm.credits"] = "Crédits :",
 	["mcm.Kynesifnar"] = "Kynesifnar - Scripting",
+	["mcm.EvilEye"] = "Evil Eye - Scripting",
 	["mcm.mort"] = "mort - Scripting",
 	["mcm.Rakanishu"] = "Rakanishu - Scripting",
+	["mcm.Stele"] = "Stele - Interopérabilité avec Cendregivre",
 	["mcm.chef"] = "chef - Gestion de TD_Addon",
 	["mcm.Cicero"] = "Cicero - Icônes",
 	["mcm.NullCascade"] = "NullCascade - Support de MWSE",
@@ -240,6 +247,15 @@ return {
 	
 	["mcm.argonianBloodMagicLabel"] = "Magie du sang pour les races argoniennes",
 	["mcm.argonianBloodMagicDescription"] = "Donne aux joueurs argoniens le pouvoir racial Magie du sang.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+	
+	["mcm.detectValuablesThresholdLabel"] = "Seuil de Détection des objets précieux",
+	["mcm.detectValuablesThresholdDescription"] = "La valeur minimum que doit avoir un objet pour être détecté par l'effet Détection des objets précieux.\n\nPar défaut : 4000\n\n",
+	
+	["mcm.prismaticLightSaturationLabel"] = "Saturation de Lumière prismatique",
+	["mcm.prismaticLightSaturationDescription"] = "Cette valeur détermine la vivacité des couleurs de l'effet de lumière prismatique.\n\nPar défaut : 0.4\n\n",
+	
+	["mcm.prismaticLightPeriodLabel"] = "Durée du cycle de Lumière prismatique",
+	["mcm.prismaticLightPeriodDescription"] = "Le nombre de secondes requis pour que l'effet de lumière prismatique passe par toutes les couleurs.\nRequiert un rechargement.\n\nPar défaut : 6\n\n",
 	
 	["mcm.magickaExpandedLabel"] = "Remplacer les effets de Magie étendue",
 	["mcm.magickaExpandedDescription"] = "Remplace certains effets magiques de Magie étendue avec ceux implémentés par Ressources communes de Tamriel pour être consistant, comme Bannissement de Daedra et Appel de vermaï." ..
@@ -280,6 +296,9 @@ return {
 											"\n- Empêche les Tsaescis d'équiper des jambières, pantalons, et bottes ou chaussures." ..
 											"\n- Empêche les Nagas d'équiper des casques." ..
 											"Par défaut : activé\n\n",
+											
+	["mcm.femaleArgoniansUseMaleEquipmentLabel"] = "Les femmes des races argoniennes utilisent les versions masculines de l'équipement",
+	["mcm.femaleArgoniansUseMaleEquipmentDescription"] = "Quand cette option est activée, les femmes des races argoniennes ajoutées par Ressources communes de Tamriel (comme les Nagas) porteront les versions masculines des pièces d'armures et des vêtements.\nRequiert un rechargement.\n\nPar défaut : Activé, si l'option du Morrowind Code Patch 'Choix vestimentaires des Argoniennes' est activée\n\n",
 	
 	["mcm.itemSoundsLabel"] = "Améliorer les sons des objets",
 	["mcm.itemSoundsDescription"] = "Donne à certains objets du mod, comme les parfums et la pâte de wasabi, des sons plus adaptés lorsqu'ils sont utilisés ou ajoutés à/retirés de l'inventaire.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",

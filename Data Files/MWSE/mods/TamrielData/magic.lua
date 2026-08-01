@@ -1293,7 +1293,7 @@ local function gazeOfVelothEffect(e)
 	target.data.tamrielData = target.data.tamrielData or {}
 	target.data.tamrielData.gazeOfVeloth = true
 	tes3.removeSound({ sound = nil, reference = target })	-- Stop long-winded voice lines from continuing to play after the target is stripped of their flesh
-	tes3.playSound({ sound = tes3.getMagicEffect(tes3.effect.damageHealth).hitSoundEffect, reference = target })	-- The hit sound is stopped by the line above though, so this plays it again
+	tes3.playSound({ sound = tes3.getMagicEffect(tes3.effect.damageHealth).hitSoundEffect, reference = target, mixChannel = tes3.soundMix.effects })	-- The hit sound is stopped by the line above though, so this plays it again
 	target.mobile:kill()
 	tes3.incrementKillCount({ actor = target.baseObject })
 
@@ -1398,7 +1398,7 @@ local function playDistractedVoiceLine(ref, isEnd)
 
 		local soundGen = tes3.getSoundGenerator(creature.id, tes3.soundGenType.moan)
 
-		if soundGen then tes3.playSound({ reference = ref, sound = soundGen.sound }) end
+		if soundGen then tes3.playSound({ reference = ref, sound = soundGen.sound, mixChannel = tes3.soundMix.voice }) end
 	end
 end
 
@@ -2256,7 +2256,7 @@ local function wabbajackHelperEffect(e)
 				local transformedMagicka = target.mobile.magicka.normalized
 
 				local vfx = tes3.createVisualEffect({ object = "T_VFX_Wabbajack", lifespan = 1.5, reference = ref })
-				tes3.playSound{ sound = "alteration hit", reference = ref }
+				tes3.playSound{ sound = "alteration hit", reference = ref, mixChannel = tes3.soundMix.effects }
 
 				tes3.positionCell({ reference = ref, position = target.position, orientation = target.orientation, cell = target.cell })
 
@@ -2328,7 +2328,7 @@ local function wabbajackEffect(e)
 				transformedTarget.mobile.fight = 0	-- Without this guards will fight transformed NPCs
 
 				local vfx = tes3.createVisualEffect({ object = "T_VFX_Wabbajack", lifespan = 1.5, reference = transformedTarget })
-				tes3.playSound{ sound = "alteration hit", reference = transformedTarget }
+				tes3.playSound{ sound = "alteration hit", reference = transformedTarget, mixChannel = tes3.soundMix.effects }
 
 				tes3.cast({ reference = e.sourceInstance.caster, spell = "T_Dae_Alt_UNI_WabbajackTrans", alwaysSucceeds = true, bypassResistances = true, instant = true, target = transformedTarget })
 				tes3.positionCell({ reference = target, position = { 0, 0, -53.187 }, cell = "T_Wabbajack" })	-- All sorts of problems can arise from disabling a target within the effect event
@@ -2342,12 +2342,12 @@ local function wabbajackEffect(e)
 				transformedTarget.mobile:startCombat(e.sourceInstance.caster.mobile)
 				e.sourceInstance.caster.mobile:startCombat(transformedTarget.mobile)	-- Is this actually needed?
 			else
-				tes3.playSound{ sound = "Spell Failure Alteration", reference = target }
+				tes3.playSound{ sound = "Spell Failure Alteration", reference = target, mixChannel = tes3.soundMix.effects }
 				if target.data.tamrielData and target.data.tamrielData.wabbajack and target.data.tamrielData.wabbajack.targetName then tes3ui.showNotifyMenu(common.i18n("magic.wabbajackAlready", { target.data.tamrielData.wabbajack.targetName })) end
 				restoreCharge(e.sourceInstance)
 			end
 		else
-			tes3.playSound{ sound = "Spell Failure Alteration", reference = target }
+			tes3.playSound{ sound = "Spell Failure Alteration", reference = target, mixChannel = tes3.soundMix.effects }
 			tes3ui.showNotifyMenu(common.i18n("magic.wabbajackFailure", { target.object.name }))
 			restoreCharge(e.sourceInstance)
 		end
@@ -2592,7 +2592,7 @@ local function banishDaedraEffect(e)
 		target:setActionFlag(tes3.actionFlag.onDeath)
 		tes3.incrementKillCount({ actor = target.object })
 		local soundSource = tes3.createReference({ object = "T_VFX_Empty", position = target.position + tes3vector3.new(0, 0, target.mobile.height/2) , orientation = target.orientation, cell = target.cell })		-- Since the creature is being removed from the cell, a different reference needs to be used for the effect's sound
-		tes3.playSound{ sound = "mysticism hit", reference = soundSource }
+		tes3.playSound{ sound = "mysticism hit", reference = soundSource, mixChannel = tes3.soundMix.effects }
 		local vfx = tes3.createVisualEffect({ object = "T_VFX_Banish", lifespan = 1.5, position = target.position })
 
 		local targetHandle = tes3.makeSafeObjectHandle(target)
@@ -2834,7 +2834,7 @@ function this.passwallEffect(e)
 										return
 									end
 
-									tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }		-- Since there isn't a target in the normal sense, the sound won't play without this
+									tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer, mixChannel = tes3.soundMix.effects }		-- Since there isn't a target in the normal sense, the sound won't play without this
 									local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
 									tes3.mobilePlayer.position = bestPosition
 								end
@@ -2860,7 +2860,7 @@ function this.passwallEffect(e)
 									end
 
 									if passWallDoorCrime(targetReference) then tes3.triggerCrime({ type = tes3.crimeType.trespass }) end
-									tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }
+									tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer, mixChannel = tes3.soundMix.effects }
 									local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
 									tes3.mobilePlayer.position = bestPosition
 								end
@@ -2871,7 +2871,7 @@ function this.passwallEffect(e)
 								end
 
 								if passWallDoorCrime(targetReference) then tes3.triggerCrime({ type = tes3.crimeType.trespass }) end
-								tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer }
+								tes3.playSound{ sound = hitSound, reference = tes3.mobilePlayer, mixChannel = tes3.soundMix.effects }
 								local vfx = tes3.createVisualEffect({ object = hitVFX, lifespan = 2, avObject = tes3.player.sceneNode })
 								tes3.positionCell({ cell = targetReference.destination.cell, position = targetReference.destination.marker.position, orientation = targetReference.destination.marker.orientation, teleportCompanions = false })
 							else

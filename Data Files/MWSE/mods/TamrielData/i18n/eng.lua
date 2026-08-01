@@ -280,6 +280,10 @@ return {
 	["mcm.creatureBehaviorsDescription"] = "Makes creatures behave in a more interesting manner or one that is less constrained by Morrowind's limitations, such as tanthas in western Cyrodiil attacking the player when one of their nests is looted."..
 											"\nRequires restart.\n\nDefault: On\n\n",
 
+	["mcm.creatureSoundsLabel"] = "Expand Creature Sounds",
+	["mcm.creatureSoundsDescription"] = "Allows some creatures from Tamriel Data to play more kinds of sounds than are normally supported by Morrowind, such as sounds for attacking."..
+											"\nRequires reload.\n\nDefault: On\n\n",
+
 	["mcm.animationFixLabel"] = "Fix Player Animations for Tamriel Data Races",
 	["mcm.animationFixDescription"] = "Fixes animations when playing as Ohmes-raht or Suthay Khajiit via 3rd party mods.\nRequires reload. Tail may vanish until reload when animations from other MWSE addons are applied to the player character." ..
 										"\nIf using an animation replacer that adds tail bones to base_anim.nif, then this feature is likely not necessary.\n\nDefault: On\n\n",

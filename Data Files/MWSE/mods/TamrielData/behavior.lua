@@ -2,9 +2,16 @@ local this = {}
 
 local common = require("TamrielData.common")
 
+-- creature id, sound id
+local creatureAttackHitSounds = {
+	["T_Hr_Fau_Floater_01"] = "T_SndCrea_FloaterHit",
+}
+
 local lamiaReferences = {}
 local dreughReferences = {}
 local fleeReferences = {}
+local creatureSoundAttackedReferences = {
+}
 
 local creatureFleeing = false
 
@@ -172,6 +179,26 @@ function this.blockMusicFromFleeing(e)
 	if creatureFleeing and e.situation == tes3.musicSituation.combat then
 		creatureFleeing = false
 		return false
+	end
+end
+
+---@param e damageEventData
+function this.checkAttackingCreatureSound(e)
+	if e.reference and e.attackerReference then
+		if creatureAttackHitSounds[e.attackerReference.baseObject.id] then
+			creatureSoundAttackedReferences[e.reference] = creatureAttackHitSounds[e.attackerReference.baseObject.id]
+		elseif e.attackerReference.baseObject.soundCreature and creatureAttackHitSounds[e.attackerReference.baseObject.soundCreature.id] then
+			creatureSoundAttackedReferences[e.reference] = creatureAttackHitSounds[e.attackerReference.baseObject.soundCreature.id]
+		end
+	end
+end
+
+---@param e addSoundEventData
+function this.changeCreatureAttackHitSound(e)
+	if creatureSoundAttackedReferences[e.reference] and e.sound.id == "Health Damage" then
+		tes3.playSound({ reference = e.reference, sound = creatureSoundAttackedReferences[e.reference], mixChannel = tes3.soundMix.effects })
+		creatureSoundAttackedReferences[e.reference] = nil
+		e.volume = e.volume * .7	-- Not hearing the Health Damage sound at all feels strange, so its volume is simply reduced; this might need to be gone over for other attack hit sounds
 	end
 end
 

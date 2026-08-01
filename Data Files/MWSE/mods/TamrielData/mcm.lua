@@ -5,7 +5,6 @@ local config = require("TamrielData.config")
 -- MCM Template --
 ----------------------
 
-
 local function registerModConfig()
     local template = mwse.mcm.createTemplate{name=common.i18n("mcm.name")}
     template:saveOnClose("tamrielData", config)
@@ -68,6 +67,7 @@ local function registerModConfig()
         variable = mwse.mcm.createTableVariable{
             id = "summoningSpells",
             table = config,
+            restartRequired = true
         },
     }
     magicToggles:createOnOffButton{
@@ -76,6 +76,7 @@ local function registerModConfig()
         variable = mwse.mcm.createTableVariable{
             id = "boundSpells",
             table = config,
+            restartRequired = true
         },
     }
     magicToggles:createOnOffButton{
@@ -254,6 +255,14 @@ local function registerModConfig()
         },
     }
     miscellaneousToggles:createOnOffButton{
+        label = common.i18n("mcm.creatureSoundsLabel"),
+        description = common.i18n("mcm.creatureSoundsDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "creatureSounds",
+            table = config,
+        },
+    }
+    miscellaneousToggles:createOnOffButton{
         label = common.i18n("mcm.itemSoundsLabel"),
         description = common.i18n("mcm.itemSoundsDescription"),
         variable = mwse.mcm.createTableVariable{
@@ -304,5 +313,4 @@ local function registerModConfig()
 
     template:register()
 end
-
 event.register(tes3.event.modConfigReady, registerModConfig)

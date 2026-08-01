@@ -304,14 +304,14 @@ local function improveItemSounds(e)
 
 		if e.item.id == itemID then
 			if e.state == tes3.itemSoundState.up then
-				tes3.playSound{ sound = upSound }
+				tes3.playSound{ sound = upSound, mixChannel = tes3.soundMix.effects }
 			elseif e.state == tes3.itemSoundState.down then
-				tes3.playSound{ sound = downSound }
+				tes3.playSound{ sound = downSound, mixChannel = tes3.soundMix.effects }
 			elseif e.state == tes3.itemSoundState.consume then
-				tes3.playSound{ sound = useSound }
+				tes3.playSound{ sound = useSound, mixChannel = tes3.soundMix.effects }
 			end
 
-			return false	-- Block the vanilla behavior and stop iterating through item_sounds 
+			if e.state ~= tes3.itemSoundState.direct then return false end	-- Block the vanilla behavior and stop iterating through item_sounds 
 		end
 	end
 end
@@ -617,6 +617,11 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.cellChanged, behavior.onFirstCellLoad, { unregisterOnLoad = true })
 		event.register(tes3.event.mobileActivated, behavior.onMobileActivated, { unregisterOnLoad = true })
 		event.register(tes3.event.mobileDeactivated, behavior.onMobileDeactivated, { unregisterOnLoad = true })
+	end
+
+	if config.creatureSounds then
+		event.register(tes3.event.damage, behavior.checkAttackingCreatureSound, { unregisterOnLoad = true })
+		event.register(tes3.event.addSound, behavior.changeCreatureAttackHitSound, { unregisterOnLoad = true })
 	end
 
 	if config.fixPlayerRaceAnimations then

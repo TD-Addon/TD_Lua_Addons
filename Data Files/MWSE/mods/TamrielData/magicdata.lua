@@ -614,6 +614,10 @@ local td_ingredients = {
 								nil,
 								nil,
 								{ id = "T_mysticism_Insight" } },
+	{ "T_IngCrea_NirthflyEye_01", { id = "fortifyAttribute", attribute = "speed" },
+								  { id = "T_mysticism_Blink" },
+								  nil,
+								  nil },
 }
 
 -- race id, isFemale, distraction voice files, distraction end voice lines
