@@ -3,11 +3,38 @@ return {
 	["main.imgaShoes"] = "Imga nie mogą nosić butów.",
 	["main.imgaHelm"] = "Samce Imga nie mogą nosić hełmów.", -- Aly: "samiec" is ok, I guess, it's a word used towards male animals which probably fit in case of beast(-ish?) race
 	["main.imgaHat"] = "Samce Imga nie mogą nosić nakryć głowy.",
+	["main.maleImgaHelmet"] = "Tylko samce Imga mogą nosić hełmy przystosowane do nich.",
+	["main.maleImgaHat"] = "Tylko samce Imga mogą nosić nakrycia głowy przystosowane do nich.",
+	["main.tsaesciBoots"] = "Tsaesci nie mogą nosić butów.",
 	["main.tsaesciShoes"] = "Tsaesci nie mogą nosić butów.",
+	["main.tsaesciGreaves"] = "Tsaesci nie mogą nosić nagolenników.",
 	["main.tsaesciPants"] = "Tsaesci nie mogą nosić spodni.",
+	["main.minotaurHelm"] = "Minotaurowie nie mogą nosić hełmów.", -- trav: like "Orkowie"
+	["main.minotaurHat"] = "Minotaurowie nie mogą nosić nakryć głowy.",
+	["main.nagaHelm"] = "Nagi nie mogą nosić hełmów.", -- trav: plural for Naga
+	["main.nagaHat"] = "Nagi nie mogą nosić nakryć głowy.",
 
 	["main.rangeAlmsivi"] = "Moc Almsivi nie obejmuje tych ziem.",
 	["main.rangeKyne"] = "Moc Kyne nie obejmuje tych ziem.",
+
+	["main.morrowindFightersGuild"] = "Gildia Wojowników Morrowind",
+	["main.morrowindMagesGuild"] = "Gildia Magów Morrowind",
+	["main.morrowindThievesGuild"] = "Gildia Złodziei Morrowind",
+	["main.morrowindImperialLegion"] = "Legion Cesarski Morrowind",
+	["main.morrowindDarkBrotherhood"] = "Mroczne Bractwo Morrowind",
+
+	["main.tooltipWeight"] = "Waga",
+	["main.tooltipValue"] = "Wartość",
+
+	["main.khajiit.khajiit"] = "Khajiit",
+	["main.khajiit.cathay"] = "Cathay",
+	["main.khajiit.cathay-raht"] = "Cathay-raht",
+	["main.khajiit.dagi-raht"] = "Dagi-raht",
+	["main.khajiit.ohmes"] = "Ohmes",
+	["main.khajiit.ohmes-raht"] = "Ohmes-raht",
+	["main.khajiit.suthay"] = "Suthay",
+	["main.khajiit.suthay-raht"] = "Suthay-raht",
+	["main.khajiit.tojay"] = "Tojay",
 
 	-- Magic Text
 	["magic.summonDevourer"] = "Przywołanie Pożeracza",
@@ -125,6 +152,10 @@ return {
 	["magic.miscSanguineRoseDesc"] = "Przywołuje z Otchłani losową daedrę. Stworzenie pojawi się sześć stóp przed magiem i będzie atakowało każdą zagrażającą mu istotę, póki nie minie czas trwania efektu lub póki samo nie zostanie zabite. W obydwu przypadkach przywołana istota znika, powracając do Otchłani. Pamiętaj, że jeśli przywołasz istotę z innego wymiaru wewnątrz miasta, miejska straż rzuci się na ciebie bez ostrzeżenia!",
 	["magic.miscDetectValuables"] = "Wykrycie Kosztowności",
 	["magic.miscDetectValuablesDesc"] = "Rzucający zaklęcie może wykrywać na odległość kosztowne przedmioty. Stopień efektu określa promień (w stopach) obszaru, który zostanie magicznie przeszukany.",
+	["magic.miscMagickaWard"] = "Magiczna Bariera",
+	["magic.miscMagickaWardDesc"] = "Tekst zastępczy",
+	["magic.miscEthereal"] = "Eteryczność",
+	["magic.miscEtherealDesc"] = "Rzucający zaklęcie uzyskuje zdolność przenikania przez inne istoty. Nie są one w stanie go zranić, ale sam rzucający nie może rzucać zaklęć, używać przedmiotów, ani w jakikolwiek inny sposób wchodzić w interakcję ze światem. Nie jest też w stanie przechodzić przez stałe obiekty, takie jak ściany, a grawitacja wciąż go ogranicza.",
 
 	["magic.blinkLevitationDisabled"] = "Migotanie nie działa w tym miejscu.",
 	["magic.wabbajackFailure"] = "Cel: %s jest zbyt potężny, nie może być poddany efektowi Łabadżaka!", -- Aly: ok this was harder to figure out due to adjectives inheriting gender of subject so: "Alex is strong" -> "Alex jest silny" but "Anna is strong" -> "Anna jest silna"; in this case "cel (target)" not %s is the subject so no matter what gender %s is, string will remain the same
@@ -135,6 +166,8 @@ return {
 	["magic.gazeOfVelothDaedra"] = "%s nie przejmuje się Obliczem Velotha!",
 	["magic.gazeOfVelothCreature"] = "%s nie jest w stanie pojąć Oblicza Velotha!",
 	["magic.gazeOfVelothOther"] = "%s jest niewzruszony wobec Oblicza Velotha!",
+	["magic.corruptionScript"] = "Cel: %s nie może zostać wypaczony.",
+	["magic.corruptionSummon"] = "Wypaczenie bytu stworzonego przez Czaszkę nie jest możliwe.",
 	["magic.banishFailure"] = "Cel: %s nie może zostać wypędzony, zaklęcie jest zbyt słabe!",
 	["magic.passwallDisabled"] = "Przeniknięcie Ściany nie działa w tym miejscu.",
 	["magic.passWallWard"] = "Nie możesz tam przeniknąć.",
@@ -197,29 +230,32 @@ return {
 	["mcm.interventionSpellsDescription"] = "Dodaje nowe zaklęcia interwencji dla różnych panteonów i bóstw Tamriel, takich jak norska bogini Kyne.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
 
 	["mcm.miscSpellsLabel"] = "Nowe Różnorodne Zaklęcia",
-	["mcm.miscSpellsDescription"] = "Dodaje nowe zaklęcia nie pasujące do żadnej z powyższych kategorii, jak Wypędzenie Daedry, Odbicie Obrażeń, Rozproszenie Humanoida czy Łabadżak.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
+	["mcm.miscSpellsDescription"] = "Dodaje nowe zaklęcia niepasujące do żadnej z powyższych kategorii, jak Wypędzenie Daedry, Odbicie Obrażeń, Rozproszenie Humanoida czy Łabadżak.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
 
 	["mcm.passwallAlterationLabel"] = "Przeniknięcie Ściany Jako Efekt Szkoły Przemiany",
 	["mcm.passwallAlterationDescription"] = "Przypisuje Przeniknięcie ściany do szkoły Przemiany, zamiast szkoły Mistycyzmu.\nWymaga ponownego uruchomienia gry.\n\nDomyślnie: Wył.\n\n",
 
+	["mcm.blinkIndicatorLabel"] = "Wskaźnik Migotania",
+	["mcm.blinkIndicatorDescription"] = "Podczas przygotowywania zaklęcia Migotania, zostanie wyświetlony wskaźnik celu teleportacji.\nWymaga ponownego uruchomienia gry.\n\nDomyślnie: Wł.\n\n",
+
 	["mcm.magickaExpandedLabel"] = "Nadpisanie Efektów Magicka Expanded",
 	["mcm.magickaExpandedDescription"] = "Podmienia, dla spójności, niektóre efekty dodane w Magicka Expanded na takie same zaimplementowane również w Tamriel Data, jak np. Wypędzenie Daedry czy Przywołanie Vermai" ..
-											"\nPrzynosi efekt tylko w przypadku, gdy odpowiednie pakiety modu Magicka Expanded są zainstalowane, a powyższe ustawienia zaklęć są aktywne.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
+											"\nPrzynosi efekt tylko w przypadku, gdy odpowiednie pakiety modu Magicka Expanded są zainstalowane, a powyższe ustawienia zaklęć są aktywne.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
 
 	["mcm.provincialReputationLabel"] = "System Prowincjonalnej Reputacji",
 	["mcm.provincialReputationDescription"] = "Modyfikuje interfejs użytkownika, wyświetlając reputację gracza w poszczególnych częściach Tamriel zamiast pojedynczej ogólnej wartości. Wartości te wpływają również na szansę powodzenia w przypadku pochlebstwa, groźby czy znieważenia." ..
-											"\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
+											"\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
 
 	["mcm.provincialFactionsUILabel"] = "Prowincjonalne Frakcje",
-	["mcm.provincialFactionsUIDescription"] = "Modyfikuje interfejs użytkownika, segregując frakcje dołączone przez gracza według prowincji. Ponadto usuwa nazwy prowincji z nazw frakcji w interfejsie.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
+	["mcm.provincialFactionsUIDescription"] = "Modyfikuje interfejs użytkownika, segregując frakcje dołączone przez gracza według prowincji. Ponadto usuwa nazwy prowincji z nazw frakcji w interfejsie.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
 
-	["mcm.weatherChangesLabel"] = "Nowe Efekty Pogodowych",
-	["mcm.weatherChangesDescription"] = "Dodaje nowe efekty pogodowe w niektórych regionach, jak np. opad zarodników w Lasach Othreleth, burze piaskowe w Shipal-Shin czy tropikalne burze w okolicach Morza Abeceańskiego. Wprowadza także poprawki pogodowe w pozostałych regionach, jak np. popielne burze w częściach kontynentalnych Morrowind nie mające źródła na Czerwonej Górze."..
-										"\nMoże kolidować z innymi modami MWSE wpływającymi na efekty pogodowe, jak np. Watch the Skies.\nWymage ponownego uruchomienia gry.\n\nDomyślnie: Wł\n\n",
+	["mcm.weatherChangesLabel"] = "Nowe Efekty Pogodowe",
+	["mcm.weatherChangesDescription"] = "Dodaje nowe efekty pogodowe w niektórych regionach, jak np. opad zarodników w Lasach Othreleth, burze piaskowe w Shipal-Shin czy tropikalne burze w okolicach Morza Abeceańskiego. Wprowadza także poprawki pogodowe w pozostałych regionach, jak np. popielne burze w częściach kontynentalnych Morrowind niemające źródła na Czerwonej Górze."..
+										"\nMoże kolidować z innymi modami MWSE wpływającymi na efekty pogodowe, jak np. Watch the Skies.\nWymage ponownego uruchomienia gry.\n\nDomyślnie: Wł.\n\n",
 
 	["mcm.hatsLabel"] = "Nakrycia Głów Jako Ubrania",
 	["mcm.hatsDescription"] = "Powoduje, że nakrycia głów z Tamriel Data funkcjonują jako ubrania, a nie pancerz."..
-											"\nMoże kolidować z innymi modam MWSE dodającymi nowe typy ubrań.\nWymage ponownego uruchomienia gry.\n\nDomyślnie: Wł\n\n",
+											"\nMoże kolidować z innymi modam MWSE dodającymi nowe typy ubrań.\nWymage ponownego uruchomienia gry.\n\nDomyślnie: Wł.\n\n",
 
 	["mcm.creatureBehaviorsLabel"] = "Rozszerzenie Zachowania Stworzeń",
 	["mcm.creatureBehaviorsDescription"] = "Sprawia, że istoty zachowują się w bardziej interesujący lub mniej ograniczony przez możliwości silnika Morrowind, jak np. [Strident Runner] nie będą już niezdarnie wstawać na końcu każdej pętli animacji.".. --Aly: kinda half-assed without example part - for now
@@ -227,26 +263,26 @@ return {
 
 	["mcm.animationFixLabel"] = "Poprawka Animacji Gracza dla Ras Dodanych w Tamriel Data",
 	["mcm.animationFixDescription"] = "Poprawia animacje dla odblokowanych przez mody grywalnych ras dodanych w Tamriel Data, takich jak Ohmes-raht czy Suthay.\nWymaga ponownego wczytania gry. Ogon może zniknąć do momentu ponownego wczytania gry, jeśli animacje z innych modów MWSE są w użyciu przez postać gracza." ..
-										"\nJeśli podmiana animacji dodająca kości ogona do base_anim.nif jest w użyciu, ta funkcja jest prawdopodobnie zbędna.\n\nDomyślnie: Wł\n\n",
+										"\nJeśli podmiana animacji dodająca kości ogona do base_anim.nif jest w użyciu, ta funkcja jest prawdopodobnie zbędna.\n\nDomyślnie: Wł.\n\n",
 
 	["mcm.restrictEquipmentLabel"] ="Ograniczenia Ekwipunku dla Ras Dodanych w Tamriel Data",
-	["mcm.restrictEquipmentDescription"] = "Powstrzymuje rasy dodane w Tamriel Data przed noszeniem pewnych części ekwipunku, gdy jest to fizycznie nieprawdopodobne lub technicznie problematyczne.\nWymaga ponownego wczytania gry.\n\nDotyczące rasy oraz części ekwipunku:" ..
-											"\n- Imga nie mogą ubierać obuwia, samce Imga nie mogą ubierać hełmów.\n\nDomyślnie: Wł\n\n",
+	["mcm.restrictEquipmentDescription"] = "Powstrzymuje rasy dodane w Tamriel Data przed noszeniem pewnych części ekwipunku, gdy jest to fizycznie nieprawdopodobne lub technicznie problematyczne.\nWymaga ponownego wczytania gry.\n\nDotyczy ras oraz części ekwipunku:" ..
+											"\n- Imga nie mogą ubierać obuwia, samce Imga nie mogą ubierać hełmów.\n\nDomyślnie: Wł.\n\n",
 
 	["mcm.fixVampireLabel"] = "Poprawka Wampirzych Głów",
-	["mcm.fixVampireDescription"] = "Powstrzymuje Całun Namiry od ukrywania głowy gracza, gdy jest ubrany, oraz pozwala wampirzym postaciom niezależnym używać unikatowych głów stworzonych specjalnie dla nich.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
+	["mcm.fixVampireDescription"] = "Powstrzymuje Całun Namiry od ukrywania głowy gracza, gdy jest ubrany, oraz pozwala wampirzym postaciom niezależnym używać unikatowych głów stworzonych specjalnie dla nich.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
 
 	["mcm.itemSoundsLabel"] = "Poprawione Efekty Dźwiękowe Przedmiotów",
-	["mcm.itemSoundsDescription"] = "Niektóre przedmioty dodane w Tamriel Data, jak pasta wasabi czy perfumy, używają bardziej sensownych efektów dźwiękowych, gdy są użyte lub dodane do/usunięte z ekwipunku.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
+	["mcm.itemSoundsDescription"] = "Niektóre przedmioty dodane w Tamriel Data, jak pasta wasabi czy perfumy, używają bardziej sensownych efektów dźwiękowych, gdy są użyte lub dodane do/usunięte z ekwipunku.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
 
 	["mcm.travelPricesLabel"] = "Regulacja Kosztów Podróży",
-	["mcm.travelPricesDescription"] = "Zmienia koszty podróży do miejsc docelowych dodanych przez Tamriel Rebuilt i Project Tamriel w przypadku, gdy ceny obliczone przez grę są nierozsądne, jak np w przypadku sieci teleportacyjnej Gildii Magów.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
+	["mcm.travelPricesDescription"] = "Zmienia koszty podróży do miejsc docelowych dodanych przez Tamriel Rebuilt i Project Tamriel w przypadku, gdy ceny obliczone przez grę są nierozsądne, jak np w przypadku sieci teleportacyjnej Gildii Magów.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
 
 	["mcm.khajiitFormCharacterCreationLabel"] = "Określ Formy Khajiitów Podczas Tworzenia Postaci",
-	["mcm.khajiitFormCharacterCreationDescription"] = "Nazywa formy Khajiitów w stosownych menu tworzenia postaci, zamiast kolektywnej nazwy \"Khajiit\". Dodatkowy mod, taki jak All Races and Classes Unlocked jest wymagany, aby odblokować wspomniane rasy podczas tworzenia postaci.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł\n\n",
+	["mcm.khajiitFormCharacterCreationDescription"] = "Nazywa formy Khajiitów w stosownych menu tworzenia postaci, zamiast kolektywnej nazwy \"Khajiit\". Dodatkowy mod, taki jak All Races and Classes Unlocked jest wymagany, aby odblokować wspomniane rasy podczas tworzenia postaci.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
 
 	["mcm.butterflyMothTooltipLabel"] = "Podpowiedzi Składników Alchemicznych dla Motyli i Ciem",
-	["mcm.butterflyMothTooltipDescription"] = "Pokazuje efekty, wagę oraz koszt składników alchemicznych, które mogą zostać zebrane z motyli i ciem, podobnie jak funkcja modu Graphic Herbalism dla organicznych pojemników.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł, jeśli mod Graphic Herbalism jest zainstalowany oraz jego funkcja wyświetlania podpowiedzi składników alchemicznych jest aktywna\n\n",
+	["mcm.butterflyMothTooltipDescription"] = "Pokazuje efekty, wagę oraz koszt składników alchemicznych, które mogą zostać zebrane z motyli i ciem, podobnie jak funkcja modu Graphic Herbalism dla organicznych pojemników.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł., jeśli mod Graphic Herbalism jest zainstalowany oraz jego funkcja wyświetlania podpowiedzi składników alchemicznych jest aktywna\n\n",
 
 	["mcm.interventionRangeLabel"] = "Ograniczenia Zasięgu Zaklęć Interwencji",
 	["mcm.interventionRangeDescription"] = "Ogranicza zasięg działania niektórych zaklęć interwencji, uniemożliwiając ich użycie aby teleportować się na terenach całego Tamriel." ..
