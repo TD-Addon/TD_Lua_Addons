@@ -64,6 +64,8 @@ event.register(tes3.event.initialized, function()
 		common.gh_config.whitelist["t_pi_fauna_fishslvspd1"] = true
 		common.gh_config.whitelist["t_pi_fauna_fishslvspd2"] = true
 		common.gh_config.whitelist["t_pi_fauna_fishslvspd3"] = true
+		common.gh_config.whitelist["t_mw_flora_swtbarrel_01"] = true
+		common.gh_config.whitelist["t_mw_flora_swtbarrel_02"] = true
 
 		common.gh_config.blacklist["t_cyr_fauna_nesttant_01"] = true
 		common.gh_config.blacklist["t_cyr_fauna_nesttant_02"] = true
