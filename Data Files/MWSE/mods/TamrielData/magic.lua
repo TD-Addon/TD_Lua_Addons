@@ -235,13 +235,13 @@ function this.replaceSpells(table)
 			for i = 1, 8, 1 do
 				local effect_row = v[4 + i]
 				if not effect_row then
-					break	-- This condition exists so that the tables don't have to have dozens of fields if they have less than 8 effects
+					break	-- This condition exists so that the tables don't need to have dozens of fields if they have less than 8 effects
 				end
 
 				local effect = overridden_spell.effects[i]
 				effect.id = tes3.effect[effect_row.id]
-				effect.attribute = effect_row.attribute
-				effect.skill = effect_row.skill
+				effect.attribute = tes3.attribute[effect_row.attribute]
+				effect.skill = tes3.skill[effect_row.skill]
 				effect.rangeType = tes3.effectRange[effect_row.range]
 				effect.radius = effect_row.area or 0
 				effect.duration = effect_row.duration or 0
@@ -294,9 +294,9 @@ function this.replaceIngredientEffects(table)
 			for i = 1, 4, 1 do
 				local effect_row = v[1 + i]
 				if effect_row then
-					ingredient.effects[i] = effect_row.id
-					ingredient.effectAttributeIds[i] = effect_row.attribute or -1
-					ingredient.effectSkillIds[i] = effect_row.skill or -1
+					ingredient.effects[i] = tes3.effect[effect_row.id]
+					ingredient.effectAttributeIds[i] = tes3.attribute[effect_row.attribute] or -1
+					ingredient.effectSkillIds[i] = tes3.attribute[effect_row.skill] or -1
 				end
 			end
 		end
@@ -403,6 +403,26 @@ end
 local function hasScriptedItem(inventory)
 	for _,itemStack in pairs(inventory) do
 		if itemStack.object.script then return true end
+	end
+end
+
+---@param obj tes3npcInstance
+---@param var string
+---@param value number
+local function setLocalVariable(obj, var, value)
+	if obj.script and obj.script.context and obj.script.context[var] then
+		obj.script.context[var] = value
+	end
+end
+
+---@param e objectCreatedEventData
+function this.adjustPotionMagnitudes(e)
+	if e.object.objectType == tes3.objectType.alchemy then
+		local blinkIndex = e.object:getFirstIndexOfEffect(tes3.effect.T_mysticism_Blink)
+		if blinkIndex then
+			e.object.effects[blinkIndex + 1].max = e.object.effects[blinkIndex + 1].max * 10
+			e.object.effects[blinkIndex + 1].min = e.object.effects[blinkIndex + 1].min * 10
+		end
 	end
 end
 
@@ -694,10 +714,12 @@ local function etherealEffect(e)
 	end
 
 	if e.effectInstance.state < tes3.spellState.ending then
+		setLocalVariable(e.sourceInstance.caster.object, "T_illusion_Ethereal", 0)
 		e.sourceInstance.caster.mobile.mobToMobCollision = false
 		e.sourceInstance.caster.mobile.chameleon = e.sourceInstance.caster.mobile.chameleon + 30
 		etherealReferences[e.sourceInstance.caster] = true
 	else
+		setLocalVariable(e.sourceInstance.caster.object, "T_illusion_Ethereal", 0)
 		e.sourceInstance.caster.mobile.mobToMobCollision = true
 		e.sourceInstance.caster.mobile.chameleon = e.sourceInstance.caster.mobile.chameleon - 30
 		etherealReferences[e.sourceInstance.caster] = nil
@@ -880,6 +902,7 @@ end
 
 ---@param e magicEffectRemovedEventData
 function this.prismaticLightRemoved(e)
+	setLocalVariable(e.target.object, "T_illusion_PrismaticLight", 0)
 	local prismaticMagnitude, totalMagnitude = unpack(getAppliedLightMagnitudes(e.target))
 
 	if prismaticMagnitude > 0 then
@@ -900,6 +923,8 @@ end
 
 ---@param e magicEffectActivatedEventData
 function this.prismaticLightActivated(e)
+	setLocalVariable(e.target.object, "T_illusion_PrismaticLight", 1)
+
 	local prismaticMagnitude, totalMagnitude = unpack(getAppliedLightMagnitudes(e.target))
 	prismaticMagnitude = prismaticMagnitude + e.effectInstance.magnitude
 	totalMagnitude = totalMagnitude + e.effectInstance.magnitude
@@ -1257,6 +1282,8 @@ local function gazeOfVelothEffect(e)
 		return
 	end
 
+	setLocalVariable(target.object, "T_destruction_GazeOfVeloth", 1)
+
 	local id = target.baseObject.id:lower()
 	local name = target.object.name
 
@@ -1405,6 +1432,9 @@ end
 ---@param e magicEffectRemovedEventData
 function this.distractRemovedEffect(e)
 	if e.target and e.target.data.tamrielData and e.target.data.tamrielData.distract then
+		setLocalVariable(e.target.object, "T_illusion_DistractHumanoid", 0)
+		setLocalVariable(e.target.object, "T_illusion_DistractCreature", 0)
+
 		if math.random() < 0.45 then playDistractedVoiceLine(e.target, true) end
 		tes3.setAITravel({ reference = e.target, destination = e.target.data.tamrielData.distract.position })
 	end
@@ -1589,11 +1619,11 @@ local function distractHumanoidEffect(e)
 	end
 
 	if e.effectInstance.target.mobile.actorType == tes3.actorType.npc then
+		setLocalVariable(e.effectInstance.target.object, "T_illusion_DistractHumanoid", 1)
 		distractEffect(e)
 	else
 		e.effectInstance.state = tes3.spellState.retired
 	end
-
 end
 
 ---@param e tes3magicEffectTickEventData
@@ -1603,6 +1633,7 @@ local function distractCreatureEffect(e)
 	end
 
 	if e.effectInstance.target.mobile.actorType == tes3.actorType.creature then
+		setLocalVariable(e.effectInstance.target.object, "T_illusion_DistractCreature", 1)
 		distractEffect(e)
 	else
 		e.effectInstance.state = tes3.spellState.retired
@@ -1655,6 +1686,7 @@ local function corruptionEffect(e)
 	local target = e.effectInstance.target
 
 	if target.id ~= tes3.player.data.tamrielData.corruptionReferenceID then	-- Memory errors can be reported if the effect is applied to the summon and doing so is weird anyways
+		setLocalVariable(target.object, "T_conjuration_Corruption", 1)
 		if target.baseObject.script and (not ((target.baseObject.script.id:find("T_ScNpc") and not target.baseObject.script.id:find("_Were")) or magicData.safeScripts[target.baseObject.script.id]) or hasScriptedItem(target.mobile.inventory)) then	-- Checks whether the target has a scripted item or a script that is not known to be safely cloneable
 			tes3ui.showNotifyMenu(common.i18n("magic.corruptionScript", { target.object.name }))
 			e.effectInstance.state = tes3.spellState.retired
@@ -1680,7 +1712,11 @@ local function weaponResartusEffect(e)
 		return
 	end
 
-	local weapon = tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.weapon})
+	local caster = e.sourceInstance.caster
+
+	setLocalVariable(caster.object, "T_restoration_WeaponResartus", 1)
+
+	local weapon = tes3.getEquippedItem({ actor = caster, enchanted = true, objectType = tes3.objectType.weapon})
 
 	if weapon then
 		weapon.itemData.condition = weapon.itemData.condition + e.effectInstance.magnitude
@@ -1703,18 +1739,22 @@ local function armorResartusEffect(e)
 		return
 	end
 
+	local caster = e.sourceInstance.caster
+
+	setLocalVariable(caster.object, "T_restoration_ArmorResartus", 1)
+
 	local armor = {
-		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.cuirass }),
-		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.greaves }),
-		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.helmet }),
-		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.boots }),
-		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.shield }),
-		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.leftPauldron }),
-		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.rightPauldron }),
-		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.leftGauntlet }),
-		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.rightGauntlet }),
-		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.leftBracer }),
-		tes3.getEquippedItem({ actor = e.sourceInstance.caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.rightBracer })
+		tes3.getEquippedItem({ actor = caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.cuirass }),
+		tes3.getEquippedItem({ actor = caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.greaves }),
+		tes3.getEquippedItem({ actor = caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.helmet }),
+		tes3.getEquippedItem({ actor = caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.boots }),
+		tes3.getEquippedItem({ actor = caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.shield }),
+		tes3.getEquippedItem({ actor = caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.leftPauldron }),
+		tes3.getEquippedItem({ actor = caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.rightPauldron }),
+		tes3.getEquippedItem({ actor = caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.leftGauntlet }),
+		tes3.getEquippedItem({ actor = caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.rightGauntlet }),
+		tes3.getEquippedItem({ actor = caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.leftBracer }),
+		tes3.getEquippedItem({ actor = caster, enchanted = true, objectType = tes3.objectType.armor, slot = tes3.armorSlot.rightBracer })
 	}
 
 	local conditionMagnitude = e.effectInstance.magnitude
@@ -2299,6 +2339,8 @@ local function wabbajackEffect(e)
 			return
 		end
 
+		setLocalVariable(target.object, "T_alteration_Wabbajack", 1)
+
 		if target.object.level < 30 then
 			if not target.data.tamrielData or not target.data.tamrielData.wabbajack then
 				target.data.tamrielData = target.data.tamrielData or {}
@@ -2413,8 +2455,10 @@ local function radiantShieldEffect(e)
 	end
 
 	if e.effectInstance.state < tes3.spellState.ending then
+		setLocalVariable(e.effectInstance.target.object, "T_alteration_RadShield", 1)
 		e.sourceInstance.caster.mobile.shield = e.sourceInstance.caster.mobile.shield + e.effectInstance.magnitude
 	else
+		setLocalVariable(e.effectInstance.target.object, "T_alteration_RadShield", 0)
 		e.sourceInstance.caster.mobile.shield = e.sourceInstance.caster.mobile.shield - e.effectInstance.magnitude
 	end
 end
@@ -2574,6 +2618,8 @@ local function banishDaedraEffect(e)
 		e.effectInstance.state = tes3.spellState.retired
 		return
 	end
+
+	setLocalVariable(target.object, "T_mysticism_BanishDae", 1)
 
 	local magnitude = e.effectInstance.effectiveMagnitude
 	local targetLevel = target.object.level
@@ -3069,11 +3115,9 @@ event.register(tes3.event.magicEffectsResolved, function()
 			local effectName, effectCost, iconPath, effectDescription, templateId = unpack(magicData.td_misc_effects[effectID])
 			params.id = tes3.effect[effectID]
 			params.name = common.i18n("magic." .. effectName)
-			params.description = common.i18n("magic." .. effectDescription)
+			if not params.description then params.description = common.i18n("magic." .. effectDescription) end
 			params.baseCost = effectCost
-			if not params.icon then
-				params.icon = iconPath
-			end
+			if not params.icon then params.icon = iconPath end
 
 			local template = templateOverride or tes3.getMagicEffect(tes3.effect[templateId])
 			if template then
@@ -3154,7 +3198,17 @@ event.register(tes3.event.magicEffectsResolved, function()
 		addMiscEffect("T_mysticism_ReflectDmg", {
 			magnitudeType = tes3.findGMST(tes3.gmst.spercent).value,
 			magnitudeTypePlural = tes3.findGMST(tes3.gmst.spercent).value,
-			onTick = nil,
+			onTick = function(eventData)
+				if (not eventData:trigger()) then
+					return
+				end
+
+				if eventData.effectInstance.state < tes3.spellState.ending then
+					setLocalVariable(eventData.effectInstance.target.object, "T_mysticism_ReflectDmg", 1)
+				else
+					setLocalVariable(eventData.effectInstance.target.object, "T_mysticism_ReflectDmg", 0)
+				end
+			end,
 			onCollision = nil
 		})
 
@@ -3174,7 +3228,17 @@ event.register(tes3.event.magicEffectsResolved, function()
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			onTick = nil,
+			onTick = function(eventData)
+				if (not eventData:trigger()) then
+					return
+				end
+
+				if eventData.effectInstance.state < tes3.spellState.ending then
+					setLocalVariable(eventData.effectInstance.target.object, "T_mysticism_DetHuman", 1)
+				else
+					setLocalVariable(eventData.effectInstance.target.object, "T_mysticism_DetHuman", 0)
+				end
+			end,
 			onCollision = nil
 		})
 
@@ -3247,7 +3311,17 @@ event.register(tes3.event.magicEffectsResolved, function()
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			onTick = nil,
+			onTick = function(eventData)
+				if (not eventData:trigger()) then
+					return
+				end
+
+				if eventData.effectInstance.state < tes3.spellState.ending then
+					setLocalVariable(eventData.effectInstance.target.object, "T_mysticism_Insight", 1)
+				else
+					setLocalVariable(eventData.effectInstance.target.object, "T_mysticism_Insight", 0)
+				end
+			end,
 			onCollision = nil
 		})
 
@@ -3394,7 +3468,17 @@ event.register(tes3.event.magicEffectsResolved, function()
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			onTick = nil,
+			onTick = function(eventData)
+				if (not eventData:trigger()) then
+					return
+				end
+
+				if eventData.effectInstance.state < tes3.spellState.ending then
+					setLocalVariable(eventData.effectInstance.target.object, "T_mysticism_DetEnemy", 1)
+				else
+					setLocalVariable(eventData.effectInstance.target.object, "T_mysticism_DetEnemy", 0)
+				end
+			end,
 			onCollision = nil
 		})
 
@@ -3414,7 +3498,17 @@ event.register(tes3.event.magicEffectsResolved, function()
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			onTick = nil,
+			onTick = function(eventData)
+				if (not eventData:trigger()) then
+					return
+				end
+
+				if eventData.effectInstance.state < tes3.spellState.ending then
+					setLocalVariable(eventData.effectInstance.target.object, "T_mysticism_DetInvisibility", 1)
+				else
+					setLocalVariable(eventData.effectInstance.target.object, "T_mysticism_DetInvisibility", 0)
+				end
+			end,
 			onCollision = nil
 		})
 
@@ -3454,12 +3548,22 @@ event.register(tes3.event.magicEffectsResolved, function()
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			onTick = nil,
+			onTick = function(eventData)
+				if (not eventData:trigger()) then
+					return
+				end
+
+				if eventData.effectInstance.state < tes3.spellState.ending then
+					setLocalVariable(eventData.effectInstance.target.object, "T_restoration_FortifyCasting", 1)
+				else
+					setLocalVariable(eventData.effectInstance.target.object, "T_restoration_FortifyCasting", 0)
+				end
+			end,
 			onCollision = nil
 		})
 
 		addMiscEffect("T_illusion_PrismaticLight", {
-			onTick = prismaticLightEffect,
+			onTick = nil,
 			onCollision = nil
 		})
 
@@ -3477,7 +3581,17 @@ event.register(tes3.event.magicEffectsResolved, function()
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			onTick = nil,
+			onTick = function(eventData)
+				if (not eventData:trigger()) then
+					return
+				end
+
+				if eventData.effectInstance.state < tes3.spellState.ending then
+					setLocalVariable(eventData.effectInstance.target.object, "T_mysticism_BloodMagic", 1)
+				else
+					setLocalVariable(eventData.effectInstance.target.object, "T_mysticism_BloodMagic", 0)
+				end
+			end,
 			onCollision = nil
 		})
 
@@ -3501,6 +3615,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 		})
 
 		addMiscEffect("T_mysticism_DetValuables", {
+			description = common.i18n("magic.miscDetectValuablesDesc", { string.format(config.detectValuablesThreshold) }),		-- This is not able to account for changes to detectValuablesThreshold in a single game session; use a callback function in the slider too?
 			magnitudeType = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			magnitudeTypePlural = " " .. tes3.findGMST(tes3.gmst.sfeet).value,
 			allowEnchanting = true,
@@ -3516,7 +3631,17 @@ event.register(tes3.event.magicEffectsResolved, function()
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = false,
-			onTick = nil,
+			onTick = function(eventData)
+				if (not eventData:trigger()) then
+					return
+				end
+
+				if eventData.effectInstance.state < tes3.spellState.ending then
+					setLocalVariable(eventData.effectInstance.target.object, "T_mysticism_DetValuables", 1)
+				else
+					setLocalVariable(eventData.effectInstance.target.object, "T_mysticism_DetValuables", 0)
+				end
+			end,
 			onCollision = nil
 		})
 
@@ -3537,7 +3662,17 @@ event.register(tes3.event.magicEffectsResolved, function()
 			unreflectable = false,
 			hitVFX = shieldEffect.hitVisualEffect.id,
 			lighting = {x = shieldEffect.lightingRed / 255, y = shieldEffect.lightingGreen / 255, z = shieldEffect.lightingBlue / 255},
-			onTick = nil,
+			onTick = function(eventData)
+				if (not eventData:trigger()) then
+					return
+				end
+
+				if eventData.effectInstance.state < tes3.spellState.ending then
+					setLocalVariable(eventData.effectInstance.target.object, "T_mysticism_MagickaWard", 1)
+				else
+					setLocalVariable(eventData.effectInstance.target.object, "T_mysticism_MagickaWard", 0)
+				end
+			end,
 			onCollision = nil
 		})
 

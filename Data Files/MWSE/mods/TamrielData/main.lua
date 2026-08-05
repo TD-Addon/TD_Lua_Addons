@@ -467,6 +467,7 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.miscSpells then
+		--event.register(tes3.event.objectCreated, magic.adjustPotionMagnitudes, { unregisterOnLoad = true })
 		event.register(tes3.event.uiSpellTooltip, magic.correctSpellTooltipUnit, { unregisterOnLoad = true })
 
 		event.register(tes3.event.equip, magic.etherealEquipPotion, { priority = 1000, unregisterOnLoad = true })

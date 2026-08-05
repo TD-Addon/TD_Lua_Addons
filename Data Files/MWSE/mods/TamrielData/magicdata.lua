@@ -614,7 +614,7 @@ local td_ingredients = {
 								nil,
 								nil,
 								{ id = "T_mysticism_Insight" } },
-	{ "T_IngCrea_NirthflyEye_01", { id = "fortifyAttribute", attribute = "speed" },
+	{ "T_IngCrea_NirthflyEye_01", nil,
 								  { id = "T_mysticism_Blink" },
 								  nil,
 								  nil },
