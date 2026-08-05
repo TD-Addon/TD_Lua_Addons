@@ -12,9 +12,33 @@ local effectStartHandlers = {}
 local effectUpdateHandlers = {}
 local effectEndHandlers = {}
 
-local function onEffectStart(actor, spell, effect)
+local function setLocalVariable(script, id, value)
+    if script.variables[id] then
+        script.variables[id] = value
+        return true
+    end
+    return false
+end
+
+local function getEffectKey(id, index)
+    return id .. ',' .. index
+end
+
+local persistentState = {
+    actors = {},
+    effectIds = {}
+}
+local tempState = {}
+
+local function onEffectStart(actor, spell, effect, script)
     local track = { ignore = true }
     auxUtil.callEventHandlers(effectStartHandlers, actor, spell, effect, track)
+    if script and not track.ignore then
+        if setLocalVariable(script, effect.id, 1) then
+            local key = getEffectKey(spell.activeSpellId, effect.index)
+            persistentState.effectIds[key] = effect.id
+        end
+    end
     return track.ignore
 end
 
@@ -24,7 +48,13 @@ local function onEffectUpdate(actor, spell, effect, dt)
     return track.ignore
 end
 
-local function onEffectEnd(actor, id, index)
+local function onEffectEnd(actor, id, index, script)
+    if script then
+        local effectId = persistentState.effectIds[getEffectKey(id, index)]
+        if effectId then
+            setLocalVariable(script, effectId, 0)
+        end
+    end
     auxUtil.callEventHandlers(effectEndHandlers, actor, id, index)
 end
 
@@ -42,10 +72,13 @@ for _, effect in pairs(core.magic.effects.records) do
     end
 end
 
-local persistentState = {
-    actors = {}
-}
-local tempState = {}
+local function buildActorTempState(actor, activeSpells)
+    return {
+        waited = math.random() * MAX_WAIT,
+        activeSpells = activeSpells,
+        script = world.mwscript.getLocalScript(actor)
+    }
+end
 
 local function initActorState(actor, state)
     local activeSpells = types.Actor.activeSpells(actor)
@@ -56,10 +89,7 @@ local function initActorState(actor, state)
         end
         state.spells[spell.activeSpellId] = effects
     end
-    return {
-        waited = math.random() * MAX_WAIT,
-        activeSpells = activeSpells
-    }
+    return buildActorTempState(actor, activeSpells)
 end
 
 local function deleteActorState(actor)
@@ -83,10 +113,7 @@ local function getActorState(actor, init)
         persistentState.actors[id] = state
         tempState[id] = initActorState(actor, state)
     elseif not tempState[id] then
-        tempState[id] = {
-            waited = math.random() * MAX_WAIT,
-            activeSpells = types.Actor.activeSpells(actor)
-        }
+        tempState[id] = buildActorTempState(actor, types.Actor.activeSpells(actor))
     end
     return state, tempState[id]
 end
@@ -111,7 +138,7 @@ local function updateEffects(actor, state, tempState, dt)
             local s = effects[index]
             if s == nil then
                 effects[index] = STATE_INIT
-                if onEffectStart(actor, spell, effect) then
+                if onEffectStart(actor, spell, effect, tempState.script) then
                     effects[index] = STATE_IGNORE
                 else
                     state.delayUpdateChecks = false
@@ -140,7 +167,7 @@ local function updateEffects(actor, state, tempState, dt)
         for index, s in pairs(effects) do
             if activeIndices[index] == nil then
                 if s ~= STATE_IGNORE then
-                    onEffectEnd(actor, id, index)
+                    onEffectEnd(actor, id, index, tempState.script)
                 end
                 effects[index] = nil
             end
@@ -150,7 +177,7 @@ local function updateEffects(actor, state, tempState, dt)
         if active[id] == nil then
             for index, s in pairs(effects) do
                 if s ~= STATE_IGNORE then
-                    onEffectEnd(actor, id, index)
+                    onEffectEnd(actor, id, index, tempState.script)
                 end
             end
             state.spells[id] = nil
@@ -190,6 +217,9 @@ return {
                     end
                 end
                 persistentState.actors = actors
+                if not persistentState.effectIds then
+                    persistentState.effectIds = {}
+                end
             end
         end,
         onUpdate = function(dt)
