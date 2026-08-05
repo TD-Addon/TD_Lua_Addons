@@ -147,13 +147,13 @@ return {
 	["magic.miscPrismaticLight"] = "Pryzmatyczne Światło",
 	["magic.miscPrismaticLightDesc"] = "Tworzy magiczny pocisk, który po uderzeniu w cel rozświetla na pewien czas okolicę. Nie zadaje obrażeń.", -- Aly: polish description of "Light" is so cut, trying to get consistent basically makes prismatic light's description a duplicate
 	["magic.miscBloodMagic"] = "Magia Krwi",
-	["magic.miscBloodMagicDesc"] = "Tekst zastępczy",
+	["magic.miscBloodMagicDesc"] = "Pozwala rzucającemu zaklęcie czerpać ze swojej siły życiowej moc do dalszego korzystania z magii. Koszt zaklęć jest zredukowany o połowę, lecz w zamian zadawane są obrażenia.",
 	["magic.miscSanguineRose"] = "Róża Sanguine'a", -- Aly: fuck anyone who was working on translation for TESV :P
 	["magic.miscSanguineRoseDesc"] = "Przywołuje z Otchłani losową daedrę. Stworzenie pojawi się sześć stóp przed magiem i będzie atakowało każdą zagrażającą mu istotę, póki nie minie czas trwania efektu lub póki samo nie zostanie zabite. W obydwu przypadkach przywołana istota znika, powracając do Otchłani. Pamiętaj, że jeśli przywołasz istotę z innego wymiaru wewnątrz miasta, miejska straż rzuci się na ciebie bez ostrzeżenia!",
 	["magic.miscDetectValuables"] = "Wykrycie Kosztowności",
 	["magic.miscDetectValuablesDesc"] = "Rzucający zaklęcie może wykrywać na odległość kosztowne przedmioty. Stopień efektu określa promień (w stopach) obszaru, który zostanie magicznie przeszukany.",
 	["magic.miscMagickaWard"] = "Magiczna Bariera",
-	["magic.miscMagickaWardDesc"] = "Tekst zastępczy",
+	["magic.miscMagickaWardDesc"] = "Rzucający zaklęcie gromadzi wokół siebie barierę ochronną. Otrzymywane obrażenia są redukowane o połowę, lecz równoważnym kosztem magii.",
 	["magic.miscEthereal"] = "Eteryczność",
 	["magic.miscEtherealDesc"] = "Rzucający zaklęcie uzyskuje zdolność przenikania przez inne istoty. Nie są one w stanie go zranić, ale sam rzucający nie może rzucać zaklęć, używać przedmiotów, ani w jakikolwiek inny sposób wchodzić w interakcję ze światem. Nie jest też w stanie przechodzić przez stałe obiekty, takie jak ściany, a grawitacja wciąż go ogranicza.",
 
