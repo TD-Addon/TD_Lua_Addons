@@ -88,6 +88,16 @@ local embedments = {
 local male_imga_helmets = {
 }
 
+---@param equipment tes3clothing
+---@param slots number[]
+local function usesBodypartSlots(equipment, slots)
+	for _,part in pairs(equipment.parts) do
+		for _,slot in pairs(slots) do
+			if part.type == slot then return true end
+		end
+	end
+end
+
 ---@param e equippedEventData
 function this.hatHelmetEquipped(e)
 	if e.item.objectType == tes3.objectType.armor then
@@ -309,7 +319,7 @@ function this.restrictRaceEquip(e)
 	if e.reference.baseObject.objectType == tes3.objectType.npc then
 		if e.reference.mobile.object.race.id == "T_Val_Imga" then			-- Imga are not able to wear boots/shoes and male Imga cannot wear any helmets/hats due to their skull's crest unless the item is made specifically for them
 			if e.item.objectType == tes3.objectType.armor then
-				if e.item.slot == tes3.armorSlot.boots then
+				if e.item.slot == tes3.armorSlot.boots and usesBodypartSlots(e.item, { tes3.activeBodyPart.leftFoot, tes3.activeBodyPart.rightFoot }) then
 					if e.reference.mobile == tes3.mobilePlayer then
 						tes3ui.showNotifyMenu(common.i18n("main.imgaBoots"))
 					end
@@ -331,7 +341,7 @@ function this.restrictRaceEquip(e)
 			end
 
 			if e.item.objectType == tes3.objectType.clothing then
-				if e.item.slot == tes3.clothingSlot.shoes then
+				if e.item.slot == tes3.clothingSlot.shoes and usesBodypartSlots(e.item, { tes3.activeBodyPart.leftFoot, tes3.activeBodyPart.rightFoot }) then
 					if e.reference.mobile == tes3.mobilePlayer then
 						tes3ui.showNotifyMenu(common.i18n("main.imgaShoes"))
 					end
