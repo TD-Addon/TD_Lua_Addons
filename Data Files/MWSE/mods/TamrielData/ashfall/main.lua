@@ -3861,6 +3861,8 @@ event.register(tes3.event.initialized, function()
 			t_arg_ceramicpitcher_02 = { capacity = 190 },
 			t_arg_ceramicpot_01 = {  holdsStew = true, capacity = 100 },
 			t_arg_ceramicpot_02 = {  holdsStew = true, capacity = 100 },
+			t_arg_gourdbowl_01 = { capacity = 100, holdsStew = true },
+			t_arg_gourdbowl_02 = { capacity = 60, holdsStew = true },
 			t_arg_shellbowl_01 = { capacity = 100, holdsStew = true },
 			t_arg_shellbowl_02 = { capacity = 100, holdsStew = true },
 			t_arg_shellbowl_03 = { capacity = 60, holdsStew = true },
