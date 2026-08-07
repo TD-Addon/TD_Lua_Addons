@@ -25,8 +25,7 @@ local function getEffectKey(id, index)
 end
 
 local persistentState = {
-    actors = {},
-    effectIds = {}
+    actors = {}
 }
 local tempState = {}
 
@@ -36,7 +35,7 @@ local function onEffectStart(actor, spell, effect, script)
     if script and not track.ignore then
         if setLocalVariable(script, effect.id, 1) then
             local key = getEffectKey(spell.activeSpellId, effect.index)
-            persistentState.effectIds[key] = effect.id
+            persistentState.actors[actor.id].effectIds[key] = effect.id
         end
     end
     return track.ignore
@@ -50,7 +49,7 @@ end
 
 local function onEffectEnd(actor, id, index, script)
     if script then
-        local effectId = persistentState.effectIds[getEffectKey(id, index)]
+        local effectId = persistentState.actors[actor.id].effectIds[getEffectKey(id, index)]
         if effectId then
             setLocalVariable(script, effectId, 0)
         end
@@ -108,7 +107,8 @@ local function getActorState(actor, init)
         state = {
             delayUpdateChecks = true,
             spells = {},
-            actor = actor
+            actor = actor,
+            effectIds = {}
         }
         persistentState.actors[id] = state
         tempState[id] = initActorState(actor, state)
@@ -214,12 +214,12 @@ return {
                 for id, actorData in pairs(data.actors) do
                     if actorData.actor:isValid() and isInstance(actorData.actor) then
                         actors[actorData.actor.id] = actorData
+                        if not actorData.effectIds then
+                            actorData.effectIds = {}
+                        end
                     end
                 end
                 persistentState.actors = actors
-                if not persistentState.effectIds then
-                    persistentState.effectIds = {}
-                end
             end
         end,
         onUpdate = function(dt)
