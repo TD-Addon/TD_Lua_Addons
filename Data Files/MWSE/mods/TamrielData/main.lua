@@ -11,6 +11,7 @@ local config = require("TamrielData.config")
 local equipment = require("TamrielData.equipment")
 local factions = require("TamrielData.factions")
 local magic = require("TamrielData.magic")
+local reactCell = require("TamrielData.reactCell")
 local reputation = require("TamrielData.reputation")
 local weather = require("TamrielData.weather")
 
@@ -86,11 +87,6 @@ local travel_actor_prices = {
 	{ "TR_m1_DaedrothGindaman", nil, 5},
 	{ "Sky_xRe_DSE_Arvund", "Karthwasten", 2.273},		-- 22 to 50
 	{ "Sky_xRe_KW_Aurius", "Dragonstar East", 2.273},		-- Markarth to DS/KW prices will probably need to be gone over too
-}
-
--- (cell ids), (journal topic id, journal index), global id, (container id, (container cell id, container cell x, container cell y), container position)
-local react_cells = {
-	--{ cells = { "" }, journal = { id = "", index = 0 }, global = "", container = { id = "", cell = { id = "", x = 0, y = 0 }, position = { 0, 0, 0} } }
 }
 
 local TD_ButterflyMothTooltip = {}
@@ -331,72 +327,6 @@ local function adjustTravelPrices(e)
 		if providerInstance.faction and providerInstance.faction.id:find("Mages") and providerInstance.factionRank > 3 then	-- Increase price of teleporting between MG networks
 			e.price = e.price * 5;
 		end
-	end
-end
-
----@param e itemDroppedEventData
-local function markReactCellItem(e)
-	for _,reactCell in pairs(react_cells) do
-		for _,cellID in pairs(reactCell.cells) do
-			if e.reference.cell.id == cellID then
-				e.reference.data.tamrielData = e.reference.data.tamrielData or {}
-				e.reference.data.tamrielData.playerItem = true
-				break
-			end
-		end
-	end
-end
-
----@param e journalEventData
-local function moveReactCellItems(e)
-	for _,reactCell in pairs(react_cells) do
-		if e.topic.id == reactCell.journal.id and e.index >= reactCell.journal.index then
-			local hasRun = false
-			for _,pastReactCellJournal in pairs(tes3.player.data.tamrielData.pastReactCellJournals) do							-- The pastReactCellJournals are checked so that cells are only gone through once.
-				if reactCell.journal.id == pastReactCellJournal[1] and reactCell.journal.index == pastReactCellJournal[2] then	-- The reactCell values (and not the event data's) are used so that all cells are gone through if there are reactions to multiple journal indices and the index jumps over the lower indices
-					hasRun = true
-					break
-				end
-			end
-
-			if not hasRun then
-				local containerCell
-				if reactCell.container.cell.id then containerCell = tes3.getCell({ id = reactCell.container.cell.id })		-- These conditions are needed to handle both interior and exterior containerCells
-				else containerCell = tes3.getCell({ x = reactCell.container.cell.x, y = reactCell.container.cell.y }) end
-				local playerItemsContainer
-
-				if containerCell then
-					for container in containerCell:iterateReferences(tes3.objectType.container, false) do
-						if container.baseObject.id == reactCell.container.id and container.position == reactCell.container.position then
-							playerItemsContainer = container
-							break
-						end
-					end
-				end
-
-				if playerItemsContainer then
-					for _,cellID in pairs(reactCell.cells) do
-						local cell = tes3.getCell({ id = cellID })
-
-						if cell then -- This doesn't yet go over items that have been placed in containers or disable items after adding them to playerItemsContainer
-							for ref in cell:iterateReferences({ tes3.objectType.alchemy, tes3.objectType.ammunition, tes3.objectType.apparatus, tes3.objectType.armor, tes3.objectType.book, tes3.objectType.clothing, tes3.objectType.ingredient, tes3.objectType.light, tes3.objectType.lockpick, tes3.objectType.miscItem, tes3.objectType.probe, tes3.objectType.repairItem, tes3.objectType.weapon }) do
-								if ref.data.tamrielData and ref.data.tamrielData.playerItem then
-									local owner, requirement = tes3.getOwner({ reference = ref })
-									local count, item, itemData = tes3.addItem({ reference = playerItemsContainer, item = ref.baseObject, itemData = ref.itemData, playSound = false })
-
-									itemData.owner = owner				-- The ownership data is removed from itemData by addItem, so it must be added back here
-									itemData.requirement = requirement
-								end
-							end
-						end
-					end
-				end
-
-				table.insert(tes3.player.data.tamrielData.pastReactCellJournals, { reactCell.journal.id, reactCell.journal.index })
-			end
-		end
-
-		-- break cannot be used here because that might cause other suitable reactCells with different indices to be missed
 	end
 end
 
@@ -655,9 +585,12 @@ event.register(tes3.event.loaded, function()
 	end
 
 	if config.handleReactCellItems then
-		myData.pastReactCellJournals = {}
-		event.register(tes3.event.itemDropped, markReactCellItem, { unregisterOnLoad = true })
-		event.register(tes3.event.journal, moveReactCellItems, { unregisterOnLoad = true })
+		myData.pastReactCellDialogues = myData.pastReactCellDialogues or {}
+		event.register(tes3.event.itemDropped, reactCell.markItem, { unregisterOnLoad = true })
+		event.register(tes3.event.activate, reactCell.onContainerActivate, { unregisterOnLoad = true })
+		event.register(tes3.event.convertReferenceToItem, reactCell.removePlayerItemDataField, { unregisterOnLoad = true })
+		event.register(tes3.event.containerClosed, reactCell.onContainerClosed, { unregisterOnLoad = true })
+		event.register(tes3.event.dialogueFiltered, reactCell.checkOnDialogue, { unregisterOnLoad = true })
 	end
 
 	if config.khajiitFormCharCreation then

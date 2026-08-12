@@ -325,9 +325,7 @@ function this.restrictRaceEquip(e)
 					end
 
 					return false
-				end
-
-				if e.item.slot == tes3.armorSlot.helmet then
+				elseif e.item.slot == tes3.armorSlot.helmet then
 					if not e.reference.mobile.object.female then
 						if e.item.parts[1] and e.item.parts[1].male and not male_imga_helmets[e.item.parts[1].male.id] then
 							if e.reference.mobile == tes3.mobilePlayer then
@@ -347,9 +345,7 @@ function this.restrictRaceEquip(e)
 					end
 
 					return false
-				end
-
-				if e.item.slot == tes3.clothingSlot.hat then
+				elseif e.item.slot == tes3.clothingSlot.hat then
 					if not e.reference.mobile.object.female then
 						if e.item.parts[1] and e.item.parts[1].male and not male_imga_helmets[e.item.parts[1].male.id] then
 							if e.reference.mobile == tes3.mobilePlayer then

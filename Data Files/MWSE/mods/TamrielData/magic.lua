@@ -1910,7 +1910,7 @@ function this.detectValuablesTick()
 			local minValue = config.detectValuablesThreshold	-- The minimum value that an item must be to be detected
 
 			for _,cell in pairs(tes3.getActiveCells()) do
-				for item in cell:iterateReferences({ tes3.objectType.alchemy, tes3.objectType.ammunition, tes3.objectType.apparatus, tes3.objectType.armor, tes3.objectType.book, tes3.objectType.clothing, tes3.objectType.ingredient, tes3.objectType.light, tes3.objectType.lockpick, tes3.objectType.miscItem, tes3.objectType.probe, tes3.objectType.repairItem, tes3.objectType.weapon }, false) do
+				for item in cell:iterateReferences(common.itemTypes, false) do
 					if item.baseObject.value and item.baseObject.value >= minValue and tes3.player.position:distance(item.position) <= totalMagnitude then
 						local mapX, mapY, multiX, multiY
 						if cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(item.position)
