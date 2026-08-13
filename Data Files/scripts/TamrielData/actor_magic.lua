@@ -270,6 +270,7 @@ return {
             end
             core.sound.playSound3d('alteration hit', self, { loop = false })
             activeSpells:add({ id = 'T_Dae_Alt_UNI_WabbajackTrans', effects = { 0 }, ignoreResistances = true, ignoreSpellAbsorption = true, ignoreReflect = true, caster = data.caster })
+            types.Actor.stats.ai.fight(self).base = 0
         end,
         T_EndWabbajack = function(data)
             local dynamic = types.Actor.stats.dynamic
