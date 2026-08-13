@@ -366,7 +366,7 @@ event.register(tes3.event.loaded, function()
 
 	-- For some reason the bodyPartAssigned event is no longer being triggered when an actor is loaded, so relevant NPCs need to have their equipment updated after the loaded event to trigger it for them instead
 	event.register(tes3.event.mobileActivated, function(e)
-		if e.mobile.actorType == tes3.actorType.npc and ((e.reference.data.tamrielData and e.reference.data.tamrielData.gazeOfVelothSkeleton) or e.reference.mobile.hasVampirism or common.td_argonian_races[e.reference.baseObject.race.id]) then
+		if e.mobile.actorType == tes3.actorType.npc and (common.hasDataField(e.reference, "gazeOfVelothSkeleton") or e.reference.mobile.hasVampirism or common.td_argonian_races[e.reference.baseObject.race.id]) then
 			e.reference:updateEquipment()
 		end
 	end, { unregisterOnLoad = true })
@@ -376,7 +376,7 @@ event.register(tes3.event.loaded, function()
 			tes3.player:updateEquipment()
 			for _,cell in pairs(tes3.getActiveCells()) do
 				for npc in cell:iterateReferences(tes3.objectType.npc, false) do
-					if (npc.data.tamrielData and npc.data.tamrielData.gazeOfVelothSkeleton) or npc.mobile.hasVampirism or common.td_argonian_races[npc.baseObject.race.id] then npc:updateEquipment() end
+					if common.hasDataField(npc, "gazeOfVelothSkeleton") or npc.mobile.hasVampirism or common.td_argonian_races[npc.baseObject.race.id] then npc:updateEquipment() end
 				end
 			end
 		end
@@ -399,6 +399,12 @@ event.register(tes3.event.loaded, function()
 	if config.miscSpells then
 		--event.register(tes3.event.objectCreated, magic.adjustPotionMagnitudes, { unregisterOnLoad = true })
 		event.register(tes3.event.uiSpellTooltip, magic.correctSpellTooltipUnit, { unregisterOnLoad = true })
+
+		
+		event.register(tes3.event.jump, magic.slowTimePlayerJump, { unregisterOnLoad = true })
+		event.register(tes3.event.calcMoveSpeed, magic.slowTimePlayerMoveSpeed, { unregisterOnLoad = true })
+		event.register(tes3.event.simulate, magic.slowTimeEffect, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.slowTimeRemoved, { filter = tes3.effect.T_mysticism_SlowTime, unregisterOnLoad = true })
 
 		event.register(tes3.event.equip, magic.etherealEquipPotion, { priority = 1000, unregisterOnLoad = true })
 		event.register(tes3.event.playItemSound, magic.etherealDropSound, { priority = 1000, unregisterOnLoad = true })
@@ -616,7 +622,9 @@ end)
 
 event.register(tes3.event.initialized, function()
 	if config.miscSpells then
-		event.register(tes3.event.magicEffectActivated, magic.prismaticLightActivated, { filter = tes3.effect.T_illusion_PrismaticLight })		-- magicEffectActivated is triggered before loaded is; NullCascade recommended registering functions for it before load as well
+		-- magicEffectActivated is triggered before loaded is; NullCascade recommended registering functions for it before load as well
+		event.register(tes3.event.magicEffectActivated, magic.slowTimeActivated, { filter = tes3.effect.T_mysticism_SlowTime })
+		event.register(tes3.event.magicEffectActivated, magic.prismaticLightActivated, { filter = tes3.effect.T_illusion_PrismaticLight })
 		event.register(tes3.event.magicEffectActivated, magic.detectValuablesTick, { filter = tes3.effect.T_mysticism_DetValuables })
 		event.register(tes3.event.magicEffectActivated, magic.detectInvisibilityTick, { filter = tes3.effect.T_mysticism_DetInvisibility })
 		event.register(tes3.event.magicEffectActivated, magic.onInvisibilityEffectActivated, { filter = tes3.effect.chameleon })

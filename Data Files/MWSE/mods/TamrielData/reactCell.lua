@@ -33,7 +33,7 @@ end
 
 ---@param itemData tes3itemData
 local function removeItemDataDataFields(itemData)
-	if itemData and itemData.data and itemData.data.tamrielData and itemData.data.tamrielData.playerItem then
+	if common.hasDataField(itemData, "playerItem") then
 		itemData.data.tamrielData.playerItem = nil
 		if #itemData.data.tamrielData == 0 then itemData.data.tamrielData = nil end		-- tamrielData should only be removed if it does not have any fields
 	end
@@ -183,7 +183,7 @@ local function moveItems(reactCell)
 
 			if cell then
 				for item in cell:iterateReferences(common.itemTypes) do
-					if item.itemData and item.itemData.data.tamrielData and item.itemData.data.tamrielData.playerItem then
+					if common.hasDataField(item.itemData, "playerItem") then
 						removeItemDataDataFields(item.itemData)
 						tes3.addItem({ reference = playerItemsContainer, item = item.baseObject, playSound = false, itemData = (item.stackSize == 1 and item.itemData or nil), count = item.stackSize })
 						item.itemData = nil

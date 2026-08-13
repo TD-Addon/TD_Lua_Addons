@@ -467,4 +467,16 @@ function this.isFromTD(ref, includeMods)
     return false
 end
 
+-- Returns whether or not a reference exists with data, data.tamrielData, and a given field of tamrielData present
+---@param ref tes3reference
+---@param field string
+---@return boolean
+function this.hasDataField(ref, field)
+    if ref and ref.data and ref.data.tamrielData and ref.data.tamrielData[field] then
+        return true
+    else
+        return false
+    end
+end
+
 return this

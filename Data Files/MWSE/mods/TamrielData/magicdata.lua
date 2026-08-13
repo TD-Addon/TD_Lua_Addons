@@ -79,6 +79,7 @@ local td_misc_effects = {
 	T_mysticism_DetValuables = { "miscDetectValuables", 1.5, "td\\s\\td_s_det_value.tga", "miscDetectValuablesDesc", "detectAnimal" },
 	T_mysticism_MagickaWard = { "miscMagickaWard", 20, "td\\s\\td_s_magickaward.tga", "miscMagickaWardDesc", "detectAnimal" },
 	T_illusion_Ethereal = { "miscEthereal", 40, "td\\s\\td_s_ethereal.tga", "miscEtherealtDesc", "blind" },
+	T_mysticism_SlowTime = { "miscSlowTime", 100, "td\\s\\td_s_magickaward.tga", "miscSlowTimeDesc", "blind" },
 }
 
 -- spell id, cast type, spell name, spell mana cost, effect1, ...
@@ -277,6 +278,9 @@ local td_enchantments = {
 	{ "TR_m7_Re_MG_scrollen", "castOnce", { id = "T_summon_Auroran", range = "self", duration = 150, min = 1, max = 1 },
 										{ id = "T_summon_Auroran", range = "self", duration = 150, min = 1, max = 1 },
 										{ id = "T_summon_Auroran", range = "self", duration = 150, min = 1, max = 1 } },
+	{ "T_Const_AmuletDragonsBounty", "constant", { id = "T_mysticism_Insight", range = "self", duration = 1, min = 25, max = 25 },
+															 { id = "detectEnchantment", range = "self", duration = 1, min = 15, max = 15 },
+															 { id = "detectKey", range = "self", duration = 1, min = 15, max = 15 } },
 }
 
 -- item id, item name, 1st effect, ...

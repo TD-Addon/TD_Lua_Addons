@@ -32,6 +32,10 @@ local corruptionCasted = false
 local blinkIndicator
 local blinkGround
 
+local slowTimeActive = false
+local slowTimePlayerFactor = 1.75
+local playerPreviousFallSpeed = 0
+
 local mouseOverInventory = true
 local mouseOverContainer = false
 
@@ -455,6 +459,54 @@ function this.correctSpellTooltipUnit(e)
 			end
 		end
 	end
+end
+
+---@param e jumpEventData
+function this.slowTimePlayerJump(e)
+	if slowTimeActive and e.mobile == tes3.mobilePlayer then
+		e.velocity = e.velocity / math.sqrt(slowTimePlayerFactor)
+	end
+end
+
+---@param e calcMoveSpeedEventData
+function this.slowTimePlayerMoveSpeed(e)
+	if slowTimeActive and e.mobile == tes3.mobilePlayer then
+		e.speed = e.speed * slowTimePlayerFactor
+	end
+end
+
+---@param e simulateEventData
+function this.slowTimeEffect(e)
+	if slowTimeActive then			-- Could all of this be tied to onTick if appliesOnce for the effect is set to false?
+		tes3.worldController.deltaTime = tes3.worldController.deltaTime / 2		-- The worldController's deltatime property needs to be used for this, not e.delta
+
+		local weaponSpeed = slowTimePlayerFactor
+		if tes3.mobilePlayer.readiedWeapon then
+			weaponSpeed = slowTimePlayerFactor * tes3.mobilePlayer.readiedWeapon.object.speed
+		end
+
+		tes3.player.animationData.castSpeed = slowTimePlayerFactor
+		tes3.player.animationData.weaponSpeed = weaponSpeed
+
+		-- Determining when the player is being affected by gravity	(check isFalling, isJumping, deltav, and levitate value?) is more involved, but would probably be safer than changing the gravity for everyone
+		tes3.worldController.mobManager.gravity = tes3vector3.new(0, 0, -627.2 * slowTimePlayerFactor ^ 2)
+		
+		--if tes3.mobilePlayer.isFalling then
+		--	
+		--else
+		--	playerPreviousFallSpeed = 0
+		--end
+	end
+end
+
+---@param e magicEffectActivatedEventData
+function this.slowTimeActivated(e)
+	slowTimeActive = true
+end
+
+---@param e magicEffectRemovedEventData
+function this.slowTimeRemoved(e)
+	slowTimeActive = false
 end
 
 ---@param e uiPreEventEventData
@@ -929,7 +981,7 @@ function this.prismaticLightActivated(e)
 	prismaticMagnitude = prismaticMagnitude + e.effectInstance.magnitude
 	totalMagnitude = totalMagnitude + e.effectInstance.magnitude
 
-	if not (e.target.data.tamrielData and e.target.data.tamrielData.prismaticLightHue) then
+	if not common.hasDataField(e.target, "prismaticLightHue") then
 		e.target.data.tamrielData = e.target.data.tamrielData or {}
 		e.target.data.tamrielData.prismaticLightHue = math.random(0, 359)
 	end
@@ -1065,14 +1117,14 @@ function this.blinkIndicator()
 end
 
 function this.removeBlinkData()
-	if not (tes3.mobilePlayer.isFalling or tes3.mobilePlayer.isJumping) and (tes3.player.data.tamrielData.hasBlinked or tes3.player.data.tamrielData.blinkVelocity) then
+	if not (tes3.mobilePlayer.isFalling or tes3.mobilePlayer.isJumping) and (common.hasDataField(tes3.player, "hasBlinked") or common.hasDataField(tes3.player, "blinkVelocity")) then
 		tes3.player.data.tamrielData.hasBlinked = nil	-- Prevent blinkFallDamage from taking effect when it shouldn't due to the player blinking and not taking fall damage afterwards
 		tes3.player.data.tamrielData.blinkVelocity = nil
 	end
 end
 
 function this.blinkFallDamageSmallJump()
-	if tes3.player.data.tamrielData.hasBlinked then
+	if common.hasDataField(tes3.player, "hasBlinked") then
 		if not tes3.mobilePlayer.isFalling and not tes3.mobilePlayer.isJumping and tes3.player.data.tamrielData.blinkVelocity and #tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_illusion_Ethereal }) == 0 then
 			tes3.player.data.tamrielData.hasBlinked = nil
 
@@ -1245,14 +1297,14 @@ end
 
 ---@param e addTempSoundEventData
 function this.gazeOfVelothBlockActorSound(e)
-	if e.reference and e.reference.data and e.reference.data.tamrielData and e.reference.data.tamrielData.gazeOfVeloth then
+	if common.hasDataField(e.reference, "gazeOfVeloth") then
 		if e.isVoiceover then return false end
 	end
 end
 
 ---@param e bodyPartAssignedEventData
 function this.gazeOfVelothBodyPartAssigned(e)
-	if e.reference.data.tamrielData and e.reference.data.tamrielData.gazeOfVelothSkeleton then
+	if common.hasDataField(e.reference, "gazeOfVelothSkeleton") then
 		if e.index == tes3.partIndex.chest then
 			for _,v in pairs(raceSkeletonBodyParts) do
 				if e.reference.baseObject.race.id == v[1] then
@@ -1277,7 +1329,7 @@ local function gazeOfVelothEffect(e)
 
 	local target = e.effectInstance.target
 
-	if not target or target.mobile.isDead or (target.data.tamrielData and target.data.tamrielData.wabbajack) then
+	if not target or target.mobile.isDead or common.hasDataField(target, "wabbajack") or (common.hasDataField(tes3.player, "corruptionReferenceID") and tes3.player.data.tamrielData.corruptionReferenceID == target.id) then
 		e.effectInstance.state = tes3.spellState.retired
 		return
 	end
@@ -1320,7 +1372,7 @@ local function gazeOfVelothEffect(e)
 	target.data.tamrielData = target.data.tamrielData or {}
 	target.data.tamrielData.gazeOfVeloth = true
 	tes3.removeSound({ sound = nil, reference = target })	-- Stop long-winded voice lines from continuing to play after the target is stripped of their flesh
-	tes3.playSound({ sound = tes3.getMagicEffect(tes3.effect.damageHealth).hitSoundEffect, reference = target, mixChannel = tes3.soundMix.effects })	-- The hit sound is stopped by the line above though, so this plays it again
+	tes3.playSound({ sound = tes3.getMagicEffect(tes3.effect.T_destruction_GazeOfVeloth).hitSoundEffect, reference = target, mixChannel = tes3.soundMix.effects })	-- The hit sound is stopped by the line above though, so this plays it again
 	target.mobile:kill()
 	tes3.incrementKillCount({ actor = target.baseObject })
 
@@ -1346,7 +1398,7 @@ end
 function this.distractedReturnTick()
 	for ref in pairs(distractedReferences) do
 		---@cast ref tes3reference
-		if ref.data.tamrielData and ref.data.tamrielData.distract then
+		if common.hasDataField(ref, "distract") then
 			if (ref.mobile.actorType == tes3.actorType.npc and #ref.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_DistractHumanoid }) == 0) or (ref.mobile.actorType == tes3.actorType.creature and #ref.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_DistractCreature }) == 0) then
 				if not ref.mobile.isMovingForward then
 					tes3.setAIWander({ reference = ref, range = ref.data.tamrielData.distract.distance, duration = ref.data.tamrielData.distract.duration, time = ref.data.tamrielData.distract.hour, idles = ref.data.tamrielData.distract.idles })
@@ -1368,13 +1420,11 @@ end
 
 ---@param e referenceActivatedEventData
 function this.onDistractedReferenceActivated(e)
-	if e.reference.data and e.reference.data.tamrielData then
-		if e.reference.data.tamrielData.distract then
-			distractedReferences[e.reference] = true
-		elseif e.reference.data.tamrielData.distractOldPosition then
-			e.reference.position = e.reference.data.tamrielData.distractOldPosition
-			e.reference.data.tamrielData.distractOldPosition = nil
-		end
+	if common.hasDataField(e.reference, "distract") then
+		distractedReferences[e.reference] = true
+	elseif common.hasDataField(e.reference, "distractOldPosition") then
+		e.reference.position = e.reference.data.tamrielData.distractOldPosition
+		e.reference.data.tamrielData.distractOldPosition = nil
 	end
 end
 
@@ -1383,7 +1433,7 @@ end
 function this.onDistractedReferenceDeactivated(e)
 	local ref = e.reference
 
-	if ref.data and distractedReferences[ref] and ref.data.tamrielData and ref.data.tamrielData.distract then
+	if common.hasDataField(ref, "distract") and distractedReferences[ref] then
 		tes3.setAIWander({ reference = ref, range = ref.data.tamrielData.distract.distance, duration = ref.data.tamrielData.distract.duration, time = ref.data.tamrielData.distract.hour, idles = ref.data.tamrielData.distract.idles })
 		ref.position = ref.data.tamrielData.distract.position
 
@@ -1431,7 +1481,7 @@ end
 
 ---@param e magicEffectRemovedEventData
 function this.distractRemovedEffect(e)
-	if e.target and e.target.data.tamrielData and e.target.data.tamrielData.distract then
+	if common.hasDataField(e.target, "distract") then
 		setLocalVariable(e.target.object, "T_illusion_DistractHumanoid", 0)
 		setLocalVariable(e.target.object, "T_illusion_DistractCreature", 0)
 
@@ -1494,7 +1544,7 @@ end
 ---@param e tes3magicEffectTickEventData
 local function distractEffect(e)
 	local target = e.effectInstance.target
-	if not target or target.mobile.isDead or target.mobile.inCombat or target.mobile.isPlayerDetected or (target.data.tamrielData and target.data.tamrielData.distract) then
+	if not target or target.mobile.isDead or target.mobile.inCombat or target.mobile.isPlayerDetected or common.hasDataField(target, "distract") then
 		e.effectInstance.state = tes3.spellState.retired
 		return
 	end
@@ -1652,7 +1702,7 @@ function this.corruptionSummoned(e)
 		corruptionCasted = false
 		tes3.player.data.tamrielData.corruptionReferenceID = e.reference.id
 		e.mobile.alarm = 0
-		e.mobile.fight = 100
+		e.mobile.fight = 50
 		e.mobile.flee = 0
 		e.mobile.hello = 0
 
@@ -1687,7 +1737,7 @@ local function corruptionEffect(e)
 
 	if target.id ~= tes3.player.data.tamrielData.corruptionReferenceID then	-- Memory errors can be reported if the effect is applied to the summon and doing so is weird anyways
 		setLocalVariable(target.object, "T_conjuration_Corruption", 1)
-		if target.baseObject.script and (not ((target.baseObject.script.id:find("T_ScNpc") and not target.baseObject.script.id:find("_Were")) or magicData.safeScripts[target.baseObject.script.id]) or hasScriptedItem(target.mobile.inventory)) then	-- Checks whether the target has a scripted item or a script that is not known to be safely cloneable
+		if common.hasDataField(target, "wabbajack") or (target.baseObject.script and (not ((target.baseObject.script.id:find("T_ScNpc") and not target.baseObject.script.id:find("_Were")) or magicData.safeScripts[target.baseObject.script.id]))) or hasScriptedItem(target.mobile.inventory) then	-- Checks whether the target is wabbajacked, has a scripted item, or has a script that is not known to be safely cloneable
 			tes3ui.showNotifyMenu(common.i18n("magic.corruptionScript", { target.object.name }))
 			e.effectInstance.state = tes3.spellState.retired
 			restoreCharge(e.sourceInstance)
@@ -2333,7 +2383,7 @@ local function wabbajackEffect(e)
 			return
 		end
 
-		if target.mobile.actorType == tes3.actorType.creature and not target.baseObject.walks and not target.baseObject.biped then
+		if (target.mobile.actorType == tes3.actorType.creature and not target.baseObject.walks and not target.baseObject.biped) or (common.hasDataField(tes3.player, "corruptionReferenceID") and tes3.player.data.tamrielData.corruptionReferenceID == target.id) then
 			e.effectInstance.state = tes3.spellState.retired
 			restoreCharge(e.sourceInstance)
 			return
@@ -2342,7 +2392,7 @@ local function wabbajackEffect(e)
 		setLocalVariable(target.object, "T_alteration_Wabbajack", 1)
 
 		if target.object.level < 30 then
-			if not target.data.tamrielData or not target.data.tamrielData.wabbajack then
+			if not common.hasDataField(target, "wabbajack") then
 				target.data.tamrielData = target.data.tamrielData or {}
 
 				local maxDuration = 16
@@ -2385,7 +2435,7 @@ local function wabbajackEffect(e)
 				e.sourceInstance.caster.mobile:startCombat(transformedTarget.mobile)	-- Is this actually needed?
 			else
 				tes3.playSound{ sound = "Spell Failure Alteration", reference = target, mixChannel = tes3.soundMix.effects }
-				if target.data.tamrielData and target.data.tamrielData.wabbajack and target.data.tamrielData.wabbajack.targetName then tes3ui.showNotifyMenu(common.i18n("magic.wabbajackAlready", { target.data.tamrielData.wabbajack.targetName })) end
+				if common.hasDataField(target, "wabbajack") and target.data.tamrielData.wabbajack.targetName then tes3ui.showNotifyMenu(common.i18n("magic.wabbajackAlready", { target.data.tamrielData.wabbajack.targetName })) end
 				restoreCharge(e.sourceInstance)
 			end
 		else
@@ -2614,7 +2664,7 @@ local function banishDaedraEffect(e)
 
 	local target = e.effectInstance.target
 
-	if target.object.type ~= tes3.creatureType.daedra or target.isDead or table.contains(target.mobile.friendlyActors, e.sourceInstance.caster.mobile) or (target.data.tamrielData and target.data.tamrielData.wabbajack) then
+	if target.object.type ~= tes3.creatureType.daedra or target.isDead or table.contains(target.mobile.friendlyActors, e.sourceInstance.caster.mobile) or common.hasDataField(target, "wabbajack") then
 		e.effectInstance.state = tes3.spellState.retired
 		return
 	end
@@ -3691,6 +3741,24 @@ event.register(tes3.event.magicEffectsResolved, function()
 			targetsSkills = false,
 			unreflectable = false,
 			onTick = etherealEffect,
+			onCollision = nil
+		})
+
+		addMiscEffect("T_mysticism_SlowTime", {
+			allowEnchanting = false,
+			allowSpellmaking = false,
+			appliesOnce = true,
+			canCastSelf = true,
+			canCastTarget = false,
+			canCastTouch = false,
+			hasNoDuration = false,
+			hasNoMagnitude = true,
+			isHarmful = false,
+			nonRecastable = true,
+			targetsAttributes = false,
+			targetsSkills = false,
+			unreflectable = true,
+			onTick = nil,
 			onCollision = nil
 		})
 	end
