@@ -318,7 +318,10 @@ local onStart = {
             event[key] = stat.current / math.max(stat.base, 1)
         end
         creature:sendEvent('T_MarkWabbajack', event)
-        creature:sendEvent('StartAIPackage', { type = 'Follow', target = target }) -- Makes the guards ignore the creature
+        if core.API_REVISION < 136 then
+            -- Makes the guards ignore the creature; handled by the fight value since !5365
+            creature:sendEvent('StartAIPackage', { type = 'Follow', target = target })
+        end
         creature:sendEvent('StartAIPackage', { type = 'Combat', target = spell.caster, cancelOther = false })
         creature:sendEvent('AddVfx', { model = wabbajackVfx })
         target:teleport('T_Wabbajack', util.vector3(0, 0, 53.187))
