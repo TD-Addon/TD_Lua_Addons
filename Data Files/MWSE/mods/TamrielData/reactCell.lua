@@ -3,7 +3,7 @@ local this = {}
 local common = require("TamrielData.common")
 
 local react_cells = {
-	{ cells = { "TEM Parhelion: Cabin", "TEM Parhelion: Flight Deck", "TEM Parhelion: Hold" }, dialogue = { id = "Enman Septim", global = "PC_m1_Anv_EnmanAirshipState", value = 2 }, container = { id = "reactCellChestTest", cell = { id = nil, x = -121, y = -57 } } },	-- The dialogue ID will need i18n translations
+	{ cells = { "TEM Parhelion: Cabin", "TEM Parhelion: Flight Deck", "TEM Parhelion: Hold" }, dialogue = { id = "Enman Septim", global = "PC_m1_Anv_EnmanAirshipState", value = 2 }, container = { id = "reactCellChestTest", cell = { id = nil, x = -121, y = -57 } } },	-- The cell and dialogue IDs will need i18n translations
 }
 
 local react_cell_container_inventory
