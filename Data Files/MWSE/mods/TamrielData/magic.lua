@@ -111,6 +111,7 @@ if config.miscSpells then
 	tes3.claimSpellEffectId("T_mysticism_DetValuables", 2149)
 	tes3.claimSpellEffectId("T_mysticism_MagickaWard", 2150)
 	tes3.claimSpellEffectId("T_illusion_Ethereal", 2151)
+	tes3.claimSpellEffectId("T_mysticism_SlowTime", 2152)
 end
 
 local prismaticReferences = {}
@@ -2346,7 +2347,7 @@ local function wabbajackHelperEffect(e)
 				local transformedMagicka = target.mobile.magicka.normalized
 
 				local vfx = tes3.createVisualEffect({ object = "T_VFX_Wabbajack", lifespan = 1.5, reference = ref })
-				tes3.playSound{ sound = "alteration hit", reference = ref, mixChannel = tes3.soundMix.effects }
+				tes3.playSound{ sound = "T_SndObj_WabbajackHit", reference = ref, mixChannel = tes3.soundMix.effects }
 
 				tes3.positionCell({ reference = ref, position = target.position, orientation = target.orientation, cell = target.cell })
 
@@ -2420,7 +2421,7 @@ local function wabbajackEffect(e)
 				transformedTarget.mobile.fight = 0	-- Without this guards will fight transformed NPCs
 
 				local vfx = tes3.createVisualEffect({ object = "T_VFX_Wabbajack", lifespan = 1.5, reference = transformedTarget })
-				tes3.playSound{ sound = "alteration hit", reference = transformedTarget, mixChannel = tes3.soundMix.effects }
+				tes3.playSound{ sound = "T_SndObj_WabbajackHit", reference = transformedTarget, mixChannel = tes3.soundMix.effects }
 
 				tes3.cast({ reference = e.sourceInstance.caster, spell = "T_Dae_Alt_UNI_WabbajackTrans", alwaysSucceeds = true, bypassResistances = true, instant = true, target = transformedTarget })
 				tes3.positionCell({ reference = target, position = { 0, 0, -53.187 }, cell = "T_Wabbajack" })	-- All sorts of problems can arise from disabling a target within the effect event
@@ -2434,12 +2435,10 @@ local function wabbajackEffect(e)
 				transformedTarget.mobile:startCombat(e.sourceInstance.caster.mobile)
 				e.sourceInstance.caster.mobile:startCombat(transformedTarget.mobile)	-- Is this actually needed?
 			else
-				tes3.playSound{ sound = "Spell Failure Alteration", reference = target, mixChannel = tes3.soundMix.effects }
 				if common.hasDataField(target, "wabbajack") and target.data.tamrielData.wabbajack.targetName then tes3ui.showNotifyMenu(common.i18n("magic.wabbajackAlready", { target.data.tamrielData.wabbajack.targetName })) end
 				restoreCharge(e.sourceInstance)
 			end
 		else
-			tes3.playSound{ sound = "Spell Failure Alteration", reference = target, mixChannel = tes3.soundMix.effects }
 			tes3ui.showNotifyMenu(common.i18n("magic.wabbajackFailure", { target.object.name }))
 			restoreCharge(e.sourceInstance)
 		end
@@ -3313,7 +3312,8 @@ event.register(tes3.event.magicEffectsResolved, function()
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = true,
-			hitSound = "T_SndObj_Silence",
+			boltSound = "T_SndObj_WabbajackBolt",
+			hitSound = "T_SndObj_Silence",			-- The hit sound is handled by the functions for Wabbajack
 			hitVFX = "T_VFX_Empty",
 			areaSound = "T_SndObj_Silence",
 			areaVFX = "T_VFX_Empty",
@@ -3425,6 +3425,8 @@ event.register(tes3.event.magicEffectsResolved, function()
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = true,
+			boltSound = "T_SndObj_CorruptionBolt",
+			hitSound = "T_SndObj_Silence",				-- Hearing the hit sound on both the target of Corruption and the entity summoned by it is strange, so it is only played by T_conjuration_CorruptionSummon
 			onTick = corruptionEffect,
 			onCollision = nil
 		})
@@ -3442,6 +3444,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 			nonRecastable = false,
 			targetsAttributes = false,
 			targetsSkills = false,
+			hitSound = "T_SndObj_CorruptionHit",
 			onTick = function(eventData)
 				eventData:triggerSummon(corruptionActorID)
 			end,
@@ -3498,6 +3501,8 @@ event.register(tes3.event.magicEffectsResolved, function()
 			targetsAttributes = false,
 			targetsSkills = false,
 			unreflectable = true,
+			boltSound = "T_SndObj_GazeOfVelothBolt",
+			hitSound = "T_SndObj_GazeOfVelothHit",
 			onTick = gazeOfVelothEffect,
 			onCollision = nil
 		})

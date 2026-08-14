@@ -400,11 +400,10 @@ event.register(tes3.event.loaded, function()
 		--event.register(tes3.event.objectCreated, magic.adjustPotionMagnitudes, { unregisterOnLoad = true })
 		event.register(tes3.event.uiSpellTooltip, magic.correctSpellTooltipUnit, { unregisterOnLoad = true })
 
-		
-		event.register(tes3.event.jump, magic.slowTimePlayerJump, { unregisterOnLoad = true })
-		event.register(tes3.event.calcMoveSpeed, magic.slowTimePlayerMoveSpeed, { unregisterOnLoad = true })
-		event.register(tes3.event.simulate, magic.slowTimeEffect, { unregisterOnLoad = true })
-		event.register(tes3.event.magicEffectRemoved, magic.slowTimeRemoved, { filter = tes3.effect.T_mysticism_SlowTime, unregisterOnLoad = true })
+		--event.register(tes3.event.jump, magic.slowTimePlayerJump, { unregisterOnLoad = true })
+		--event.register(tes3.event.calcMoveSpeed, magic.slowTimePlayerMoveSpeed, { unregisterOnLoad = true })
+		--event.register(tes3.event.simulate, magic.slowTimeEffect, { unregisterOnLoad = true })
+		--event.register(tes3.event.magicEffectRemoved, magic.slowTimeRemoved, { filter = tes3.effect.T_mysticism_SlowTime, unregisterOnLoad = true })
 
 		event.register(tes3.event.equip, magic.etherealEquipPotion, { priority = 1000, unregisterOnLoad = true })
 		event.register(tes3.event.playItemSound, magic.etherealDropSound, { priority = 1000, unregisterOnLoad = true })
