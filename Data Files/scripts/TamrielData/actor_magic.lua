@@ -158,6 +158,12 @@ end
 
 local state = {}
 
+I.AnimationController.addPlayBlendedAnimationHandler(function(groupName, options)
+    if state.slowTime then
+        options.speed = options.speed * state.slowTime
+    end
+end)
+
 local timer = 0
 
 return {
@@ -268,7 +274,7 @@ return {
                 end
                 stat.current = v
             end
-            core.sound.playSound3d('alteration hit', self, { loop = false })
+            core.sound.playSound3d('T_SndObj_WabbajackHit', self, { loop = false })
             activeSpells:add({ id = 'T_Dae_Alt_UNI_WabbajackTrans', effects = { 0 }, ignoreResistances = true, ignoreSpellAbsorption = true, ignoreReflect = true, caster = data.caster })
             types.Actor.stats.ai.fight(self).base = 0
         end,
@@ -284,7 +290,7 @@ return {
                 end
                 stat.current = v
             end
-            core.sound.playSound3d('alteration hit', self, { loop = false })
+            core.sound.playSound3d('T_SndObj_WabbajackHit', self, { loop = false })
             if kill then
                 -- makes crime work
                 local params = {
@@ -339,6 +345,9 @@ return {
             local destination, options = helpers.getBlinkDestination(magnitude)
             -- TODO: don't use teleportation and preserve momentum
             core.sendGlobalEvent('T_Teleport', { object = self.object, cell = self.cell.id, position = destination, options = options })
+        end,
+        T_SlowTime = function(scale)
+            state.slowTime = scale
         end
     }
 }

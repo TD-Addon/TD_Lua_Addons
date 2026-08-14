@@ -184,8 +184,13 @@ local function banishContainer(data)
     data.light:remove()
 end
 
+local state = {
+    effects = {},
+    wabbajack = {}
+}
+
 local function canBeCorrupted(target)
-    if types.Player.objectIsInstance(target) then
+    if state.wabbajack[target.id] or types.Player.objectIsInstance(target) then
         return false
     end
     local record = target.type.records[target.recordId]
@@ -219,11 +224,6 @@ end
 local function toKey(actor, id, index)
     return actor.id .. ',' .. id .. ',' .. index
 end
-
-local state = {
-    effects = {},
-    wabbajack = {}
-}
 
 local function store(target, spell, effect)
     local id = spell.activeSpellId
@@ -275,7 +275,7 @@ local onStart = {
     end,
     t_alteration_wabbajack = function(target, spell, effect, track)
         local record = target.type.records[target.recordId]
-        if types.Creature.objectIsInstance(target) and not record.canWalk and not record.isBiped or types.Player.objectIsInstance(target) then
+        if types.Creature.objectIsInstance(target) and not record.canWalk and not record.isBiped or types.Player.objectIsInstance(target) or I.T_SummonMagic.isCorruptionSummon(target) then
             target.type.activeEffects(target):remove(effect.id)
             restoreCharge(spell.item, spell.caster)
             return
@@ -284,7 +284,6 @@ local onStart = {
         if level >= 30 then
             if spell.caster and types.Player.objectIsInstance(spell.caster) then
                 spell.caster:sendEvent('ShowMessage', { message = l10n('Magic_wabbajackFailure', { target = getName(record) }) })
-                core.sound.playSound3d('Spell Failure Alteration', target, { loop = false })
             end
             target.type.activeEffects(target):remove(effect.id)
             restoreCharge(spell.item, spell.caster)
@@ -294,7 +293,6 @@ local onStart = {
         if data then
             if spell.caster and types.Player.objectIsInstance(spell.caster) then
                 spell.caster:sendEvent('ShowMessage', { message = l10n('Magic_wabbajackAlready', { target = data.name }) })
-                core.sound.playSound3d('Spell Failure Alteration', target, { loop = false })
             end
             target.type.activeEffects(target):remove(effect.id)
             restoreCharge(spell.item, spell.caster)
@@ -374,6 +372,14 @@ local onStart = {
         store(target, spell, effect)
         track.ignore = false
     end,
+    t_mysticism_slowtime = function(target, spell, effect, track)
+        target:sendEvent('T_SlowTime', 1.75)
+        local scale = world.getSimulationTimeScale() / 2
+        world.setSimulationTimeScale(scale)
+        state.timeScale = scale
+        store(target, spell, effect)
+        track.ignore = false
+    end,
 }
 
 local onUpdate = {
@@ -422,6 +428,12 @@ local onEnd = {
             target:sendEvent('AddVfx', { model = wabbajackVfx })
         end
         creature:remove()
+    end,
+    t_mysticism_slowtime = function(effect)
+        local scale = world.getSimulationTimeScale() * 2
+        world.setSimulationTimeScale(scale)
+        state.timeScale = scale
+        effect.actor:sendEvent('T_SlowTime')
     end
 }
 
@@ -475,6 +487,9 @@ return {
                     end
                 end
                 state.wabbajack = wabbajack
+                if state.timeScale then
+                    world.setSimulationTimeScale(state.timeScale)
+                end
             end
         end
     },

@@ -19,6 +19,13 @@ local RANGE = {
     target = content.RANGE.Target
 }
 
+function isImplemented(effectId)
+    if effectId:find('T_') == 1 then
+        return implementedEffects[effectId]
+    end
+    return true
+end
+
 local function parseEffects(values, offset)
     local effects = {}
     local implemented = true
@@ -27,7 +34,7 @@ local function parseEffects(values, offset)
         if not row then
             break
         end
-        if row.id:find('T_') == 1 and not implementedEffects[row.id] then
+        if not isImplemented(row.id) then
             implemented = false
             break
         end
@@ -161,7 +168,7 @@ local function replaceIngredients(table)
         if ingredient then
             for i = 1,4 do
                 local row = values[i + 1]
-                if row and row.id:find('T_') == 1 and implementedEffects[row.id] then
+                if row and isImplemented(row.id) then
                     local effect = ingredient.effects[i]
                     effect.id = row.id
                     effect.affectedAttribute = row.attribute
@@ -214,13 +221,14 @@ local function addMiscEffects()
     })
     addMiscEffect('T_alteration_WabbajackHelper', {
         isAppliedOnce = false, allowsSpellmaking = false, allowsEnchanting = false, onSelf = false, onTarget = true,
-        onTouch = true, unreflectable = true, hitSound = 'T_SndObj_Silence', hitStatic = 'T_VFX_Empty'
+        onTouch = true, unreflectable = true, boltSound = 'T_SndObj_WabbajackBolt', hitSound = 'T_SndObj_Silence', hitStatic = 'T_VFX_Empty'
     })
     addMiscEffect('T_restoration_ArmorResartus', { hasDuration = false })
     addMiscEffect('T_restoration_WeaponResartus', { hasDuration = false })
     addMiscEffect('T_conjuration_Corruption', {
         allowsSpellmaking = false, allowsEnchanting = false, hasDuration = false, onSelf = false,
-        onTarget = true, onTouch = true, harmful = true, unreflectable = true
+        onTarget = true, onTouch = true, harmful = true, unreflectable = true,
+        boltSound = 'T_SndObj_CorruptionBolt', hitSound = 'T_SndObj_CorruptionHit'
     })
     addMiscEffect('T_conjuration_CorruptionSummon', { allowsSpellmaking = false, allowsEnchanting = false })
     addMiscEffect('T_illusion_DistractCreature', { unreflectable = true, onSelf = false, harmful = false })
@@ -228,6 +236,9 @@ local function addMiscEffects()
     addMiscEffect('T_mysticism_Blink', { hasDuration = false, hitSound = 'T_SndObj_BlinkHit', hitStatic = 'T_VFX_Empty' })
     addMiscEffect('T_restoration_FortifyCasting', {})
     addMiscEffect('T_conjuration_SanguineRose', { allowsSpellmaking = false, allowsEnchanting = false })
+    addMiscEffect('T_mysticism_SlowTime', { allowsSpellmaking = false, allowsEnchanting = false, onSelf = true, onTarget = false,
+        onTouch = false, harmful = false, nonRecastable = true, hasMagnitude = true
+    })
 end
 
 return {

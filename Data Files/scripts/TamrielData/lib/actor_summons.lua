@@ -20,7 +20,7 @@ return {
             if data.tag == 't_conjuration_corruptionsummon' then
                 local ai = self.type.stats.ai
                 ai.alarm(self).base = 0
-                ai.fight(self).base = 100
+                ai.fight(self).base = 50
                 ai.flee(self).base = 0
                 ai.hello(self).base = 0
             end
