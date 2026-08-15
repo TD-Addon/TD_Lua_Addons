@@ -26,6 +26,12 @@ for k, v in pairs(magicData.safeScripts) do
 end
 local wabbajackVfx = types.Static.records['T_VFX_Wabbajack'].model
 
+local kynesInterventionLocations = { -- temporarily hardcoded until OpenMW's !5462 is available
+    { gridX = -101, gridY = 11, position = util.vector3(-820175.4375, 94423.578125, 775.2520751953125), rotation = 2.4417157173157 }, --Karth River
+    { gridX = -103, gridY = 23, position = util.vector3(-842070, 193358.375, 12480), rotation = 1.570796251297 }, --Snowhawk Peak
+    { gridX = -94, gridY = 4, position = util.vector3(-769409.5, 35038, 11191.21484375), rotation = -0.79999768733978 }, --Beorinhal
+}
+
 local function triggerCrimeIfTrespassing(data)
     if not data.targetObject or not data.targetObject.owner or not types.Lockable.isLocked(data.targetObject) then
         return
@@ -206,6 +212,139 @@ local function canBeCorrupted(target)
     return true
 end
 
+local function isInterventionCell(cell, regions)
+	for _,v in pairs(regions) do
+		local regionID, xLeft, xRight, yBottom, yTop = unpack(v, 1, 5)
+			if (regionID == nil) or (cell.region and cell.region == string.lower(regionID)) then
+				if not xLeft then -- Checks whether cell boundaries are being used; if xLeft is nil, then all of the others should be too
+					return true
+				else
+					if (cell.gridX >= xLeft) and (cell.gridX <= xRight) and (cell.gridY >= yBottom) and (cell.gridY <= yTop) then
+						return true
+					else
+						return false
+					end
+				end
+			end
+	end
+
+	return false
+end
+
+local function getInterventionMarkerClosestTo(startCell, hardcodedMarkers)
+    local markers = {}
+    local minGridSize = math.huge
+    for _, possibleMarker in ipairs(hardcodedMarkers) do
+        local markersCell = world.getExteriorCell(possibleMarker.gridX, possibleMarker.gridY)
+        if markersCell and markersCell.region then -- To rule out markers from future PTR updates
+            local deltaX = possibleMarker.gridX - startCell.gridX
+            local deltaY = possibleMarker.gridY - startCell.gridY
+            local gridSize = math.max(math.abs(deltaX), math.abs(deltaY)) * 2
+
+            if gridSize == 0 then
+                return {
+                    cell = markersCell,
+                    position = possibleMarker.position,
+                    rotation = possibleMarker.rotation
+                }
+            end
+
+            if gridSize <= minGridSize then
+                if gridSize < minGridSize then
+                    markers = {}
+                    minGridSize = gridSize
+                end
+                table.insert(markers, {
+                    cell = markersCell,
+                    info = possibleMarker,
+                    gridCol = gridSize / 2 + deltaX,
+                    gridRow = gridSize / 2 + deltaY
+                })
+            end
+        end
+    end
+
+    if #markers == 0 then
+        return nil
+    elseif #markers == 1 then
+        return {
+            cell = markers[1].cell,
+            position = markers[1].info.position,
+            rotation = markers[1].info.rotation
+        }
+    end
+    -- All markers on the same ring, resolve by spiral
+    local closestMarker = nil
+    local earliestDistance = math.huge
+    for _, markerInfo in ipairs(markers) do
+        local distance = 0
+        if markerInfo.gridRow == 0 then --south border
+            distance = markerInfo.gridCol
+        elseif markerInfo.gridCol == minGridSize then -- east border
+            distance = minGridSize + markerInfo.gridRow
+        elseif markerInfo.gridRow == minGridSize then -- north border
+            distance = minGridSize*3 - markerInfo.gridCol
+        else -- west border
+            distance = minGridSize*4 - markerInfo.gridRow
+        end
+        if distance < earliestDistance then
+            closestMarker = markerInfo
+            earliestDistance = distance
+        end
+    end
+    if closestMarker == nil then return closestMarker end
+    return {
+        cell = closestMarker.cell,
+        position = closestMarker.info.position,
+        rotation = closestMarker.info.rotation
+    }
+end
+
+local function applyIntervention(player, hardcodedMarkers, coveredRegions)
+    if not types.Player.isTeleportingEnabled(player) then
+        player:sendEvent('ShowMessage', { message = core.getGMST("sTeleportDisabled") })
+        return
+    end
+
+    local visitedCells = {}
+    local function getExteriorCellFrom(cell)
+        if not cell or visitedCells[cell.id] then return nil end
+        visitedCells[cell.id] = true
+        if cell.isExterior or cell:hasTag("QuasiExterior") then
+            return cell
+        end
+
+        for _, door in ipairs(cell:getAll(types.Door)) do
+            if types.Door.isTeleport(door) then
+                local tgtCell = getExteriorCellFrom(types.Door.destCell(door))
+                if tgtCell ~= nil then
+                    return tgtCell
+                end
+            end
+        end
+        return nil
+    end
+    local startCell = getExteriorCellFrom(player.cell)
+    visitedCells = {}
+    if startCell == nil then
+        return
+    end
+
+    if not isInterventionCell(startCell, coveredRegions) then
+        player:sendEvent('ShowMessage', { message = l10n("Magic_rangeKyne") })
+        return
+    end
+
+    local foundMarker = getInterventionMarkerClosestTo(startCell, hardcodedMarkers)
+    if foundMarker ~= nil then
+        player:teleport(
+            foundMarker.cell,
+            foundMarker.position,
+            { onGround = true, rotation = util.transform.rotateZ(foundMarker.rotation) }
+        )
+    end
+end
+
 local function restoreCharge(item, caster)
     if not item then
         return
@@ -379,6 +518,12 @@ local onStart = {
         state.timeScale = scale
         store(target, spell, effect)
         track.ignore = false
+    end,
+    t_intervention_kyne = function(target, spell, effect, track)
+        if types.Player.objectIsInstance(target) then
+            applyIntervention(target, kynesInterventionLocations, magicData.kyne_intervention_regions)
+            track.ignore = false
+        end
     end,
 }
 

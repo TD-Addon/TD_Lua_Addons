@@ -732,6 +732,48 @@ local wabbajackCreatures = {
 	"golden saint"
 }
 
+-- region id, xcell left bound, xcell right bound, ycell top bound, ycell bottom bound
+local kyne_intervention_regions = {
+	{ "Colovian Barrowlands Region", nil, nil, nil, nil },
+	{ "Drajkmyr Marsh Region", nil, nil, nil, nil },
+	{ "Druadach Highlands Region", nil, nil, nil, nil },
+	{ "Falkheim Region", nil, nil, nil, nil },
+	{ "Gorvigh Mountains Region", nil, nil, nil, nil },
+	{ "Hrimbald Plateau Region", nil, nil, nil, nil },
+	{ "Hirsing Forest Region", nil, nil, nil, nil },
+	{ "Jerall Mountains Region", nil, nil, nil, nil },
+	{ "Kilkreath Mountains Region", nil, nil, nil, nil },
+	{ "Kreathi Vale Region", nil, nil, nil, nil },
+	{ "Lorchwuir Heath Region", nil, nil, nil, nil },
+	{ "Mhorkren Hills Region", nil, nil, nil, nil },
+	{ "Midkarth Region", nil, nil, nil, nil },
+	{ "Northshore Region", nil, nil, nil, nil },
+	{ "Reaver's Shore Region", nil, nil, nil, nil },
+	{ "Rift Valley Region", nil, nil, nil, nil },
+	{ "Skaldring Mountains Region", nil, nil, nil, nil },
+	{ "Solitude Forest Region", nil, nil, nil, nil },
+	{ "Solitude Forest Region S", nil, nil, nil, nil },
+	{ "Sundered Hills Region", nil, nil, nil, nil },
+	{ "Throat of the World Region", nil, nil, nil, nil },
+	{ "Troll's Teeth Mountains Region", nil, nil, nil, nil },
+	{ "Uld Vraech Region", nil, nil, nil, nil },
+	{ "Valstaag Highlands Region", nil, nil, nil, nil },
+	{ "Velothi Mountains Region", -41, -18, -8, 20 },
+	{ "Vorndgad Forest Region", nil, nil, nil, nil },
+	{ "White Plains Region", nil, nil, nil, nil },
+	{ "Wuurthal Dale Region", nil, nil, nil, nil },
+	{ "Ysheim Region", nil, nil, nil, nil },
+	{ "Sea of Ghosts Region", -116, -20, 21, 40 },
+	{ "Sea of Ghosts Region N", -116, -10, 21, 40 },
+	{ nil, -116, -20, 21, 40 },
+	{ "Brodir Grove Region", nil, nil, nil, nil },
+	{ "Felsaad Coast Region", nil, nil, nil, nil },
+	{ "Hirstaang Forest Region", nil, nil, nil, nil },
+	{ "Moesring Mountains Region", nil, nil, nil, nil },
+	{ "Isinfier Plains Region", nil, nil, nil, nil },
+	{ "Thirsk Region", nil, nil, nil, nil }
+}
+
 return {
 	td_summon_effects = td_summon_effects,
 	td_bound_effects = td_bound_effects,
@@ -749,4 +791,5 @@ return {
 	sanguineRoseDaedra = sanguineRoseDaedra,
 	safeScripts = safeScripts,
 	wabbajackCreatures = wabbajackCreatures,
+	kyne_intervention_regions = kyne_intervention_regions,
 }

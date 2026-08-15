@@ -68,48 +68,6 @@ this.almsivi_intervention_regions = {
 	{ "Thirsk Region", nil, nil, nil, nil }
 }
 
--- region id, xcell left bound, xcell right bound, ycell top bound, ycell bottom bound
-this.kyne_intervention_regions = {
-	{ "Colovian Barrowlands Region", nil, nil, nil, nil },
-	{ "Drajkmyr Marsh Region", nil, nil, nil, nil },
-	{ "Druadach Highlands Region", nil, nil, nil, nil },
-	{ "Falkheim Region", nil, nil, nil, nil },
-	{ "Gorvigh Mountains Region", nil, nil, nil, nil },
-	{ "Hrimbald Plateau Region", nil, nil, nil, nil },
-	{ "Hirsing Forest Region", nil, nil, nil, nil },
-	{ "Jerall Mountains Region", nil, nil, nil, nil },
-	{ "Kilkreath Mountains Region", nil, nil, nil, nil },
-	{ "Kreathi Vale Region", nil, nil, nil, nil },
-	{ "Lorchwuir Heath Region", nil, nil, nil, nil },
-	{ "Mhorkren Hills Region", nil, nil, nil, nil },
-	{ "Midkarth Region", nil, nil, nil, nil },
-	{ "Northshore Region", nil, nil, nil, nil },
-	{ "Reaver's Shore Region", nil, nil, nil, nil },
-	{ "Rift Valley Region", nil, nil, nil, nil },
-	{ "Skaldring Mountains Region", nil, nil, nil, nil },
-	{ "Solitude Forest Region", nil, nil, nil, nil },
-	{ "Solitude Forest Region S", nil, nil, nil, nil },
-	{ "Sundered Hills Region", nil, nil, nil, nil },
-	{ "Throat of the World Region", nil, nil, nil, nil },
-	{ "Troll's Teeth Mountains Region", nil, nil, nil, nil },
-	{ "Uld Vraech Region", nil, nil, nil, nil },
-	{ "Valstaag Highlands Region", nil, nil, nil, nil },
-	{ "Velothi Mountains Region", -41, -18, -8, 20 },
-	{ "Vorndgad Forest Region", nil, nil, nil, nil },
-	{ "White Plains Region", nil, nil, nil, nil },
-	{ "Wuurthal Dale Region", nil, nil, nil, nil },
-	{ "Ysheim Region", nil, nil, nil, nil },
-	{ "Sea of Ghosts Region", -116, -20, 21, 40 },
-	{ "Sea of Ghosts Region N", -116, -10, 21, 40 },
-	{ nil, -116, -20, 21, 40 },
-	{ "Brodir Grove Region", nil, nil, nil, nil },
-	{ "Felsaad Coast Region", nil, nil, nil, nil },
-	{ "Hirstaang Forest Region", nil, nil, nil, nil },
-	{ "Moesring Mountains Region", nil, nil, nil, nil },
-	{ "Isinfier Plains Region", nil, nil, nil, nil },
-	{ "Thirsk Region", nil, nil, nil, nil }
-}
-
 ---@param cell tes3cell
 ---@param cellVisitTable table<tes3cell, boolean>|nil
 ---@return tes3cell?
@@ -277,7 +235,7 @@ end
 function this.pathGridBFS(firstNode, finalNode)
     local visited = {}
     local queue = this.initQueue()
-	
+
     queue:push({firstNode})
     table.insert(visited, firstNode)
 
@@ -318,7 +276,7 @@ function this.pathGridDijkstra(firstNode, finalNode)
     while queue:count() > 0 do
         local currentNode = queue:pull()
 
-        if currentNode[1] == finalNode then 
+        if currentNode[1] == finalNode then
             local path = {}
 
             repeat
@@ -384,7 +342,7 @@ end
 function this.hasAlpha(node, clip, blend)
     clip = clip or true
     blend = blend or true
-    
+
 	for _,child in pairs(node.children) do
 		if child then
 			if child.alphaProperty then
@@ -396,7 +354,7 @@ function this.hasAlpha(node, clip, blend)
                     return true
                 end
 			end
-	
+
 			if child.children then
                 local childHasAlpha = this.hasAlpha(child, clip, blend)
 				if childHasAlpha then
@@ -463,7 +421,7 @@ function this.isFromTD(ref, includeMods)
             return false
         end
     end
-    
+
     return false
 end
 

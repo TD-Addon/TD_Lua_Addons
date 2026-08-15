@@ -30,6 +30,12 @@ features["blinkIndicator"] = {
     settingsEnabledByDefault = true,
     settingsKey = "Settings_TamrielData_page01Main_group02Magic_miscSpellsBlinkIndicator"
 }
+features["interventionSpells"] = {
+    requiredLuaApi = 129,
+    settingsPlayerSectionStorageId = "Settings_TamrielData_page01Main_group02Magic",
+    settingsEnabledByDefault = true,
+    settingsKey = "Settings_TamrielData_page01Main_group02Magic_interventionSpells"
+}
 features["debugLogging"] = {
     requiredLuaApi = 44,
     settingsPlayerSectionStorageId = "Settings_TamrielData_page01Main_group99Misc",

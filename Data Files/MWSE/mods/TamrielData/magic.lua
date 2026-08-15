@@ -722,7 +722,7 @@ end
 
 ---@param e spellResistEventData
 function this.etherealSpellResist(e)
-	if #e.target.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_Ethereal }) > 0 and e.caster ~= e.target then	-- Making the player resist all of their own effects is weird in general, but somehow prevents ever applying the ethereal effect as well 
+	if #e.target.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_Ethereal }) > 0 and e.caster ~= e.target then	-- Making the player resist all of their own effects is weird in general, but somehow prevents ever applying the ethereal effect as well
 		e.resistedPercent = 100
 		return false
 	end
@@ -2143,7 +2143,7 @@ function this.detectInvisibilityTick()
 				totalMagnitude = totalMagnitude + v.magnitude
 			end
 
-			for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = totalMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua 
+			for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = totalMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua
 				if detectInvisibilityValid(actor.reference) and (actor.chameleon > 0 or actor.invisibility > 0) then
 					local mapX, mapY, multiX, multiY
 					if tes3.player.cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(actor.position)
@@ -2178,7 +2178,7 @@ function this.detectEnemyTick()
 				totalMagnitude = totalMagnitude + v.magnitude
 			end
 
-			for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = totalMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua 
+			for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = totalMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua
 				local isHostile = false
 				for _,hostileActor in pairs(actor.hostileActors) do
 					if hostileActor == tes3.mobilePlayer then
@@ -2225,7 +2225,7 @@ function this.detectHumanoidTick()
 				totalMagnitude = totalMagnitude + v.magnitude
 			end
 
-			for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = totalMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua 
+			for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = totalMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua
 				if actor.actorType == tes3.actorType.npc then
 					local mapX, mapY, multiX, multiY
 					if tes3.player.cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(actor.position)
@@ -3144,7 +3144,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 				if (not eventData:trigger()) then
 					return
 				end
-				interventionEffect(eventData.sourceInstance.caster, "T_Aid_KyneInterventionMarker", common.kyne_intervention_regions, "main.rangeKyne")
+				interventionEffect(eventData.sourceInstance.caster, "T_Aid_KyneInterventionMarker", magicData.kyne_intervention_regions, "main.rangeKyne")
 				eventData.effectInstance.state = tes3.spellState.retired
 			end,
 			onCollision = nil

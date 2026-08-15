@@ -241,6 +241,15 @@ local function addMiscEffects()
     })
 end
 
+local function addInterventionEffects()
+    local effects = content.magicEffects.records
+    for _, values in pairs(magicData.td_intervention_effects) do
+        local id, name, cost, icon, desc = unpack(values)
+        effects[id] = { template = effects["divineintervention"], baseCost = cost, icon = icon, name = t(name), description = t(desc), allowsSpellmaking = true, allowsEnchanting = true }
+        implementedEffects[id] = true
+    end
+end
+
 return {
     engineHandlers = {
         onContentFilesLoaded = function()
@@ -250,8 +259,12 @@ return {
             if version_check.isFeatureEnabled('miscSpells') then
                 addMiscEffects()
             end
+            if version_check.isFeatureEnabled('interventionSpells') then
+                addInterventionEffects()
+            end
             replaceSpells(magicData.td_summon_spells)
             replaceSpells(magicData.td_misc_spells)
+            replaceSpells(magicData.td_intervention_spells)
             replaceEnchantments(magicData.td_enchantments)
             editItems(magicData.td_enchanted_items)
             replacePotions(magicData.td_potions)
