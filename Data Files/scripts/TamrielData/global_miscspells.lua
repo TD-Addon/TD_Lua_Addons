@@ -310,7 +310,7 @@ local function applyIntervention(player, hardcodedMarkers, coveredRegions)
     local function getExteriorCellFrom(cell)
         if not cell or visitedCells[cell.id] then return nil end
         visitedCells[cell.id] = true
-        if cell.isExterior or cell:hasTag("QuasiExterior") then
+        if cell.isExterior then
             return cell
         end
 
