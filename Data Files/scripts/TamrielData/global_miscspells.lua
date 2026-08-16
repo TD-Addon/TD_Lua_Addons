@@ -512,7 +512,7 @@ local onStart = {
         track.ignore = false
     end,
     t_mysticism_slowtime = function(target, spell, effect, track)
-        target:sendEvent('T_SlowTime', 1.75)
+        target:sendEvent('T_SlowTime', 1.65)
         local scale = world.getSimulationTimeScale() / 2
         world.setSimulationTimeScale(scale)
         state.timeScale = scale
