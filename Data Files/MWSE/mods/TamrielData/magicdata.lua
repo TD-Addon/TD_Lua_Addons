@@ -33,6 +33,7 @@ local td_summon_effects = {
 	{ "T_summon_SkeletonChampion", "summonSkeletonChampion", "T_Glb_Und_SkCmpGls_01_S", 32, "td\\s\\td_s_sum_skele_c.dds", "summonSkeletonChampionDesc", "summonAncestralGhost" },
 	{ "T_summon_AtroFrostMon", "summonFrostMonarch", "T_Dae_Cre_MonarcFr_01_S", 47, "td\\s\\td_s_sum_fst_monch.dds", "summonFrostMonarchDesc", "summonHunger" },
 	{ "T_summon_SpiderDaedra", "summonSpiderDaedra", "T_Dae_Cre_SpideDae_01_S", 42, "td\\s\\td_s_sum_spidr_dae.dds", "summonSpiderDaedraDesc", "summonHunger" },
+	{ "T_summon_Nocturnal", "summonNocturnal", "T_Dae_Cre_Nocturn_01_S", 59, "td\\s\\td_s_summ_noct.dds", "summonNocturnalDesc", "summonHunger" },
 }
 
 -- effect id, effect name, item id, 2nd item ID, effect mana cost, icon, effect description
@@ -114,6 +115,7 @@ local td_summon_spells = {
 	{ "T_Com_Cnj_SummonSkeletonChamp", "spell", "summonSkeletonChampion", 96, { id = "T_summon_SkeletonChampion", range = "self", duration = 60, min = 1, max = 1 } },
 	{ "T_Com_Cnj_SummonFrostMonarch", "spell", "summonFrostMonarch", 141, { id = "T_summon_AtroFrostMon", range = "self", duration = 60, min = 1, max = 1 } },
 	{ "T_Com_Cnj_SummonSpiderDaedra", "spell", "summonSpiderDaedra", 126, { id = "T_summon_SpiderDaedra", range = "self", duration = 60, min = 1, max = 1 } },
+	{ "T_Com_Cnj_SummonNocturnal", "spell", "summonNocturnal", 177, { id = "T_summon_Nocturnal", range = "self", duration = 60, min = 1, max = 1 } },
 }
 
 -- spell id, cast type, spell name, spell mana cost, effect1, ...

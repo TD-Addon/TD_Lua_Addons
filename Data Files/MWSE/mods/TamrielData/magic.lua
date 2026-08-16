@@ -33,7 +33,7 @@ local blinkIndicator
 local blinkGround
 
 local slowTimeActive = false
-local slowTimePlayerFactor = 1.75
+local slowTimePlayerFactor = 1.65
 local playerPreviousFallSpeed = 0
 
 local mouseOverInventory = true
@@ -68,6 +68,7 @@ if config.summoningSpells then
 	tes3.claimSpellEffectId("T_summon_SkeletonChampion", 2130)
 	tes3.claimSpellEffectId("T_summon_AtroFrostMon", 2131)
 	tes3.claimSpellEffectId("T_summon_SpiderDaedra", 2146)
+	tes3.claimSpellEffectId("T_summon_Nocturnal", 2153)
 end
 
 if config.boundSpells then

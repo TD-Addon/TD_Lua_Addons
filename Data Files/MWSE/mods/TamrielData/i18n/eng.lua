@@ -94,6 +94,8 @@ return {
 	["magic.summonFrostMonarchDesc"] = "This effect summons a frost monarch from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight.",
 	["magic.summonSpiderDaedra"] = "Summon Spider Daedra",
 	["magic.summonSpiderDaedraDesc"] = "This effect summons a spider daedra from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight.",
+	["magic.summonNocturnal"] = "Summon Nocturnal",
+	["magic.summonNocturnalDesc"] = "This effect summons a nocturnal from Oblivion. It appears six feet in front of the caster and attacks any entity that attacks the caster until the effect ends or the summoning is killed. At death, or when the effect ends, the summoning disappears, returning to Oblivion. If summoned in town, the guards will attack you and the summoning on sight.",
 
 	["magic.boundGreaves"] = "Bound Greaves",
 	["magic.boundGreavesDesc"] = "The spell effect conjures a lesser Daedra bound in the form of magical, wondrously light Daedric greaves. The greaves appear automatically equipped on the caster, displacing any currently equipped leg armor to inventory. When the effect ends, the greaves disappear, and any previously equipped leg armor is automatically re-equipped.",
