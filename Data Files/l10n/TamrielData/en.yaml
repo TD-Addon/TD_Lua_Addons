@@ -16,9 +16,11 @@ Settings_TamrielData_page01Main_group99Misc_debugLogging: "Debug Logging"
 Settings_TamrielData_page01Main_group99Misc_debugLogging_Description: "Adds more logs, for example in F10 OpenMW logs. Enable this if you want to report an issue with the scripts, so that you can provide more information about it."
 
 TamrielData_main_modName: "Tamriel Data"
-TamrielData_main_luaApiTooLow: "Feature disabled, because it requires OpenMW 0.49+ with Lua API_REVISION {requiredRevision} or higher (you have {currentRevision}). Consider updating OpenMW or turn the option off in Options > Scripts > Tamriel Data."
 TamrielData_main_noEsmLoaded: "Tamriel_Data.esm is not loaded! Make sure you have it enabled in the OpenMW content files if you want the Tamriel_Data.omwscript features."
-TamrielData_main_publicVersionMismatchWarning: "Incompatible OpenMW version detected. Press F10 for more information."
+TamrielData_main_luaVersionMismatch_Header: "Incompatible OpenMW version detected"
+TamrielData_main_luaVersionMismatch_Description: "Certain Tamriel_Data Lua features are disabled, because your OpenMW API_REVISION ({currentRevision}) is too low. List of features and their required minimum versions:{features}\nConsider updating OpenMW or turn the features off in Options > Scripts > Tamriel Data."
+TamrielData_main_mwseLuaMissing_Header: "Tamriel_Data MWSE Lua files missing"
+TamrielData_main_mwseLuaMissing_Description: "Tamriel Data OpenMW Lua addon requires the Tamriel Data MWSE Lua files to also be available. Make sure both the \"scripts\" and \"MWSE\" directories are installed alongside each other."
 TamrielData_main_globalVariableNotDetected: "Global variable {luaAddonGlobalVariableName} not detected. Please make sure you are using Tamriel_Data.esm version 12 or newer."
 
 TamrielData_main_imgaHelm: "Male Imga cannot wear helmets."
