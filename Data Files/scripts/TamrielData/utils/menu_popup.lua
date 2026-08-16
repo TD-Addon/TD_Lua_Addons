@@ -8,6 +8,7 @@ local async = require('openmw.async')
 local I = require('openmw.interfaces')
 local ui = require('openmw.ui')
 local util = require('openmw.util')
+local input = require('openmw.input')
 
 local function spacer(padding)
     if type(padding) == 'number' then
@@ -25,9 +26,6 @@ local function popup(title, message)
     local padding = util.vector2(5, 5)
     local width = util.vector2(380, 0)
     local element
-    local function close()
-        element:destroy()
-    end
     element = ui.create({
         type = ui.TYPE.Image,
         layer = 'Popup',
@@ -35,6 +33,11 @@ local function popup(title, message)
             relativeSize = util.vector2(1.0, 1.0),
             anchor = util.vector2(0.5, 0.5),
             relativePosition = util.vector2(0.5, 0.5)
+        },
+        userData = {
+            closePopupFunction = function()
+                element:destroy()
+            end
         },
         content = ui.content({
             {
@@ -93,7 +96,9 @@ local function popup(title, message)
                                             {
                                                 template = I.MWUI.templates.box,
                                                 events = {
-                                                    mouseClick = async:callback(close),
+                                                    mouseClick = async:callback(function()
+                                                        element.layout.userData.closePopupFunction()
+                                                    end),
                                                     focusGain = async:callback(function(e, thisObject)
                                                         thisObject.content[1].content[1].content.okButtonTextWidget.props.textColor =
                                                             I.MWUI.templates.textHeader.props.textColor
@@ -149,6 +154,29 @@ local function popup(title, message)
     return element
 end
 
+local function popLastValidWidgetAndCloseIt(popups)
+    while #popups > 0 do
+        local lastPopup = table.remove(popups)
+        if lastPopup and lastPopup.layout and lastPopup.layout.userData and lastPopup.layout.userData.closePopupFunction then
+            return lastPopup.layout.userData.closePopupFunction()
+        end
+    end
+end
+
+local function getKeyEventHandlersForClosingPopups(popups)
+    return {
+        onKeyRelease = function(keyboardKey)
+            if keyboardKey.code ~= input.KEY.Escape then return end
+            popLastValidWidgetAndCloseIt(popups)
+        end,
+        onControllerButtonRelease = function(controllerButton)
+            if controllerButton ~= input.CONTROLLER_BUTTON.B then return end
+            popLastValidWidgetAndCloseIt(popups)
+        end,
+    }
+end
+
 return {
-    popup = popup
+    popup = popup,
+    getKeyEventHandlersForClosingPopups = getKeyEventHandlersForClosingPopups
 }
