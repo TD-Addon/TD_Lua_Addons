@@ -3811,8 +3811,6 @@ event.register(tes3.event.load, function()
 		this.replaceIngredientEffects(magicData.td_ingredients)
 		this.replacePotions(magicData.td_potions)
 		this.editItems(magicData.td_enchanted_items)
-
-		tes3.getObject("T_Dae_UNI_Wabbajack").enchantment = tes3.getObject("T_Use_WabbajackUni")	-- Crashes game when registered to the loaded event with the wabbajack enchantment equipped, so it is here instead
 	end
 end)
 
