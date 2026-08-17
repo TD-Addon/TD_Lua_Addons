@@ -557,7 +557,8 @@ event.register(tes3.event.loaded, function()
 
 	if config.creatureSounds then
 		event.register(tes3.event.damage, behavior.checkAttackingCreatureSound, { unregisterOnLoad = true })
-		event.register(tes3.event.addSound, behavior.changeCreatureAttackHitSound, { unregisterOnLoad = true })
+		event.register(tes3.event.addSound, behavior.changeCreatureAttackHitSound, { unregisterOnLoad = true, filter = "Health Damage" })
+		event.register(tes3.event.addSound, behavior.changeCreatureSoundForGroup, { unregisterOnLoad = true })
 	end
 
 	if config.fixPlayerRaceAnimations then

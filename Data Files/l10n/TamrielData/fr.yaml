@@ -18,6 +18,9 @@ Settings_TamrielData_page01Main_group99Misc_debugLogging_Description: "Ajoute pl
 TamrielData_main_modName: "Ressources communes de Tamriel"
 TamrielData_main_noEsmLoaded: "Tamriel_Data.esm n'est pas chargé ! Assurez-vous de l'avoir activé dans les fichiers de données d'OpenMW si vous voulez bénéficier des fonctionnalités de Tamriel_Data.omwscript."
 TamrielData_main_luaVersionMismatch_Header: "Version incompatible d'OpenMW détectée."
+TamrielData_main_luaVersionMismatch_Description: "Certaines fonctionnalités Lua de Ressources communes de Tamriel sont désactivées car la valeur d'API_REVISION d'OpenMW ({currentRevision}) est trop basse. Liste des fonctionnalités et de leur version minimum requise : {features}\nEnvisagez de mettre à jour OpenMW ou désactivez les fonctionnalités dans Options > Scripst > Ressources communes de Tamriel."
+TamrielData_main_mwseLuaMissing_Header: "Fichiers MWSE-Lua de Ressources communes de Tamriel manquants"
+TamrielData_main_mwseLuaMissing_Description: "L'addon OpenMW-Lua de Ressources communes de Tamriel requiert que les fichiers MWSE-Lua du mod soient également installés. Assurez-vous que les deux dossiers \"scripts\" et \"MWSE\" sont bien installés."
 TamrielData_main_globalVariableNotDetected: "La variable globale {luaAddonGlobalVariableName} n'a pas été détectée.  Veuillez vous assurer que vous utilisez la version 12 ou plus récente de Ressources communes de Tamriel."
 
 TamrielData_main_imgaHelm: "Les Imgas mâles ne peuvent porter de casque."
