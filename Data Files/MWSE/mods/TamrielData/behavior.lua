@@ -9,11 +9,13 @@ local creatureAttackHitSounds = {
 
 -- creature id, sound id to be replaced, sound id to use instead, animationGroups to change sound ids for, condition for replacing the sound id
 local creatureGroupSounds = {
-	["T_Glb_Fau_Dolphin_01"] = { original = "Swim Right",
+	["T_Glb_Fau_Dolphin_01"] = {
+								 original = "Swim Right",	-- Perhaps this table should be made available to main, which would iterate through and register changeCreatureSoundForGroup multiple times with each original sound ID as a filter?
 								 replacement = "T_SndCrea_DolphinSplash",
-								 groups = { tes3.animationGroup.idle2,tes3.animationGroup.idle4, tes3.animationGroup.idle5, tes3.animationGroup.attack2 },		-- For some reasons the attack groups (and the fact that the creature is attacking) are not acknowledged by actionData at all and animationData does not exist on the dolphin references
+								 groups = { tes3.animationGroup.idle2,tes3.animationGroup.idle4, tes3.animationGroup.idle5 },
+								 attacks = { tes3.physicalAttackType.creature2 },	-- For some reasonably actionData's currentAnimationGroup is never equal to the attack groups so its physicalAttackType has to be checked instead
 								 condition = function(ref) if ref.cell.hasWater and ref.mobile.position.z + 128 >= ref.cell.waterLevel then return true end end	-- An offset is used because as far as the game is concerned, the dolphin's z-position is not changing during the idle animations unlike its xy-position
-								},
+							   },
 }
 
 local lamiaReferences = {}
@@ -124,7 +126,7 @@ function this.creatureDetectionTick()
 	for lamia in pairs(lamiaReferences) do
 		---@cast lamia tes3reference
 		for dreugh in pairs(dreughReferences) do
-			if lamia.position:distanceXY(dreugh.position) < 4096 then
+			if lamia.position and lamia.position:distanceXY(dreugh.position) < 4096 then
 				lamia.mobile:startCombat(dreugh.mobile)
 				dreugh.mobile:startCombat(lamia.mobile)
 			end
@@ -204,7 +206,7 @@ end
 
 ---@param e addSoundEventData
 function this.changeCreatureAttackHitSound(e)
-	if creatureSoundAttackedReferences[e.reference] and e.sound.id == "Health Damage" then
+	if creatureSoundAttackedReferences[e.reference] then
 		tes3.playSound({ reference = e.reference, sound = creatureSoundAttackedReferences[e.reference], mixChannel = tes3.soundMix.effects })
 		creatureSoundAttackedReferences[e.reference] = nil
 		e.volume = e.volume * .7	-- Not hearing the Health Damage sound at all feels strange, so its volume is simply reduced; this might need to be gone over for other attack hit sounds
@@ -222,7 +224,7 @@ function this.changeCreatureSoundForGroup(e)
 		end
 
 		if replacementTable and e.sound.id == replacementTable.original then
-			if table.contains(replacementTable.groups, e.reference.mobile.actionData.currentAnimationGroup) then
+			if table.contains(replacementTable.groups, e.reference.mobile.actionData.currentAnimationGroup) or table.contains(replacementTable.attacks, e.reference.mobile.actionData.physicalAttackType) then
 				if replacementTable.condition and replacementTable.condition(e.reference) then
 					e.sound = tes3.getSound(replacementTable.replacement)
 				end
