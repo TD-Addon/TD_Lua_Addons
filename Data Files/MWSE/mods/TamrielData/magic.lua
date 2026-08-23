@@ -35,7 +35,7 @@ local blinkIndicator
 local blinkGround
 
 local slowTimeActive = false
-local slowTimePlayerFactor = 1.65
+local slowTimePlayerFactor = 1.65	-- This factor is used to change the speed of the player relative to everyone else when slow time is active; it is kept below 2 (which would be their normal speed) to emphasize that time is slowed while still enhancing them
 local playerPreviousFallSpeed = 0
 
 local mouseOverInventory = true
@@ -219,7 +219,7 @@ local raceSkeletonBodyParts = {
 	{ "T_Pya_SeaElf", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
 	{ "T_Sky_Hill_Giant", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },		-- Giants should eventually get their own skeleton mesh though
 	{ "T_Sky_Reachman", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },
-	{ "T_Yne_Ynesai", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },		-- Imga and Tsaesci skeletons will take more effort
+	{ "T_Yne_Ynesai", "T_B_GazeVeloth_Skeleton_01", "T_C_GazeVeloth_Skeleton_01" },		-- Imga, Naga, and Tsaesci skeletons will take more effort
 }
 
 -- actor id
@@ -423,7 +423,7 @@ local function setLocalVariable(obj, var, value)
 	end
 end
 
----@param e objectCreatedEventData
+---@param e potionBrewedEventData
 function this.adjustPotionMagnitudes(e)
 	if e.object.objectType == tes3.objectType.alchemy then
 		local blinkIndex = e.object:getFirstIndexOfEffect(tes3.effect.T_mysticism_Blink)
@@ -1067,27 +1067,27 @@ function this.blinkIndicator()
 				end
 
 				if range >= 48 then	-- Having it automatically appear right in front of the player when they blink next to a wall feels awkward
-					local destination = tes3.mobilePlayer.position + tes3vector3.new(0, 0, tes3.mobilePlayer.height) + tes3.getPlayerEyeVector() * range
+					local destination = tes3.mobilePlayer.position + tes3vector3.new(0, 0, tes3.mobilePlayer.cameraHeight) + tes3.getPlayerEyeVector() * range
 
 					local heightCheck = tes3.rayTest{
-						position = destination + tes3vector3.new(0, 0, tes3.mobilePlayer.height),
+						position = destination + tes3vector3.new(0, 0, tes3.mobilePlayer.cameraHeight),
 						direction = tes3vector3.new(0, 0, -1),
 						accurateSkinned = true,
 						observeAppCullFlag = false
 					}
 
 					local groundPosition
-					if heightCheck and heightCheck.distance then
-						if heightCheck.reference and heightCheck.reference == tes3.player then	-- Stop the ground mesh from being placed on top of the player, which might otherwise happen if they are looking up
+					if heightCheck and heightCheck.distance and not (heightCheck.reference and heightCheck.reference == tes3.player) then	-- The not condition stops the ground mesh from being placed on top of the player, which could otherwise happen if they are looking up
+						if tes3.player.cell.waterLevel and heightCheck.intersection.z <= tes3.player.cell.waterLevel and not tes3.player.mobile.underwater and destination.z > tes3.player.cell.waterLevel + 48 then		-- If the player and their destination are above water, then the ground mesh should be too so that it is visible
+							groundPosition = tes3vector3.new(heightCheck.intersection.x, heightCheck.intersection.y, tes3.player.cell.waterLevel + 6)
 						else
-							if tes3.player.cell.waterLevel and heightCheck.intersection.z <= tes3.player.cell.waterLevel and not tes3.player.mobile.underwater and destination.z > tes3.player.cell.waterLevel + 48 then		-- If the player and their destination are above water, then the ground mesh should be too so that it is visible
-								groundPosition = tes3vector3.new(heightCheck.intersection.x, heightCheck.intersection.y, tes3.player.cell.waterLevel + 6)
-							else
-								groundPosition = tes3vector3.new(heightCheck.intersection.x, heightCheck.intersection.y, heightCheck.intersection.z + 24)
-							end
-					 		if heightCheck.distance < 196 then destination = tes3vector3.new(destination.x, destination.y, destination.z + 196 - heightCheck.distance) end
+							groundPosition = tes3vector3.new(heightCheck.intersection.x, heightCheck.intersection.y, heightCheck.intersection.z + 24)
 						end
+
+						if heightCheck.distance < 196 then destination = tes3vector3.new(destination.x, destination.y, destination.z + 196 - heightCheck.distance) end		-- Place the indicator at a fixed distance above the ground marker if the destination is close enough to the ground
 					end
+
+					if not groundPosition and tes3.getPlayerEyeVector().z < 0 then return end		-- If the player is looking down and groundPosition is undefined, then the indicator is very close to them and should not be made visible
 
 					tes3.worldController.vfxManager.worldVFXRoot:attachChild(blinkIndicator, true)
 					blinkIndicator.appCulled = false
@@ -1275,15 +1275,15 @@ local function blinkEffect(e)
 			end
 
 			local heightCheck = tes3.rayTest{
-				position = destination + tes3vector3.new(0, 0, tes3.mobilePlayer.height),
+				position = destination + tes3vector3.new(0, 0, tes3.mobilePlayer.cameraHeight),
 				direction = tes3vector3.new(0, 0, -1),
-				maxDistance = tes3.mobilePlayer.height,
+				maxDistance = tes3.mobilePlayer.cameraHeight,
 				accurateSkinned = true,
 				observeAppCullFlag = false
 			}
 
 			if heightCheck and heightCheck.distance then
-				destination = destination + tes3vector3.new(0, 0, tes3.mobilePlayer.height - heightCheck.distance)	-- This should prevent the player from clipping through objects below them
+				destination = destination + tes3vector3.new(0, 0, tes3.mobilePlayer.cameraHeight - heightCheck.distance)	-- This should prevent the player from clipping through objects below them
 			end
 
 			if tes3.mobilePlayer.isFalling or tes3.mobilePlayer.isJumping then tes3.player.data.tamrielData.hasBlinked = true end
@@ -1377,6 +1377,7 @@ local function gazeOfVelothEffect(e)
 	target.data.tamrielData.gazeOfVeloth = true
 	tes3.removeSound({ sound = nil, reference = target })	-- Stop long-winded voice lines from continuing to play after the target is stripped of their flesh
 	tes3.playSound({ sound = tes3.getMagicEffect(tes3.effect.T_destruction_GazeOfVeloth).hitSoundEffect, reference = target, mixChannel = tes3.soundMix.effects })	-- The hit sound is stopped by the line above though, so this plays it again
+	tes3.triggerCrime({ type = tes3.crimeType.killing, victim = target.mobile })
 	target.mobile:kill()
 	tes3.incrementKillCount({ actor = target.baseObject })
 
