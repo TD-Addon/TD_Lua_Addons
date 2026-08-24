@@ -72,34 +72,36 @@ local function calculateReflect(health, fatigue)
     return health, fatigue, reflectedHealth, reflectedFatigue
 end
 
-I.Combat.addOnHitHandler(function(attack)
-    if not attack.successful or not attack.damage or not attack.attacker or not attack.attacker:isValid() then
-        return
-    elseif attack.sourceType ~= I.Combat.ATTACK_SOURCE_TYPES.Melee and attack.sourceType ~= I.Combat.ATTACK_SOURCE_TYPES.Ranged then
-        return
-    end
-    local health = attack.damage.health or 0
-    local fatigue = attack.damage.fatigue or 0
-    if health <= 0 and fatigue <= 0 then
-        return
-    elseif activeEffects:getEffect('t_mysticism_reflectdmg').magnitude <= 0 then
-        return
-    end
-    local newHealth, newFatigue, reflectedHealth, reflectedFatigue = calculateReflect(health, fatigue)
-    local reflectedAttack = auxUtil.shallowCopy(attack)
-    reflectedAttack.attacker = self.object
-    reflectedAttack.sourceType = I.Combat.ATTACK_SOURCE_TYPES.Unspecified
-    reflectedAttack.damage = {}
-    if attack.damage.health then
-        attack.damage.health = newHealth
-        reflectedAttack.damage.health = reflectedHealth
-    end
-    if attack.damage.fatigue then
-        attack.damage.fatigue = newFatigue
-        reflectedAttack.damage.fatigue = reflectedFatigue
-    end
-    attack.attacker:sendEvent('Hit', reflectedAttack)
-end)
+if core.magic.effects.records['t_mysticism_reflectdmg'] then
+    I.Combat.addOnHitHandler(function(attack)
+        if not attack.successful or not attack.damage or not attack.attacker or not attack.attacker:isValid() then
+            return
+        elseif attack.sourceType ~= I.Combat.ATTACK_SOURCE_TYPES.Melee and attack.sourceType ~= I.Combat.ATTACK_SOURCE_TYPES.Ranged then
+            return
+        end
+        local health = attack.damage.health or 0
+        local fatigue = attack.damage.fatigue or 0
+        if health <= 0 and fatigue <= 0 then
+            return
+        elseif activeEffects:getEffect('t_mysticism_reflectdmg').magnitude <= 0 then
+            return
+        end
+        local newHealth, newFatigue, reflectedHealth, reflectedFatigue = calculateReflect(health, fatigue)
+        local reflectedAttack = auxUtil.shallowCopy(attack)
+        reflectedAttack.attacker = self.object
+        reflectedAttack.sourceType = I.Combat.ATTACK_SOURCE_TYPES.Unspecified
+        reflectedAttack.damage = {}
+        if attack.damage.health then
+            attack.damage.health = newHealth
+            reflectedAttack.damage.health = reflectedHealth
+        end
+        if attack.damage.fatigue then
+            attack.damage.fatigue = newFatigue
+            reflectedAttack.damage.fatigue = reflectedFatigue
+        end
+        attack.attacker:sendEvent('Hit', reflectedAttack)
+    end)
+end
 
 local function getDistractDestination(caster, range)
     local casterPos = caster and caster.position
