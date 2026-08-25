@@ -69,8 +69,7 @@ local function teleportPlayer(data)
     world.vfx.spawn(passwall_target_effect_model, data.position)
 end
 
-local function getItemEnchantmentMaxCharge(item)
-	local record = item.type.records[item.recordId]
+local function getItemEnchantmentMaxCharge(record)
 	if record.enchant then
 		local enchantment = core.magic.enchantments.records[record.enchant]
 		if enchantment then
@@ -90,6 +89,7 @@ local function resartusEquipment(actor, magnitude, type)
     for _, item in pairs(equipment) do
         if type.objectIsInstance(item) then
             local data = types.Item.itemData(item)
+	        local record = type.records[item.recordId]
             local maxHealth = record.health
             local maxCharge = getItemEnchantmentMaxCharge(item)
             local hasDamage = data.condition and data.condition < maxHealth
@@ -352,7 +352,8 @@ local function restoreCharge(item, caster)
     --TODO !3029
     --[[
     local charge = I.SpellCasting.getCostCharge(item, caster)
-    local maxCharge = getItemEnchantmentMaxCharge(item)
+	local record = item.type.records[item.recordId]
+    local maxCharge = getItemEnchantmentMaxCharge(record)
     local data = types.Item.itemData(item)
     if data.enchantmentCharge < maxCharge then
         data.enchantmentCharge = math.min(data.enchantmentCharge + charge, maxCharge)
