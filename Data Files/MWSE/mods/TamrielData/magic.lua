@@ -35,7 +35,7 @@ local blinkIndicator
 local blinkGround
 
 local slowTimeActive = false
-local slowTimePlayerFactor = 1.65	-- This factor is used to change the speed of the player relative to everyone else when slow time is active; it is kept below 2 (which would be their normal speed) to emphasize that time is slowed while still enhancing them
+local slowTimePlayerFactor = 1.65	-- This factor is used to change the speed of the player relative to everyone else when slow time is active; it is kept below 2 (the normal speed) to emphasize that time is slowed without harming them as much as other actors
 local playerPreviousFallSpeed = 0
 
 local mouseOverInventory = true
@@ -115,6 +115,7 @@ if config.miscSpells then
 	tes3.claimSpellEffectId("T_mysticism_MagickaWard", 2150)
 	tes3.claimSpellEffectId("T_illusion_Ethereal", 2151)
 	tes3.claimSpellEffectId("T_mysticism_SlowTime", 2152)
+	tes3.claimSpellEffectId("T_restoration_FortifyAttackSpeed", 2154)
 end
 
 local prismaticReferences = {}
@@ -462,6 +463,22 @@ function this.correctSpellTooltipUnit(e)
 				end
 			end
 		end
+	end
+end
+
+---@param e attackStartEventData
+function this.fortifyAttackSpeedEffect(e)
+	local _, magnitude = tes3.getEffectMagnitude({ reference = e.mobile, effect = tes3.effect.T_restoration_FortifyAttackSpeed })
+	if magnitude > 0 then e.attackSpeed = e.attackSpeed * ((magnitude / 100) + 1) end
+end
+
+---@param e cameraControlEventData
+function this.slowTimeFirstPersonCamera(e)
+	if slowTimeActive and not tes3.mobilePlayer.is3rdPerson then		-- Slowing the movement of the camera in 3rd person seems like it would be disorientating and arguably doesn't make sense anyways
+		local currentCamera = e.cameraTransform.rotation:toQuaternion()
+		local previousCamera = e.previousCameraTransform.rotation:toQuaternion()
+		local angle = math.acos(math.min(1, math.abs(previousCamera:dot(currentCamera))))
+		e.cameraTransform.rotation = previousCamera:rotateTowards(currentCamera, angle * (slowTimePlayerFactor / 2)):toRotation()
 	end
 end
 
@@ -3768,6 +3785,34 @@ event.register(tes3.event.magicEffectsResolved, function()
 			targetsSkills = false,
 			unreflectable = true,
 			onTick = nil,
+			onCollision = nil
+		})
+
+		addMiscEffect("T_restoration_FortifyAttackSpeed", {
+			allowEnchanting = true,
+			allowSpellmaking = true,
+			appliesOnce = true,
+			canCastSelf = true,
+			canCastTarget = false,
+			canCastTouch = false,
+			hasNoDuration = false,
+			hasNoMagnitude = false,
+			isHarmful = false,
+			nonRecastable = false,
+			targetsAttributes = false,
+			targetsSkills = false,
+			unreflectable = false,
+			onTick = function(eventData)
+				if (not eventData:trigger()) then
+					return
+				end
+
+				if eventData.effectInstance.state < tes3.spellState.ending then
+					setLocalVariable(eventData.effectInstance.target.object, "T_restoration_FortifyAttackSpeed", 1)
+				else
+					setLocalVariable(eventData.effectInstance.target.object, "T_restoration_FortifyAttackSpeed", 0)
+				end
+			end,
 			onCollision = nil
 		})
 	end

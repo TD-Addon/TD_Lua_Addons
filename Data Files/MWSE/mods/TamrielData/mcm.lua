@@ -6,7 +6,7 @@ local config = require("TamrielData.config")
 ----------------------
 
 local function registerModConfig()
-    local template = mwse.mcm.createTemplate{name=common.i18n("mcm.name")}
+    local template = mwse.mcm.createTemplate{name=common.i18n("mcm.name"), headerImagePath = "textures/td/td_mcm_header.dds"}
     template:saveOnClose("tamrielData", config)
 
     local function createPage(label)

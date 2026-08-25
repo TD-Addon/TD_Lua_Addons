@@ -347,6 +347,8 @@ local function fixPlayerAnimations()
 		else
 			tes3.loadAnimation({ reference = tes3.player, file = "epos_kha_upr_anim_m.nif" })
 		end
+	elseif tes3.player.object.race.id == "T_Bkm_Naga" then
+		tes3.loadAnimation({ reference = tes3.player, file = "argonian_swimkna.nif" })
 	elseif tes3.player.object.race.id == "T_Aka_Tsaesci" then
 		tes3.loadAnimation({ reference = tes3.player, file = "pi_tsa_base_anim.nif" })
 	elseif tes3.player.object.race.id == "T_Cyr_Minotaur" then
@@ -400,10 +402,13 @@ event.register(tes3.event.loaded, function()
 		--event.register(tes3.event.objectCreated, magic.adjustPotionMagnitudes, { unregisterOnLoad = true })
 		event.register(tes3.event.uiSpellTooltip, magic.correctSpellTooltipUnit, { unregisterOnLoad = true })
 
-		--event.register(tes3.event.jump, magic.slowTimePlayerJump, { unregisterOnLoad = true })
-		--event.register(tes3.event.calcMoveSpeed, magic.slowTimePlayerMoveSpeed, { unregisterOnLoad = true })
-		--event.register(tes3.event.simulate, magic.slowTimeEffect, { unregisterOnLoad = true })
-		--event.register(tes3.event.magicEffectRemoved, magic.slowTimeRemoved, { filter = tes3.effect.T_mysticism_SlowTime, unregisterOnLoad = true })
+		event.register(tes3.event.attackStart, magic.fortifyAttackSpeedEffect, { unregisterOnLoad = true })
+
+		event.register(tes3.event.cameraControl, magic.slowTimeFirstPersonCamera, { unregisterOnLoad = true })
+		event.register(tes3.event.jump, magic.slowTimePlayerJump, { unregisterOnLoad = true })
+		event.register(tes3.event.calcMoveSpeed, magic.slowTimePlayerMoveSpeed, { unregisterOnLoad = true })
+		event.register(tes3.event.simulate, magic.slowTimeEffect, { unregisterOnLoad = true })
+		event.register(tes3.event.magicEffectRemoved, magic.slowTimeRemoved, { filter = tes3.effect.T_mysticism_SlowTime, unregisterOnLoad = true })
 
 		event.register(tes3.event.equip, magic.etherealEquipPotion, { priority = 1000, unregisterOnLoad = true })
 		event.register(tes3.event.playItemSound, magic.etherealDropSound, { priority = 1000, unregisterOnLoad = true })

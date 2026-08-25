@@ -160,6 +160,8 @@ return {
 	["magic.miscMagickaWardDesc"] = "The caster of this effect gathers magicka around them to absorb damage that they would otherwise suffer. Incoming damage is reduced by half, but also reduces the caster's magicka.",
 	["magic.miscEthereal"] = "Ethereal",
 	["magic.miscEtherealDesc"] = "The caster of this effect becomes incorporeal and can pass through other entities. The caster is incapable of being harmed by them, but also cannot act upon them, cast magic, use items, or physically interact with the world in general. The caster cannot pass through objects such as walls and still obeys the laws of gravity.",
+	["magic.miscFortifyAttackSpeed"] = "Fortify Attack Speed",
+	["magic.miscFortifyAttackSpeedDesc"] = "This effect increases the rate at which the subject attacks with a weapon or hand-to-hand attack.",
 
 	["magic.blinkLevitationDisabled"] = "Blink does not work here.",
 	["magic.wabbajackFailure"] = "%s is too strong to be Wabbajacked!",

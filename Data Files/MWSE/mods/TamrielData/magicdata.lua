@@ -81,6 +81,7 @@ local td_misc_effects = {
 	T_mysticism_MagickaWard = { "miscMagickaWard", 20, "td\\s\\td_s_magickaward.tga", "miscMagickaWardDesc", "detectAnimal" },
 	T_illusion_Ethereal = { "miscEthereal", 40, "td\\s\\td_s_ethereal.tga", "miscEtherealtDesc", "blind" },
 	T_mysticism_SlowTime = { "miscSlowTime", 100, "td\\s\\td_s_magickaward.tga", "miscSlowTimeDesc", "blind" },
+	T_restoration_FortifyAttackSpeed = { "miscFortifyAttackSpeed", 1, "td\\s\\td_s_ftfy_cast.tga", "miscFortifyAttackSpeedDesc", "fortifyAttack" },
 }
 
 -- spell id, cast type, spell name, spell mana cost, effect1, ...
