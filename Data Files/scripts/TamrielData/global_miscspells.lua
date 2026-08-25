@@ -94,7 +94,7 @@ local function resartusEquipment(actor, magnitude, type)
             local maxCharge = getItemEnchantmentMaxCharge(item)
             local hasDamage = data.condition and data.condition < maxHealth
             local missingCharge = data.enchantmentCharge and data.enchantmentCharge < maxCharge
-            if hasDamage or missingCharge then
+            if record and record.enchant and hasDamage or missingCharge then
                 table.insert(toFix, {
                     data = data,
                     hasDamage = hasDamage,
