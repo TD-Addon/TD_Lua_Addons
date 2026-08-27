@@ -79,7 +79,7 @@ local td_misc_effects = {
 	T_conjuration_SanguineRose = { "miscSanguineRose", 40, "td\\s\\td_s_sanguine.tga", "miscSanguineRoseDesc", "summonDremora" },
 	T_mysticism_DetValuables = { "miscDetectValuables", 1.5, "td\\s\\td_s_det_value.tga", "miscDetectValuablesDesc", "detectAnimal" },
 	T_mysticism_MagickaWard = { "miscMagickaWard", 20, "td\\s\\td_s_magickaward.tga", "miscMagickaWardDesc", "detectAnimal" },
-	T_illusion_Ethereal = { "miscEthereal", 40, "td\\s\\td_s_ethereal.tga", "miscEtherealtDesc", "blind" },
+	T_illusion_Ethereal = { "miscEthereal", 40, "td\\s\\td_s_ethereal.tga", "miscEtherealDesc", "blind" },
 	T_mysticism_SlowTime = { "miscSlowTime", 100, "td\\s\\td_s_magickaward.tga", "miscSlowTimeDesc", "blind" },
 	T_restoration_FortifyAttackSpeed = { "miscFortifyAttackSpeed", 1, "td\\s\\td_s_ftfy_cast.tga", "miscFortifyAttackSpeedDesc", "fortifyAttack" },
 }
