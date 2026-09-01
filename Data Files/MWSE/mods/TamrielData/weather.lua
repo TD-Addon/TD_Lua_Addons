@@ -363,13 +363,13 @@ end
 --- @param isSnow boolean
 local function swapNode(particle, newParticleMesh, isSnow)
 	if isSnow then								-- Prevent changing rain particles to snow particles
-		for _,v in pairs(rainParticles) do
+		for _, v in pairs(rainParticles) do
 			if v == particle.object.name then
 				return
 			end
 		end
 	else
-		for _,v in pairs(snowParticles) do
+		for _, v in pairs(snowParticles) do
 			if v == particle.object.name then
 				return
 			end
@@ -391,7 +391,7 @@ local function loadParticle(meshPath)
 	local particle = tes3.loadMesh(meshPath)
 
 	-- Strip all properties except for texturing for uniform lighting
-	for _,child in pairs(particle.children) do
+	for _, child in pairs(particle.children) do
 		child:detachProperty(ni.propertyType.alpha)
 		child:detachProperty(ni.propertyType.dither)
 		child:detachProperty(ni.propertyType.fog)
@@ -426,11 +426,11 @@ local function changeWeatherPrecipitation(weather, particleSettings)
 
 	if (not weatherController.particlesActive[1] or weatherController.particlesActive[1].object.name ~= newParticle.name) and
 		(not weatherController.particlesInactive[1] or weatherController.particlesInactive[1].object.name ~= newParticle.name) then	-- Done for optimization, prevents iterating through all particles on every cell change that this function is called
-		for _,particle in pairs(weatherController.particlesActive) do
+		for _, particle in pairs(weatherController.particlesActive) do
 			swapNode(particle, newParticle, particleSettings.isSnow)
 		end
 
-		for _,particle in pairs(weatherController.particlesInactive) do
+		for _, particle in pairs(weatherController.particlesInactive) do
 			swapNode(particle, newParticle, particleSettings.isSnow)
 		end
 	end
@@ -443,7 +443,7 @@ local function changeWeatherStormClouds(weather, stormClouds)
 
 	weather.controller.sceneStormRoot.children[stormClouds.stormRootIndex]:detachAllChildren()
 
-	for _,child in pairs(clouds.children) do
+	for _, child in pairs(clouds.children) do
 		weather.controller.sceneStormRoot.children[stormClouds.stormRootIndex]:attachChild(child, true)
 	end
 
@@ -552,7 +552,7 @@ function this.manageWeathers(e)
 end
 
 function this.changeRegionWeatherChances()
-	for _,v in pairs(region_weather_chances) do
+	for _, v in pairs(region_weather_chances) do
 		local regionID, weatherChanceAsh, weatherChanceBlight, weatherChanceBlizzard, weatherChanceClear, weatherChanceCloudy, weatherChanceFoggy, weatherChanceOvercast, weatherChanceRain, weatherChanceSnow, weatherChanceThunder = unpack(v)
 		local region = tes3.findRegion(regionID)
 
@@ -582,7 +582,7 @@ function this.changeStormOrigin(e)
 	end
 
 	if weather and weather.index == tes3.weather.ash or weather.index == tes3.weather.blight then
-		for _,v in pairs(region_storm_origins) do
+		for _, v in pairs(region_storm_origins) do
 			local regionID, xCoord, yCoord, yUpperLimit, yLowerLimit = unpack(v, 1, 5)
 
 			local extCell = common.getExteriorCell(tes3.player.cell)

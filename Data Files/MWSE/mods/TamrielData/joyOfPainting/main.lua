@@ -42,7 +42,7 @@ local paletteItems = {
 
 event.register(tes3.event.initialized, function()
     if JoyOfPainting then
-        for _,item in ipairs(paletteItems) do
+        for _, item in ipairs(paletteItems) do
             JoyOfPainting.Palette.registerPaletteItem(item)
         end
 

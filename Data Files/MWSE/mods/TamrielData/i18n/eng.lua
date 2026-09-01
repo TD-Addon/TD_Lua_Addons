@@ -14,6 +14,9 @@ return {
 	["main.minotaurHat"] = "Minotaurs cannot wear hats.",
 	["main.nagaHelm"] = "Naga cannot wear helmets.",
 	["main.nagaHat"] = "Naga cannot wear hats.",
+	["main.sarpaGauntlet"] = "Sarpa cannot wear gauntlets.",
+	["main.sarpaBracer"] = "Sarpa cannot wear bracers.",
+	["main.sarpaGlove"] = "Sarpa cannot wear gloves.",
 
 	["main.rangeAlmsivi"] = "The power of Almsivi does not extend to these lands.",
 	["main.rangeKyne"] = "The power of Kyne does not extend to these lands.",
@@ -275,6 +278,10 @@ return {
 	["mcm.weatherChangesLabel"] = "New Weathers",
 	["mcm.weatherChangesDescription"] = "Adds new weathers to some regions, such as sporefall in the Othreleth Woods, sandstorms in Shipal-Shin, and tropical storms in and around the Abecean Sea. Also makes minor adjustments to the weather in other regions, such as ashstorms in parts of Morrowind's mainland not originating from Red Mountain."..
 											"\nMay conflict with MWSE addons that affect weathers, such as Watch the Skies.\nRequires restart.\n\nDefault: On\n\n",
+
+	["mcm.bodyClothingLabel"] = "Show Body Underneath Clothing",
+	["mcm.bodyClothingDescription"] = "Allows for parts of the body to remain visible when certain pieces of clothing added by Tamriel Data are equipped."..
+											"\nIf using a mod that makes the body meshes and and textures seamless (e.g. VSBR), then parts of this feature will not work properly. This feature checks whether the body meshes and textures are set up like the vanilla assets are, so leaving this feature enabled alongside such mods should not cause problems.\nRequires reload.\n\nDefault: On\n\n",
 
 	["mcm.hatsLabel"] = "Hats as Clothing",
 	["mcm.hatsDescription"] = "Makes hats from Tamriel Data function as clothing rather than armor."..

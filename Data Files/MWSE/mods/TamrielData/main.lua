@@ -95,7 +95,7 @@ local TD_ButterflyMothTooltip = {}
 ---@param data table
 ---@param defaults table
 local function initTableValues(data, defaults)
-    for k,v in pairs(defaults) do
+    for k, v in pairs(defaults) do
         if data[k] == nil then
             if type(v) ~= "table" then
                 data[k] = v
@@ -120,7 +120,7 @@ local function changeRaceMenuKhajiitNames(e)
 
     	if not racePane then return end
 
-		for _,layout in ipairs(racePane.children) do
+		for _, layout in ipairs(racePane.children) do
 			if layout.children[1] and layout.children[1].text == common.i18n("main.khajiit.khajiit") then
 				local race = layout.children[1]:getPropertyObject("MenuRaceSex_ListNumber")
 				---@cast race tes3race
@@ -295,7 +295,7 @@ end
 
 ---@param e playItemSoundEventData
 local function improveItemSounds(e)
-	for _,v in pairs(item_sounds) do
+	for _, v in pairs(item_sounds) do
 		local itemID, upSound, downSound, useSound = unpack(v)
 
 		if e.item.id == itemID then
@@ -314,7 +314,7 @@ end
 
 ---@param e calcTravelPriceEventData
 local function adjustTravelPrices(e)
-	for _,v in pairs(travel_actor_prices) do
+	for _, v in pairs(travel_actor_prices) do
 		local actorID, destinationID, factor = unpack(v, 1, 3)
 		if e.reference.baseObject.id == actorID and (not destinationID or e.destination.cell.id == destinationID) then
 			e.price = math.round(e.price * factor)	-- The price seems to work regardless, but I'm paranoid
@@ -347,7 +347,7 @@ local function fixPlayerAnimations()
 		else
 			tes3.loadAnimation({ reference = tes3.player, file = "epos_kha_upr_anim_m.nif" })
 		end
-	elseif tes3.player.object.race.id == "T_Bkm_Naga" then
+	elseif tes3.player.object.race.id == "T_Bkm_Naga" or tes3.player.object.race.id == "T_Bkm_Sarpa" then
 		tes3.loadAnimation({ reference = tes3.player, file = "argonian_swimkna.nif" })
 	elseif tes3.player.object.race.id == "T_Aka_Tsaesci" then
 		tes3.loadAnimation({ reference = tes3.player, file = "pi_tsa_base_anim.nif" })
@@ -367,8 +367,9 @@ event.register(tes3.event.loaded, function()
     initTableValues(myData, player_data_defaults)
 
 	-- For some reason the bodyPartAssigned event is no longer being triggered when an actor is loaded, so relevant NPCs need to have their equipment updated after the loaded event to trigger it for them instead
+	-- This is becoming increasingly cumbersome as more features are added that interact with the bodyparts, but remains in place for now given that updateEquipment is apparently very expensive
 	event.register(tes3.event.mobileActivated, function(e)
-		if e.mobile.actorType == tes3.actorType.npc and (common.hasDataField(e.reference, "gazeOfVelothSkeleton") or e.reference.mobile.hasVampirism or common.td_argonian_races[e.reference.baseObject.race.id]) then
+		if e.mobile.actorType == tes3.actorType.npc and (common.hasDataField(e.reference, "gazeOfVelothSkeleton") or common.hasDataField(e.reference, "hasBodyUnderneathClothing") or common.hasDataField(e.reference, "hasBodyTextureOnClothing") or e.reference.mobile.hasVampirism or common.argonian_races[e.reference.baseObject.race.id]) then
 			e.reference:updateEquipment()
 		end
 	end, { unregisterOnLoad = true })
@@ -376,9 +377,9 @@ event.register(tes3.event.loaded, function()
 	event.register(tes3.event.cellChanged, function(e)
 		if not e.previousCell then
 			tes3.player:updateEquipment()
-			for _,cell in pairs(tes3.getActiveCells()) do
+			for _, cell in pairs(tes3.getActiveCells()) do
 				for npc in cell:iterateReferences(tes3.objectType.npc, false) do
-					if common.hasDataField(npc, "gazeOfVelothSkeleton") or npc.mobile.hasVampirism or common.td_argonian_races[npc.baseObject.race.id] then npc:updateEquipment() end
+					if common.hasDataField(npc, "gazeOfVelothSkeleton") or common.hasDataField(npc, "hasBodyUnderneathClothing") or common.hasDataField(npc, "hasBodyTextureOnClothing") or npc.mobile.hasVampirism or common.argonian_races[npc.baseObject.race.id] then npc:updateEquipment() end
 				end
 			end
 		end
@@ -521,6 +522,13 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.weatherTransitionStarted, weather.changeStormOrigin, { unregisterOnLoad = true })
 
 		event.register(tes3.event.soundObjectPlay, weather.silenceCreatures, { unregisterOnLoad = true })
+	end
+
+	if config.bodyClothing then
+		event.register(tes3.event.bodyPartAssigned, equipment.addBodyShapeToClothing, { unregisterOnLoad = true })
+		event.register(tes3.event.unequipped, equipment.removeBodyShapeWithClothing, { unregisterOnLoad = true })
+		event.register(tes3.event.equipped, equipment.hideBodyShapeUnderArmor, { unregisterOnLoad = true })
+		event.register(tes3.event.bodyPartAssigned, equipment.applyBodyTextureToClothing, { unregisterOnLoad = true })
 	end
 
 	if config.hats then

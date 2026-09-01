@@ -31,7 +31,7 @@ local baits = {
 
 event.register(tes3.event.initialized, function()
 	if ultimateFishing then
-		for _,item in ipairs(fishingNets) do
+		for _, item in ipairs(fishingNets) do
 			ultimateFishing.registerFishingNet(item)
 		end
 		for _, bait in ipairs(baits) do

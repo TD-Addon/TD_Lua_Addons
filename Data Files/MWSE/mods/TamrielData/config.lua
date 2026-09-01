@@ -15,6 +15,7 @@ local defaultConfig = {
 	provincialReputation = true,
 	provincialFactionUI = true,
 	weatherChanges = true,
+	bodyClothing = true,
 	hats = true,
 	embedments = true,
 	restrictEquipment = true,

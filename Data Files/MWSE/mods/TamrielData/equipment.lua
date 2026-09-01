@@ -1,6 +1,7 @@
 local this = {}
 
 local common = require("TamrielData.common")
+local config = require("TamrielData.config")
 
 -- bodypart id
 local hats = {
@@ -88,11 +89,21 @@ local embedments = {
 local male_imga_helmets = {
 }
 
+-- bodypart id, name of NiTriShape to replace, name of the NiTriShape in the race's bodypart mesh to use instead (if multiple shapes are present), name of the relevant tes3raceBodyParts property, active bodyparts (left & right if applicable) that the bodypart might be on
+local body_swap_shapes = {
+	["T_C_ArgCmShirt01_C"] = { equipmentShapeName = "Tri Chest 0", bodyShapeName = "Tri Chest", raceBodyPartProperty = "chest", possibleActiveBodyParts = { tes3.activeBodyPart.chest } }
+}
+
+-- bodypart id, name of NiTriShape to replace the texture of, name of the NiTriShape in the race's bodypart mesh with the new texture, name of the relevant tes3raceBodyParts property, active bodyparts (left & right if applicable) that the bodypart might be on
+local body_swap_textures = {
+	--["T_C_ArgCmShirt01_C"] = { equipmentShapeName = "Tri Chest 0", bodyShapeName = "Tri Chest", raceBodyPartProperty = "chest", possibleActiveBodyParts = { tes3.activeBodyPart.chest } },		-- Included as an example (despite being the same as the entry in body_swap_shapes)
+}
+
 ---@param equipment tes3clothing
 ---@param slots number[]
 local function usesBodypartSlots(equipment, slots)
-	for _,part in pairs(equipment.parts) do
-		for _,slot in pairs(slots) do
+	for _, part in pairs(equipment.parts) do
+		for _, slot in pairs(slots) do
 			if part.type == slot then return true end
 		end
 	end
@@ -133,7 +144,7 @@ function this.replaceHatCell(e)
 	for actor in e.cell:iterateReferences({ tes3.objectType.npc, tes3.objectType.creature, tes3.objectType.container }) do
 		replaceableHelmets = {}
 		helmetNumber = 1
-		for _,itemStack in pairs(actor.object.inventory) do	-- Containers don't have mobiles, but the object property can access the instances for all of the applicable references
+		for _, itemStack in pairs(actor.object.inventory) do	-- Containers don't have mobiles, but the object property can access the instances for all of the applicable references
 			if itemStack and itemStack.object and itemStack.object.objectType == tes3.objectType.armor and itemStack.object.slot == tes3.armorSlot.helmet and not itemStack.object.isClosedHelmet then
 				if common.isFromTD(itemStack.object, false) or common.isFromPTR(itemStack.object, false) then
 					if tes3.getObject(itemStack.object.id .. "H") and itemStack.count > 0 then
@@ -144,7 +155,7 @@ function this.replaceHatCell(e)
 			end
 		end
 
-		for _,helmet in pairs(replaceableHelmets) do
+		for _, helmet in pairs(replaceableHelmets) do
 			tes3.addItem({ reference = actor, item = helmet[1] .. "H", count = helmet[2], playSound = false })
 			tes3.removeItem({ reference = actor, item = helmet[1], count = helmet[2], playSound = false })
 		end
@@ -191,7 +202,7 @@ function this.createHatObjects()
 end
 
 function this.changeEmbedmentsSlot()
-	for _,clothingID in pairs(embedments) do
+	for _, clothingID in pairs(embedments) do
 		tes3.getObject(clothingID).slot = tes3.clothingSlot.embedment
 	end
 end
@@ -200,16 +211,15 @@ end
 ---@param item tes3clothing
 ---@param reference tes3reference
 local function addEmbedment(attachNode, item, reference)
-	local embedmentMesh = tes3.loadMesh(item.mesh)
+	local embedmentMesh = tes3.loadMesh(item.mesh, false)
 	if embedmentMesh then
-		embedmentMesh = embedmentMesh:clone()
 		embedmentMesh.name = "td_embedment"
 
 		embedmentMesh.translation.x = 8.25
 		embedmentMesh.translation.y = 7.5
 		embedmentMesh.translation.z = 0
 		local rotationMatrix = tes3matrix33.new()
-		rotationMatrix:fromEulerXYZ(math.pi / 2, 0, math.pi / 2)
+		rotationMatrix:fromEulerXYZ(math.pi / 2, 0, math.pi / 2)					-- Should the weight and height of the actor be taken into consideration here as well?
 		embedmentMesh.rotation = embedmentMesh.rotation * rotationMatrix			-- The calculation has to be split up like this so that things don't go horribly wrong
 		embedmentMesh.scale = .6
 
@@ -221,7 +231,8 @@ local function addEmbedment(attachNode, item, reference)
 		--end
 
 		reference.sceneNode:update()
-		reference.sceneNode:updateEffects()		-- updateProperties shouldn't be needed here
+		reference.sceneNode:updateProperties()
+		reference.sceneNode:updateEffects()
 	end
 end
 
@@ -236,7 +247,7 @@ end
 ---@param e cellChangedEventData
 function this.embedmentLoaded(e)
 	if e.previousCell then return end		-- mobileActivated is not triggered when loading a game, so cellChanged is used as well
-	for _,cell in pairs(tes3.getActiveCells()) do
+	for _, cell in pairs(tes3.getActiveCells()) do
 		for npc in cell:iterateReferences(tes3.objectType.npc, false) do
 			local embedmentItem = tes3.getEquippedItem({ actor = npc, objectType = tes3.objectType.clothing, slot = tes3.clothingSlot.embedment })
 			if embedmentItem then
@@ -441,6 +452,38 @@ function this.restrictRaceEquip(e)
 					end
 				end
 			end
+		elseif e.reference.mobile.object.race.id == "T_Bkm_Sarpa" then		-- Naga are not able to wear bracers, gauntlets, and gloves; helmets/hats and boots/shoes are accounted by them being a beast race
+			if e.item.objectType == tes3.objectType.armor then
+				if e.item.slot == tes3.armorSlot.leftGauntlet or e.item.slot == tes3.armorSlot.rightGauntlet then
+					if e.item.parts[1] and e.item.parts[1].male then
+						if e.reference.mobile == tes3.mobilePlayer then
+							tes3ui.showNotifyMenu(common.i18n("main.sarpaGauntlet"))
+						end
+
+						return false
+					end
+				elseif e.item.slot == tes3.armorSlot.leftBracer or e.item.slot == tes3.armorSlot.rightBracer then
+					if e.item.parts[1] and e.item.parts[1].male then
+						if e.reference.mobile == tes3.mobilePlayer then
+							tes3ui.showNotifyMenu(common.i18n("main.sarpaBracer"))
+						end
+
+						return false
+					end
+				end
+			end
+
+			if e.item.objectType == tes3.objectType.clothing then
+				if e.item.slot == tes3.clothingSlot.leftGlove or e.item.slot == tes3.clothingSlot.rightGlove then
+					if e.item.parts[1] and e.item.parts[1].male then
+						if e.reference.mobile == tes3.mobilePlayer then
+							tes3ui.showNotifyMenu(common.i18n("main.sarpaGlove"))
+						end
+
+						return false
+					end
+				end
+			end
 		end
 
 		if e.reference.mobile.object.female or e.reference.mobile.object.race.id ~= "T_Val_Imga" then	-- Actors who are not male Imga should not be able to wear headwear made for them
@@ -461,13 +504,218 @@ end
 
 ---@param e bodyPartAssignedEventData
 function this.switchArgonianFemaleEquipment(e)
-	if e.object and e.reference.baseObject.objectType == tes3.objectType.npc and common.td_argonian_races[e.reference.baseObject.race.id] then
-		for _,part in pairs(e.object.parts) do
+	if e.object and e.reference.baseObject.objectType == tes3.objectType.npc and common.argonian_races[e.reference.baseObject.race.id] then
+		for _, part in pairs(e.object.parts) do
 			if part.type == e.index then
 				e.bodyPart = part.male
 				return
 			end
 		end
+	end
+end
+
+-- Valid meshes could have an NiNode as the root node rather than the NiTriShape, which getFirstShape returns
+---@param node niNode
+---@returns NiTriShape
+local function getFirstShape(node)
+	for shape in node:traverse({ type = ni.type.NiTriShape }) do return shape end
+end
+
+-- Different body parts being seamless or unsegmented (such as VSBR or the Tsaesci) will cause problems since TD's equipment for this feature has been made with the vanilla body parts in mind, so the textures and meshes of different body parts are checked to ensure that they are not the same
+---@param raceBodyParts tes3raceBodyParts
+local function raceFollowsConvention(raceBodyParts)
+	if raceBodyParts.chest.mesh ~= raceBodyParts.neck.mesh and raceBodyParts.chest.mesh ~= raceBodyParts.forearm.mesh and raceBodyParts.chest.mesh ~= raceBodyParts.groin.mesh then
+		local chest = tes3.loadMesh(raceBodyParts.chest.mesh):getObjectByName("Tri Chest")
+		local neck = getFirstShape(tes3.loadMesh(raceBodyParts.neck.mesh))
+		local forearm = getFirstShape(tes3.loadMesh(raceBodyParts.forearm.mesh))
+		local groin = getFirstShape(tes3.loadMesh(raceBodyParts.groin.mesh))
+
+		if chest and neck and forearm and groin then
+			local chestTexturingProperty = chest.texturingProperty
+			local neckTexturingProperty = neck.texturingProperty
+			local forearmTexturingProperty = forearm.texturingProperty
+			local groinTexturingProperty = groin.texturingProperty
+
+			if chestTexturingProperty and neckTexturingProperty and forearmTexturingProperty and groinTexturingProperty then
+				local chestTexture = chestTexturingProperty.baseMap.texture.fileName
+				local neckTexture = neckTexturingProperty.baseMap.texture.fileName
+				local forearmTexture = forearmTexturingProperty.baseMap.texture.fileName
+				local groinTexture = groinTexturingProperty.baseMap.texture.fileName
+
+				if chestTexture ~= neckTexture and chestTexture ~= forearmTexture and chestTexture ~= groinTexture then
+					return true
+				end
+			end
+		end
+	end
+end
+
+-- Replaces a bodypart's NiTriShape with a shape from an actors racial bodyparts according to body_swap_shapes
+---@param e bodyPartAssignedEventData
+function this.addBodyShapeToClothing(e)
+	-- getDirectChildrenByName only searches the children of a given node, not all of the nodes underneath it; this should prevent unintended behavior from the DFS of getObjectByName if another node (likely in a bodypart) happens to be the same as that being searched for
+	---@param node niNode
+	---@param name string
+	---@returns NiTriShape
+	local function getDirectChildByName(node, name)
+		for _,child in pairs(node.children) do
+			if child and child.name == name then return child end
+		end
+	end
+
+	if e.bodyPart and e.bodyPart.partType == tes3.activeBodyPartLayer.clothing and body_swap_shapes[e.bodyPart.id] and not e.manager:getActiveBodyPart(tes3.activeBodyPartLayer.armor, e.index).bodyPart then
+		timer.delayOneFrame(function()
+			if e.manager:getActiveBodyPart(tes3.activeBodyPartLayer.armor, e.index).bodyPart then return end
+
+			local activePart = e.manager:getActiveBodyPart(e.bodyPart.partType, e.index)
+			if activePart and activePart.node then
+				local shape = activePart.node:getObjectByName(body_swap_shapes[e.bodyPart.id].equipmentShapeName)
+				shape.appCulled = true
+				tes3ui.updateInventoryCharacterImage()
+			end
+
+			local bodyMesh
+			if e.reference.object.female then
+				if not raceFollowsConvention(e.reference.object.race.femaleBody) then return end	-- Is this check needed for shape replacements?
+				bodyMesh = tes3.loadMesh(e.reference.object.race.femaleBody[body_swap_shapes[e.bodyPart.id].raceBodyPartProperty].mesh, false)
+			else
+				if not raceFollowsConvention(e.reference.object.race.maleBody) then return end
+				bodyMesh = tes3.loadMesh(e.reference.object.race.maleBody[body_swap_shapes[e.bodyPart.id].raceBodyPartProperty].mesh, false)
+			end
+
+			local bodyShapeParent = niNode.new()
+			bodyShapeParent.name = e.bodyPart.id		-- By naming the node after the bodyPart's ID, it can easily be found by different functions
+
+			if bodyMesh:getObjectByName("Bip01") then
+				local scale = tes3vector3.new(1 / e.reference.object.weight, 1 / e.reference.object.weight, 1 / e.reference.object.height)		-- Onion squares the height and weight values even though these seem correct?
+				bodyShapeParent.rotation = tes3matrix33.new(bodyShapeParent.rotation.x * scale, bodyShapeParent.rotation.y * scale, bodyShapeParent.rotation.z * scale)		-- Apply racial scaling
+
+				e.reference.sceneNode:attachChild(bodyShapeParent, true)
+				local shape = bodyMesh:getObjectByName(body_swap_shapes[e.bodyPart.id].bodyShapeName)
+				if shape.skinInstance then
+					shape = shape:clone()
+
+					shape.skinInstance.root = bodyShapeParent
+					for i, bone in ipairs(shape.skinInstance.bones) do
+						shape.skinInstance.bones[i] = e.reference.sceneNode:getObjectByName(bone.name)
+					end
+
+					bodyShapeParent:attachChild(shape, true)
+				end
+			else
+				e.index = tes3.activeBodyPart.leftWrist
+				local bodySlotName = table.invert(tes3.activeBodyPart)[e.index]
+				local bodyAttachmentName = bodySlotName
+
+				bodyAttachmentName = bodyAttachmentName:gsub("Pauldron", "Clavicle")
+				bodyAttachmentName = bodyAttachmentName:gsub("Forearm", "Forearm1")			-- Hopefully ignoring the 2nd attachments does not cause problems
+				bodyAttachmentName = bodyAttachmentName:gsub("Wrist", "Forearm1")
+				bodyAttachmentName = bodyAttachmentName:gsub("UpperLeg", "Thigh")
+				bodyAttachmentName = bodyAttachmentName:gsub("Knee", "Calf1")
+				bodyAttachmentName = bodyAttachmentName:gsub("Ankle", "Calf1")
+
+				bodySlotName = bodySlotName:gsub("left", "Left ")
+				bodySlotName = bodySlotName:gsub("right", "Right ")
+
+				local bodyAttachmentIndex = tes3.bodyPartAttachment[bodyAttachmentName]
+				if not bodyAttachmentIndex then return end
+
+				local boneNode = e.manager:getAttachNode(bodyAttachmentIndex).node			-- Despite its name getAttachNode gets the NiNodes for Bip01 bonesPerVertex, not the NiNodes that meshes are actually attached to (which are closer to activeBodyPart)
+				local attachNode = getDirectChildByName(boneNode, bodySlotName)
+				if not attachNode then return end
+
+				bodyShapeParent:attachChild(bodyMesh, true)
+				attachNode:attachChild(bodyShapeParent, true)
+			end
+
+			bodyShapeParent:update()
+			bodyShapeParent:updateEffects()
+			bodyShapeParent:updateProperties()
+
+			e.reference.data.tamrielData = e.reference.data.tamrielData or {}
+			e.reference.data.tamrielData.hasBodyUnderneathClothing = true		-- This is set to make it easier to verify that references should have their equipment updated in main.lua and handled by the removeBodyShapeWithClothing and hideBodyShapeUnderArmor; it is not ever set to nil given how difficult it would be to keep track of the bodyparts
+		end, timer.real)
+	end
+end
+
+-- Removes body meshes when the associated clothing is unequipped
+---@param e unequippedEventData
+function this.removeBodyShapeWithClothing(e)
+	if e.item.objectType == tes3.objectType.clothing and common.hasDataField(e.reference, "hasBodyUnderneathClothing") then
+		for _, part in pairs(e.item.parts) do
+			local bodyPart = part:getPart(e.actor.female and not (common.argonian_races[e.actor.race.id] and config.femaleArgoniansUseMaleEquipment))
+			if bodyPart and body_swap_shapes[bodyPart.id] then
+				local attachNode = e.reference.sceneNode:getObjectByName(bodyPart.id)
+				if attachNode then attachNode.parent:detachChild(attachNode) end
+				--attachNode.appCulled = true
+			end
+		end
+	end
+end
+
+-- Removes body meshes when armor is equipped on top of them
+---@param e equippedEventData
+function this.hideBodyShapeUnderArmor(e)
+	if e.item.objectType == tes3.objectType.armor and common.hasDataField(e.reference, "hasBodyUnderneathClothing") then
+		for _, part in pairs(e.item.parts) do
+			local bodyPart = part:getPart(e.actor.female and not (common.argonian_races[e.actor.race.id] and config.femaleArgoniansUseMaleEquipment))
+			if bodyPart then
+				local activePart = e.reference.bodyPartManager:getActiveBodyPart(tes3.activeBodyPartLayer.clothing, part.type)
+				if activePart.bodyPart and body_swap_shapes[activePart.bodyPart.id] then
+					local attachNode = e.reference.sceneNode:getObjectByName(activePart.bodyPart.id)
+					if attachNode then attachNode.parent:detachChild(attachNode) end
+				end
+			end
+		end
+	end
+end
+
+-- Replaces a bodypart's texture with one from the actor's racial bodyparts according to body_swap_textures
+---@param e bodyPartAssignedEventData
+function this.applyBodyTextureToClothing(e)
+	if e.bodyPart and e.bodyPart.partType == tes3.activeBodyPartLayer.clothing and body_swap_textures[e.bodyPart.id] then
+		timer.delayOneFrame(function()
+			local activePart = e.manager:getActiveBodyPart(e.bodyPart.partType, e.index)
+			if activePart and activePart.node then
+				local bodyMesh
+				if e.reference.object.female then
+					if not raceFollowsConvention(e.reference.object.race.femaleBody) then return end
+					bodyMesh = tes3.loadMesh(e.reference.object.race.femaleBody[body_swap_textures[e.bodyPart.id].raceBodyPartProperty].mesh, false)
+				else
+					if not raceFollowsConvention(e.reference.object.race.maleBody) then return end
+					bodyMesh = tes3.loadMesh(e.reference.object.race.maleBody[body_swap_textures[e.bodyPart.id].raceBodyPartProperty].mesh, false)
+				end
+
+				local bodyShape
+				if body_swap_textures[e.bodyPart.id].bodyShapeName and bodyMesh:getObjectByName("Bip01") then
+					bodyShape = bodyMesh:getObjectByName(body_swap_textures[e.bodyPart.id].bodyShapeName)
+				else
+					bodyShape = getFirstShape(bodyMesh)
+				end
+				if not bodyShape then return end
+
+				local bodyTexture = bodyShape.texturingProperty.baseMap
+				local shape = activePart.node:getObjectByName(body_swap_textures[e.bodyPart.id].equipmentShapeName)
+
+				if bodyTexture and shape then
+					local replacementProperty = shape.texturingProperty:clone()
+					replacementProperty.baseMap = niTexturingPropertyMap.new({
+						texture = bodyTexture.texture,
+						clampMode = bodyTexture.clampMode,
+						filterMode = bodyTexture.filterMode,
+						textCoords = bodyTexture.texCoordSet,	-- Replace textCoords with texCoordSet when MWSE is updated
+					})
+					shape.texturingProperty = replacementProperty
+
+					shape:update()
+					shape:updateProperties()
+					tes3ui.updateInventoryCharacterImage()
+
+					e.reference.data.tamrielData = e.reference.data.tamrielData or {}
+					e.reference.data.tamrielData.hasBodyTextureOnClothing = true		-- A name distinct from addBodyShapeToClothing's is used here so that the other functions above do not need total run on NPCs that only have clothing with body textures
+				end
+			end
+		end, timer.real)
 	end
 end
 

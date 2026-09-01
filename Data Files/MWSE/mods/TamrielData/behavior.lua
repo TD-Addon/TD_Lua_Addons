@@ -31,7 +31,7 @@ local creatureFleeing = false
 local function creatureGroupDefend(e, creatureID)
 	local actors = tes3.findActorsInProximity({ reference = e.target, range = 2048 })
 	if actors then
-		for _,actor in pairs(actors) do
+		for _, actor in pairs(actors) do
 			if actor.reference.baseObject.id == creatureID then
 				actor:startCombat(e.actor)
 			end
@@ -52,7 +52,7 @@ local function creatureNestDefend(e, creatureID)
 	local actors = tes3.findActorsInProximity({ reference = e.target, range = 2048 })
 	if actors then
 		local playerDetected = false
-		for _,actor in pairs(actors) do
+		for _, actor in pairs(actors) do
 			if actor.reference.baseObject.id == creatureID then
 				if e.activator.mobile.isSneaking and tes3.worldController.mobManager.processManager:detectSneak(actor, e.activator.mobile) then
 					playerDetected = true
@@ -62,7 +62,7 @@ local function creatureNestDefend(e, creatureID)
 		end
 
 		if not e.activator.mobile.isSneaking or playerDetected then
-			for _,actor in pairs(actors) do
+			for _, actor in pairs(actors) do
 				if actor.reference.baseObject.id == creatureID then
 					actor:startCombat(e.activator.mobile)
 				end
@@ -82,7 +82,7 @@ end
 ---@param e cellChangedEventData
 function this.onFirstCellLoad(e)
 	if not e.previousCell then
-		for _,cell in pairs(tes3.getActiveCells()) do
+		for _, cell in pairs(tes3.getActiveCells()) do
 			for creature in cell:iterateReferences(tes3.objectType.creature, false) do
 				if creature.baseObject.id:find("T_Glb_Cre_Lami") then
 					lamiaReferences[creature] = true

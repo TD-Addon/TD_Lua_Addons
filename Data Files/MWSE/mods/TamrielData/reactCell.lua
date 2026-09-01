@@ -10,8 +10,8 @@ local react_cell_container_inventory
 
 ---@param e itemDroppedEventData
 function this.markItem(e)
-	for _,reactCell in pairs(react_cells) do
-		for _,cellID in pairs(reactCell.cells) do
+	for _, reactCell in pairs(react_cells) do
+		for _, cellID in pairs(reactCell.cells) do
 			if e.reference.cell.id == cellID then
 				local data	
 				if e.reference.data then			-- The data field on the reference type is not usable if the reference is for multiple copies of an item, but the itemData's data field is not available for references of a single copy, so both have to be used in this function; later in the frame reference.data and itemData.data will start pointing to the same tables
@@ -42,17 +42,17 @@ end
 ---@param e activateEventData
 function this.onContainerActivate(e)
 	if e.activator == tes3.player and e.target.baseObject.objectType == tes3.objectType.container then
-		for _,reactCell in pairs(react_cells) do
-			for _,cellID in pairs(reactCell.cells) do
+		for _, reactCell in pairs(react_cells) do
+			for _, cellID in pairs(reactCell.cells) do
 				if tes3.player.cell.id == cellID then
 					react_cell_container_inventory = {}
 					timer.delayOneFrame(function()		-- A delay of one (real) frame is needed for an uninstantiated containers' leveled items to be resolved
-						for _,item in pairs(e.target.object.inventory) do
+						for _, item in pairs(e.target.object.inventory) do
 							react_cell_container_inventory[item.object.id] = {}
 							react_cell_container_inventory[item.object.id].count = item.count
 							if item.variables then
 								react_cell_container_inventory[item.object.id].variables = {}
-								for _,itemData in pairs(item.variables) do
+								for _, itemData in pairs(item.variables) do
 									table.insert(react_cell_container_inventory[item.object.id].variables, itemData)
 								end
 							end
@@ -108,7 +108,7 @@ function this.onContainerClosed(e)
 		e.reference.data.tamrielData = e.reference.data.tamrielData or {}
 		e.reference.data.tamrielData.reactCellItems = e.reference.data.tamrielData.reactCellItems or {}
 
-		for _,item in pairs(e.reference.object.inventory) do
+		for _, item in pairs(e.reference.object.inventory) do
 			e.reference.data.tamrielData.reactCellItems[item.object.id] = e.reference.data.tamrielData.reactCellItems[item.object.id] or {}
 			e.reference.data.tamrielData.reactCellItems[item.object.id].count = e.reference.data.tamrielData.reactCellItems[item.object.id].count or 0
 			e.reference.data.tamrielData.reactCellItems[item.object.id].variables = e.reference.data.tamrielData.reactCellItems[item.object.id].variables or {}
@@ -117,10 +117,10 @@ function this.onContainerClosed(e)
 
 				if #e.reference.data.tamrielData.reactCellItems[item.object.id].variables > 0 then	-- If distinct items have been written to the container's data, then check if any have been removed by the player
 					local missingItemIndices = {}
-					for index,savedItemData in pairs(e.reference.data.tamrielData.reactCellItems[item.object.id].variables) do	
+					for index, savedItemData in pairs(e.reference.data.tamrielData.reactCellItems[item.object.id].variables) do	
 						local isPresent = false
 						if item.variables then
-							for _,currentItemData in pairs(item.variables) do
+							for _, currentItemData in pairs(item.variables) do
 								if isSavedItemDataEquivalent(currentItemData, savedItemData) then
 									isPresent = true
 									break
@@ -131,14 +131,14 @@ function this.onContainerClosed(e)
 						if not isPresent then table.insert(missingItemIndices, index) end		-- Removing the saved items no longer in from savedItemData that while iterating through savedItemData is asking for problems, so they are saved and done afterwards
 					end
 
-					for _,index in pairs(missingItemIndices) do e.reference.data.tamrielData.reactCellItems[item.object.id].variables[index] = nil end
+					for _, index in pairs(missingItemIndices) do e.reference.data.tamrielData.reactCellItems[item.object.id].variables[index] = nil end
 				end
 
 				if item.variables then
-					for _,currentItemData in pairs(item.variables) do	-- Check if any items with itemData have been added to the container
+					for _, currentItemData in pairs(item.variables) do	-- Check if any items with itemData have been added to the container
 						local isNew = true
 						if react_cell_container_inventory[item.object.id].variables then
-							for _,initialItemData in pairs(react_cell_container_inventory[item.object.id].variables) do
+							for _, initialItemData in pairs(react_cell_container_inventory[item.object.id].variables) do
 								if currentItemData == initialItemData then
 									isNew = false
 									break
@@ -152,7 +152,7 @@ function this.onContainerClosed(e)
 			else		-- If an item of this type was not present when opening the container, then it must be new
 				e.reference.data.tamrielData.reactCellItems[item.object.id].count = item.count
 				if item.variables then
-					for _,currentItemData in pairs(item.variables) do		-- Check if anyway items with itemData have been added to the container
+					for _, currentItemData in pairs(item.variables) do		-- Check if anyway items with itemData have been added to the container
 						addNewItemData(e.reference.data.tamrielData.reactCellItems[item.object.id].variables, currentItemData)
 					end
 				end
@@ -178,7 +178,7 @@ local function moveItems(reactCell)
 	end
 
 	if playerItemsContainer then
-		for _,cellID in pairs(reactCell.cells) do
+		for _, cellID in pairs(reactCell.cells) do
 			local cell = tes3.getCell({ id = cellID })
 
 			if cell then
@@ -193,14 +193,14 @@ local function moveItems(reactCell)
 
 				for container in cell:iterateReferences(tes3.objectType.container) do
 					if container.data.tamrielData and container.data.tamrielData.reactCellItems then
-						for itemID,data in pairs(container.data.tamrielData.reactCellItems) do
+						for itemID, data in pairs(container.data.tamrielData.reactCellItems) do
 							if data.variables and #data.variables > 0 then
-								for _,savedItemData in pairs(data.variables) do
+								for _, savedItemData in pairs(data.variables) do
 									local itemFound = false
 									local itemDataForTransfer
-									for _,itemStack in pairs(container.object.inventory) do
+									for _, itemStack in pairs(container.object.inventory) do
 										if itemStack.variables then
-											for _,itemData in pairs(itemStack.variables) do
+											for _, itemData in pairs(itemStack.variables) do
 												if isSavedItemDataEquivalent(itemData, savedItemData) then
 													itemFound = true
 													itemDataForTransfer = itemData
@@ -232,10 +232,10 @@ end
 
 ---@param e dialogueFilteredEventData
 function this.checkOnDialogue(e)
-	for _,reactCell in pairs(react_cells) do
+	for _, reactCell in pairs(react_cells) do
 		if e.dialogue.type == tes3.dialogueType.topic and e.dialogue.id == reactCell.dialogue.id and tes3.findGlobal(reactCell.dialogue.global).value >= reactCell.dialogue.value then
 			local hasRun = false
-			for _,pastReactCellDialogue in pairs(tes3.player.data.tamrielData.pastReactCellDialogues) do							-- The pastReactCellDialogue are checked so that cells only have items removed from them once
+			for _, pastReactCellDialogue in pairs(tes3.player.data.tamrielData.pastReactCellDialogues) do							-- The pastReactCellDialogue are checked so that cells only have items removed from them once
 				if reactCell.dialogue.id == pastReactCellDialogue.id and reactCell.dialogue.global == pastReactCellDialogue.global and reactCell.dialogue.value >= pastReactCellDialogue.value then
 					hasRun = true
 					break

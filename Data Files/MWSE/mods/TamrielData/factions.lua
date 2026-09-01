@@ -116,15 +116,15 @@ function this.uiRefreshedCallback(e)
 	end
 
     local playerFactions = {}
-    for _,faction in ipairs(tes3.dataHandler.nonDynamicData.factions) do
+    for _, faction in ipairs(tes3.dataHandler.nonDynamicData.factions) do
         if faction.playerJoined then
             table.insert(playerFactions, faction)
         end
     end
 
-    for _,province in ipairs(provinceTable) do
+    for _, province in ipairs(provinceTable) do
 		local provinceHasFaction = false
-        for _,faction in ipairs(playerFactions) do
+        for _, faction in ipairs(playerFactions) do
             ---@cast faction tes3faction
             if faction.id:find(province.id) or (province.id == "Mw" and (table.contains(vanillaFactionTable, faction.id) or not common.isFromTD(faction, false))) then   -- All factions that are not from TD are assumed to fall under Morrowind
 				provinceHasFaction = true
@@ -134,7 +134,7 @@ function this.uiRefreshedCallback(e)
                 factionLabel = factionParent:createLabel({ id = "MenuStat_faction_layout", text = modifiedName })
                 factionLabel.borderLeft = 20
 
-				for _,properties in pairs(factionProperties) do
+				for _, properties in pairs(factionProperties) do
 					if properties.MenuStat_message == faction then
 						if properties.help then factionLabel:setPropertyCallback("help", properties.help) end
 						if properties.id then factionLabel:setPropertyProperty("id", properties.id) end

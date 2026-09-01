@@ -13,8 +13,10 @@ local PTRMasterFiles = {
 this.itemTypes = { tes3.objectType.alchemy, tes3.objectType.ammunition, tes3.objectType.apparatus, tes3.objectType.armor, tes3.objectType.book, tes3.objectType.clothing, tes3.objectType.ingredient, tes3.objectType.light, tes3.objectType.lockpick, tes3.objectType.miscItem, tes3.objectType.probe, tes3.objectType.repairItem, tes3.objectType.weapon }
 
 -- race id
-this.td_argonian_races = {
-	["T_Bkm_Naga"] = true
+this.argonian_races = {
+	["Argonian"] = true,
+	["T_Bkm_Naga"] = true,
+	["T_Bkm_Sarpa"] = true
 }
 
 -- region id, xcell left bound, xcell right bound, ycell top bound, ycell bottom bound
@@ -97,7 +99,7 @@ end
 ---@param regionTable table
 ---@return boolean
 function this.isInterventionCell(cell, regionTable)
-	for _,v in pairs(regionTable) do
+	for _, v in pairs(regionTable) do
 		local regionID, xLeft, xRight, yBottom, yTop = unpack(v, 1, 5)
 			if (cell.region and cell.region.id == regionID) or cell.region == regionID then
 				if not xLeft then -- Checks whether cell boundaries are being used; if xLeft is nil, then all of the others should be too
@@ -180,7 +182,7 @@ function this.getClosestNode(ref)
     local bestDistance = math.huge
     local initialNode
 
-    for _,node in pairs(ref.cell.pathGrid.nodes) do
+    for _, node in pairs(ref.cell.pathGrid.nodes) do
         distance = ref.position:distance(node.position)
 
         if distance < bestDistance then
@@ -202,7 +204,7 @@ function this.getClosestNodes(ref, maxDistance)
     local thirdDistance = math.huge
     local closestNodes = { }
 
-    for _,node in pairs(ref.cell.pathGrid.nodes) do
+    for _, node in pairs(ref.cell.pathGrid.nodes) do
         distance = ref.position:distance(node.position)
 
         if not maxDistance or distance <= maxDistance then
@@ -245,7 +247,7 @@ function this.pathGridBFS(firstNode, finalNode)
 
         if node == finalNode then return path end
 
-        for _,connectedNode in pairs(node.connectedNodes) do
+        for _, connectedNode in pairs(node.connectedNodes) do
             if not table.contains(visited, connectedNode) then
                 table.insert(visited, connectedNode)
 
@@ -268,7 +270,7 @@ end
 ---@return tes3pathGridNode[]|boolean
 function this.pathGridDijkstra(firstNode, finalNode)
     local queue = this.initPriorityQueue()
-    for _,node in pairs(firstNode.grid.nodes) do
+    for _, node in pairs(firstNode.grid.nodes) do
         if node == firstNode then queue:push({ node, 0, nil })
         else queue:push({ node, math.huge, nil }) end
     end
@@ -281,7 +283,7 @@ function this.pathGridDijkstra(firstNode, finalNode)
 
             repeat
                 table.insert(path, 1, currentNode[1])
-                for _,queueNode in pairs(queue.allNodes) do    -- This is an inefficient setup, but something like it has to exist, right?
+                for _, queueNode in pairs(queue.allNodes) do    -- This is an inefficient setup, but something like it has to exist, right?
                     if queueNode[1] == currentNode[3] then
                         currentNode = queueNode
                         break
@@ -294,9 +296,9 @@ function this.pathGridDijkstra(firstNode, finalNode)
             return path
         end
 
-        for _,connectedNode in pairs(currentNode[1].connectedNodes) do
+        for _, connectedNode in pairs(currentNode[1].connectedNodes) do
             local alternate = currentNode[2] + currentNode[1].position:distance(connectedNode.position)
-            for _,queueNode in pairs(queue.stack) do    -- This is also an inefficient setup
+            for _, queueNode in pairs(queue.stack) do    -- This is also an inefficient setup
                 if queueNode[1] == connectedNode then
                     if alternate < queueNode[2] then
                         queueNode[2] = alternate
@@ -343,7 +345,7 @@ function this.hasAlpha(node, clip, blend)
     clip = clip or true
     blend = blend or true
 
-	for _,child in pairs(node.children) do
+	for _, child in pairs(node.children) do
 		if child then
 			if child.alphaProperty then
                 if clip and blend then
@@ -382,7 +384,7 @@ function this.isFromPTR(ref, includeMods)
         elseif includeMods then
             local sourceModFile = tes3.dataHandler.nonDynamicData:getGameFile(sourceMod)
             if sourceModFile then
-                for _,master in ipairs(sourceModFile.masterNames) do
+                for _, master in ipairs(sourceModFile.masterNames) do
                     if table.contains(PTRMasterFiles, master) then
                         return true
                     end
@@ -411,7 +413,7 @@ function this.isFromTD(ref, includeMods)
         elseif includeMods then
             local sourceModFile = tes3.dataHandler.nonDynamicData:getGameFile(sourceMod)
             if sourceModFile then
-                for _,master in ipairs(sourceModFile.masterNames) do
+                for _, master in ipairs(sourceModFile.masterNames) do
                     if master == "Tamriel_Data.esm" then
                         return true
                     end

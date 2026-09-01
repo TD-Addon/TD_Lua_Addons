@@ -169,6 +169,14 @@ local function registerModConfig()
     local equipment = createPage(common.i18n("mcm.equipment"))
     local equipmentToggles = equipment:createCategory({description = ""})
     equipmentToggles:createOnOffButton{
+        label = common.i18n("mcm.bodyClothingLabel"),
+        description = common.i18n("mcm.bodyClothingDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "bodyClothing",
+            table = config,
+        },
+    }
+    equipmentToggles:createOnOffButton{
         label = common.i18n("mcm.hatsLabel"),
         description = common.i18n("mcm.hatsDescription"),
         variable = mwse.mcm.createTableVariable{

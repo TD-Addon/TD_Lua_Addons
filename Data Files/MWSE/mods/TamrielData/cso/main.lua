@@ -485,7 +485,7 @@ event.register(tes3.event.initialized, function()
 
         }
 
-        for _,data in ipairs(soundData) do
+        for _, data in ipairs(soundData) do
             cso.addSoundData(data.id, data.category, data.soundType)
         end
     end

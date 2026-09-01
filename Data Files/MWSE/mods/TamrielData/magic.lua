@@ -235,7 +235,7 @@ local gazeOfVelothImmuneActors = {
 
 ---@param table table
 function this.replaceSpells(table)
-	for _,v in pairs(table) do
+	for _, v in pairs(table) do
 		local overridden_spell = tes3.getObject(v[1])
 		if overridden_spell then
 			overridden_spell.castType = tes3.spellType[v[2]]
@@ -263,7 +263,7 @@ end
 
 ---@param table table
 function this.replaceEnchantments(table)
-	for _,v in pairs(table) do
+	for _, v in pairs(table) do
 		local overridden_enchantment = tes3.getObject(v[1])
 		---@cast overridden_enchantment tes3enchantment
 		if overridden_enchantment then
@@ -297,7 +297,7 @@ end
 
 ---@param table table
 function this.replaceIngredientEffects(table)
-	for _,v in pairs(table) do
+	for _, v in pairs(table) do
 		local ingredient = tes3.getObject(v[1])
 		if ingredient then
 			for i = 1, 4, 1 do
@@ -314,7 +314,7 @@ end
 
 ---@param table table
 function this.replacePotions(table)
-	for _,v in pairs(table) do
+	for _, v in pairs(table) do
 		local potion = tes3.getObject(v[1])
 		if potion then
 			if v[2] then potion.name = common.i18n("magic." .. v[2]) end
@@ -339,7 +339,7 @@ end
 
 ---@param table table
 function this.editItems(table)
-	for _,v in pairs(table) do
+	for _, v in pairs(table) do
 		local overridden_item = tes3.getObject(v[1])
 		if overridden_item then
 			if v[2] then overridden_item.name = common.i18n("magic." .. v[2]) end
@@ -354,7 +354,7 @@ end
 local function checkActorSpells(actor, table)
 	local customSpells = { }
 	local customSpellIndex = 1
-	for _,v in pairs(table) do
+	for _, v in pairs(table) do
 		if actor.object.spells:contains(v[1]) and actor.magicka.current > v[4] then
 			customSpells[customSpellIndex] = { v[1], { tes3.effect[v[5].id] } }
 			customSpellIndex = customSpellIndex + 1
@@ -367,7 +367,7 @@ end
 ---@param session tes3combatSession
 ---@param spells table< table< string, tes3.effect > >
 local function equipActorSpell(session, spells)
-	for _,v in pairs(spells) do
+	for _, v in pairs(spells) do
 		if #session.mobile:getActiveMagicEffects({ effect = v[2] }) == 0 then
 			session.selectedAction = 6
 			local spell = tes3.getObject(v[1])
@@ -410,7 +410,7 @@ end
 
 ---@param inventory tes3itemStack[]
 local function hasScriptedItem(inventory)
-	for _,itemStack in pairs(inventory) do
+	for _, itemStack in pairs(inventory) do
 		if itemStack.object.script then return true end
 	end
 end
@@ -438,7 +438,7 @@ end
 -- MWSE still does not have proper support for custom effect tooltips, so this function accounts for one of the several cases where they do not work.
 ---@param e uiSpellTooltipEventData
 function this.correctSpellTooltipUnit(e)
-	for index,effect in ipairs(e.spell.effects) do
+	for index, effect in ipairs(e.spell.effects) do
 		if effect.id >= 2106 and effect.id <= 2200 then		-- Safe range for TD misc effects. Might need to be adjusted in the future.
 			local unit
 			local pointUnit
@@ -553,7 +553,7 @@ local function modifyCastingChanceMultiFillbar(e)
 
 		local fortifyMagnitude = 0
 		if #fortifyCastingEffects > 0 then
-			for _,v in pairs(fortifyCastingEffects) do
+			for _, v in pairs(fortifyCastingEffects) do
 				fortifyMagnitude = fortifyMagnitude + v.magnitude
 			end
 		end
@@ -591,7 +591,7 @@ local function modifyCastingChanceSpellmakingMenu(e)
 	local fortifyCastingEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_restoration_FortifyCasting })	-- The spellmaking menu does not consider the player's current magicka, so only Fortify Casting is involved here
 	if #fortifyCastingEffects > 0 then
 		local magnitude = 0
-		for _,v in pairs(fortifyCastingEffects) do
+		for _, v in pairs(fortifyCastingEffects) do
 			magnitude = magnitude + v.magnitude
 		end
 
@@ -632,7 +632,7 @@ local function modifyCastingChanceMenuPercents(e)
 	if #fortifyCastingEffects > 0 or #bloodMagicEffects > 0 then
 		local fortifyMagnitude = 0
 		if #fortifyCastingEffects > 0 then
-			for _,v in pairs(fortifyCastingEffects) do
+			for _, v in pairs(fortifyCastingEffects) do
 				fortifyMagnitude = fortifyMagnitude + v.magnitude
 			end
 		end
@@ -640,7 +640,7 @@ local function modifyCastingChanceMenuPercents(e)
 		local hasBloodMagic = false
 		if #bloodMagicEffects > 0 then hasBloodMagic = true end
 
-		for _,percent in ipairs(spellPercents.children) do
+		for _, percent in ipairs(spellPercents.children) do
 			if percent.text ~= "/100" then
 				local spell = percent:getPropertyObject("MagicMenu_Spell")
 				---@cast spell tes3spell
@@ -742,7 +742,7 @@ end
 
 ---@param e spellResistEventData
 function this.etherealSpellResist(e)
-	if #e.target.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_Ethereal }) > 0 and e.caster ~= e.target then	-- Making the player resist all of their own effects is weird in general, but somehow prevents ever applying the ethereal effect as well
+	if e.target.mobile and #e.target.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_Ethereal }) > 0 and e.caster ~= e.target then	-- Making the player resist all of their own effects is weird in general, but somehow prevents ever applying the ethereal effect as well
 		e.resistedPercent = 100
 		return false
 	end
@@ -763,7 +763,7 @@ function this.etherealOpacity(e)
 		local chameleonEffects = actor.mobile:getActiveMagicEffects({ effect = tes3.effect.chameleon })
 		local chameleonMagnitude = 0
 		if #chameleonEffects > 0 then
-			for _,v in pairs(chameleonEffects) do
+			for _, v in pairs(chameleonEffects) do
 				chameleonMagnitude = chameleonMagnitude + v.magnitude
 			end
 
@@ -800,7 +800,7 @@ local function etherealEffect(e)
 		local chameleonEffects = e.sourceInstance.caster.mobile:getActiveMagicEffects({ effect = tes3.effect.chameleon })
 		local chameleonMagnitude = 0
 		if #chameleonEffects > 0 then
-			for _,v in pairs(chameleonEffects) do
+			for _, v in pairs(chameleonEffects) do
 				chameleonMagnitude = chameleonMagnitude + v.magnitude
 			end
 
@@ -938,14 +938,14 @@ end
 ---@return table< number, number >
 local function getAppliedLightMagnitudes(target)
 	local prismaticMagnitude = 0
-	for _,v in pairs(target.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_PrismaticLight })) do
+	for _, v in pairs(target.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_PrismaticLight })) do
 		if v.effectInstance then
 			prismaticMagnitude = prismaticMagnitude + v.effectInstance.magnitude
 		end
 	end
 
 	local vanillaMagnitude = 0
-	for _,v in pairs(target.mobile:getActiveMagicEffects({ effect = tes3.effect.light })) do
+	for _, v in pairs(target.mobile:getActiveMagicEffects({ effect = tes3.effect.light })) do
 		if v.effectInstance then
 			vanillaMagnitude = vanillaMagnitude + v.effectInstance.magnitude
 		end
@@ -1019,7 +1019,7 @@ function this.fortifyCastingOnSpellCast(e)
 	local fortifyCastingEffects = e.caster.mobile:getActiveMagicEffects({ effect = tes3.effect.T_restoration_FortifyCasting })
 	if #fortifyCastingEffects > 0 then
 		local magnitude = 0
-		for _,v in pairs(fortifyCastingEffects) do
+		for _, v in pairs(fortifyCastingEffects) do
 			magnitude = magnitude + v.magnitude
 		end
 
@@ -1037,7 +1037,7 @@ function this.blinkIndicator()
 	end
 
 	if not tes3.worldController.flagTeleportingDisabled and (swiftCasting or tes3.mobilePlayer.castReady) and tes3.mobilePlayer.currentSpell and not tes3.mobilePlayer.isKnockedDown and not tes3.mobilePlayer.isKnockedOut then
-		for _,effect in ipairs(tes3.mobilePlayer.currentSpell.effects) do
+		for _, effect in ipairs(tes3.mobilePlayer.currentSpell.effects) do
 			-- The calculations below mostly match those of Blink itself
 			if effect.id == tes3.effect.T_mysticism_Blink then
 				local range = effect.max * 22.1
@@ -1052,7 +1052,7 @@ function this.blinkIndicator()
 				}
 
 				if obstacles then
-					for _,obstacle in ipairs(obstacles) do
+					for _, obstacle in ipairs(obstacles) do
 						local validObstacle = true
 						if obstacle.reference then
 							if obstacle.reference.baseObject.id:find("T_Aid_PasswallWard_") or obstacle.reference.baseObject.id:find("T_Dae_Ward_") then
@@ -1156,7 +1156,7 @@ function this.blinkFallDamageSmallJump()
 
 				local jumpEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.jump })
 				if #jumpEffects > 0 then
-					for _,v in pairs(jumpEffects) do
+					for _, v in pairs(jumpEffects) do
 						jumpMagnitude = jumpMagnitude + v.magnitude
 					end
 				end
@@ -1193,7 +1193,7 @@ function this.blinkFallDamage(e)
 
 		local jumpEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.jump })
 		if #jumpEffects > 0 then
-			for _,v in pairs(jumpEffects) do
+			for _, v in pairs(jumpEffects) do
 				jumpMagnitude = jumpMagnitude + v.magnitude
 			end
 		end
@@ -1255,7 +1255,7 @@ local function blinkEffect(e)
 		}
 
 		if obstacles then
-			for _,obstacle in ipairs(obstacles) do
+			for _, obstacle in ipairs(obstacles) do
 				local validObstacle = true
 				if obstacle.reference then
 					if obstacle.reference.baseObject.id:find("T_Aid_PasswallWard_") or obstacle.reference.baseObject.id:find("T_Dae_Ward_") then	-- Needed to prevent a crash that can occur for unclear reasons
@@ -1327,7 +1327,7 @@ end
 function this.gazeOfVelothBodyPartAssigned(e)
 	if common.hasDataField(e.reference, "gazeOfVelothSkeleton") then
 		if e.index == tes3.partIndex.chest then
-			for _,v in pairs(raceSkeletonBodyParts) do
+			for _, v in pairs(raceSkeletonBodyParts) do
 				if e.reference.baseObject.race.id == v[1] then
 					if e.bodyPart.partType == tes3.activeBodyPartLayer.base then
 						e.bodyPart = tes3.getObject(v[2])
@@ -1399,7 +1399,7 @@ local function gazeOfVelothEffect(e)
 	tes3.incrementKillCount({ actor = target.baseObject })
 
 	if target.baseObject.race then
-		for _,v in pairs(raceSkeletonBodyParts) do
+		for _, v in pairs(raceSkeletonBodyParts) do
 			if target.baseObject.race.id == v[1] then
 				target.data.tamrielData.gazeOfVelothSkeleton = true
 				target:updateEquipment()
@@ -1473,7 +1473,7 @@ end
 ---@param isEnd boolean
 local function playDistractedVoiceLine(ref, isEnd)
 	if ref.mobile.actorType == tes3.actorType.npc and not ref.mobile.hasVampirism then
-		for _,v in pairs(magicData.distractedVoiceLines) do
+		for _, v in pairs(magicData.distractedVoiceLines) do
 			local raceID, isFemale, voicesStart, voicesEnd = unpack(v)
 			if ref.baseObject.race.id == raceID and ref.baseObject.female == isFemale then
 				local voices
@@ -1538,7 +1538,7 @@ local function distractSavePackage(ref, package)
 		}
 	elseif package.type == 0 then	-- Have condition for preexisting travel package too?
 		local packageIdles = {}
-		for k,v in pairs(package.idles) do
+		for k, v in pairs(package.idles) do
 			packageIdles[k] = v.chance
 		end
 
@@ -1586,7 +1586,7 @@ local function distractEffect(e)
 
 			local threeClosestNodes = common.getClosestNodes(target, 512)
 
-			for _,node in pairs(nodeArr) do
+			for _, node in pairs(nodeArr) do
 				if math.abs(node.position.z - target.position.z) < 384 then		-- This is meant to stop actors from walking up/down several flights of stairs, which I think would feel unrealistic
 					targetDistance = target.position:distance(node.position)
 					if targetDistance <= range then
@@ -1598,14 +1598,14 @@ local function distractEffect(e)
 							local shortestPathDistance = math.huge
 							local shortestPath
 							if node ~= threeClosestNodes[1] and node ~= threeClosestNodes[2] and node ~= threeClosestNodes[3] then
-								for _,v in ipairs(threeClosestNodes) do				-- This loop recreates the logic of how actors move along pathgrid nodes to reach some destination, allowing for values such as how close the actor comes to the player to be determined later
+								for _, v in ipairs(threeClosestNodes) do				-- This loop recreates the logic of how actors move along pathgrid nodes to reach some destination, allowing for values such as how close the actor comes to the player to be determined later
 									---@cast v tes3pathGridNode
 									local path = common.pathGridDijkstra(v, node)
 									local pathDistance = 0
 									local previousPathNode
 
 									if path then
-										for _,pathNode in ipairs(path) do
+										for _, pathNode in ipairs(path) do
 											---@cast pathNode tes3pathGridNode
 											if previousPathNode then pathDistance = pathDistance + pathNode.position:distance(previousPathNode.position) end
 											previousPathNode = pathNode
@@ -1625,7 +1625,7 @@ local function distractEffect(e)
 							local shortestPlayerDistance = math.huge
 
 							if shortestPath then
-								for _,pathNode in pairs(shortestPath) do	-- Optimize this loop by stopping once the actor begins moving away from the player?
+								for _, pathNode in pairs(shortestPath) do	-- Optimize this loop by stopping once the actor begins moving away from the player?
 									nodePlayerDistance = tes3.player.position:distance(pathNode.position)
 									if math.abs(tes3.player.position.z - pathNode.position.z) > 160 then nodePlayerDistance = nodePlayerDistance * 4 end
 									if nodePlayerDistance < shortestPlayerDistance then shortestPlayerDistance = nodePlayerDistance end
@@ -1731,11 +1731,11 @@ function this.corruptionSummoned(e)
 		---@cast corruptionTargetReference tes3reference
 		if corruptionTargetReference then	-- Just in case
 			-- The loops below ensure that the summoned reference does not have different items from leveled items than the target and that they only have items relevant for actors in combat
-			for _,itemStack in pairs(e.mobile.inventory) do
+			for _, itemStack in pairs(e.mobile.inventory) do
 				itemStack.count = 0
 			end
 
-			for _,itemStack in pairs(corruptionTargetReference.mobile.inventory) do
+			for _, itemStack in pairs(corruptionTargetReference.mobile.inventory) do
 				if itemStack.object.objectType == tes3.objectType.ammunition or itemStack.object.objectType == tes3.objectType.armor or itemStack.object.objectType == tes3.objectType.clothing or itemStack.object.objectType == tes3.objectType.weapon then
 					local firstItemData
 					if itemStack.variables then firstItemData = itemStack.variables[1] end
@@ -1834,7 +1834,7 @@ local function armorResartusEffect(e)
 	local hasChanged = false
 
 	while conditionMagnitude > 0 or chargeMagnitude > 0 do
-		for _,item in pairs(armor) do
+		for _, item in pairs(armor) do
 			if item then
 				if conditionMagnitude > 0 and item.itemData.condition < item.object.maxCondition then
 					item.itemData.condition = item.itemData.condition + 1
@@ -1952,7 +1952,7 @@ end
 
 ---@param pane tes3uiElement
 local function deleteDetections(pane, name)
-	for _,child in pairs (pane.children) do
+	for _, child in pairs (pane.children) do
 		if child.name == name then child:destroy() end
 	end
 end
@@ -1974,14 +1974,14 @@ function this.detectValuablesTick()
 			calculateMapValues(mapPane, multiPane)	-- Move this into a separate tick function so that it only runs once, rather than for each detection effect?
 
 			local totalMagnitude = 0
-			for _,v in pairs(detectValuablesEffects) do
+			for _, v in pairs(detectValuablesEffects) do
 				totalMagnitude = totalMagnitude + v.magnitude
 			end
 			totalMagnitude = totalMagnitude * 22.1
 
 			local minValue = config.detectValuablesThreshold	-- The minimum value that an item must be to be detected
 
-			for _,cell in pairs(tes3.getActiveCells()) do
+			for _, cell in pairs(tes3.getActiveCells()) do
 				for item in cell:iterateReferences(common.itemTypes, false) do
 					if item.baseObject.value and item.baseObject.value >= minValue and tes3.player.position:distance(item.position) <= totalMagnitude then
 						local mapX, mapY, multiX, multiY
@@ -1996,7 +1996,7 @@ function this.detectValuablesTick()
 				for ref in cell:iterateReferences({ tes3.objectType.container, tes3.objectType.creature, tes3.objectType.npc }, false) do
 					if ref ~= tes3.player and tes3.player.position:distance(ref.position) <= totalMagnitude then
 						local hasValuable = false
-						for _,stack in pairs(ref.object.inventory.items) do
+						for _, stack in pairs(ref.object.inventory.items) do
 							---@cast stack tes3itemStack
 							if stack.object.objectType == tes3.objectType.leveledItem then
 								local valueSum = 0
@@ -2004,13 +2004,13 @@ function this.detectValuablesTick()
 
 								local minLevel = 0	-- The minimum level that an item must be associated with to be chosen; set to the highest level if calculateFromAllLevels is false or left at 0 if it is true
 								if not stack.object.calculateFromAllLevels then
-									for _,node in pairs(stack.object.list) do
+									for _, node in pairs(stack.object.list) do
 										---@cast node tes3leveledListNode
 										if node.levelRequired > minLevel and tes3.player.baseObject.level >= node.levelRequired then minLevel = node.levelRequired end
 									end
 								end
 
-								for _,node in pairs(stack.object.list) do
+								for _, node in pairs(stack.object.list) do
 								---@cast node tes3leveledListNode
 									if node.levelRequired >= minLevel and tes3.player.baseObject.level >= node.levelRequired then
 										if node.object.value then
@@ -2065,8 +2065,8 @@ local function detectInvisibilityValid(ref)
 	if actorSpells then
 		local ghostAbilities = { tes3.getObject("ghost ability"), tes3.getObject("Ulfgar_Ghost_sp") , tes3.getObject("TR_m4_EmmurbalpituGhost_EN"), tes3.getObject("TR_m3_OE_GhostGlow"), tes3.getObject("TR_m4_RR_StorigGlow") }	-- It would be nice to just have a single TD ghost effect where possible
 
-		for _,spell in pairs(actorSpells) do
-			for _,ability in pairs(ghostAbilities) do
+		for _, spell in pairs(actorSpells) do
+			for _, ability in pairs(ghostAbilities) do
 				if ability and spell == ability then return false end
 			end
 		end
@@ -2102,7 +2102,7 @@ function this.detectInvisibilityOpacity(e)
 	if table.size(invisibleReferences) > 0 then
 		local detectMagnitude = 0
 		local detectInvisibilityEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_DetInvisibility })
-		for _,v in pairs(detectInvisibilityEffects) do
+		for _, v in pairs(detectInvisibilityEffects) do
 			detectMagnitude = detectMagnitude + v.magnitude
 		end
 
@@ -2160,11 +2160,11 @@ function this.detectInvisibilityTick()
 			calculateMapValues(mapPane, multiPane)
 
 			local totalMagnitude = 0
-			for _,v in pairs(detectInvisibilityEffects) do
+			for _, v in pairs(detectInvisibilityEffects) do
 				totalMagnitude = totalMagnitude + v.magnitude
 			end
 
-			for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = totalMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua
+			for _, actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = totalMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua
 				if detectInvisibilityValid(actor.reference) and (actor.chameleon > 0 or actor.invisibility > 0) then
 					local mapX, mapY, multiX, multiY
 					if tes3.player.cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(actor.position)
@@ -2195,13 +2195,13 @@ function this.detectEnemyTick()
 			calculateMapValues(mapPane, multiPane)
 
 			local totalMagnitude = 0
-			for _,v in pairs(detectEnemyEffects) do
+			for _, v in pairs(detectEnemyEffects) do
 				totalMagnitude = totalMagnitude + v.magnitude
 			end
 
-			for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = totalMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua
+			for _, actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = totalMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua
 				local isHostile = false
-				for _,hostileActor in pairs(actor.hostileActors) do
+				for _, hostileActor in pairs(actor.hostileActors) do
 					if hostileActor == tes3.mobilePlayer then
 						isHostile = true
 					end
@@ -2242,11 +2242,11 @@ function this.detectHumanoidTick()
 			calculateMapValues(mapPane, multiPane)	-- Move this into a separate tick function so that it only runs once, rather than for each detection effect?
 
 			local totalMagnitude = 0
-			for _,v in pairs(detectHumanoidEffects) do
+			for _, v in pairs(detectHumanoidEffects) do
 				totalMagnitude = totalMagnitude + v.magnitude
 			end
 
-			for _,actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = totalMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua
+			for _, actor in pairs(tes3.findActorsInProximity({ reference = tes3.player, range = totalMagnitude * 22.1 })) do	-- This should probably be changed to a refrence manager like the dreugh and lamia get in behavior.lua
 				if actor.actorType == tes3.actorType.npc then
 					local mapX, mapY, multiX, multiY
 					if tes3.player.cell.isInterior then mapX, mapY, multiX, multiY = calcInteriorPos(actor.position)
@@ -2265,7 +2265,7 @@ function this.insightEffect(e)
 	local insightEffects = tes3.mobilePlayer:getActiveMagicEffects({ effect = tes3.effect.T_mysticism_Insight })
 	if #insightEffects > 0 and e.list.count > 0 then
 		local totalMagnitude = 0
-		for _,v in pairs(insightEffects) do
+		for _, v in pairs(insightEffects) do
 			totalMagnitude = totalMagnitude + v.magnitude
 		end
 
@@ -2287,7 +2287,7 @@ function this.insightEffect(e)
 
 			if e.list.count > 1 then
 				local maxLevel = 0
-				for _,v in pairs(e.list.list) do
+				for _, v in pairs(e.list.list) do
 					if v.levelRequired > maxLevel and v.levelRequired <= tes3.player.object.level then
 						maxLevel = v.levelRequired
 					end
@@ -2299,7 +2299,7 @@ function this.insightEffect(e)
 				local valueTemp = 0
 				local tableIndex = 1
 
-				for _,v in pairs(e.list.list) do
+				for _, v in pairs(e.list.list) do
 					if v.levelRequired == maxLevel or (v.levelRequired < tes3.player.object.level and e.list.calculateFromAllLevels) then
 
 						if v.object.value then
@@ -2329,14 +2329,14 @@ function this.insightEffect(e)
 					local probabilitySum = 0
 					local numerator = effectFactor * evenChance * effectiveMagnitude
 					local offset = evenChance * (1 - effectiveMagnitude / 2)
-					for _,v in ipairs(leveledItemTable) do
+					for _, v in ipairs(leveledItemTable) do
 						v.value = math.remap(v.value, minValue, maxValue, 0, 1)
 						v.probability = (numerator / (1 + math.pow(2.7182818284, (-8 * v.value) + 4))) + offset	-- Sigmoid function that yields vanilla's unweighted probability distribution when effectiveMagnitude = 0;
 						probabilitySum = probabilitySum + v.probability
 					end
 
 					local selection = math.random() * probabilitySum	-- Effectively normalizes the sum of the weighted probabilities
-					for _,v in ipairs(leveledItemTable) do
+					for _, v in ipairs(leveledItemTable) do
 						selection = selection - v.probability
 						if selection < 0 then
 							e.pick = v.item
@@ -2475,7 +2475,7 @@ function this.radiantShieldSpellResist(e)
 
 	-- Only resist hostile effects; 'not e.effect' is checked because the documentation says that e.effect "may not always be available" and I'd rather resist the odd positive effects than not resist harmful ones
 	if radiantShieldEffects and #radiantShieldEffects > 0 and (not e.effect or e.effect.object.isHarmful) then
-		for _,v in pairs(radiantShieldEffects) do
+		for _, v in pairs(radiantShieldEffects) do
 			e.resistedPercent = e.resistedPercent + v.magnitude
 		end
 
@@ -2491,7 +2491,7 @@ function this.radiantShieldBlindnessRemoved(e)
 		local blindEffects = e.target.mobile:getActiveMagicEffects({ effect = tes3.effect.blind })
 		if #blindEffects > 0 then
 			local blindingRadianceCount = 0
-			for _,v in pairs(blindEffects) do
+			for _, v in pairs(blindEffects) do
 				if v.instance.source.name == common.i18n("magic.miscRadiantShieldBlindness") then blindingRadianceCount = blindingRadianceCount + 1 end	-- If another Blinding Radiance instance is still active, then the fader color should not be changed back
 			end
 
@@ -2508,7 +2508,7 @@ function this.radiantShieldDamaged(e)
 		local radiantShieldEffects = e.mobile:getActiveMagicEffects({ effect = tes3.effect.T_alteration_RadShield })
 		if #radiantShieldEffects > 0 then
 			local totalMagnitude = 0
-			for _,v in pairs(radiantShieldEffects) do
+			for _, v in pairs(radiantShieldEffects) do
 				totalMagnitude = totalMagnitude + v.magnitude
 			end
 
@@ -2536,7 +2536,7 @@ end
 ---@param cellTable table
 ---@param markerID string
 function this.replaceInterventionMarkers(cellTable, markerID)
-	for _,v in pairs(cellTable) do
+	for _, v in pairs(cellTable) do
 		local xCoord, yCoord = unpack(v)
 		local cell = tes3.getCell({ x = xCoord, y = yCoord })
 
@@ -2583,7 +2583,7 @@ end
 ---@return number
 local function reflectDamageCalculateMagnitude(reflectDamageEffects)
 	local magnitude = 1
-	for _,v in pairs(reflectDamageEffects) do
+	for _, v in pairs(reflectDamageEffects) do
 		magnitude = magnitude * math.clamp((1 - (v.magnitude / 100)), 0, 1)	-- This effect is multiplicative like Morrowind's reflect rather than additive like Oblivion's reflect effects and as such is capped to 100%
 	end
 	return 1 - magnitude
@@ -2697,7 +2697,7 @@ local function banishDaedraEffect(e)
 	local uniqueItems = {}
 
 	if magnitude >= (targetLevel / 2) + ((targetLevel / 2) * target.mobile.health.normalized) then
-		for _,v in pairs(target.baseObject.inventory.items) do
+		for _, v in pairs(target.baseObject.inventory.items) do
 			if v.object.objectType ~= tes3.objectType.leveledItem and v.object.objectType ~= tes3.objectType.ingredient then	-- Sometimes ingredients are added without being part of a list
 				uniqueItems[v.object] = true
 			end
@@ -2723,7 +2723,7 @@ local function banishDaedraEffect(e)
 				if target then
 					if #uniqueItems > 0 then	-- Don't bother if there is definitely not going to be loot
 						local container = tes3.createReference({ object = "T_Glb_BanishDae_Empty", position = target.position + tes3vector3.new(0, 0, target.mobile.height) , orientation = target.orientation, cell = target.cell })
-						for _,v in pairs(target.mobile.inventory) do
+						for _, v in pairs(target.mobile.inventory) do
 							if uniqueItems[v.object] then
 								tes3.transferItem({ from = target, to = container, item = v.object, count = 999, limitCapacity = false })	-- This setup can account for how Dregas Volar's items are given to the player, so that they don't end up with two of both
 							end
@@ -2797,8 +2797,8 @@ local function passwallCalculate(targetPosition, forward, right, up, range)
 
 	local checkedNodes = {}
 
-	for _,node in pairs(nodeArr) do
-		for _,connectedNode in pairs(node.connectedNodes) do
+	for _, node in pairs(nodeArr) do
+		for _, connectedNode in pairs(node.connectedNodes) do
 			if not checkedNodes[node] or checkedNodes[connectedNode] then			-- Only check each connection once
 				if (startPosition:distance(node.position) <= range and startPosition:distance(connectedNode.position) <= range) or (endPosition:distance(node.position) <= range and endPosition:distance(connectedNode.position) <= range) then
 					local increment = (connectedNode.position - node.position) / 15
@@ -2841,7 +2841,7 @@ end
 
 ---@param e magicCastedEventData
 function this.passwallEffect(e)
-	for _,v in pairs(e.source.effects) do
+	for _, v in pairs(e.source.effects) do
 		if v.id == tes3.effect.T_mysticism_Passwall then
 			if tes3.mobilePlayer.cell.isOrBehavesAsExterior then
 				tes3ui.showNotifyMenu(common.i18n("magic.passwallExterior"))
@@ -2890,7 +2890,7 @@ function this.passwallEffect(e)
 			local alphaDistance = math.huge
 			local wardDistance = math.huge
 			if checkMeshes then		-- This block of code looks through all of the objects that the effect can hit and finds the closest one that is a ward or has some transparency
-				for _,detection in ipairs(checkMeshes) do
+				for _, detection in ipairs(checkMeshes) do
 					if detection.reference and detection.reference ~= tes3.player then	-- The findAll parameter annoyingly does not obey the ignore parameter, hence the need for the second condition here
 						if detection.reference.baseObject.id:find("T_Aid_PasswallWard_") or detection.reference.baseObject.id:find("T_Dae_Ward_") then	-- I considered changing reducing the distance if such an object is found, but just saving the object's distance allows for determining whether or not it is responsible for the effect failing
 							wardDistance = detection.distance
@@ -2926,12 +2926,12 @@ function this.passwallEffect(e)
 			}
 
 			if possibleTargets then
-				for _,target in ipairs(checkMeshes) do
+				for _, target in ipairs(checkMeshes) do
 					local targetReference = target.reference
 					if targetReference and targetReference ~= tes3.player then
 
 						if targetReference.baseObject.objectType == tes3.objectType.static or targetReference.baseObject.objectType == tes3.objectType.activator then
-							for _,id in pairs(passWallObjectBlacklist) do
+							for _, id in pairs(passWallObjectBlacklist) do
 								if targetReference.baseObject.id:find(id) then return end
 							end
 
@@ -2960,7 +2960,7 @@ function this.passwallEffect(e)
 								return	-- If the static/activator is neither tall enough to be valid nor small enough to be ignored, then it is still the actual target of Passwall and the function stops looking for targets past it
 							end
 						elseif targetReference.baseObject.objectType == tes3.objectType.door then
-							for _,id in pairs(passWallDoorBlacklist) do
+							for _, id in pairs(passWallDoorBlacklist) do
 								if targetReference.baseObject.id:find(id) then return end
 							end
 
@@ -3010,7 +3010,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 	if config.summoningSpells then
 		local summonHungerEffect = tes3.getMagicEffect(tes3.effect.summonHunger)
 
-		for _,v in pairs(magicData.td_summon_effects) do
+		for _, v in pairs(magicData.td_summon_effects) do
 			local effectID, effectName, creatureID, effectCost, iconPath, effectDescription = unpack(v)
 			tes3.addMagicEffect{
 				id = tes3.effect[effectID],
@@ -3060,7 +3060,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 	if config.boundSpells then
 		local boundCuirassEffect = tes3.getMagicEffect(tes3.effect.boundBoots)
 
-		for _,v in pairs(magicData.td_bound_effects) do
+		for _, v in pairs(magicData.td_bound_effects) do
 			local effectID, effectName, itemID, itemID_02, effectCost, iconPath, effectDescription = unpack(v)
 			if itemID_02 == "" then
 				itemID_02 = nil
@@ -3191,7 +3191,7 @@ event.register(tes3.event.magicEffectsResolved, function()
 
 			local template = templateOverride or tes3.getMagicEffect(tes3.effect[templateId])
 			if template then
-				for _,key in pairs({ "school", "speed", "casterLinked", "usesNegativeLighting", "particleTexture",
+				for _, key in pairs({ "school", "speed", "casterLinked", "usesNegativeLighting", "particleTexture",
 					"size", "sizeCap", "hasContinuousVFX", "illegalDaedra", "targetsAttributes", "targetsSkills",
 					"allowEnchanting", "allowSpellmaking", "appliesOnce", "canCastSelf", "canCastTarget", "canCastTouch",
 					"hasNoDuration", "hasNoMagnitude", "isHarmful", "nonRecastable", "unreflectable" }) do

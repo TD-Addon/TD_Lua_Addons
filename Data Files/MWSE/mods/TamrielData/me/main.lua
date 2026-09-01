@@ -11,7 +11,7 @@ event.register(tes3.event.loaded, function()
 		local me_lorefriendly = include("OperatorJack.MagickaExpanded-LoreFriendlyPack.main")
 		local me_cortex = include("OperatorJack.MagickaExpanded-CortexPack.main")
 
-		for _,spell in pairs(me_framework.getActiveSpells()) do
+		for _, spell in pairs(me_framework.getActiveSpells()) do
 			for i = 1, 8, 1 do
 				local duration = spell.effects[i].duration
 				local min = spell.effects[i].min
@@ -84,6 +84,9 @@ event.register(tes3.event.loaded, function()
 						if spell.effects[i].id == tes3.effect.blink then
 							replacementEffect = tes3.getObject("T_Com_Mys_Blink").effects[1]
 							spell.effects[i] = replacementEffect
+							type = tes3.effectRange.self
+							min = 25
+							max = 25
 						end
 					end
 				end

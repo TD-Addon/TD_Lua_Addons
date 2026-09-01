@@ -112,7 +112,7 @@ function this.uiRefreshedCallback(e)
     local firstBlock
 
     -- Iterate through TD mods and add reputation block for each
-    for _,project in ipairs(projectTable) do
+    for _, project in ipairs(projectTable) do
         local installVar = project.installVar
         local repVar = project.repVar
 
