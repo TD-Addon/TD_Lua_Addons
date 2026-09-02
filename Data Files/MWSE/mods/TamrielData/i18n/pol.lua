@@ -14,6 +14,9 @@ return {
 	["main.minotaurHat"] = "Minotaurowie nie mogą nosić nakryć głowy.",
 	["main.nagaHelm"] = "Nagi nie mogą nosić hełmów.", -- trav: plural for Naga
 	["main.nagaHat"] = "Nagi nie mogą nosić nakryć głowy.",
+	["main.sarpaGauntlet"] = "Sarpowie nie mogą nosić rękawic.", -- trav: like "Orkowie"
+	["main.sarpaBracer"] = "Sarpowie nie mogą nosić karwaszy.", -- trav: straight from the PL version
+	["main.sarpaGlove"] = "Sarpowie nie mogą nosić rękawic.",
 
 	["main.rangeAlmsivi"] = "Moc Almsivi nie obejmuje tych ziem.",
 	["main.rangeKyne"] = "Moc Kyne nie obejmuje tych ziem.",
@@ -94,6 +97,8 @@ return {
 	["magic.summonFrostMonarchDesc"] = "Przywołuje z Otchłani monarchę mrozu. Stworzenie pojawi się sześć stóp przed magiem i będzie atakowało każdą zagrażającą mu istotę, póki nie minie czas trwania efektu lub póki samo nie zostanie zabite. W obydwu przypadkach przywołana istota znika, powracając do Otchłani. Pamiętaj, że jeśli przywołasz istotę z innego wymiaru wewnątrz miasta, miejska straż rzuci się na ciebie bez ostrzeżenia!",
 	["magic.summonSpiderDaedra"] = "Przywołanie Pajęczej Daedry",
 	["magic.summonSpiderDaedraDesc"] = "Przywołuje z Otchłani pajęczą daedrę. Stworzenie pojawi się sześć stóp przed magiem i będzie atakowało każdą zagrażającą mu istotę, póki nie minie czas trwania efektu lub póki samo nie zostanie zabite. W obydwu przypadkach przywołana istota znika, powracając do Otchłani. Pamiętaj, że jeśli przywołasz istotę z innego wymiaru wewnątrz miasta, miejska straż rzuci się na ciebie bez ostrzeżenia!",
+	["magic.summonNocturnal"] = "Przywołanie Nocnicy", -- trav: I know, TESV name of the Prince. But seems to fit a creature well enough
+	["magic.summonNocturnalDesc"] = "Przywołuje z Otchłani nocnicę. Stworzenie pojawi się sześć stóp przed magiem i będzie atakowało każdą zagrażającą mu istotę, póki nie minie czas trwania efektu lub póki samo nie zostanie zabite. W obydwu przypadkach przywołana istota znika, powracając do Otchłani. Pamiętaj, że jeśli przywołasz istotę z innego wymiaru wewnątrz miasta, miejska straż rzuci się na ciebie bez ostrzeżenia!",
 
 	["magic.boundGreaves"] = "Zaklęte Nagolenniki",
 	["magic.boundGreavesDesc"] = "Przywołuje pomniejszą Daedrę zaklętą w postaci magicznych, niezwykle lekkich, daedrycznych nagolenników. Pancerz pojawia się automatycznie na ciele rzucającego. Po upłynięciu czasu trwania efektu, nagolenniki znikają, a postać ponownie nosi swój zwykły pancerz.",
@@ -158,6 +163,8 @@ return {
 	["magic.miscMagickaWardDesc"] = "Rzucający zaklęcie gromadzi wokół siebie barierę ochronną. Otrzymywane obrażenia są redukowane o połowę, lecz równoważnym kosztem magii.",
 	["magic.miscEthereal"] = "Eteryczność",
 	["magic.miscEtherealDesc"] = "Rzucający zaklęcie uzyskuje zdolność przenikania przez inne istoty. Nie są one w stanie go zranić, ale sam rzucający nie może rzucać zaklęć, używać przedmiotów, ani w jakikolwiek inny sposób wchodzić w interakcję ze światem. Nie jest też w stanie przechodzić przez stałe obiekty, takie jak ściany, a grawitacja wciąż go ogranicza.",
+	["magic.miscFortifyAttackSpeed"] = "Premia do szybkości ataku",
+	["magic.miscFortifyAttackSpeedDesc"] = "Zwiększa częstotliwość ciosów bronią lub walką wręcz.",
 
 	["magic.blinkLevitationDisabled"] = "Migotanie nie działa w tym miejscu.",
 	["magic.wabbajackFailure"] = "Cel: %s jest zbyt potężny, nie może być poddany efektowi Łabadżaka!", -- Aly: ok this was harder to figure out due to adjectives inheriting gender of subject so: "Alex is strong" -> "Alex jest silny" but "Anna is strong" -> "Anna jest silna"; in this case "cel (target)" not %s is the subject so no matter what gender %s is, string will remain the same
@@ -272,6 +279,10 @@ return {
 	["mcm.weatherChangesDescription"] = "Dodaje nowe efekty pogodowe w niektórych regionach, jak np. opad zarodników w Lasach Othreleth, burze piaskowe w Shipal-Shin czy tropikalne burze w okolicach Morza Abeceańskiego. Wprowadza także poprawki pogodowe w pozostałych regionach, jak np. popielne burze w częściach kontynentalnych Morrowind niemające źródła na Czerwonej Górze."..
 										"\nMoże kolidować z innymi modami MWSE wpływającymi na efekty pogodowe, jak np. Watch the Skies.\nWymaga ponownego uruchomienia gry.\n\nDomyślnie: Wł.\n\n",
 
+	["mcm.bodyClothingLabel"] = "Wyświetlanie Ciała pod Ubraniem",
+	["mcm.bodyClothingDescription"] = "Nie ukrywa części ciała widocznych pod pewnymi elementami zakładanej odzieży z Tamriel Data."..
+											"\nKorzystanie z modyfikacji zapewniających jednolity model postaci (np. VSBR) może spowodować, że ta funkcjonalność nie będzie w pełni działać.Pozostawienie tej opcji uruchomionej nie powinno w takiej sytuacji sprawiać problemów, gdyż jest ona w stanie wykryć czy modele postaci zostały stworzone do działania tak, jak w podstawowej grze.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł.\n\n",
+
 	["mcm.hatsLabel"] = "Nakrycia Głów Jako Ubrania",
 	["mcm.hatsDescription"] = "Powoduje, że nakrycia głów z Tamriel Data funkcjonują jako ubrania, a nie pancerz."..
 											"\nMoże kolidować z innymi modam MWSE dodającymi nowe typy ubrań.\nWymaga ponownego uruchomienia gry.\n\nDomyślnie: Wł.\n\n",
@@ -301,7 +312,7 @@ return {
 											"\n- Nagi nie mogą ubierać hełmów." ..
 											"\n\nDomyślnie: Wł.\n\n",
 
-	["mcm.femaleArgoniansUseMaleEquipmentLabel"] = "Female Tamriel Data Argonians Use Male Equipment",
+	["mcm.femaleArgoniansUseMaleEquipmentLabel"] = "Męski Ekwipunek dla Kobiet Argonian",
 	["mcm.femaleArgoniansUseMaleEquipmentDescription"] = "Kobiety ras argoniańskich pochodzących z Tamriel Data (na przykład Nagi) mogą nosić męskie ubrania i pancerz.\nWymaga ponownego wczytania gry.\n\nDomyślnie: Wł., o ile opcja wyboru ubrań dla Argonian jest włączona w Morrowind Code Patch\n\n",
 
 	["mcm.itemSoundsLabel"] = "Poprawione Efekty Dźwiękowe Przedmiotów",
