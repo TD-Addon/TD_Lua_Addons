@@ -345,6 +345,94 @@ local function applyIntervention(player, hardcodedMarkers, coveredRegions)
     end
 end
 
+local function getClosestMarkerFromExteriorPosition(cell, markerId)
+    local markers = world.getObjectsByRecordId(markerId, cell.worldSpaceId)
+    local minGridSize = math.huge
+    local validMarkers = {}
+    for _, marker in pairs(markers) do
+        local deltaX = marker.cell.gridX - cell.gridX
+        local deltaY = marker.cell.gridY - cell.gridY
+        local gridSize = math.max(math.abs(deltaX), math.abs(deltaY)) * 2
+        if gridSize == 0 then
+            return marker
+        elseif gridSize <= minGridSize then
+            if gridSize < minGridSize then
+                validMarkers = {}
+                minGridSize = gridSize
+            end
+            table.insert(validMarkers, { marker, gridSize / 2 + deltaX, gridSize / 2 + deltaY })
+        end
+    end
+    local numMarkers = #validMarkers
+    if numMarkers == 0 then
+        return
+    elseif numMarkers == 1 then
+        return validMarkers[1][1]
+    end
+    local earliestDistance = math.huge
+    local closestMarker
+    for _, info in ipairs(validMarkers) do
+        local marker, column, row = unpack(info)
+        local distance = 0
+        if row == 0 then
+            distance = column
+        elseif column == minGridSize then
+            distance = minGridSize + row
+        elseif row == minGridSize then
+            distance = minGridSize * 3 - column
+        else
+            distance = minGridSize * 4 - row
+        end
+        if distance < earliestDistance then
+            closestMarker = marker
+            earliestDistance = distance
+        end
+    end
+    return closestMarker
+end
+
+local function getClosestMarker(caster, markerId)
+    if caster.cell.isExterior then
+        return getClosestMarkerFromExteriorPosition(caster.cell, markerId)
+    end
+    local checkedCells = {}
+    local nextCells = { [caster.cell.id] = caster.cell }
+    local Door = types.Door;
+    while next(nextCells) do
+        local currentCells = nextCells
+        nextCells = {}
+        for _, cell in pairs(currentCells) do
+            checkedCells[cell.id] = true
+            local _, marker = next(world.getObjectsByRecordId(markerId, cell.worldSpaceId))
+            if marker then
+                return marker
+            end
+            for _, door in pairs(cell:getAll(Door)) do
+                local destination = Door.destCell(door)
+                if destination then
+                    if destination.isExterior then
+                        return getClosestMarkerFromExteriorPosition(destination, markerId)
+                    elseif not checkedCells[destination.id] and not currentCells[destination.id] then
+                        nextCells[destination.id] = destination
+                    end
+                end
+            end
+        end
+    end
+end
+
+local function teleportToMarker(caster, markerId)
+    if not types.Player.isTeleportingEnabled(caster) then
+        caster:sendEvent('ShowMessage', { message = core.getGMST('sTeleportDisabled') })
+        return
+    end
+    local marker = getClosestMarker(caster, markerId)
+    if not marker then
+        return
+    end
+    caster:teleport(marker.cell, marker.position, { onGround = true, rotation = marker.rotation })
+end
+
 local function restoreCharge(item, caster)
     if not item then
         return
@@ -522,7 +610,11 @@ local onStart = {
     end,
     t_intervention_kyne = function(target, spell, effect, track)
         if types.Player.objectIsInstance(target) then
-            applyIntervention(target, kynesInterventionLocations, magicData.kyne_intervention_regions)
+            if core.API_REVISION < 152 then
+                applyIntervention(target, kynesInterventionLocations, magicData.kyne_intervention_regions)
+            else
+                teleportToMarker(target, 'T_Aid_KyneInterventionMarker')
+            end
             track.ignore = false
         end
     end,
