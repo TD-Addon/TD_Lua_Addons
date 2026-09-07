@@ -1084,10 +1084,10 @@ function this.blinkIndicator()
 				end
 
 				if range >= 48 then	-- Having it automatically appear right in front of the player when they blink next to a wall feels awkward
-					local destination = tes3.mobilePlayer.position + tes3vector3.new(0, 0, tes3.mobilePlayer.cameraHeight) + tes3.getPlayerEyeVector() * range
+					local destination = tes3.getPlayerEyePosition() + tes3.getPlayerEyeVector() * range
 
 					local heightCheck = tes3.rayTest{
-						position = destination + tes3vector3.new(0, 0, tes3.mobilePlayer.cameraHeight),
+						position = destination,
 						direction = tes3vector3.new(0, 0, -1),
 						accurateSkinned = true,
 						observeAppCullFlag = false
@@ -1101,7 +1101,7 @@ function this.blinkIndicator()
 							groundPosition = tes3vector3.new(heightCheck.intersection.x, heightCheck.intersection.y, heightCheck.intersection.z + 24)
 						end
 
-						if heightCheck.distance < 196 then destination = tes3vector3.new(destination.x, destination.y, destination.z + 196 - heightCheck.distance) end		-- Place the indicator at a fixed distance above the ground marker if the destination is close enough to the ground
+						if heightCheck.distance < 72 then destination = tes3vector3.new(destination.x, destination.y, destination.z + 72 - heightCheck.distance) end		-- Place the indicator at a fixed distance above the ground marker if the destination is close enough to the ground
 					end
 
 					if not groundPosition and tes3.getPlayerEyeVector().z < 0 then return end		-- If the player is looking down and groundPosition is undefined, then the indicator is very close to them and should not be made visible
@@ -2108,22 +2108,24 @@ function this.detectInvisibilityOpacity(e)
 
 		for actor in pairs(invisibleReferences) do
 			---@cast actor tes3reference
-			local undetected = false
-			local chameleonMagnitude = math.clamp(actor.mobile.chameleon / 100, 0, 1)
-			if #detectInvisibilityEffects > 0 then
-				if tes3.player.position:distance(actor.position) <= detectMagnitude * 22.1 then
-					actor.mobile.animationController.opacity = math.clamp((1 - .375 * chameleonMagnitude) * (1 - actor.mobile.invisibility), 0.5, 0.99999)
-					invisibleOpacityModifiedReferences[actor] = true
+			if actor.mobile then
+				local undetected = false
+				local chameleonMagnitude = math.clamp(actor.mobile.chameleon / 100, 0, 1)
+				if #detectInvisibilityEffects > 0 then
+					if tes3.player.position:distance(actor.position) <= detectMagnitude * 22.1 then
+						actor.mobile.animationController.opacity = math.clamp((1 - .375 * chameleonMagnitude) * (1 - actor.mobile.invisibility), 0.5, 0.99999)
+						invisibleOpacityModifiedReferences[actor] = true
+					else
+						undetected = true
+					end
 				else
 					undetected = true
 				end
-			else
-				undetected = true
-			end
 
-			if undetected and invisibleOpacityModifiedReferences[actor] then
-				actor.mobile.animationController.opacity = math.clamp((1 - .75 * chameleonMagnitude) * (1 - actor.mobile.invisibility), 0, 0.99999)
-				invisibleOpacityModifiedReferences[actor] = nil
+				if undetected and invisibleOpacityModifiedReferences[actor] then
+					actor.mobile.animationController.opacity = math.clamp((1 - .75 * chameleonMagnitude) * (1 - actor.mobile.invisibility), 0, 0.99999)
+					invisibleOpacityModifiedReferences[actor] = nil
+				end
 			end
 		end
 	end
