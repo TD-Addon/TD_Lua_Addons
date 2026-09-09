@@ -259,7 +259,7 @@ local function fixVampireHeadAssignment(e)
 						e.bodyPart = e.reference.mobile.object.baseObject.head
 					end
 				else
-					if e.reference.mobile.hasVampirism and common.isFromPTR(e.reference, true) then	-- Sometimes the no head shows up on PTR vampires for unclear reasons. Hopefully this fixes that.
+					if e.reference.mobile.hasVampirism and (common.isFromPTR(e.reference, true) or common.isFromTD(e.reference.baseObject.race, true)) then	-- Sometimes the no head shows up on PTR vampires or those of TD races for unclear reasons, which should be fixed by this
 						if e.reference.baseObject.female then e.bodyPart = e.reference.baseObject.race.femaleBody.vampireHead
 						else e.bodyPart = e.reference.baseObject.race.maleBody.vampireHead end
 					end

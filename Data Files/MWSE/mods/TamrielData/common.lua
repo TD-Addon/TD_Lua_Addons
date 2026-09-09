@@ -370,7 +370,7 @@ function this.hasAlpha(node, clip, blend)
 end
 
 -- Returns whether or not the given parameter is from a PTR project (TR, SHotN, etc.) or (optionally) from a mod that is dependent on one
----@param ref tes3reference|tes3object|tes3faction
+---@param ref tes3reference|tes3baseObject
 ---@param includeMods boolean
 ---@return boolean
 function this.isFromPTR(ref, includeMods)
@@ -390,8 +390,6 @@ function this.isFromPTR(ref, includeMods)
                     end
                 end
             end
-
-            return false
         end
     end
 
@@ -399,7 +397,7 @@ function this.isFromPTR(ref, includeMods)
 end
 
 -- Returns whether or not the given parameter is from TD or (optionally) from a mod that is dependent on it
----@param ref tes3reference|tes3object|tes3faction
+---@param ref tes3reference|tes3baseObject
 ---@param includeMods boolean
 ---@return boolean
 function this.isFromTD(ref, includeMods)
@@ -419,8 +417,6 @@ function this.isFromTD(ref, includeMods)
                     end
                 end
             end
-
-            return false
         end
     end
 

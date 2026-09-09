@@ -14,6 +14,9 @@ return {
 	["main.minotaurHat"] = "Les minotaures ne peuvent porter de chapeau.",
 	["main.nagaHelm"] = "Les Nagas ne peuvent porter de casque.",
 	["main.nagaHat"] = "Les Nagas ne peuvent porter de chapeau.",
+	["main.sarpaGauntlet"] = "Les Sarpas ne peuvent porter de gantelets.",
+	["main.sarpaBracer"] = "Les Sarpas ne peuvent porter de bracelets.",
+	["main.sarpaGlove"] = "Les Sarpas ne peuvent porter de gants.",
 
 	["main.rangeAlmsivi"] = "Le pouvoir d'ALMSIVI ne s'étend pas sur ces terres.",
 	["main.rangeKyne"] = "Le pouvoir de Kyne ne s'étend pas sur ces terres.",
@@ -160,6 +163,8 @@ return {
 	["magic.miscMagickaWardDesc"] = "Le lanceur de cet effet rassemble sa magie autour de lui pour absorber des dégâts dont il aurait autrement souffert. Les dégâts reçus sont réduits de moitié, mais réduisent également les réserves magiques du lanceur.",
 	["magic.miscEthereal"] = "Forme éthérée",
 	["magic.miscEtherealDesc"] = "Le lanceur de cet effet revêt une forme incorporelle et peut traverser les autres entités. Le lanceur ne peut être blessé par celles-ci, mais ne peut pas non plus agir sur elles, lancer des sorts, utiliser des objets, ou généralement interagir physiquement avec le monde. Le lanceur ne peut pas traverser des objets comme des murs et obéit toujours aux lois de la gravité.",
+	["magic.miscFortifyAttackSpeed"] = "Vitesse d'attaque fortifiée",
+	["magic.miscFortifyAttackSpeedDesc"] = "Cet effet augmente la vitesse à laquelle le sujet porte des coups avec une arme ou à mains nues.",
 
 	["magic.blinkLevitationDisabled"] = "Transfert ne fonctionne pas ici.",
 	["magic.wabbajackFailure"] = "%s est trop puissant pour que Wabbajack l'affecte !",
@@ -273,6 +278,10 @@ return {
 	["mcm.weatherChangesLabel"] = "Nouvelles météos",
 	["mcm.weatherChangesDescription"] = "Implémente de nouvelles météos dans certaines régions, comme des chutes de spores dans les Bois d'Othréleth, des tempêtes de sable dans la région de Shipal-Shin, et des tempête tropicales dans la mer d'Abecéanne. De plus, cette option procède à des ajustements mineurs de la météo dans d'autres régions, comme le fait que les tempêtes de cendres sur le continent de Morrowind ne proviennent plus systématiquement du mont Ecarlate."..
 											"\nCette option risque d'entrer en conflit avec les mods MWSE qui touchent à la météo, comme Watch the Skies.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
+											
+	["mcm.bodyClothingLabel"] = "Afficher le corps sous les vêtements",
+	["mcm.bodyClothingDescription"] = "Permet que des parties du corps restent visibles sous certains vêtements ajoutés par ce mod quand ils sont équipés."..
+											"\nSi vous utilisez un mod qui rend les modèles et textures des corps non segmentés (comme VSBR ou Corps améliorés), cette fonctionnalité ne fonctionnera que partiellement. Cette dernière vérifie que les modèles et textures des corps sont implémentés comme ceux du jeu de base, aussi, la laisser activée en ayant de tels mods ne devrait pas causer de problèmes.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 											
 	["mcm.hatsLabel"] = "Les chapeaux sont des vêtements",
 	["mcm.hatsDescription"] = "Les chapeaux de Ressources communes de Tamriel fonctionneront comme des vêtements et non plus des pièces d'armure."..

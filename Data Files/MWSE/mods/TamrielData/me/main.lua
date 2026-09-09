@@ -5,7 +5,7 @@ if not tes3.isModActive("Tamriel_Data.esm") then return end
 local config = require("TamrielData.config")
 event.register(tes3.event.loaded, function()
     local me_framework = include("OperatorJack.MagickaExpanded")
-    if me_framework then
+	if config.overwriteMagickaExpanded and me_framework then
 		local me_summoning = include("OperatorJack.MagickaExpanded-SummoningPack.main")
 		local me_tr = include("OperatorJack.MagickaExpanded-TamrielRebuiltPack.main")
 		local me_lorefriendly = include("OperatorJack.MagickaExpanded-LoreFriendlyPack.main")

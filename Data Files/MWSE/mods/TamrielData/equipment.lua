@@ -504,7 +504,7 @@ end
 
 ---@param e bodyPartAssignedEventData
 function this.switchArgonianFemaleEquipment(e)
-	if e.object and e.reference.baseObject.objectType == tes3.objectType.npc and common.argonian_races[e.reference.baseObject.race.id] then
+	if e.object and e.reference.baseObject.objectType == tes3.objectType.npc and common.argonian_races[e.reference.baseObject.race.id] and e.object.parts then
 		for _, part in pairs(e.object.parts) do
 			if part.type == e.index then
 				e.bodyPart = part.male
