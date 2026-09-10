@@ -21,7 +21,7 @@ local function setLocalVariable(script, id, value)
 end
 
 local function getEffectKey(id, index)
-    return id .. ',' .. index
+    return ('%s,%s'):format(id, index)
 end
 
 local persistentState = {

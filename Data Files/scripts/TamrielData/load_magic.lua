@@ -217,7 +217,7 @@ local function addMiscEffects()
     addMiscEffect('T_alteration_Wabbajack', {
         allowsSpellmaking = false, allowsEnchanting = false, hasDuration = false, onSelf = false, onTarget = true,
         onTouch = true, harmful = true, unreflectable = true, hitSound = 'T_SndObj_Silence', hitStatic = 'T_VFX_Empty',
-        areaSound = 'T_SndObj_Silence', areaStatic = 'T_VFX_Empty'
+        areaSound = 'T_SndObj_Silence', areaStatic = 'T_VFX_Empty', hasMagnitude = false
     })
     addMiscEffect('T_alteration_WabbajackHelper', {
         isAppliedOnce = false, allowsSpellmaking = false, allowsEnchanting = false, onSelf = false, onTarget = true,

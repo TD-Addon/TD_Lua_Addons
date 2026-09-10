@@ -362,7 +362,7 @@ local function restoreCharge(item, caster)
 end
 
 local function toKey(actor, id, index)
-    return actor.id .. ',' .. id .. ',' .. index
+    return ('%s,%s,%s'):format(actor.id, id, index)
 end
 
 local function store(target, spell, effect)
