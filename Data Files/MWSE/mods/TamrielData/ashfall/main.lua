@@ -362,7 +362,7 @@ event.register(tes3.event.initialized, function()
 			t_els_flora_sugarcane02        = types.vegetation,
 			t_els_flora_sugarcane03        = types.vegetation,
 			t_els_flora_sugarcane04        = types.vegetation,
-
+			
 			  -- Hammerfell
 			t_ham_flora_dustBush01         = types.vegetation,
 			t_ham_flora_lobelia_01         = types.vegetation,
@@ -514,6 +514,8 @@ event.register(tes3.event.initialized, function()
 			t_mw_floramf_palm_03           = types.vegetation,
 			t_mw_floramf_palm_04           = types.vegetation,
 			t_mw_floramf_palm_05           = types.vegetation,
+			t_mw_florand_loloca_01         = types.vegetation,
+			t_mw_florand_loloca_02         = types.vegetation,
 			t_mw_floraor_parsley01         = types.vegetation,
 			t_mw_floraor_parsley02         = types.vegetation,
 			t_mw_floraor_wmsweet_01        = types.vegetation,
@@ -773,6 +775,10 @@ event.register(tes3.event.initialized, function()
 			t_sky_flora_wormwood01         = types.vegetation,
 			t_sky_flora_wormwoodD01        = types.vegetation,
 			t_sky_flora_wrothggrap01       = types.vegetation,
+			
+			t_sum_flora_bluecora_01        = types.vegetation,
+			t_sum_flora_bluecora_02        = types.vegetation,
+			t_sum_flora_bluecora_03        = types.vegetation,
 
 			-- Trees
 			  -- Global
@@ -4035,6 +4041,9 @@ event.register(tes3.event.initialized, function()
 			t_de_yellowglasscup01 = { capacity = 25 },
 			t_de_yellowglassflask01 = {  capacity = 80 },
 			t_de_yellowglasspot01 = {  holdsStew = true, capacity = 100 },
+			t_fal_bowl_01 = { capacity = 60, holdsStew = true },
+			t_fal_cup_01 = { capacity = 25 },
+			t_fal_pitcher_01 = { capacity = 190 },
 			t_he_blueceladonbowl_01 = { capacity = 60, holdsStew = true },
 			t_he_blueceladoncup_01 = { capacity = 25 },
 			t_he_blueceladonpot_01 = {  holdsStew = true, capacity = 100 },
@@ -4085,6 +4094,8 @@ event.register(tes3.event.initialized, function()
 			t_he_glassblubowl02 = { capacity = 30, holdsstew = true },
 			t_he_glassblubowl03 = { capacity = 30, holdsstew = true },
 			t_he_glassblucup01 = { capacity = 25 },
+			t_he_glassopalcup01 = { capacity = 25 },
+			t_he_glassopalpitcher_01 = { capacity = 190 },
 			t_he_glassyelbowl01 = { capacity = 30, holdsstew = true },
 			t_he_glassyelbowl02 = { capacity = 30, holdsstew = true },
 			t_he_glassyelcup01 = { capacity = 25 },
@@ -4342,6 +4353,12 @@ event.register(tes3.event.initialized, function()
 			t_rga_woodcup_02 = { capacity = 25 },
 			t_rga_woodcup_03 = { capacity = 25 },
 			t_rga_woodflask_01 = {  capacity = 80 },
+			t_riv_cer_bowl_01 = { capacity = 90, holdsStew = true },
+			t_riv_cer_bowl_02 = { capacity = 45, holdsStew = true },
+			t_riv_cer_cup_01 = { capacity = 20 },
+			t_riv_cer_gob_01 = { capacity = 30 },
+			t_riv_cer_pitc_01 = { capacity = 190 },
+			t_riv_cer_pot_01 = { capacity = 200 },
 			t_we_bloodglass_bowl_01 = { capacity = 60, holdsStew = true },
 			t_we_bloodglass_cup_01 = { capacity = 25 },
 			t_we_bloodglass_cup_02 = { capacity = 25 },
