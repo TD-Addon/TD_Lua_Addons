@@ -21,8 +21,7 @@ local creatureGroupSounds = {
 local lamiaReferences = {}
 local dreughReferences = {}
 local fleeReferences = {}
-local creatureSoundAttackedReferences = {
-}
+local creatureSoundAttackedReferences = {}
 
 local creatureFleeing = false
 

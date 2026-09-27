@@ -56,7 +56,7 @@ local projectTable = {
 ---@param e tes3uiEventData
 local function createTooltip(e)
     local statMenu = tes3ui.findMenu("MenuStat")
-    local nameLabel = statMenu:findChild(e.source)
+    local nameLabel = statMenu:findChild(e.source.id)
     local name = nameLabel.text
 
     local tooltip = tes3ui.createTooltipMenu()
@@ -71,7 +71,7 @@ local function createTooltip(e)
     tooltipLayout.borderAllSides = 6
     tooltipLayout.childAlignX = 0.5
     tooltipLayout.childAlignY = 0.5
-    tooltipLayout.flowDirection = top_to_bottom
+    tooltipLayout.flowDirection = "top_to_bottom"
     tooltipLayout:updateLayout()
     local tooltipLabel = tooltipLayout:createLabel{}
     tooltipLabel.text = common.i18n("reputation.tooltip", { name })
@@ -182,7 +182,7 @@ function this.switchReputation(e)
 	local actorTarget = tes3.rayTest{			-- tes3.getPlayerTarget doesn't work in conversations
 		position = tes3.getPlayerEyePosition(),
 		direction = tes3.getPlayerEyeVector(),
-		root = {tes3.game.worldPickRoot},
+		root = { tes3.game.worldPickRoot },
 		ignore = {tes3.player}
 	}
     

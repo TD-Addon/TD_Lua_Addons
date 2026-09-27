@@ -96,6 +96,14 @@ local function registerModConfig()
         },
     }
     magicToggles:createOnOffButton{
+        label = common.i18n("mcm.customSpellVFXLabel"),
+        description = common.i18n("mcm.customSpellVFXDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "customSpellVFX",
+            table = config,
+        },
+    }
+    magicToggles:createOnOffButton{
         label = common.i18n("mcm.passwallAlterationLabel"),
         description = common.i18n("mcm.passwallAlterationDescription"),
         variable = mwse.mcm.createTableVariable{
@@ -181,6 +189,14 @@ local function registerModConfig()
         description = common.i18n("mcm.hatsDescription"),
         variable = mwse.mcm.createTableVariable{
             id = "hats",
+            table = config,
+        },
+    }
+    equipmentToggles:createOnOffButton{
+        label = common.i18n("mcm.restrictArgonianOpenHelmetsLabel"),
+        description = common.i18n("mcm.restrictArgonianOpenHelmetsDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "restrictArgonianOpenHelmets",
             table = config,
         },
     }

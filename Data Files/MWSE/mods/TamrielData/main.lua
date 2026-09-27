@@ -490,6 +490,13 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.magicCasted, magic.passwallEffect, { unregisterOnLoad = true })
 	end
 
+	if config.customSpellVFX then
+		event.register(tes3.event.vfxCreated, magic.useCustomSpellVFX, { unregisterOnLoad = true })
+		--event.register(tes3.event.mobileActivated, magic.useCustomSpellBoltVFX, { unregisterOnLoad = true })		-- This is currently disabled due to a crash that needs to be resolved in MWSE itself
+		event.register(tes3.event.render, magic.lockProjectileRotation, { unregisterOnLoad = true })
+		event.register(tes3.event.cellChanged, magic.checkProjectilesOnCellChange, { unregisterOnLoad = true })
+	end
+
 	if config.provincialReputation then
 		event.register(tes3.event.menuEnter, reputation.switchReputation, { filter = "MenuDialog", unregisterOnLoad = true })
 		event.register(tes3.event.menuExit, reputation.switchReputation, { unregisterOnLoad = true })

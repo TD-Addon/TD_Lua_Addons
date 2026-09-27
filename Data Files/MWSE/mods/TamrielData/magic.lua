@@ -127,6 +127,8 @@ local invisibleOpacityModifiedReferences = {}
 
 local etherealReferences = {}
 
+local lockedProjectileReferences = {}
+
 -- (part of) lowercase static/activator id
 local passWallObjectBlacklist = {
 	"shelf",
@@ -231,6 +233,32 @@ local gazeOfVelothImmuneActors = {
 	["divayth fyr"] = true,
 	["wulf"] = true,
 	["Sky_qRe_KWMG6_Azra"] = true,
+}
+
+-- vfx id, vfx id again, niColor for bolt's attached light, boolean for preventing the bolt's animated rotation
+local spellBoltVFX = {
+	["T_VFX_BloodNeedlesBolt"] = {  id = "T_VFX_BloodNeedlesBolt", color = niColor.new(1, .1, .05), lock = true },
+	["T_VFX_IceKnifeBolt"] = {  id = "T_VFX_IceKnifeBolt", color = niColor.new(.2, .6, .9) },
+	["T_VFX_KaleidoscopeBolt"] = {  id = "T_VFX_KaleidoscopeBolt", color = niColor.new(.7, .1, .7) },
+	["T_VFX_BlackfireBolt"] = {  id = "T_VFX_BlackfireBolt", color = niColor.new(.45, .45, .45) },
+	["T_VFX_RedskullBolt"] = {  id = "T_VFX_RedskullBolt", color = niColor.new(1, .3, .3), lock = true },
+}
+
+-- spell id, vfx ids (cast, bolt, hit, area)
+local spellVFXReplacements = {
+	["T_We_Res_AntherHeart"] = 				{ cast = "T_VFX_CastBosmerRestoration", hit = "T_VFX_HitBosmerRestoration" },
+	["T_We_Res_Photosynthesis"] = 			{ cast = "T_VFX_CastBosmerRestoration", hit = "T_VFX_HitBosmerRestoration" },
+	["T_We_Res_Regrowth"] = 				{ cast = "T_VFX_CastBosmerRestoration", hit = "T_VFX_HitBosmerRestoration" },
+	["T_Bre_Res_CalendratsosOpulent"] = 	{ cast = "T_VFX_CastCalandratso" },
+	["T_He_Mys_SignPattern"] = 				{ cast = "T_VFX_CastAltmerMysticism" },
+	["T_He_Ilu_AlignmentSpheres"] = 		{ cast = "T_VFX_CastAltmerIllusion" },
+	["T_Arg_Des_BloodNeedles"] =			{ bolt = spellBoltVFX["T_VFX_BloodNeedlesBolt"] },
+	["T_Com_Des_IceKnife"] = 				{ bolt = spellBoltVFX["T_VFX_IceKnifeBolt"] },
+	["T_Com_Des_Kaleidoscope"] = 			{ bolt = spellBoltVFX["T_VFX_KaleidoscopeBolt"] },
+	["T_Bre_Des_CalendratsosMagnifice"] = 	{ bolt = spellBoltVFX["T_VFX_KaleidoscopeBolt"] },
+	["T_Arg_Des_AcridBlackfire"] = 			{ bolt = spellBoltVFX["T_VFX_BlackfireBolt"], hit = "T_VFX_HitBlackfire" },
+	["T_Arg_Des_FoulBlackfire"] = 			{ bolt = spellBoltVFX["T_VFX_BlackfireBolt"], hit = "T_VFX_HitBlackfire" },
+	["T_Com_Mys_RedskullTerror"] = 			{ bolt = spellBoltVFX["T_VFX_RedskullBolt"] },
 }
 
 ---@param table table
@@ -463,6 +491,128 @@ function this.correctSpellTooltipUnit(e)
 				end
 			end
 		end
+	end
+end
+
+-- This function sets the animation flags of NiBSAnimationNodes and the subclasses thereof so that the engine always updates them, as is done with the default VFX
+---@param rootNode niNode
+local function toggleAlwaysUpdateFlag(rootNode)
+	for node in rootNode:traverse({ type = ni.type.NiBSAnimationNode }) do
+		node.animationFlags = bit.bor(node.animationFlags, 0x10)
+	end
+end
+
+-- useCustomSpellVFX replaces a spell's cast, hit, and area VFX; bolt VFX is replaced by useCustomSpellBoltVFX
+---@param e vfxCreatedEventData
+function this.useCustomSpellVFX(e)
+	---@param object tes3object
+	---@param source tes3spell
+	---@param vfxType string
+	local function matchesSpellDefaultVFX(object, source, vfxType)
+		for index, effect in pairs(source.effects) do
+			if effect and effect.object and effect.object[vfxType] and effect.object[vfxType] == object then return index end
+		end
+	end
+
+	if not e.vfx.sourceInstance then return end
+	local vfxReplacement = spellVFXReplacements[e.vfx.sourceInstance.source.id]
+	if vfxReplacement then
+		local vfxIndex
+		if vfxReplacement.cast then
+			vfxIndex = matchesSpellDefaultVFX(e.vfx.effectObject, e.vfx.sourceInstance.source, "castVisualEffect")
+			if vfxIndex then
+				if vfxIndex == 1 then	-- Only the first effect is "replaced", so that multiple copies of the new VFX are not created
+					local vfx = tes3.createVisualEffect({ serial = e.vfx.sourceInstanceSerial, object = vfxReplacement.cast, reference = e.vfx.target, repeatCount = 1 })
+					toggleAlwaysUpdateFlag(vfx.effectNode)
+				end
+				e.vfx.expired = true	-- Get rid of all of the original VFX
+				return
+			end
+		end
+
+		if vfxReplacement.hit then
+			vfxIndex = matchesSpellDefaultVFX(e.vfx.effectObject, e.vfx.sourceInstance.source, "hitVisualEffect")
+			if vfxIndex then
+				if vfxIndex == 1 then
+					local vfx = tes3.createVisualEffect({ serial = e.vfx.sourceInstanceSerial, object = vfxReplacement.hit, reference = e.vfx.target, repeatCount = 1 })
+					toggleAlwaysUpdateFlag(vfx.effectNode)
+				end
+				e.vfx.expired = true
+				return
+			end
+		end
+
+		if vfxReplacement.area then
+			vfxIndex = matchesSpellDefaultVFX(e.vfx.effectObject, e.vfx.sourceInstance.source, "areaVisualEffect")
+			if vfxIndex then
+				if vfxIndex == 1 then
+					local vfx = tes3.createVisualEffect({ serial = e.vfx.sourceInstanceSerial, object = vfxReplacement.area, position = e.vfx.position, repeatCount = 1 })	-- The scale might need to be set depending on the spell's magnitudes
+					toggleAlwaysUpdateFlag(vfx.effectNode)
+				end
+				e.vfx.expired = true
+				return
+			end
+		end
+	end
+end
+
+---@param e mobileActivatedEventData
+function this.useCustomSpellBoltVFX(e)
+	if not e.mobile.spellInstance or lockedProjectileReferences[e.reference] then return end	-- The mobile is activated again when changing cells, which will changed the rotation of the projectile to the caster's current orientation if not stopped here
+	local vfxReplacement = spellVFXReplacements[e.mobile.spellInstance.source.id]
+	if vfxReplacement and vfxReplacement.bolt then
+		local replacementMesh = tes3.loadMesh(tes3.getObject(vfxReplacement.bolt.id).mesh, false)
+
+		e.reference.sceneNode:detachAllChildren()
+		e.reference.sceneNode:detachAllProperties()
+		e.reference.sceneNode:detachAllEffects()
+		e.reference.sceneNode:removeAllExtraData()
+		e.mobile:setLightEffectDiffuseColor(niColor.new(0,0,0))		-- Although the light will be deactivated by the detachments, it must still be removed with this line in order for it to later be replaced
+
+		e.reference.sceneNode:attachChild(replacementMesh, true)
+		if replacementMesh.extraData then
+			e.reference.sceneNode:addExtraData(replacementMesh.extraData)
+			e.reference.sceneNode.children[1]:removeAllExtraData()
+		end
+
+		toggleAlwaysUpdateFlag(replacementMesh)
+
+		e.reference.sceneNode:updateProperties()
+		e.reference.sceneNode:updateEffects()
+
+		tes3.dataHandler:updateCollisionGroupsForActiveCells()
+
+		e.mobile:setLightEffectDiffuseColor(vfxReplacement.bolt.color)
+		e.mobile:setLightEffectFalloff(128)		-- 128 appears to be the correct value
+
+		if vfxReplacement.bolt.lock then
+			local rotation = tes3matrix33.identity()
+			rotation:lookAt(e.mobile.velocity, -e.mobile.velocity:cross(e.mobile.spellInstance.caster.rightDirection))	-- Orientates the projectile in the direction that it is moving
+			rotation:reorthogonalize()
+			lockedProjectileReferences[e.reference] = rotation
+		end
+	end
+end
+
+-- lockProjectileRotation stops the animated rotation of projectiles, which looks strange for some of the bolts 
+function this.lockProjectileRotation()
+	for projectile, orientation in pairs(lockedProjectileReferences) do
+		---@cast projectile tes3reference
+		if projectile:isValid() then
+			projectile.sceneNode.rotation = orientation		-- Because the projectile's reference cannot have data saved to it, there is not a great way of retaining the orientation when the game is saved/loaded; this shouldn't matter very much though
+		else
+			lockedProjectileReferences[projectile] = nil
+		end
+	end
+end
+
+-- Bolts will lose their custom VFX upon loading a game, so all of the projectiles must be gone over again 
+---@param e cellChangedEventData
+function this.checkProjectilesOnCellChange(e)
+	if e.previousCell then return end
+	for _, projectile in pairs(tes3.worldController.mobManager.projectileManager.projectiles) do
+		local fakeEventData = { mobile = projectile, reference = projectile.reference }
+		this.useCustomSpellBoltVFX(fakeEventData)
 	end
 end
 
@@ -699,11 +849,10 @@ function this.etherealActivate(e)
 	if e.activator.mobile and e.activator.mobile.getActiveMagicEffects and #e.activator.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_Ethereal }) > 0 and not (e.target.mobile and not (e.target.baseObject.objectType == tes3.objectType.npc and e.activator.mobile.isSneaking)) then return false end	-- The player should still be able to talk, but not pickpocket
 end
 
--- Cast once enchantments cannot be accounted for infuriatingly
 ---@param e enchantChargeUseEventData
 function this.etherealEnchantChargeUse(e)
 	if e.isCast and #e.caster.mobile:getActiveMagicEffects({ effect = tes3.effect.T_illusion_Ethereal }) > 0 then
-		e.charge = 1000000
+		e.charge = 1000000	-- Cast once enchantments cannot be accounted for infuriatingly
 		return false
 	end
 end
@@ -1326,6 +1475,12 @@ end
 ---@param e bodyPartAssignedEventData
 function this.gazeOfVelothBodyPartAssigned(e)
 	if common.hasDataField(e.reference, "gazeOfVelothSkeleton") then
+		if e.reference.mobile and not e.reference.mobile.isDead then	-- This should account for respawning NPCs, as bizarre as the concept is
+			e.reference.data.tamrielData.gazeOfVeloth = nil
+			e.reference.data.tamrielData.gazeOfVelothSkeleton = nil
+			return
+		end
+
 		if e.index == tes3.partIndex.chest then
 			for _, v in pairs(raceSkeletonBodyParts) do
 				if e.reference.baseObject.race.id == v[1] then
@@ -1371,7 +1526,7 @@ local function gazeOfVelothEffect(e)
 			tes3ui.showNotifyMenu(common.i18n("magic.gazeOfVelothDagoth"))
 			e.effectInstance.state = tes3.spellState.retired
 			return
-		elseif target.baseObject.type == tes3.creatureType.humanoid and (id:find("ash_") or id:find("dagoth_") or id:find("corprus_") or id == "ascended_sleeper") then
+		elseif target.baseObject.type == tes3.creatureType.humanoid and (id:find("ash_") or id:find("dagoth ") or id:find("corprus_") or id == "ascended_sleeper") then
 			tes3ui.showNotifyMenu(common.i18n("magic.gazeOfVelothAsh", { name }))
 			e.effectInstance.state = tes3.spellState.retired
 			return

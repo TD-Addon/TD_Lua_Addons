@@ -165,6 +165,7 @@ local td_misc_spells = {
 	{ "T_Com_Ilu_Ethereal", "spell", "miscEthereal", 30, { id = "T_illusion_Ethereal", range = "self", duration = 15, min = 1, max = 1 } },
 	{ "T_Nag_Pow_StalkersShroud", "power", nil, nil, { id = "chameleon", range = "self", duration = 60, min = 50, max = 50 },
 													{ id = "T_mysticism_DetHuman", range = "self", duration = 60, min = 100, max = 100 } },
+	{ "T_Bre_Mys_FeywildShadowstep", "spell", nil, nil, { id = "T_mysticism_Blink", range = "self", min = 5, max = 80 } },
 }
 
 -- enchantment id, type, effect1, ...

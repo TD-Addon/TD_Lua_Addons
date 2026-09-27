@@ -17,6 +17,7 @@ return {
 	["main.sarpaGauntlet"] = "Sarpa cannot wear gauntlets.",
 	["main.sarpaBracer"] = "Sarpa cannot wear bracers.",
 	["main.sarpaGlove"] = "Sarpa cannot wear gloves.",
+	["main.argonianEquip"] = "Argonians cannot wear this.",
 
 	["main.rangeAlmsivi"] = "The power of Almsivi does not extend to these lands.",
 	["main.rangeKyne"] = "The power of Kyne does not extend to these lands.",
@@ -246,6 +247,9 @@ return {
 	["mcm.miscSpellsLabel"] = "Add New Miscellaneous Spells",
 	["mcm.miscSpellsDescription"] = "Adds new spells that do not fit into the categories above, such as Banish Daedra, Reflect Damage, Distract Humanoid, and Wabbajack.\nRequires restart.\n\nDefault: On\n\n",
 
+	["mcm.customSpellVFXLabel"] = "Use Custom Visual Effects for Certain Spells",
+	["mcm.customSpellVFXDescription"] = "Changes the visual effects of some spells without editing the magic effects that they use, such as Ice Knife creating an actual knife made of ice as a projectile rather than a spiky ball of ice while still inflicting frost damage.\nRequires reload.\n\nDefault: On\n\n",
+
 	["mcm.passwallAlterationLabel"] = "Make Passwall an Alteration Effect",
 	["mcm.passwallAlterationDescription"] = "Sets Passwall to belong to the school of Alteration rather than the school of Mysticism.\nRequires restart.\n\nDefault: Off\n\n",
 
@@ -305,12 +309,15 @@ return {
 	["mcm.fixVampireLabel"] = "Fix Vampire Heads",
 	["mcm.fixVampireDescription"] = "Stops Namira's Shroud from hiding the player's head when equipped and allows vampire NPCs to use unique heads made specifically for them.\nRequires reload.\n\nDefault: On\n\n",
 
-	["mcm.restrictEquipmentLabel"] ="Restrict Equipment for Tamriel Data Races",
+	["mcm.restrictEquipmentLabel"] = "Restrict Equipment for Tamriel Data Races",
 	["mcm.restrictEquipmentDescription"] = "Prevents races added by Tamriel Data from wearing certain kinds of equipment when doing so would be physically implausible or technically problematic.\nRequires reload.\n\nAffected races and equipment:" ..
 											"\n- Stops male Imga from equipping helmets and all Imga from equipping footwear." ..
 											"\n- Stops Tsaesci from equipping greaves and footwear." ..
 											"\n- Stops Naga from equipping helmets." ..
 											"\n\nDefault: On\n\n",
+
+	["mcm.restrictArgonianOpenHelmetsLabel"] = "Restrict Open Helmets for Argonains",
+	["mcm.restrictArgonianOpenHelmetsDescription"] = "Prevents Argonains from equipping certain open helmets (and hats if the respective feature is enabled) added by Tamriel Data if the items excessively clip through their heads.\nRequires reload.\n\nDefault: On\n\n",
 
 	["mcm.femaleArgoniansUseMaleEquipmentLabel"] = "Female Tamriel Data Argonians Use Male Equipment",
 	["mcm.femaleArgoniansUseMaleEquipmentDescription"] = "Makes female Argonians who are of the races added by Tamriel Data (such as the Naga) wear male armor and clothes.\nRequires reload.\n\nDefault: On, if Morrowind Code Patch's Argonian Clothing Choice feature is enabled\n\n",
