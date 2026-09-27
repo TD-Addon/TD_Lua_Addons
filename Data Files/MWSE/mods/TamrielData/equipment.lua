@@ -79,6 +79,7 @@ local hats = {
 	["T_C_ImpEtHatColNorth03_Hr"] = true,
 	["T_C_ImpEtHatColNorth04_Hr"] = true,
 	["T_C_ImpEtHatColNorth05_Hr"] = true,
+	["T_C_ReaCmHat01_Hr"] = true,
 	["T_A_ReaLeatherHat01_Hr"] = true,
 	["T_C_RgaCmHat01_Hr"] = true,
 	["T_C_RgaCmHat02_Hr"] = true,
