@@ -17,6 +17,7 @@ return {
 	["main.sarpaGauntlet"] = "Les Sarpas ne peuvent porter de gantelets.",
 	["main.sarpaBracer"] = "Les Sarpas ne peuvent porter de bracelets.",
 	["main.sarpaGlove"] = "Les Sarpas ne peuvent porter de gants.",
+	["main.argonianEquip"] = "Les Argoniens ne peuvent porter ceci.",
 
 	["main.rangeAlmsivi"] = "Le pouvoir d'ALMSIVI ne s'étend pas sur ces terres.",
 	["main.rangeKyne"] = "Le pouvoir de Kyne ne s'étend pas sur ces terres.",
@@ -246,6 +247,9 @@ return {
 	["mcm.miscSpellsLabel"] = "Ajout de nouveaux sorts divers",
 	["mcm.miscSpellsDescription"] = "Ajoute de nouveaux sorts qui ne rentrent pas dans les catégories précédentes, comme Bannissement de Daedra, Réflexion de dégâts, Distraction des humanoïdes, et Wabbajack.\nRequiert un redémarrage.\n\nPar défaut : activé\n\n",
 	
+	["mcm.customSpellVFXLabel"] = "Use Custom Visual Effects for Certain Spells",
+	["mcm.customSpellVFXDescription"] = "Modifie les effets visuels de certains sorts sans éditer leurs effets magiques. Par exemple, le sort Couteau de glace crée un véritable couteau fait de glace comme projectile tout en infligeant des dégâts de givre normaux.\nRequiert un redémarrage.\n\nPar défaut : activé\n\n",
+	
 	["mcm.passwallAlterationLabel"] = "Faire de Passe-muraille un effet de l'école d'Altération",
 	["mcm.passwallAlterationDescription"] = "Définit l'effet magique Passe-muraille comme appartenant à l'école de l'Altération au lieu de celle du Mysticisme.\nRequiert un rechargement.\n\nPar défaut : désactivé\n\n",
 	
@@ -305,12 +309,15 @@ return {
 	["mcm.fixVampireLabel"] = "Corriger les visages de vampires",
 	["mcm.fixVampireDescription"] = "Empêche le linceul de Namira de cacher la tête du joueur lorsqu'il est équipé et permet aux PNJs vampires d'avoir des visages uniques conçus spécialement pour eux.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 	
-	["mcm.restrictEquipmentLabel"] ="Restriction d'équipement pour les nouvelles races",
+	["mcm.restrictEquipmentLabel"] = "Restriction d'équipement pour les nouvelles races",
 	["mcm.restrictEquipmentDescription"] = "Empêche les nouvelles races du mod de porter certains types d'équipement lorsque cela serait physiquement impossible ou poserait problème techniquement.\nRequiert un rechargement.\n\nRaces et équipement affectés :" ..
 											"\n- Empêche les Imgas mâles d'équiper des casques et tous les Imgas d'équiper des bottes ou chaussures.\n\n" ..
 											"\n- Empêche les Tsaescis d'équiper des jambières, pantalons, et bottes ou chaussures." ..
 											"\n- Empêche les Nagas d'équiper des casques." ..
 											"Par défaut : activé\n\n",
+											
+	["mcm.restrictArgonianOpenHelmetsLabel"] = "Restriction de certains casques ouverts pour les Argoniens",
+	["mcm.restrictArgonianOpenHelmetsDescription"] = "Empêche les Argoniens d'équiper certains casques ouverts (et chapeaux si la fonctionnalité correspondante est activée) ajoutés par Ressources communes de Tamriel s'ils causent trop de clipping avec leur tête.\nRequiert un rechargement.\n\nPar défaut : activé\n\n",
 											
 	["mcm.femaleArgoniansUseMaleEquipmentLabel"] = "Les femmes des races argoniennes utilisent les versions masculines de l'équipement",
 	["mcm.femaleArgoniansUseMaleEquipmentDescription"] = "Quand cette option est activée, les femmes des races argoniennes ajoutées par Ressources communes de Tamriel (comme les Nagas) porteront les versions masculines des pièces d'armures et des vêtements.\nRequiert un rechargement.\n\nPar défaut : Activé, si l'option du Morrowind Code Patch 'Choix vestimentaires des Argoniennes' est activée\n\n",

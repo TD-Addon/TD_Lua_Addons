@@ -13,8 +13,8 @@ local creatureGroupSounds = {
 								 original = "Swim Right",	-- Perhaps this table should be made available to main, which would iterate through and register changeCreatureSoundForGroup multiple times with each original sound ID as a filter?
 								 replacement = "T_SndCrea_DolphinSplash",
 								 groups = { tes3.animationGroup.idle2,tes3.animationGroup.idle4, tes3.animationGroup.idle5 },
-								 attacks = { tes3.physicalAttackType.creature2 },	-- For some reasonably actionData's currentAnimationGroup is never equal to the attack groups so its physicalAttackType has to be checked instead
-								 condition = function(ref) if ref.cell.hasWater and ref.mobile.position.z + 128 >= ref.cell.waterLevel then return true end end	-- An offset is used because as far as the game is concerned, the dolphin's z-position is not changing during the idle animations unlike its xy-position
+								 attacks = { tes3.physicalAttackType.creature2 },	-- For some reason actionData's currentAnimationGroup is never equal to the attack groups so its physicalAttackType has to be checked instead
+								 condition = function(ref) if ref.cell.hasWater and ref.mobile.position.z + 144 >= ref.cell.waterLevel then return true end end		-- An offset is used because as far as the game is concerned, the dolphin's z-position is not changing during the idle animations unlike its xy-position
 							   },
 }
 
@@ -222,7 +222,7 @@ function this.changeCreatureSoundForGroup(e)
 			replacementTable = creatureGroupSounds[e.reference.baseObject.id]
 		end
 
-		if replacementTable and e.sound.id == replacementTable.original then
+		if replacementTable and e.sound.id == replacementTable.original and e.sound.id ~= replacementTable.replacement then
 			if table.contains(replacementTable.groups, e.reference.mobile.actionData.currentAnimationGroup) or table.contains(replacementTable.attacks, e.reference.mobile.actionData.physicalAttackType) then
 				if replacementTable.condition and replacementTable.condition(e.reference) then
 					e.sound = tes3.getSound(replacementTable.replacement)

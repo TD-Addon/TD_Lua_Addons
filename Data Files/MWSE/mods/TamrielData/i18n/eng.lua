@@ -316,8 +316,8 @@ return {
 											"\n- Stops Naga from equipping helmets." ..
 											"\n\nDefault: On\n\n",
 
-	["mcm.restrictArgonianOpenHelmetsLabel"] = "Restrict Open Helmets for Argonains",
-	["mcm.restrictArgonianOpenHelmetsDescription"] = "Prevents Argonains from equipping certain open helmets (and hats if the respective feature is enabled) added by Tamriel Data if the items excessively clip through their heads.\nRequires reload.\n\nDefault: On\n\n",
+	["mcm.restrictArgonianOpenHelmetsLabel"] = "Restrict Open Helmets for Argonians",
+	["mcm.restrictArgonianOpenHelmetsDescription"] = "Prevents Argonians from equipping certain open helmets (and hats if the respective feature is enabled) added by Tamriel Data if the items excessively clip through their heads.\nRequires reload.\n\nDefault: On\n\n",
 
 	["mcm.femaleArgoniansUseMaleEquipmentLabel"] = "Female Tamriel Data Argonians Use Male Equipment",
 	["mcm.femaleArgoniansUseMaleEquipmentDescription"] = "Makes female Argonians who are of the races added by Tamriel Data (such as the Naga) wear male armor and clothes.\nRequires reload.\n\nDefault: On, if Morrowind Code Patch's Argonian Clothing Choice feature is enabled\n\n",

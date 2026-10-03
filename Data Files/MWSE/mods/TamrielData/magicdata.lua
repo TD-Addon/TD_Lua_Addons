@@ -142,7 +142,6 @@ local td_misc_spells = {
 	{ "T_Com_Mys_BanishDaedra", "spell", "miscBanish", 64, { id = "T_mysticism_BanishDae", range = "touch", min = 10, max = 10 } },
 	{ "T_Com_Mys_ReflectDamage", "spell", "miscReflectDamage", 76, { id = "T_mysticism_ReflectDmg", range = "self", duration = 5, min = 10, max = 20 } },
 	{ "T_Com_Mys_DetectHumanoid", "spell", "miscDetectHumanoid", 19, { id = "T_mysticism_DetHuman", range = "self", duration = 5, min = 50, max = 150 } },
-	--{ "T_Ayl_Alt_RadiantShield", "spell", "miscRadiantShield", 75, { id = "T_alteration_RadShield", range = "self", duration = 30, min = 10, max = 10 } },	-- Not currently in TD
 	{ "T_Cr_Alt_AuroranShield", "ability", nil, nil, { id = "T_alteration_RadShield", range = "self", min = 20, max = 20 } },
 	{ "T_Cr_Alt_AylSorcKLightShield", "spell", "miscRadiantShield", 10, { id = "T_alteration_RadShield", range = "self", duration = 12, min = 10, max = 10 },
 																		{ id = "light", range = "self", duration = 12, min = 20, max = 20 } },

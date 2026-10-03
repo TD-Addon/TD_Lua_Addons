@@ -553,8 +553,15 @@ end
 
 -- Different body parts being seamless or unsegmented (such as VSBR or the Tsaesci) will cause problems since TD's equipment for this feature has been made with the vanilla body parts in mind, so the textures and meshes of different body parts are checked to ensure that they are not the same
 ---@param raceBodyParts tes3raceBodyParts
-local function raceFollowsConvention(raceBodyParts)
-	if raceBodyParts.chest.mesh ~= raceBodyParts.neck.mesh and raceBodyParts.chest.mesh ~= raceBodyParts.forearm.mesh and raceBodyParts.chest.mesh ~= raceBodyParts.groin.mesh then
+---@param raceUsedBodyParts tes3raceBodyParts
+local function raceFollowsConvention(raceBodyParts, raceUsedBodyParts)
+	local chestPart = raceBodyParts.chest										-- This unlovely setup is used since races that use male bodyparts on female actors (e.g. Argonians do not have female forearms) do not have the male bodyparts on the femaleBody property
+	local chestUsedPart = raceUsedBodyParts.chest or raceBodyParts.chest
+	local neckUsedPart = raceUsedBodyParts.neck or raceBodyParts.neck
+	local forearmUsedPart = raceUsedBodyParts.forearm or raceBodyParts.forearm
+	local groinUsedPart = raceUsedBodyParts.groin or raceBodyParts.groin
+
+	if (chestPart.mesh ~= neckUsedPart.mesh and chestUsedPart.mesh ~= neckUsedPart.mesh) and (chestPart.mesh ~= forearmUsedPart.mesh and chestUsedPart.mesh ~= forearmUsedPart.mesh) and (chestPart.mesh ~= groinUsedPart.mesh and chestUsedPart.mesh ~= groinUsedPart.mesh) then
 		local chest = tes3.loadMesh(raceBodyParts.chest.mesh):getObjectByName("Tri Chest")
 		local neck = getFirstShape(tes3.loadMesh(raceBodyParts.neck.mesh))
 		local forearm = getFirstShape(tes3.loadMesh(raceBodyParts.forearm.mesh))
@@ -607,18 +614,18 @@ function this.addBodyShapeToClothing(e)
 
 				local bodyMesh
 				if e.reference.object.female then
-					if not raceFollowsConvention(e.reference.object.race.femaleBody) then return end	-- Is this check needed for shape replacements?
+					if not raceFollowsConvention(e.reference.object.race.maleBody, e.reference.object.race.femaleBody) then return end
 					bodyMesh = tes3.loadMesh(e.reference.object.race.femaleBody[body_swap_shape.raceBodyPartProperty].mesh, false)
 				else
-					if not raceFollowsConvention(e.reference.object.race.maleBody) then return end
+					if not raceFollowsConvention(e.reference.object.race.maleBody, e.reference.object.race.maleBody) then return end
 					bodyMesh = tes3.loadMesh(e.reference.object.race.maleBody[body_swap_shape.raceBodyPartProperty].mesh, false)
 				end
 
 				local bodyShapeParent = niNode.new()
-				bodyShapeParent.name = e.bodyPart.id		-- By naming the node after the bodyPart's ID, it can easily be found by different functions
+				bodyShapeParent.name = e.bodyPart.id		-- By naming the node after the bodyPart's ID, it can easily be found by the functions here
 
 				if bodyMesh:getObjectByName("Bip01") then
-					local scale = tes3vector3.new(1 / e.reference.object.weight, 1 / e.reference.object.weight, 1 / e.reference.object.height)		-- Onion squares the height and weight values even though these seem correct?
+					local scale = tes3vector3.new(1 / e.reference.object.weight, 1 / e.reference.object.weight, 1 / e.reference.object.height)		-- The calculations in Onion square the height and weight values even though these seem correct?
 					bodyShapeParent.rotation = tes3matrix33.new(bodyShapeParent.rotation.x * scale, bodyShapeParent.rotation.y * scale, bodyShapeParent.rotation.z * scale)		-- Apply racial scaling
 
 					e.reference.sceneNode:attachChild(bodyShapeParent, true)
