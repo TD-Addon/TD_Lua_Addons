@@ -13,6 +13,7 @@ local factions = require("TamrielData.factions")
 local magic = require("TamrielData.magic")
 local reactCell = require("TamrielData.reactCell")
 local reputation = require("TamrielData.reputation")
+local waterVolume = require("TamrielData.waterVolume")
 local weather = require("TamrielData.weather")
 
 mwse.log("[Tamriel Data MWSE-Lua] Initialized Version 2.3")

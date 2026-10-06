@@ -1,0 +1,46 @@
+local this = {}
+
+local common = require("TamrielData.common")
+local config = require("TamrielData.config")
+local waterVolumes = include("waterVolumes.interop")
+
+if waterVolumes then
+	waterVolumes.registerObject("T_De_SetHla_X_WaterNarsis_01", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_De_SetHla_X_WaterNarsis_02", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_De_SetHla_X_WaterNarsis_03", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_Circle1024_01", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_Circle128_01", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_Circle2048_01", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_Circle256_01", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_Circle512_01", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_Circle64_01", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_Circle64_02", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_CurveFlw1024_01", { depth = 300, plain = true, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_CurveFlw1024s_1", { depth = 300, plain = true, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_CurveFlw256_01", { depth = 300, plain = true, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_CurveFlw256s_01", { depth = 300, plain = true, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_CurveFlw512_01", { depth = 300, plain = true, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_CurveFlw512s_01", { depth = 300, plain = true, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_CurveRpd256_01", { depth = 300, plain = true, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_CurveRpd256s_01", { depth = 300, plain = true, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_CurveRpd512_01", { depth = 300, plain = true, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_CurveRpd512s_01", { depth = 300, plain = true, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_RectFlw256_01", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_RectFlw256_02", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_RectFlw256_03", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_RectRpd256_01", { depth = 300, plain = true, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_RectRpd256_02", { depth = 300, plain = true, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_RectRpd256_03", { depth = 300, plain = true, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_RectStill256_01", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_RectStill256_02", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_RectStill256_03", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_SqrFlw1024_01", { depth = 300, plain = true, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_SqrFlw256_01", { depth = 300, plain = true, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_SqrFlw512_01", { depth = 300, plain = true, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_SqrStill1024_01", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_SqrStill256_01", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+	waterVolumes.registerObject("T_Glb_TerrWater_SqrStill512_01", { depth = 300, plain = false, skyOnly = false, noSwim = false, color = "4a6b3c" })
+
+end
+
+return this
