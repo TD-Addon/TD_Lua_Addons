@@ -322,6 +322,9 @@ return {
 	["mcm.femaleArgoniansUseMaleEquipmentLabel"] = "Female Tamriel Data Argonians Use Male Equipment",
 	["mcm.femaleArgoniansUseMaleEquipmentDescription"] = "Makes female Argonians who are of the races added by Tamriel Data (such as the Naga) wear male armor and clothes.\nRequires reload.\n\nDefault: On, if Morrowind Code Patch's Argonian Clothing Choice feature is enabled\n\n",
 
+	["mcm.regionSoundsLabel"] = "Improve Region Sounds",
+	["mcm.regionSoundsDescription"] = "Makes the sounds of some regions in Tamriel Rebuilt and Project Tamriel more immersive and comprehensive. For example, birds in the Lorchwuir Heath will only being heard during the daytime, in gentle weather, outside of cities, when the player is not very far above the ground, while cold winds will sweep through the taller mesas alone.\nRequires reload.\n\nDefault: On\n\n",
+
 	["mcm.itemSoundsLabel"] = "Improve Item Sounds",
 	["mcm.itemSoundsDescription"] = "Gives some items from Tamriel Data, such as perfume and wasabi paste, more reasonable sounds when they are used or added to/removed from one's inventory.\nRequires reload.\n\nDefault: On\n\n",
 

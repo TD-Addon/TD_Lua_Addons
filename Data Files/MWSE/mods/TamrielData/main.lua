@@ -13,68 +13,13 @@ local factions = require("TamrielData.factions")
 local magic = require("TamrielData.magic")
 local reactCell = require("TamrielData.reactCell")
 local reputation = require("TamrielData.reputation")
+local sound = require("TamrielData.sound")
 local weather = require("TamrielData.weather")
 
 mwse.log("[Tamriel Data MWSE-Lua] Initialized Version 2.3")
 
 local player_data_defaults = {
 	corruptionReferenceID = ""
-}
-
--- item id, pickup sound id, putdown sound id, equip sound id
-local item_sounds = {
-	{ "T_Imp_Subst_Blackdrake_01", "Item Misc Up", "Item Misc Down", "T_SndObj_DrugSniff"},
-	{ "T_De_Subst_Greydust_01", "Item Misc Up", "Item Misc Down", "T_SndObj_DrugSniff"},
-	{ "T_Nor_Subst_WasabiPaste_01", "Item Misc Up", "Item Misc Down", "Swallow"},
-	{ "T_Imp_Subst_Aegrotat_01", "Item Misc Up", "Item Misc Down", "Swallow"},
-	{ "T_De_Drink_PunavitResin_01", "Item Misc Up", "Item Misc Down", "Swallow"},
-	{ "T_Com_Subst_Perfume_01", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"},
-	{ "T_Com_Subst_Perfume_02", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"},
-	{ "T_Com_Subst_Perfume_03", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"},
-	{ "T_Com_Subst_Perfume_04", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"},
-	{ "T_Com_Subst_Perfume_05", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"},
-	{ "T_Com_Subst_Perfume_06", "Item Potion Up", "Item Potion Down", "T_SndObj_SprayBottle"},
-	{ "T_Imp_Subst_IndulcetPreserve_01", "Item Potion Up", "Item Potion Down", "Swallow"},
-	{ "T_Imp_Subst_QuaestoVil_01", "Item Potion Up", "Item Potion Down", "Item Potion Down"},
-	{ "T_Imp_Subst_QuaestoVil_02", "Item Potion Up", "Item Potion Down", "Item Potion Down"},
-	{ "T_Imp_Subst_SiyatCigar_01", "Item Misc Up", "Item Misc Down", "T_SndObj_CigarDrag"},
-	{ "T_Imp_Subst_SloadOil_01", "Item Misc Up", "Item Misc Down", "T_SndObj_Salve"},
-
-	{ "T_IngSpice_OliveOil_01", "Item Potion Up", "Item Potion Down", "Drink"},
-	{ "T_IngFood_Vinegar_01", "Item Potion Up", "Item Potion Down", "Drink"},
-	{ "T_IngCrea_OrcBlood_01", "Item Potion Up", "Item Potion Down", "Drink"},
-	{ "T_IngFlor_Siyat_01", "Item Potion Up", "Item Potion Down", "greneat"},
-	{ "T_IngFood_Siyat_02", "Item Potion Up", "Item Potion Down", "greneat"},
-
-	{ "misc_dwrv_coin00", "Item Gold Up", "Item Gold Down", "" },
-	{ "misc_dwrv_cursed_coin00", "Item Gold Up", "Item Gold Down", "" },
-	{ "T_Ayl_CoinBig_01", "Item Gold Up", "Item Gold Down", "" },
-	{ "T_Ayl_CoinGold_01", "Item Gold Up", "Item Gold Down", "" },
-	{ "T_Ayl_CoinSquare_01", "Item Gold Up", "Item Gold Down", "" },
-	{ "T_He_DirenniCoin_01", "Item Gold Up", "Item Gold Down", "" },
-	{ "T_Imp_CoinAlessian_01", "Item Gold Up", "Item Gold Down", "" },
-	{ "T_Imp_CoinReman_01", "Item Gold Up", "Item Gold Down", "" },
-	{ "T_Nor_CoinBarrowCopper_01", "Item Gold Up", "Item Gold Down", "" },
-	{ "T_Nor_CoinBarrowIron_01", "Item Gold Up", "Item Gold Down", "" },
-	{ "T_Nor_CoinBarrowSilver_01", "Item Gold Up", "Item Gold Down", "" },
-	{ "T_De_HlaaluCompanyScrip_01", "Item Gold Up", "Item Gold Down", "" },
-	{ "T_De_HlaaluCompanyScrip_02", "Item Gold Up", "Item Gold Down", "" },
-
-	{ "T_EnSc_Ayl_Blessed", "Item Misc Up", "Item Misc Down", "scroll" },
-	{ "T_EnSc_Ayl_CavernsOfTruth", "Item Misc Up", "Item Misc Down", "scroll" },
-	{ "T_EnSc_Ayl_DaedricHerald1", "Item Misc Up", "Item Misc Down", "scroll" },
-	{ "T_EnSc_Ayl_DaedricHerald2", "Item Misc Up", "Item Misc Down", "scroll" },
-	{ "T_EnSc_Ayl_Destroyed", "Item Misc Up", "Item Misc Down", "scroll" },
-	{ "T_EnSc_Ayl_Enter", "Item Misc Up", "Item Misc Down", "scroll" },
-	{ "T_EnSc_Ayl_FoamingWave1", "Item Misc Up", "Item Misc Down", "scroll" },
-	{ "T_EnSc_Ayl_FoamingWave2", "Item Misc Up", "Item Misc Down", "scroll" },
-	{ "T_EnSc_Ayl_FromLight", "Item Misc Up", "Item Misc Down", "scroll" },
-	{ "T_EnSc_Ayl_GodlyPower1", "Item Misc Up", "Item Misc Down", "scroll" },
-	{ "T_EnSc_Ayl_GodlyPower2", "Item Misc Up", "Item Misc Down", "scroll" },
-	{ "T_EnSc_Ayl_LoreArmor1", "Item Misc Up", "Item Misc Down", "scroll" },
-	{ "T_EnSc_Ayl_LoreArmor2", "Item Misc Up", "Item Misc Down", "scroll" },
-	{ "T_EnSc_Ayl_Wisdom1", "Item Misc Up", "Item Misc Down", "scroll" },
-	{ "T_EnSc_Ayl_Wisdom2", "Item Misc Up", "Item Misc Down", "scroll" },
 }
 
 -- xcell coordinate, ycell coordinate
@@ -293,25 +238,6 @@ local function vampireHeadCombatStarted(e)
 	end
 end
 
----@param e playItemSoundEventData
-local function improveItemSounds(e)
-	for _, v in pairs(item_sounds) do
-		local itemID, upSound, downSound, useSound = unpack(v)
-
-		if e.item.id == itemID then
-			if e.state == tes3.itemSoundState.up then
-				tes3.playSound{ sound = upSound, mixChannel = tes3.soundMix.effects }
-			elseif e.state == tes3.itemSoundState.down then
-				tes3.playSound{ sound = downSound, mixChannel = tes3.soundMix.effects }
-			elseif e.state == tes3.itemSoundState.consume then
-				tes3.playSound{ sound = useSound, mixChannel = tes3.soundMix.effects }
-			end
-
-			if e.state ~= tes3.itemSoundState.direct then return false end	-- Block the vanilla behavior and stop iterating through item_sounds 
-		end
-	end
-end
-
 ---@param e calcTravelPriceEventData
 local function adjustTravelPrices(e)
 	for _, v in pairs(travel_actor_prices) do
@@ -492,9 +418,9 @@ event.register(tes3.event.loaded, function()
 
 	if config.customSpellVFX then
 		event.register(tes3.event.vfxCreated, magic.useCustomSpellVFX, { unregisterOnLoad = true })
-		--event.register(tes3.event.mobileActivated, magic.useCustomSpellBoltVFX, { unregisterOnLoad = true })		-- This is currently disabled due to a crash that needs to be resolved in MWSE itself
+		--event.register(tes3.event.mobileActivated, magic.useCustomSpellBoltVFX, { unregisterOnLoad = true })		-- Custom bolts are currently disabled due to a crash that needs to be resolved in MWSE itself
 		event.register(tes3.event.render, magic.lockProjectileRotation, { unregisterOnLoad = true })
-		event.register(tes3.event.cellChanged, magic.checkProjectilesOnCellChange, { unregisterOnLoad = true })
+		--event.register(tes3.event.cellChanged, magic.checkProjectilesOnCellChange, { unregisterOnLoad = true })
 	end
 
 	if config.provincialReputation then
@@ -602,8 +528,14 @@ event.register(tes3.event.loaded, function()
 		event.register(tes3.event.combatStarted, vampireHeadCombatStarted, { unregisterOnLoad = true })
 	end
 
+	if config.improveRegionSounds then
+		event.register(tes3.event.simulate, sound.playRegionSound, { unregisterOnLoad = true })
+		event.register(tes3.event.cellChanged, sound.stopRegionSoundOnCellChange, { unregisterOnLoad = true })
+		sound.disableRegionSounds()
+	end
+
 	if config.improveItemSounds then
-		event.register(tes3.event.playItemSound, improveItemSounds, { unregisterOnLoad = true })
+		event.register(tes3.event.playItemSound, sound.improveItemSounds, { unregisterOnLoad = true })
 	end
 
 	if config.adjustTravelPrices then

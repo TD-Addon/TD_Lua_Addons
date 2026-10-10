@@ -27,6 +27,7 @@ local defaultConfig = {
 	fixPlayerRaceAnimations = true,
 	hideWerewolfMesh = true,
 	fixVampireHeads = true,
+	improveRegionSounds = true,
 	improveItemSounds = true,
 	adjustTravelPrices = true,
 	handleReactCellItems = true,

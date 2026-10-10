@@ -287,6 +287,14 @@ local function registerModConfig()
         },
     }
     miscellaneousToggles:createOnOffButton{
+        label = common.i18n("mcm.regionSoundsLabel"),
+        description = common.i18n("mcm.regionSoundsDescription"),
+        variable = mwse.mcm.createTableVariable{
+            id = "improveRegionSounds",
+            table = config,
+        },
+    }
+    miscellaneousToggles:createOnOffButton{
         label = common.i18n("mcm.itemSoundsLabel"),
         description = common.i18n("mcm.itemSoundsDescription"),
         variable = mwse.mcm.createTableVariable{
