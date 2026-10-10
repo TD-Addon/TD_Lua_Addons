@@ -138,7 +138,7 @@ this.regionSounds = {
 					{ type = "nearGround", parameter = 2048 },
 				}
 			},
-			{ sounds = { ["T_SndEnv_TemperateInsect_01"] = 30 },
+			{ sounds = { ["T_SndEnv_TemperateInsect_01"] = 3 },
 				conditions = {
 					{ type = "weatherIsRain", isNot = true },
 					{ type = "weatherIsThunder", isNot = true },
